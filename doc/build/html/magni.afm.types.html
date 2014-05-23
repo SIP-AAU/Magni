@@ -1,0 +1,453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.afm.types module &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.afm package" href="magni.afm.html" />
+    <link rel="next" title="magni.cs package" href="magni.cs.html" />
+    <link rel="prev" title="magni.afm.reconstruction module" href="magni.afm.reconstruction.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.cs.html" title="magni.cs package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.afm.reconstruction.html" title="magni.afm.reconstruction module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.afm.html" accesskey="U">magni.afm package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.afm.types">
+<span id="magni-afm-types-module"></span><h1>magni.afm.types module<a class="headerlink" href="#module-magni.afm.types" title="Permalink to this headline">¶</a></h1>
+<p>Module providing data container classes for MI files.</p>
+<p>The classes of this module can be used either directly or indirectly through
+the <tt class="xref py py-obj docutils literal"><span class="pre">io</span></tt> module by loading an MI file.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Buffer()</dt>
+<dd>Data class for MI image buffer.</dd>
+<dt>Image()</dt>
+<dd>Data class for MI image.</dd>
+</dl>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.afm.io.html#module-magni.afm.io" title="magni.afm.io"><tt class="xref py py-mod docutils literal"><span class="pre">magni.afm.io</span></tt></a></dt>
+<dd>MI file loading.</dd>
+</dl>
+</div>
+<dl class="class">
+<dt id="magni.afm.types.Buffer">
+<em class="property">class </em><tt class="descclassname">magni.afm.types.</tt><tt class="descname">Buffer</tt><big>(</big><em>data</em>, <em>hdrs</em>, <em>width</em>, <em>height</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data class for MI image buffer.</p>
+<p>This class contains both buffer specific header lines and the 2D data of
+the buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>numpy.ndarray</em>) &#8211;
+The data of the buffer represented as a 1D numpy.ndarray.</li>
+<li><strong>hdrs</strong> (<em>list or tuple</em>) &#8211;
+The buffer specific header lines.</li>
+<li><strong>width</strong> (<em>int</em>) &#8211;
+The width in pixels of the area covered by the buffer.</li>
+<li><strong>height</strong> (<em>int</em>) &#8211;
+The height in pixels of the area covered by the buffer.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>See <tt class="xref py py-obj docutils literal"><span class="pre">_image_headers</span></tt> for a description of the header lines.</p>
+<p class="rubric">Examples</p>
+<p>The <a class="reference internal" href="#magni.afm.types.Buffer.__init__" title="magni.afm.types.Buffer.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a> function is implicitly called when loading, for example, the
+MI file provided with the package:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s">&#39;example.mi&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mi_file</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">afm</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_mi_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mi_buffer</span> <span class="o">=</span> <span class="n">mi_file</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>This buffer can have a number of attributes (stored as header lines in the
+MI file) including the &#8216;bufferLabel&#8217; attribute:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">mi_buffer</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s">&#39;bufferLabel&#39;</span><span class="p">))</span>
+<span class="go">Topography</span>
+</pre></div>
+</div>
+<p>The primary purpose of this class is, however, to contain the 2D data of a
+buffer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">mi_buffer</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;Buffer, Type: {}, Shape: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">))[</span><span class="o">-</span><span class="mi">15</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="go">Buffer, Type: numpy.ndarray, Shape: (256, 256)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="magni.afm.types.Buffer._validate_init">
+<tt class="descname">_validate_init</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer._validate_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer._validate_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a validation function (see module Notes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) &#8211;
+The arguments passed to the decorated function.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
+The keyword arguments passed to the decorated function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Buffer.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>data</em>, <em>hdrs</em>, <em>width</em>, <em>height</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Buffer._validate_get_attr">
+<tt class="descname">_validate_get_attr</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer._validate_get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer._validate_get_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a validation function (see module Notes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) &#8211;
+The arguments passed to the decorated function.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
+The keyword arguments passed to the decorated function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Buffer.get_attr">
+<tt class="descname">get_attr</tt><big>(</big><em>key=None</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer.get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer.get_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of all header lines or a specific header line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str or None, optional</em>) &#8211;
+The name of the header line to retrieve (the default is None, which
+implies retrieving a copy of all header lines).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>value</strong> (<em>dict or None</em>) &#8211;
+The value of the specified key, if key is not None. Otherwise, a
+copy of the header lines.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Buffer._validate_get_data">
+<tt class="descname">_validate_get_data</tt><big>(</big><em>intensity_func</em>, <em>intensity_args</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer._validate_get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer._validate_get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the <a class="reference internal" href="#magni.afm.types.Buffer.get_data" title="magni.afm.types.Buffer.get_data"><tt class="xref py py-obj docutils literal"><span class="pre">get_data</span></tt></a> function.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#magni.afm.types.Buffer.get_data" title="magni.afm.types.Buffer.get_data"><tt class="xref py py-meth docutils literal"><span class="pre">Buffer.get_data()</span></tt></a></dt>
+<dd>The validated function.</dd>
+<dt><tt class="xref py py-meth docutils literal"><span class="pre">fat.utils.validation.validate()</span></tt></dt>
+<dd>Validation.</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Buffer.get_data">
+<tt class="descname">get_data</tt><big>(</big><em>intensity_func=None</em>, <em>intensity_args=()</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the 2D data of the buffer.</p>
+<p>The optional <em class="xref py py-obj">intensity_func</em> and <em class="xref py py-obj">intensity_args</em> can be used to
+manipulate the intensity of the image before getting the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>intensity_func</strong> (<em>FunctionType, optional</em>) &#8211;
+The handle to the function used to manipulate the image intensity
+(the default is None, which implies that no intensity manipulation
+is used).</li>
+<li><strong>intensity_args</strong> (<em>list or tuple, optional</em>) &#8211;
+The arguments that are passed to the <em class="xref py py-obj">intensity_func</em> (the default
+is (), which implies that no arguments are passed).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>data</strong> (<em>numpy.ndarray</em>) &#8211;
+The 2D data of the buffer.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="magni.afm.types.Image">
+<em class="property">class </em><tt class="descclassname">magni.afm.types.</tt><tt class="descname">Image</tt><big>(</big><em>data</em>, <em>hdrs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data class for MI image.</p>
+<p>This class contains both image specific header lines and the buffers of the
+image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>numpy.ndarray</em>) &#8211;
+The data part of the MI image.</li>
+<li><strong>hdrs</strong> (<em>list or tuple</em>) &#8211;
+The image specific header lines.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>See <tt class="xref py py-obj docutils literal"><span class="pre">_mi_headers</span></tt> for a description of the header lines.</p>
+<p class="rubric">Examples</p>
+<p>The <a class="reference internal" href="#magni.afm.types.Image.__init__" title="magni.afm.types.Image.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a> function is implicitly called when loading, for example, the
+MI file provided with the package:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s">&#39;example.mi&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">afm</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_mi_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This image can have a number of attributes (stored as header lines in the
+MI file) including the &#8216;scanSpeed&#8217; attribute:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:5.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s">&#39;scanSpeed&#39;</span><span class="p">)))</span>
+<span class="go"> 1.01</span>
+</pre></div>
+</div>
+<p>The primary purpose of this class is, however, to contain the buffers of an
+MI image file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">buffers</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">buffers</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">:</span><span class="mi">2</span><span class="p">]:</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Buffer: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s">&#39;bufferLabel&#39;</span><span class="p">)))</span>
+<span class="go">Buffer: Topography</span>
+<span class="go">Buffer: Deflection</span>
+<span class="go">Buffer: Friction</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="magni.afm.types.Image._validate_init">
+<tt class="descname">_validate_init</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image._validate_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image._validate_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a validation function (see module Notes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) &#8211;
+The arguments passed to the decorated function.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
+The keyword arguments passed to the decorated function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Image.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>data</em>, <em>hdrs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Image._validate_get_attr">
+<tt class="descname">_validate_get_attr</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image._validate_get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image._validate_get_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a validation function (see module Notes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) &#8211;
+The arguments passed to the decorated function.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
+The keyword arguments passed to the decorated function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Image.get_attr">
+<tt class="descname">get_attr</tt><big>(</big><em>key=None</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image.get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image.get_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of all header lines or a specific header line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str or None, optional</em>) &#8211;
+The name of the header line to retrieve (the default is None, which
+implies retrieving a copy of all header lines).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>value</strong> (<em>dict or None</em>) &#8211;
+The value of the specified key, if key is not None. Otherwise, a
+copy of the header lines.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Image._validate_get_buffer">
+<tt class="descname">_validate_get_buffer</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image._validate_get_buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image._validate_get_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a validation function (see module Notes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) &#8211;
+The arguments passed to the decorated function.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
+The keyword arguments passed to the decorated function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.afm.types.Image.get_buffer">
+<tt class="descname">get_buffer</tt><big>(</big><em>key=None</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image.get_buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image.get_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all buffers or a specific buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str or None, optional</em>) &#8211;
+The name of the buffer to retrieve (the default is None, which
+implies retrieving all buffers).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>value</strong> (<em>dict or None</em>) &#8211;
+The buffer of the specified key, if key is not None. Otherwise, a
+dict with all the buffers.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.afm.types module</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.afm.reconstruction.html"
+                        title="previous chapter">magni.afm.reconstruction module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.cs.html"
+                        title="next chapter">magni.cs package</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.cs.html" title="magni.cs package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.afm.reconstruction.html" title="magni.afm.reconstruction module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.afm.html" >magni.afm package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

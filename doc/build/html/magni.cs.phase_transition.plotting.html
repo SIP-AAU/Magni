@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.cs.phase_transition.plotting module &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" />
+    <link rel="next" title="magni.cs.reconstruction package" href="magni.cs.reconstruction.html" />
+    <link rel="prev" title="magni.cs.phase_transition.io module" href="magni.cs.phase_transition.io.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.cs.reconstruction.html" title="magni.cs.reconstruction package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition.io.html" title="magni.cs.phase_transition.io module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.cs.phase_transition.plotting">
+<span id="magni-cs-phase-transition-plotting-module"></span><h1>magni.cs.phase_transition.plotting module<a class="headerlink" href="#module-magni.cs.phase_transition.plotting" title="Permalink to this headline">¶</a></h1>
+<p>Module providing plotting for the <a class="reference internal" href="magni.cs.phase_transition.html#module-magni.cs.phase_transition" title="magni.cs.phase_transition"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition</span></tt></a> subpackage.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>plot_phase_transitions(curves, plot_l1=True, output_path=None)</dt>
+<dd>Function for plotting phase transition boundary curves.</dd>
+<dt>plot_phase_transition_colormap(dist, delta, rho, plot_l1=True, output_path=None)</dt>
+<dd>Function for plotting reconstruction probabilities in the phase space.</dd>
+</dl>
+<dl class="function">
+<dt id="magni.cs.phase_transition.plotting.plot_phase_transitions">
+<tt class="descclassname">magni.cs.phase_transition.plotting.</tt><tt class="descname">plot_phase_transitions</tt><big>(</big><em>curves</em>, <em>plot_l1=True</em>, <em>output_path=None</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#plot_phase_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting.plot_phase_transitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot of a set of phase transition boundary curves.</p>
+<p>The set of phase transition boundary curves are plotted an saved under the
+<em class="xref py py-obj">output_path</em>, if specified. The <em class="xref py py-obj">curves</em> must be a list of dictionaries
+each having keys <em>delta</em>, <em>rho</em>, and <em>label</em>. <em>delta</em> must be an <em class="xref py py-obj">ndarray</em>
+of <span class="math">\(\delta\)</span> values in the phase space. <em>rho</em> must be an <em class="xref py py-obj">ndarray</em> of
+the corresponding <span class="math">\(\rho\)</span> values in the phase space. <em>label</em> must be a
+<em class="xref py py-obj">str</em> describing the curve.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curves</strong> (<em>list</em>) &#8211;
+A list of dicts describing the curves to plot.</li>
+<li><strong>plot_l1</strong> (<em>bool, optional</em>) &#8211;
+Whether or not to plot the theoretical <span class="math">\(\ell_1\)</span> curve (the
+default is True).</li>
+<li><strong>output_path</strong> (<em>str, optional</em>) &#8211;
+Path (including file type extension) under which the plot is saved (the
+default value is None which implies, that the plot is not saved).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The plotting is done using <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib</span></tt>, which implies that an open figure
+containing the plot will result from using this function.</p>
+<p>Tabulated values of the theoretical <span class="math">\(\ell_1\)</span> phase transition
+boundary is available at
+<a class="reference external" href="http://people.maths.ox.ac.uk/tanner/polytopes.shtml">http://people.maths.ox.ac.uk/tanner/polytopes.shtml</a></p>
+<p class="rubric">Examples</p>
+<p>For example,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.cs.phase_transition.plotting</span> <span class="kn">import</span> <span class="n">plot_phase_transitions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">curves</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;delta&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="p">,</span> <span class="s">&#39;rho&#39;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span> <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="s">&#39;data1&#39;</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output_path</span> <span class="o">=</span> <span class="s">&#39;phase_transitions.pdf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_phase_transitions</span><span class="p">(</span><span class="n">curves</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.cs.phase_transition.plotting.plot_phase_transition_colormap">
+<tt class="descclassname">magni.cs.phase_transition.plotting.</tt><tt class="descname">plot_phase_transition_colormap</tt><big>(</big><em>dist</em>, <em>delta</em>, <em>rho</em>, <em>plot_l1=True</em>, <em>output_path=None</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#plot_phase_transition_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting.plot_phase_transition_colormap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a colormap of the phase space reconstruction probabilities.</p>
+<p>The <em class="xref py py-obj">delta</em> and <em class="xref py py-obj">rho</em> values span a 2D grid in the phase space.
+Reconstruction probabilities are then calculated from the <em class="xref py py-obj">dist</em> 3D array
+of reconstruction error distances. The resulting 2D grid of reconstruction
+probabilites is visualised over the square centers in this 2D grid using a
+colormap. Values in this grid at lower indicies correspond to lower values
+of <span class="math">\(\delta\)</span> and <span class="math">\(\rho\)</span>. If <em class="xref py py-obj">plot_l1</em> is True, then the
+theoretical l1 curve is overlayed the colormap. The colormap is saved under
+the <em class="xref py py-obj">output_path</em>, if specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dist</strong> (<em>ndarray</em>) &#8211;
+A 3D array of reconstruction error distances.</li>
+<li><strong>delta</strong> (<em>ndarray</em>) &#8211;
+<span class="math">\(\delta\)</span> values used in the 2D grid.</li>
+<li><strong>rho</strong> (<em>ndarray</em>) &#8211;
+<span class="math">\(\rho\)</span> values used in the 2D grid.</li>
+<li><strong>plot_l1</strong> (<em>bool</em>) &#8211;
+Whether or not to plot the theoretical <span class="math">\(\ell_1\)</span> curve. (the
+default is True)</li>
+<li><strong>output_path</strong> (<em>str, optional</em>) &#8211;
+Path (including file type extension) under which the plot is saved (the
+default value is None which implies, that the plot is not saved).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.cs.phase_transition.io.html#magni.cs.phase_transition.io.load_phase_transition" title="magni.cs.phase_transition.io.load_phase_transition"><tt class="xref py py-func docutils literal"><span class="pre">magni.cs.phase_transition.io.load_phase_transition()</span></tt></a></dt>
+<dd>Loading phase transitions from an HDF database.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The plotting is done using <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib</span></tt>, which implies that an open figure
+containing the plot will result from using this function.</p>
+<p>The values in <em class="xref py py-obj">delta</em> and <em class="xref py py-obj">rho</em> are assumed to be equally spaced.</p>
+<p>Due to the <em>centering</em> of the color coded rectangles, they are not
+necessarily square towards the ends of the intervals defined by <em class="xref py py-obj">delta</em> and
+<em class="xref py py-obj">rho</em>.</p>
+<p>Tabulated values of the theoretical <span class="math">\(\ell_1\)</span> phase transition
+boundary is available at
+<a class="reference external" href="http://people.maths.ox.ac.uk/tanner/polytopes.shtml">http://people.maths.ox.ac.uk/tanner/polytopes.shtml</a></p>
+<p class="rubric">Examples</p>
+<p>For example,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.cs.phase_transition.plotting</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">plot_phase_transition_colormap</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mf">1.35e-08</span><span class="p">,</span> <span class="mf">1.80e-08</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.08</span><span class="p">,</span> <span class="mf">1.11</span><span class="p">]],</span>
+<span class="gp">... </span><span class="p">[[</span><span class="mf">1.40e-12</span><span class="p">,</span> <span class="mf">8.32e-12</span><span class="p">],</span> <span class="p">[</span><span class="mf">8.57e-01</span><span class="p">,</span> <span class="mf">7.28e-01</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">1.92e-13</span><span class="p">,</span> <span class="mf">1.17e-13</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mf">2.10e-10</span><span class="p">,</span>   <span class="mf">1.12e-10</span><span class="p">]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out_path</span> <span class="o">=</span> <span class="s">&#39;phase_transition_cmap.pdf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_phase_transition_colormap</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.cs.phase_transition.plotting._plot_theoretical_l1">
+<tt class="descclassname">magni.cs.phase_transition.plotting.</tt><tt class="descname">_plot_theoretical_l1</tt><big>(</big><em>axes</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#_plot_theoretical_l1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting._plot_theoretical_l1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the theoretical l1 phase transition on the <em class="xref py py-obj">axes</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>axes</strong> (<em>matplotlib.axes.Axes</em>) &#8211;
+The matplotlib Axes instance on which the theoretical l1 phase
+transition should be plotted.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The plotted theoretical <span class="math">\(\ell1\)</span> phase transition is based on
+tabulated values of available at
+<a class="reference external" href="http://people.maths.ox.ac.uk/tanner/polytopes.shtml">http://people.maths.ox.ac.uk/tanner/polytopes.shtml</a></p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.cs.phase_transition.plotting module</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.cs.phase_transition.io.html"
+                        title="previous chapter">magni.cs.phase_transition.io module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.cs.reconstruction.html"
+                        title="next chapter">magni.cs.reconstruction package</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.cs.reconstruction.html" title="magni.cs.reconstruction package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition.io.html" title="magni.cs.phase_transition.io module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

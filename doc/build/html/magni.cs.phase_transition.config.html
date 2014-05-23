@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.cs.phase_transition.config module &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" />
+    <link rel="next" title="magni.cs.phase_transition.io module" href="magni.cs.phase_transition.io.html" />
+    <link rel="prev" title="magni.cs.phase_transition._util module" href="magni.cs.phase_transition._util.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition.io.html" title="magni.cs.phase_transition.io module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition._util.html" title="magni.cs.phase_transition._util module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.cs.phase_transition.config">
+<span id="magni-cs-phase-transition-config-module"></span><h1>magni.cs.phase_transition.config module<a class="headerlink" href="#module-magni.cs.phase_transition.config" title="Permalink to this headline">¶</a></h1>
+<p>Module providing configuration options for the phase_transition subpackage.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>get(key=None)</dt>
+<dd>Get the value of one or more configuration options.</dd>
+<dt>set(dictionary={}, **kwargs)</dt>
+<dd>Set the value of one or more configuration options.</dd>
+</dl>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.utils.config.html#module-magni.utils.config" title="magni.utils.config"><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils.config</span></tt></a></dt>
+<dd>The Configger class used.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>This module instantiates the <em class="xref py py-obj">Configger</em> class provided by <a class="reference internal" href="magni.utils.config.html#module-magni.utils.config" title="magni.utils.config"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.config</span></tt></a>
+and assigns handles for the <tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt> and <tt class="xref py py-obj docutils literal"><span class="pre">set</span></tt> methods of that class instance. The
+configuration options are the following:</p>
+<dl class="docutils">
+<dt>seed <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The seed used when picking seeds for generating data for the monte carlo
+simulations (the default is None, which implies an arbitrary seed).</dd>
+<dt>n <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The length of the coefficient vector (the default is 800).</dd>
+<dt>delta <span class="classifier-delimiter">:</span> <span class="classifier">list or tuple</span></dt>
+<dd>The delta values of the delta-rho grid whose points are used for the monte
+carlo simulations (the default is [0., 1.]).</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">list or tuple</span></dt>
+<dd>The rho values of the delta-rho grid whose points are used for the monte
+carlo simulations (the default is [0., 1.]).</dd>
+<dt>monte_carlo <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The number of monte carlo simulations to run in each point of the delta-rho
+grid (the default is 1).</dd>
+<dt>coefficients <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;rademacher&#8217;, &#8216;gaussian&#8217;}</span></dt>
+<dd>The distribution which the non-zero coefficients in the coefficient vector
+are drawn from.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.cs.phase_transition.config module</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.cs.phase_transition._util.html"
+                        title="previous chapter">magni.cs.phase_transition._util module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.cs.phase_transition.io.html"
+                        title="next chapter">magni.cs.phase_transition.io module</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition.io.html" title="magni.cs.phase_transition.io module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition._util.html" title="magni.cs.phase_transition._util module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.afm.types &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for magni.afm.types</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">..</span>
+<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    All rights reserved.</span>
+<span class="sd">    See LICENSE.rst for further information.</span>
+
+<span class="sd">Module providing data container classes for MI files.</span>
+
+<span class="sd">The classes of this module can be used either directly or indirectly through</span>
+<span class="sd">the `io` module by loading an MI file.</span>
+
+<span class="sd">Routine listings</span>
+<span class="sd">----------------</span>
+<span class="sd">Buffer()</span>
+<span class="sd">    Data class for MI image buffer.</span>
+<span class="sd">Image()</span>
+<span class="sd">    Data class for MI image.</span>
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">magni.afm.io : MI file loading.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c"># the name of the present module makes the built-in module &#39;types&#39; unavailable</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">types</span>
+
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
+
+
+<div class="viewcode-block" id="Buffer"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Buffer">[docs]</a><span class="k">class</span> <span class="nc">Buffer</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data class for MI image buffer.</span>
+
+<span class="sd">    This class contains both buffer specific header lines and the 2D data of</span>
+<span class="sd">    the buffer.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : numpy.ndarray</span>
+<span class="sd">        The data of the buffer represented as a 1D numpy.ndarray.</span>
+<span class="sd">    hdrs : list or tuple</span>
+<span class="sd">        The buffer specific header lines.</span>
+<span class="sd">    width : int</span>
+<span class="sd">        The width in pixels of the area covered by the buffer.</span>
+<span class="sd">    height : int</span>
+<span class="sd">        The height in pixels of the area covered by the buffer.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    See `_image_headers` for a description of the header lines.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    The `__init__` function is implicitly called when loading, for example, the</span>
+<span class="sd">    MI file provided with the package:</span>
+
+<span class="sd">    &gt;&gt;&gt; path = magni.utils.split_path(magni.__path__[0])[0]</span>
+<span class="sd">    &gt;&gt;&gt; path = path + &#39;examples&#39; + os.sep + &#39;example.mi&#39;</span>
+<span class="sd">    &gt;&gt;&gt; mi_file = magni.afm.io.read_mi_file(path)</span>
+<span class="sd">    &gt;&gt;&gt; mi_buffer = mi_file.get_buffer()[0]</span>
+
+<span class="sd">    This buffer can have a number of attributes (stored as header lines in the</span>
+<span class="sd">    MI file) including the &#39;bufferLabel&#39; attribute:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(mi_buffer.get_attr(&#39;bufferLabel&#39;))</span>
+<span class="sd">    Topography</span>
+
+<span class="sd">    The primary purpose of this class is, however, to contain the 2D data of a</span>
+<span class="sd">    buffer:</span>
+
+<span class="sd">    &gt;&gt;&gt; data = mi_buffer.get_data()</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;Buffer, Type: {}, Shape: {}&#39;.format(str(type(data))[-15:-2],</span>
+<span class="sd">    ... data.shape))</span>
+<span class="sd">    Buffer, Type: numpy.ndarray, Shape: (256, 256)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+<div class="viewcode-block" id="Buffer._validate_init"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Buffer._validate_init">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the `__init__` function.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Buffer.__init__ : The validated function.</span>
+<span class="sd">        magni.utils.validation.validate : Validation.</span>
+<span class="sd">        magni.utils.validation.validate_ndarray : Validation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">hdrs</span><span class="p">,</span> <span class="s">&#39;hdrs&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)})</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="s">&#39;width&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="s">&#39;height&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;dtype&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="Buffer.__init__"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Buffer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_init</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">hdrs</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_image_keys</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s">&#39;bufferRange&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+</div>
+    <span class="nd">@_decorate_validation</span>
+<div class="viewcode-block" id="Buffer._validate_get_attr"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Buffer._validate_get_attr">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_get_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the `get_attr` function.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Buffer.get_attr : The validated function.</span>
+<span class="sd">        magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_validate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;val_in&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">keys</span><span class="p">())},</span> <span class="bp">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Buffer.get_attr"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Buffer.get_attr">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a copy of all header lines or a specific header line.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : str or None, optional</span>
+<span class="sd">            The name of the header line to retrieve (the default is None, which</span>
+<span class="sd">            implies retrieving a copy of all header lines).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        value : dict or None</span>
+<span class="sd">            The value of the specified key, if key is not None. Otherwise, a</span>
+<span class="sd">            copy of the header lines.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_get_attr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="Buffer._validate_get_data"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Buffer._validate_get_data">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensity_func</span><span class="p">,</span> <span class="n">intensity_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the `get_data` function.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Buffer.get_data : The validated function.</span>
+<span class="sd">        fat.utils.validation.validate : Validation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_validate</span><span class="p">(</span><span class="n">intensity_func</span><span class="p">,</span> <span class="s">&#39;intensity_func&#39;</span><span class="p">,</span>
+                  <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">},</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">intensity_args</span><span class="p">,</span> <span class="s">&#39;intensity_args&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)})</span>
+</div>
+<div class="viewcode-block" id="Buffer.get_data"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Buffer.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensity_func</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">intensity_args</span><span class="o">=</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the 2D data of the buffer.</span>
+
+<span class="sd">        The optional `intensity_func` and `intensity_args` can be used to</span>
+<span class="sd">        manipulate the intensity of the image before getting the data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        intensity_func : FunctionType, optional</span>
+<span class="sd">            The handle to the function used to manipulate the image intensity</span>
+<span class="sd">            (the default is None, which implies that no intensity manipulation</span>
+<span class="sd">            is used).</span>
+<span class="sd">        intensity_args : list or tuple, optional</span>
+<span class="sd">            The arguments that are passed to the `intensity_func` (the default</span>
+<span class="sd">            is (), which implies that no arguments are passed).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        data : numpy.ndarray</span>
+<span class="sd">            The 2D data of the buffer.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_get_data</span><span class="p">(</span><span class="n">intensity_func</span><span class="p">,</span> <span class="n">intensity_args</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+        <span class="k">if</span> <span class="n">intensity_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">intensity_func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">intensity_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+
+</div></div>
+<div class="viewcode-block" id="Image"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Image">[docs]</a><span class="k">class</span> <span class="nc">Image</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data class for MI image.</span>
+
+<span class="sd">    This class contains both image specific header lines and the buffers of the</span>
+<span class="sd">    image.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : numpy.ndarray</span>
+<span class="sd">        The data part of the MI image.</span>
+<span class="sd">    hdrs : list or tuple</span>
+<span class="sd">        The image specific header lines.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    See `_mi_headers` for a description of the header lines.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    The `__init__` function is implicitly called when loading, for example, the</span>
+<span class="sd">    MI file provided with the package:</span>
+
+<span class="sd">    &gt;&gt;&gt; path = magni.utils.split_path(magni.__path__[0])[0]</span>
+<span class="sd">    &gt;&gt;&gt; path = path + &#39;examples&#39; + os.sep + &#39;example.mi&#39;</span>
+<span class="sd">    &gt;&gt;&gt; image = magni.afm.io.read_mi_file(path)</span>
+
+<span class="sd">    This image can have a number of attributes (stored as header lines in the</span>
+<span class="sd">    MI file) including the &#39;scanSpeed&#39; attribute:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(&#39;{:5.2f}&#39;.format(image.get_attr(&#39;scanSpeed&#39;)))</span>
+<span class="sd">     1.01</span>
+
+<span class="sd">    The primary purpose of this class is, however, to contain the buffers of an</span>
+<span class="sd">    MI image file:</span>
+
+<span class="sd">    &gt;&gt;&gt; buffers = image.get_buffer()</span>
+<span class="sd">    &gt;&gt;&gt; for b in buffers[0:5:2]:</span>
+<span class="sd">    ...     print(&#39;Buffer: {}&#39;.format(b.get_attr(&#39;bufferLabel&#39;)))</span>
+<span class="sd">    Buffer: Topography</span>
+<span class="sd">    Buffer: Deflection</span>
+<span class="sd">    Buffer: Friction</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+<div class="viewcode-block" id="Image._validate_init"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Image._validate_init">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the `__init__` function.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Image.__init__ : The validated function.</span>
+<span class="sd">        magni.utils.validation.validate : Validation.</span>
+<span class="sd">        magni.utils.validation.validate_ndarray : Validation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">hdrs</span><span class="p">,</span> <span class="s">&#39;hdrs&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)})</span>
+</div>
+<div class="viewcode-block" id="Image.__init__"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Image.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_init</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">)</span>
+
+        <span class="n">end</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">hdr</span> <span class="ow">in</span> <span class="n">hdrs</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">_image_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">hdrs</span><span class="p">[:</span><span class="n">end</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">hdrs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+                         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_mi_keys</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s">&#39;xPixels&#39;</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s">&#39;yPixels&#39;</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="n">height</span>
+        <span class="n">bufs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdrs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">hdrs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">_image_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">bufs</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+
+            <span class="n">bufs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hdrs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bufs</span><span class="p">)):</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">size</span><span class="p">:(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">size</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Buffer</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">bufs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+</div>
+    <span class="nd">@_decorate_validation</span>
+<div class="viewcode-block" id="Image._validate_get_attr"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Image._validate_get_attr">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_get_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the `get_attr` function.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Image.get_attr : The validated function.</span>
+<span class="sd">        magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_validate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;val_in&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">keys</span><span class="p">())},</span> <span class="bp">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Image.get_attr"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Image.get_attr">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a copy of all header lines or a specific header line.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : str or None, optional</span>
+<span class="sd">            The name of the header line to retrieve (the default is None, which</span>
+<span class="sd">            implies retrieving a copy of all header lines).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        value : dict or None</span>
+<span class="sd">            The value of the specified key, if key is not None. Otherwise, a</span>
+<span class="sd">            copy of the header lines.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_get_attr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+</div>
+    <span class="nd">@_decorate_validation</span>
+<div class="viewcode-block" id="Image._validate_get_buffer"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Image._validate_get_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_get_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the `get_buffer` function.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Image.get_buffer : The validated function.</span>
+<span class="sd">        magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="nb">buffer</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s">&#39;bufferLabel&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="nb">buffer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">]</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;val_in&#39;</span><span class="p">:</span> <span class="n">keys</span><span class="p">},</span> <span class="bp">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Image.get_buffer"><a class="viewcode-back" href="../../../magni.afm.types.html#magni.afm.types.Image.get_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">get_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all buffers or a specific buffer.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : str or None, optional</span>
+<span class="sd">            The name of the buffer to retrieve (the default is None, which</span>
+<span class="sd">            implies retrieving all buffers).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        value : dict or None</span>
+<span class="sd">            The buffer of the specified key, if key is not None. Otherwise, a</span>
+<span class="sd">            dict with all the buffers.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_get_buffer</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">[:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">buffer</span> <span class="k">for</span> <span class="nb">buffer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span>
+                   <span class="k">if</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s">&#39;bufferLabel&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">key</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">buf</span> <span class="o">=</span> <span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">buf</span>
+
+</div></div>
+<span class="n">_mi_headers</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="s">&#39;fileType      &#39;</span><span class="p">,</span> <span class="s">&#39;Specifies if it is Image or plot file&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;version       &#39;</span><span class="p">,</span> <span class="s">&#39;Software version&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;dateAcquired  &#39;</span><span class="p">,</span> <span class="s">&#39;Date and time scan started&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;dateModified  &#39;</span><span class="p">,</span> <span class="s">&#39;Date and time data saved&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;comment       &#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;mode          &#39;</span><span class="p">,</span> <span class="s">&#39;ModeAFM = Acquired in contact AFM&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xSensitivity  &#39;</span><span class="p">,</span> <span class="s">&#39;X sensitivity for scanner (m/V)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xNonlinearity &#39;</span><span class="p">,</span> <span class="s">&#39;X non-linearity for scanner&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xHysteresis   &#39;</span><span class="p">,</span> <span class="s">&#39;X hysteresis for scanner (</span><span class="si">% s</span><span class="s">can size)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;ySensitivity  &#39;</span><span class="p">,</span> <span class="s">&#39;Y sensitivity for scanner (m/V)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;yNonlinearity &#39;</span><span class="p">,</span> <span class="s">&#39;Y non-linearity for scanner&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;yHysteresis   &#39;</span><span class="p">,</span> <span class="s">&#39;Y hysteresis for scanner (</span><span class="si">% s</span><span class="s">can size)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;zSensitivity  &#39;</span><span class="p">,</span> <span class="s">&#39;Z sensitivity for scanner (m/V)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;reverseX      &#39;</span><span class="p">,</span> <span class="s">&#39;Reverse X polarity for scanner&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;reverseY      &#39;</span><span class="p">,</span> <span class="s">&#39;Reverse Y polarity for scanner&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;reverseZ      &#39;</span><span class="p">,</span> <span class="s">&#39;Reverse Z polarity for scanner&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xDacRange     &#39;</span><span class="p">,</span> <span class="s">&#39;X output range for controller (V)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;yDacRange     &#39;</span><span class="p">,</span> <span class="s">&#39;Y output range for controller (V)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;zDacRange     &#39;</span><span class="p">,</span> <span class="s">&#39;Z output range for controller (V)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xPixels       &#39;</span><span class="p">,</span> <span class="s">&#39;Columns in image&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;yPixels       &#39;</span><span class="p">,</span> <span class="s">&#39;Rows in image&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xOffset       &#39;</span><span class="p">,</span> <span class="s">&#39;X offset in total scan area&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;yOffset       &#39;</span><span class="p">,</span> <span class="s">&#39;Y offset in total scan area&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xLength       &#39;</span><span class="p">,</span> <span class="s">&#39;X scan Size (m)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;yLength       &#39;</span><span class="p">,</span> <span class="s">&#39;Y scan Size (m)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;scanUp        &#39;</span><span class="p">,</span> <span class="s">&#39;Scanning up = TRUE, down = FALSE&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;scanSpeed     &#39;</span><span class="p">,</span> <span class="s">&#39;Fast scan speed (lines/sec or Hz)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;scanAngle     &#39;</span><span class="p">,</span> <span class="s">&#39;Scan angle (degrees)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;servoSetpoint &#39;</span><span class="p">,</span> <span class="s">&#39;Z servo setpoint (V)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;biasSample    &#39;</span><span class="p">,</span> <span class="s">&#39;Bias applied to sample (TRUE), tip (FALSE)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;bias          &#39;</span><span class="p">,</span> <span class="s">&#39;Bias voltage (V)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;servoIGain    &#39;</span><span class="p">,</span> <span class="s">&#39;Z servo integral gain&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;servoPGain    &#39;</span><span class="p">,</span> <span class="s">&#39;Z servo proportional gain&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;servoRange    &#39;</span><span class="p">,</span> <span class="s">&#39;Z servo range (m)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;servoInputGain&#39;</span><span class="p">,</span> <span class="s">&#39;Z servo input gain&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;acFrequency   &#39;</span><span class="p">,</span> <span class="s">&#39;AC Mode frequency (Hz)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;acDrive       &#39;</span><span class="p">,</span> <span class="s">&#39;AC Mode drive (%)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;acGain        &#39;</span><span class="p">,</span> <span class="s">&#39;AC Mode input gain&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;acMac         &#39;</span><span class="p">,</span> <span class="s">&#39;AC Mode MAC (TRUE), AAC (FALSE)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;acACMode      &#39;</span><span class="p">,</span> <span class="s">&#39;AC Mode AC (TRUE), contact (FALSE)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;snapFileName  &#39;</span><span class="p">,</span> <span class="s">&#39;Names of snap files&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;snapAfmPos    &#39;</span><span class="p">,</span> <span class="s">&#39;XY-positions of snap images (m)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;snapAfmOpacity&#39;</span><span class="p">,</span> <span class="s">&#39;Snap opacities in range [0, 100]%&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;snapResolution&#39;</span><span class="p">,</span> <span class="s">&#39;Snap resolutions (pixels)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;snapSens      &#39;</span><span class="p">,</span> <span class="s">&#39;Optical X and Y snap sensitivities (m/pixel)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;snapROI       &#39;</span><span class="p">,</span> <span class="s">&#39;ROI for each snap image&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;snapObjective &#39;</span><span class="p">,</span> <span class="s">&#39;Objective names for each snap image&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;snapName      &#39;</span><span class="p">,</span> <span class="s">&#39;Snap names&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;tipX          &#39;</span><span class="p">,</span> <span class="s">&#39;Tip X position&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;tipY          &#39;</span><span class="p">,</span> <span class="s">&#39;Tip Y position&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;data          &#39;</span><span class="p">,</span> <span class="s">&#39;Data&#39;</span><span class="p">))</span>
+<span class="n">_mi_headers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">descr</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">descr</span> <span class="ow">in</span> <span class="n">_mi_headers</span><span class="p">)</span>
+<span class="n">_mi_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">hdr</span> <span class="ow">in</span> <span class="n">_mi_headers</span><span class="p">]</span>
+
+<span class="n">_image_headers</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="s">&#39;bufferLabel   &#39;</span><span class="p">,</span> <span class="s">&#39;First buffer label&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;trace         &#39;</span><span class="p">,</span> <span class="s">&#39;First buffer trace (TRUE), retrace (FALSE)&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;bufferUnit    &#39;</span><span class="p">,</span> <span class="s">&#39;First buffer unit&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;bufferRange   &#39;</span><span class="p">,</span> <span class="s">&#39;First buffer range (bufferUnit unit)&#39;</span><span class="p">))</span>
+<span class="n">_image_headers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">descr</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">descr</span> <span class="ow">in</span> <span class="n">_image_headers</span><span class="p">)</span>
+<span class="n">_image_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">hdr</span> <span class="ow">in</span> <span class="n">_image_headers</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

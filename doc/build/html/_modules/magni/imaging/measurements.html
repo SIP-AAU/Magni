@@ -1,0 +1,1516 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.imaging.measurements &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for magni.imaging.measurements</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">..</span>
+<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    All rights reserved.</span>
+<span class="sd">    See LICENSE.rst for further information.</span>
+
+<span class="sd">Module providing functions for constructing scan patterns for measurements.</span>
+
+<span class="sd">This module provides several pairs of scan pattern functions. The first</span>
+<span class="sd">function, named \*_sample_surface, is used for sampling a given surface. The</span>
+<span class="sd">second function, named \*_sample_image, is a wrapper that provides a</span>
+<span class="sd">pixel-oriented interface to the first function. In a addition to these pairs of</span>
+<span class="sd">scan pattern functions, the module provides auxillary functions that may be</span>
+<span class="sd">used to visualise the scan patterns.</span>
+
+<span class="sd">Routine listings</span>
+<span class="sd">----------------</span>
+<span class="sd">construct_measurement_matrix(coords, h, w)</span>
+<span class="sd">    Function for constructing a measurement matrix.</span>
+<span class="sd">plot_pattern(l, w, coords, mode, output_path=None)</span>
+<span class="sd">    Function for visualising a scan pattern.</span>
+<span class="sd">plot_pixel_mask(h, w, pixels, output_path=None)</span>
+<span class="sd">    Function for visualising a pixel mask obtained from a scan pattern.</span>
+<span class="sd">random_line_sample_image(h, w, scan_length, num_points, discrete=None,</span>
+<span class="sd">    seed=None)</span>
+<span class="sd">    Function for random line sampling an image.</span>
+<span class="sd">random_line_sample_surface(l, w, speed, sample_rate, time, discrete=None,</span>
+<span class="sd">    seed=None)</span>
+<span class="sd">    Function for random line sampling a surface.</span>
+<span class="sd">spiral_sample_image(h, w, scan_length, num_points)</span>
+<span class="sd">    Function for spiral sampling an image.</span>
+<span class="sd">spiral_sample_surface(l, w, speed, sample_rate, time)</span>
+<span class="sd">    Function for spiral sampling a surface.</span>
+<span class="sd">square_spiral_sample_image(h, w, scan_length, num_points)</span>
+<span class="sd">    Function for square spiral sampling an image.</span>
+<span class="sd">square_spiral_sample_surface(l, w, speed, sample_rate, time)</span>
+<span class="sd">    Function for square spiral sampling a surface.</span>
+<span class="sd">uniform_line_sample_image(h, w, scan_length, num_points)</span>
+<span class="sd">    Function for uniform line sampling an image.</span>
+<span class="sd">uniform_line_sample_surface(l, w, speed, sample_rate, time)</span>
+<span class="sd">    Function for uniform line sampling a surface.</span>
+<span class="sd">unique_pixels(coords)</span>
+<span class="sd">    Function for determining unique pixels from a set of coordinates.</span>
+
+<span class="sd">Notes</span>
+<span class="sd">-----</span>
+<span class="sd">In principle, most of the scan pattern related parameters need only be</span>
+<span class="sd">positive. However, it is assumed that the following requirements are fulfilled:</span>
+
+<span class="sd">:Minimum length of scan area: 1 nm</span>
+<span class="sd">:Minimum width of scan area: 1 nm</span>
+<span class="sd">:Minimum scan speed: 1 nm/s</span>
+<span class="sd">:Minimum sample_rate: 1 Hz</span>
+<span class="sd">:Minimum scan time: 1 s</span>
+<span class="sd">:Minimum scan length: 1 nm</span>
+<span class="sd">:Minimum number of scan points: 1</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">Sample a surface using a spiral pattern:</span>
+
+<span class="sd">&gt;&gt;&gt; from magni.imaging.measurements import spiral_sample_surface</span>
+<span class="sd">&gt;&gt;&gt; l = 13.0; w = 13.0; speed = 4.0; time = 27.0; sample_rate = 3.0;</span>
+<span class="sd">&gt;&gt;&gt; coords = spiral_sample_surface(l, w, speed, sample_rate, time)</span>
+
+<span class="sd">Display the resulting pattern:</span>
+
+<span class="sd">&gt;&gt;&gt; from magni.imaging.measurements import plot_pattern</span>
+<span class="sd">&gt;&gt;&gt; plot_pattern(l, w, coords, &#39;surface&#39;)</span>
+
+<span class="sd">Sample a 128x128 pixel image using random lines and a fixed seed:</span>
+
+<span class="sd">&gt;&gt;&gt; from magni.imaging.measurements import random_line_sample_image</span>
+<span class="sd">&gt;&gt;&gt; h = 128; w = 128; scan_length = 1000.0; num_points = 200; seed=6021;</span>
+<span class="sd">&gt;&gt;&gt; coords = random_line_sample_image(h, w, scan_length, num_points, seed=seed)</span>
+
+<span class="sd">Display the resulting pattern:</span>
+
+<span class="sd">&gt;&gt;&gt; plot_pattern(h, w, coords, &#39;image&#39;)</span>
+
+<span class="sd">Find the corresponding unique pixels and plot the pixel mask:</span>
+
+<span class="sd">&gt;&gt;&gt; from magni.imaging.measurements import unique_pixels, plot_pixel_mask</span>
+<span class="sd">&gt;&gt;&gt; unique_pixels = unique_pixels(coords)</span>
+<span class="sd">&gt;&gt;&gt; plot_pixel_mask(h, w, unique_pixels)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">imshow</span> <span class="k">as</span> <span class="n">_imshow</span>
+<span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="kn">import</span> <span class="n">Matrix</span> <span class="k">as</span> <span class="n">_Matrix</span>
+<span class="kn">from</span> <span class="nn">magni.utils</span> <span class="kn">import</span> <span class="n">plotting</span> <span class="k">as</span> <span class="n">_plotting</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
+
+<span class="c"># In principle most of the AFM-scanning related parameters should just be</span>
+<span class="c"># positive, however we have settled for:</span>
+<span class="n">_min_l</span> <span class="o">=</span> <span class="mf">1e-9</span>  <span class="c"># [m]</span>
+<span class="n">_min_w</span> <span class="o">=</span> <span class="mf">1e-9</span>  <span class="c"># [m]</span>
+<span class="n">_min_speed</span> <span class="o">=</span> <span class="mf">1e-9</span>  <span class="c"># [m/s]</span>
+<span class="n">_min_sample_rate</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c"># [Hz]</span>
+<span class="n">_min_time</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c"># [s]</span>
+<span class="n">_min_scan_length</span> <span class="o">=</span> <span class="mf">1e-9</span>  <span class="c"># [m]</span>
+<span class="n">_min_num_points</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># []</span>
+
+
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_construct_measurement_matrix</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `construct_measurement_matrix` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    construct_measurement_matrix : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+<span class="sd">    magni.utils.validation.validate_ndarray : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="s">&#39;coords&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="construct_measurement_matrix"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.construct_measurement_matrix">[docs]</a><span class="k">def</span> <span class="nf">construct_measurement_matrix</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a measurement matrix extracting the specified measurements.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The `k` floating point coordinates arranged into a 2D array where each</span>
+<span class="sd">        row is a coordinate pair (x, y), such that `coords` has size `k` x 2.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Phi : magni.utils.matrices.Matrix</span>
+<span class="sd">        The constructed measurement matrix.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.utils.matrices.Matrix : The matrix emulator class.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The function construct two functions: one for extracting pixels at the</span>
+<span class="sd">    coordinates specified and one for the transposed operation. These functions</span>
+<span class="sd">    are then wrapped by a matrix emulator which is returned.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Create a dummy 5 by 5 pixel image and an example sampling pattern:</span>
+
+<span class="sd">    &gt;&gt;&gt; img = np.arange(25, dtype=np.float).reshape(5, 5)</span>
+<span class="sd">    &gt;&gt;&gt; vec = magni.imaging.mat2vec(img)</span>
+<span class="sd">    &gt;&gt;&gt; coords = magni.imaging.measurements.uniform_line_sample_image(</span>
+<span class="sd">    ...              5, 5, 16., 17)</span>
+
+<span class="sd">    Sample the image in the ordinary way:</span>
+
+<span class="sd">    &gt;&gt;&gt; unique = magni.imaging.measurements.unique_pixels(coords)</span>
+<span class="sd">    &gt;&gt;&gt; samples_normal = img[unique[:, 1], unique[:, 0]]</span>
+<span class="sd">    &gt;&gt;&gt; samples_normal = samples_normal.reshape((len(unique), 1))</span>
+
+<span class="sd">    Sample the image using the present function:</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import construct_measurement_matrix</span>
+<span class="sd">    &gt;&gt;&gt; matrix = construct_measurement_matrix(coords, *img.shape)</span>
+<span class="sd">    &gt;&gt;&gt; samples_matrix = matrix.dot(vec)</span>
+
+<span class="sd">    Check that the two ways produce the same result:</span>
+
+<span class="sd">    &gt;&gt;&gt; np.allclose(samples_matrix, samples_normal)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_construct_measurement_matrix</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span> <span class="o">+</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">measure</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">vec</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">measure_T</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span>
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="k">return</span> <span class="n">_Matrix</span><span class="p">(</span><span class="n">measure</span><span class="p">,</span> <span class="n">measure_T</span><span class="p">,</span> <span class="p">[],</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">h</span> <span class="o">*</span> <span class="n">w</span><span class="p">))</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_plot_pattern</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `plot_pattern` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    plot_pattern : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="s">&#39;mode&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s">&#39;val_in&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;surface&#39;</span><span class="p">,</span> <span class="s">&#39;image&#39;</span><span class="p">}})</span>
+    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="s">&#39;coords&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;subdtype&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">,</span> <span class="s">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s">&#39;output_path&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">},</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;coords.shape[1] must be 2.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;surface&#39;</span><span class="p">:</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s">&#39;l&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_l</span><span class="p">})</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_w</span><span class="p">})</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;image&#39;</span><span class="p">:</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s">&#39;l&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+        <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="plot_pattern"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.plot_pattern">[docs]</a><span class="k">def</span> <span class="nf">plot_pattern</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display a plot that shows the pattern given by a set of coordinates.</span>
+
+<span class="sd">    The pattern given by the `coords` is displayed on an `w` x `l` area. If</span>
+<span class="sd">    `mode` is &#39;surface&#39;, `l` and `w` are regarded as measured in meters. If</span>
+<span class="sd">    `mode` is &#39;image&#39;, `l` and `w` are regarded as measured in pixels. The</span>
+<span class="sd">    `coords` are marked by filled circles and connected by straight dashed</span>
+<span class="sd">    lines.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l : float or int</span>
+<span class="sd">        The length/height of the area. If `mode` is &#39;surface&#39;, it must be a</span>
+<span class="sd">        float. If `mode` is &#39;image&#39;, it must be an integer.</span>
+<span class="sd">    w : float or int</span>
+<span class="sd">        The width of the area. If `mode` is &#39;surface&#39;, it must be a</span>
+<span class="sd">        float. If `mode` is &#39;image&#39;, it must be an integer.</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The 2D array of pixels that make up the mask. Each row is a coordinate</span>
+<span class="sd">        pair (x, y).</span>
+<span class="sd">    mode : {&#39;surface&#39;, &#39;image&#39;}</span>
+<span class="sd">        The display mode that dertermines the axis labeling and the type of `l`</span>
+<span class="sd">        and `w`.</span>
+<span class="sd">    output_path : str, optional</span>
+<span class="sd">        Path (including file type extension) under which the plot is saved (the</span>
+<span class="sd">        default value is None which implies, that the plot is not saved).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The resulting plot is displayed in a figure using `matplotlib`&#39;s</span>
+<span class="sd">    `pyplot.plot`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import plot_pattern</span>
+<span class="sd">    &gt;&gt;&gt; l = 3</span>
+<span class="sd">    &gt;&gt;&gt; w = 3</span>
+<span class="sd">    &gt;&gt;&gt; coords = np.array([[0, 0], [1, 1], [2, 1]], dtype=np.float)</span>
+<span class="sd">    &gt;&gt;&gt; mode = &#39;image&#39;</span>
+<span class="sd">    &gt;&gt;&gt; plot_pattern(l, w, coords, mode)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_plot_pattern</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">output_path</span><span class="p">)</span>
+
+    <span class="n">fs</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">([</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">]))</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">/</span> <span class="mi">10</span>
+    <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">({</span><span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">l</span> <span class="o">/</span> <span class="n">fs</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)}})</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+              <span class="n">marker</span><span class="o">=</span><span class="n">_plotting</span><span class="o">.</span><span class="n">markers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+              <span class="n">ls</span><span class="o">=</span><span class="n">_plotting</span><span class="o">.</span><span class="n">linestyles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+              <span class="n">ms</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">])</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">l</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s">&#39;top&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s">&#39;equal&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;surface&#39;</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;width [m]&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;length [m]&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">ticklabel_format</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s">&#39;sci&#39;</span><span class="p">,</span> <span class="n">scilimits</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="c"># Fix position of exponential multipliers in scientific notation</span>
+        <span class="n">exp_texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
+                     <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">vert_aligns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;bottom&#39;</span><span class="p">,</span> <span class="s">&#39;center&#39;</span><span class="p">]</span>
+        <span class="n">hori_aligns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="s">&#39;right&#39;</span><span class="p">]</span>
+        <span class="n">xy_texts</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">35</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+        <span class="n">xys</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+        <span class="n">annos</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">exp_texts</span><span class="p">):</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">annos</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">xys</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">xytext</span><span class="o">=</span><span class="n">xy_texts</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                                     <span class="n">xycoords</span><span class="o">=</span><span class="s">&#39;axes fraction&#39;</span><span class="p">,</span>
+                                     <span class="n">textcoords</span><span class="o">=</span><span class="s">&#39;offset points&#39;</span><span class="p">,</span>
+                                     <span class="n">va</span><span class="o">=</span><span class="n">vert_aligns</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">ha</span><span class="o">=</span><span class="n">hori_aligns</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span>
+            <span class="s">&#39;draw_event&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">annos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+                <span class="n">exp_texts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">()))</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span>
+            <span class="s">&#39;draw_event&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">annos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+                <span class="n">exp_texts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">()))</span>
+
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;image&#39;</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;width [pixels]&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;height [pixels]&#39;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_plot_pixel_mask</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pixels</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `plot_pixel_mask` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    plot_pixel_mask : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">pixels</span><span class="p">,</span> <span class="s">&#39;pixels&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;subdtype&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="s">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s">&#39;output_path&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">},</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pixels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;pixels.shape[1] must be 2.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pixels</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;All pixel coordinates must be non-negative.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pixels</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">w</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Pixel x-coordinates must not exceed pixel width.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pixels</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Pixel y-coordinates must not exceed pixel heigth.&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="plot_pixel_mask"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.plot_pixel_mask">[docs]</a><span class="k">def</span> <span class="nf">plot_pixel_mask</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pixels</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display a binary image that shows the given pixel mask.</span>
+
+<span class="sd">    A black image with `w` x `h` pixels is created and the `pixels` are marked</span>
+<span class="sd">    with white.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h : int</span>
+<span class="sd">        The height of the image in pixels.</span>
+<span class="sd">    w : int</span>
+<span class="sd">        The width of the image in pixels.</span>
+<span class="sd">    pixels : ndarray</span>
+<span class="sd">        The 2D array of pixels that make up the mask. Each row is a coordinate</span>
+<span class="sd">        pair (x, y), such that `coords` has size len(`pixels`) x 2.</span>
+<span class="sd">    output_path : str, optional</span>
+<span class="sd">        Path (including file type extension) under which the plot is saved (the</span>
+<span class="sd">        default value is None which implies, that the plot is not saved).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The resulting image is displayed in a figure using</span>
+<span class="sd">    `magni.imaging.visualisation.imshow`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import plot_pixel_mask</span>
+<span class="sd">    &gt;&gt;&gt; h = 3</span>
+<span class="sd">    &gt;&gt;&gt; w = 3</span>
+<span class="sd">    &gt;&gt;&gt; pixels = np.array([[0, 0], [1, 1], [2, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; plot_pixel_mask(h, w, pixels)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_plot_pixel_mask</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pixels</span><span class="p">,</span> <span class="n">output_path</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+    <span class="n">mask</span><span class="p">[</span><span class="n">pixels</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pixels</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">fs</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">([</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">]))</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">/</span> <span class="mi">10</span>
+    <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">({</span><span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span> <span class="o">/</span> <span class="n">fs</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)}},</span>
+                               <span class="n">cmap</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">)</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">_imshow</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">show_axis</span><span class="o">=</span><span class="s">&#39;top&#39;</span><span class="p">)</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;width [pixels]&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;height [pixels]&#39;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_random_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">discrete</span><span class="p">,</span>
+                                       <span class="n">seed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `random_line_sample_image` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    random_line_sample_image : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">scan_length</span><span class="p">,</span> <span class="s">&#39;scan_length&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                           <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_scan_length</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">num_points</span><span class="p">,</span> <span class="s">&#39;num_points&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_num_points</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">discrete</span><span class="p">,</span> <span class="s">&#39;discrete&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+              <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="s">&#39;seed&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="random_line_sample_image"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.random_line_sample_image">[docs]</a><span class="k">def</span> <span class="nf">random_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                             <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample an image using a set of random straight lines.</span>
+
+<span class="sd">    The coordinates (in units of pixels) resulting from sampling an image of</span>
+<span class="sd">    size `h` times `w` using a pattern based on a set of random straight lines</span>
+<span class="sd">    are determined. The `scan_length` determines the length of the path scanned</span>
+<span class="sd">    whereas `num_points` indicates the number of samples taken on that path. If</span>
+<span class="sd">    `discrete` is set, it specifies the finite number of equally spaced lines</span>
+<span class="sd">    from which the scan lines are be chosen at random. For reproducible</span>
+<span class="sd">    results, the `seed` may be used to specify a fixed seed of the random</span>
+<span class="sd">    number generator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h : int</span>
+<span class="sd">        The height of the area to scan in units of pixels.</span>
+<span class="sd">    w : int</span>
+<span class="sd">        The width of the area to scan in units of pixels.</span>
+<span class="sd">    scan_length : float</span>
+<span class="sd">        The length of the path to scan in units of pixels.</span>
+<span class="sd">    num_points : int</span>
+<span class="sd">        The number of samples to take on the scanned path.</span>
+<span class="sd">    discrete : int or None, optional</span>
+<span class="sd">        The number of equally spaced lines from which the scan lines are chosen</span>
+<span class="sd">        (the default is None, which implies that no discritisation is used).</span>
+<span class="sd">    seed : int or None, optional</span>
+<span class="sd">        The seed used for the random number generator (the defaul is None,</span>
+<span class="sd">        which implies that the random number generator is not seeded).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The coordinates of the samples arranged into a 2D array, such that each</span>
+<span class="sd">        row is a coordinate pair (x, y).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The orientation of the coordinate system is such that the width `w` is</span>
+<span class="sd">    measured along the x-axis whereas the height `h` is measured along the</span>
+<span class="sd">    y-axis.</span>
+
+<span class="sd">    Each of the scanned lines span the entire width of the image with the</span>
+<span class="sd">    exception of the last line that may only be partially scanned if the</span>
+<span class="sd">    `scan_length` implies this. The top and bottom lines of the image are</span>
+<span class="sd">    always included in the scan.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import random_line_sample_image</span>
+<span class="sd">    &gt;&gt;&gt; h = 10</span>
+<span class="sd">    &gt;&gt;&gt; w = 10</span>
+<span class="sd">    &gt;&gt;&gt; scan_length = 50.0</span>
+<span class="sd">    &gt;&gt;&gt; num_points = 12</span>
+<span class="sd">    &gt;&gt;&gt; seed = 6021</span>
+<span class="sd">    &gt;&gt;&gt; random_line_sample_image(h, w, scan_length, num_points, seed=seed)</span>
+<span class="sd">    array([[ 0.5       ,  0.5       ],</span>
+<span class="sd">           [ 5.04545455,  0.5       ],</span>
+<span class="sd">           [ 9.5       ,  0.59090909],</span>
+<span class="sd">           [ 5.65110302,  1.28746666],</span>
+<span class="sd">           [ 1.10564847,  1.28746666],</span>
+<span class="sd">           [ 0.5       ,  5.22727273],</span>
+<span class="sd">           [ 3.29121172,  6.98151556],</span>
+<span class="sd">           [ 7.83666626,  6.98151556],</span>
+<span class="sd">           [ 7.23606783,  7.59970419],</span>
+<span class="sd">           [ 2.69061328,  7.59970419],</span>
+<span class="sd">           [ 0.95454545,  9.5       ],</span>
+<span class="sd">           [ 5.5       ,  9.5       ]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_random_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">discrete</span><span class="p">,</span>
+                                       <span class="n">seed</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">random_line_sample_surface</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                                        <span class="n">scan_length</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_points</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                                        <span class="mf">1.0</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="n">discrete</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">+</span> <span class="mf">0.5</span>
+
+    <span class="k">return</span> <span class="n">coords</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_random_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span>
+                                         <span class="n">discrete</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `random_line_sample_surface` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    random_line_sample_surface : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s">&#39;l&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_l</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_w</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="s">&#39;speed&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_speed</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">sample_rate</span><span class="p">,</span> <span class="s">&#39;sample_rate&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                           <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_sample_rate</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_time</span><span class="p">})</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">discrete</span><span class="p">,</span> <span class="s">&#39;discrete&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+              <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="s">&#39;seed&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="n">time</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">w</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="n">w</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c"># Estimated number of lines in addition to top and bottom lines must</span>
+        <span class="c"># exceed -1 to avoid drawing a negative number of lines at random.</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;(speed * time - 2 * w - l) / w must exceed -1.&#39;</span> <span class="o">+</span>
+                         <span class="s">&#39;The current value is {!r}.&#39;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">speed</span> <span class="o">*</span> <span class="n">time</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">w</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="n">w</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="random_line_sample_surface"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.random_line_sample_surface">[docs]</a><span class="k">def</span> <span class="nf">random_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                               <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample a surface area using a set of random straight lines.</span>
+
+<span class="sd">    The coordinates (in units of meters) resulting from sampling an image of</span>
+<span class="sd">    size `l` times `w` using a pattern based on a set of random straight lines</span>
+<span class="sd">    are determined.  The scanned path is determined from the probe `speed` and</span>
+<span class="sd">    the scan `time`. If `discrete` is set, it specifies the finite number of</span>
+<span class="sd">    equally spaced lines from which the scan lines are be chosen at random.</span>
+<span class="sd">    For reproducible results, the `seed` may be used to specify a fixed seed of</span>
+<span class="sd">    the random number generator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l : float</span>
+<span class="sd">        The length of the area to scan in units of meters.</span>
+<span class="sd">    w : float</span>
+<span class="sd">        The width of the area to scan in units of meters.</span>
+<span class="sd">    speed : float</span>
+<span class="sd">        The probe speed in units of meters/second.</span>
+<span class="sd">    sample_rate : float</span>
+<span class="sd">        The sample rate in units of Hertz.</span>
+<span class="sd">    time : float</span>
+<span class="sd">        The scan time in units of seconds.</span>
+<span class="sd">    discrete : int or None, optional</span>
+<span class="sd">        The number of equally spaced lines from which the scan lines are chosen</span>
+<span class="sd">        (the default is None, which implies that no discritisation is used).</span>
+<span class="sd">    seed : int or None, optional</span>
+<span class="sd">        The seed used for the random number generator (the defaul is None,</span>
+<span class="sd">        which implies that the random number generator is not seeded).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The coordinates of the samples arranged into a 2D array, such that each</span>
+<span class="sd">        row is a coordinate pair (x, y).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The orientation of the coordinate system is such that the width `w` is</span>
+<span class="sd">    measured along the x-axis whereas the length `l` is measured along the</span>
+<span class="sd">    y-axis.</span>
+
+<span class="sd">    Each of the scanned lines span the entire width of the image with the</span>
+<span class="sd">    exception of the last line that may only be partially scanned if the</span>
+<span class="sd">    `speed` and `time` implies this. The top and bottom lines of the image are</span>
+<span class="sd">    always included in the scan and are not included in the `discrete` number</span>
+<span class="sd">    of lines.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import random_line_sample_surface</span>
+<span class="sd">    &gt;&gt;&gt; l = 2e-6</span>
+<span class="sd">    &gt;&gt;&gt; w = 2e-6</span>
+<span class="sd">    &gt;&gt;&gt; speed = 7e-7</span>
+<span class="sd">    &gt;&gt;&gt; sample_rate = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; time = 12.0</span>
+<span class="sd">    &gt;&gt;&gt; seed = 6021</span>
+<span class="sd">    &gt;&gt;&gt; random_line_sample_surface(l, w, speed, sample_rate, time, seed=seed)</span>
+<span class="sd">    array([[  0.00000000e+00,   0.00000000e+00],</span>
+<span class="sd">           [  7.00000000e-07,   0.00000000e+00],</span>
+<span class="sd">           [  1.40000000e-06,   0.00000000e+00],</span>
+<span class="sd">           [  2.00000000e-06,   1.00000000e-07],</span>
+<span class="sd">           [  1.37499259e-06,   1.74992590e-07],</span>
+<span class="sd">           [  6.74992590e-07,   1.74992590e-07],</span>
+<span class="sd">           [  0.00000000e+00,   2.00000000e-07],</span>
+<span class="sd">           [  0.00000000e+00,   9.00000000e-07],</span>
+<span class="sd">           [  2.22879572e-08,   1.57771204e-06],</span>
+<span class="sd">           [  7.22287957e-07,   1.57771204e-06],</span>
+<span class="sd">           [  1.42228796e-06,   1.57771204e-06],</span>
+<span class="sd">           [  2.00000000e-06,   1.70000000e-06],</span>
+<span class="sd">           [  1.60000000e-06,   2.00000000e-06]])</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_random_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span>
+                                         <span class="n">discrete</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">time</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">scan_length</span> <span class="o">=</span> <span class="n">speed</span> <span class="o">*</span> <span class="n">time</span>
+    <span class="n">sample_dist</span> <span class="o">=</span> <span class="n">scan_length</span> <span class="o">/</span> <span class="p">(</span><span class="n">samples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">lines_scan_length</span> <span class="o">=</span> <span class="n">scan_length</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">w</span> <span class="o">-</span> <span class="n">l</span>
+    <span class="n">num_lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">lines_scan_length</span> <span class="o">/</span> <span class="n">w</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_lines</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+    <span class="k">if</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">num_lines</span><span class="p">)</span> <span class="o">*</span> <span class="n">l</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">possible_lines</span> <span class="o">=</span> <span class="n">l</span> <span class="o">/</span> <span class="p">(</span><span class="n">discrete</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">discrete</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">possible_lines</span><span class="p">,</span>
+                                                   <span class="n">size</span><span class="o">=</span><span class="n">num_lines</span><span class="p">,</span>
+                                                   <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The number of Discrete lines must be large &#39;</span> <span class="o">+</span>
+                             <span class="s">&#39;enough to contain the entire scan path. With &#39;</span> <span class="o">+</span>
+                             <span class="s">&#39;the current settings, a minimun of &#39;</span>
+                             <span class="s">&#39;{!r} lines are required.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_lines</span><span class="p">))</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">_get_line_scan_coords</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">sample_dist</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coords</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `spiral_sample_image` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    spiral_sample_image : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">h</span> <span class="o">!=</span> <span class="n">w</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;h must equal w for an archimedian spiral to make &#39;</span> <span class="o">+</span>
+                         <span class="s">&#39;sense.&#39;</span><span class="p">)</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">scan_length</span><span class="p">,</span> <span class="s">&#39;scan_length&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                           <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_scan_length</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">num_points</span><span class="p">,</span> <span class="s">&#39;num_points&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_num_points</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="spiral_sample_image"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.spiral_sample_image">[docs]</a><span class="k">def</span> <span class="nf">spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample an image using an archimedean spiral pattern.</span>
+
+<span class="sd">    The coordinates (in units of pixels) resulting from sampling an image of</span>
+<span class="sd">    size `h` times `w` using an archimedean spiral pattern are determined. The</span>
+<span class="sd">    `scan_length` determines the length of the path scanned whereas</span>
+<span class="sd">    `num_points` indicates the number of samples taken on that path.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h : int</span>
+<span class="sd">        The height of the area to scan in units of pixels.</span>
+<span class="sd">    w : int</span>
+<span class="sd">        The width of the area to scan in units of pixels.</span>
+<span class="sd">    scan_length : float</span>
+<span class="sd">        The length of the path to scan in units of pixels.</span>
+<span class="sd">    num_points : int</span>
+<span class="sd">        The number of samples to take on the scanned path.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The coordinates of the samples arranged into a 2D array, such that each</span>
+<span class="sd">        row is a coordinate pair (x, y).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The orientation of the coordinate system is such that the width `w` is</span>
+<span class="sd">    measured along the x-axis whereas the height `h` is measured along the</span>
+<span class="sd">    y-axis. The width must equal the height for an archimedian spiral to make</span>
+<span class="sd">    sense.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import spiral_sample_image</span>
+<span class="sd">    &gt;&gt;&gt; h = 10</span>
+<span class="sd">    &gt;&gt;&gt; w = 10</span>
+<span class="sd">    &gt;&gt;&gt; scan_length = 50.0</span>
+<span class="sd">    &gt;&gt;&gt; num_points = 12</span>
+<span class="sd">    &gt;&gt;&gt; spiral_sample_image(h, w, scan_length, num_points)</span>
+<span class="sd">    array([[ 6.28776846,  5.17074073],</span>
+<span class="sd">           [ 3.13304898,  5.24133767],</span>
+<span class="sd">           [ 6.07293751,  2.93873701],</span>
+<span class="sd">           [ 6.99638041,  6.80851189],</span>
+<span class="sd">           [ 2.89868434,  7.16724999],</span>
+<span class="sd">           [ 2.35773914,  3.00320067],</span>
+<span class="sd">           [ 6.41495385,  1.71018152],</span>
+<span class="sd">           [ 8.82168896,  5.27557847],</span>
+<span class="sd">           [ 6.34932919,  8.83624957],</span>
+<span class="sd">           [ 2.04885699,  8.11199373],</span>
+<span class="sd">           [ 0.6196052 ,  3.96939755]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">spiral_sample_surface</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                                   <span class="n">scan_length</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_points</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">+</span> <span class="mf">0.5</span>
+
+    <span class="k">return</span> <span class="n">coords</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `spiral_sample_surface` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    spiral_sample_surface : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s">&#39;l&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_l</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_w</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span> <span class="n">w</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;l must equal w for an archimedian sprial to make&#39;</span> <span class="o">+</span>
+                         <span class="s">&#39;sense.&#39;</span><span class="p">)</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="s">&#39;speed&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_speed</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">sample_rate</span><span class="p">,</span> <span class="s">&#39;sample_rate&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                           <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_sample_rate</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_time</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="spiral_sample_surface"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.spiral_sample_surface">[docs]</a><span class="k">def</span> <span class="nf">spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample a surface area using an archimedean spiral pattern.</span>
+
+<span class="sd">    The coordinates (in units of meters) resulting from sampling an area of</span>
+<span class="sd">    size `l` times `w` using an archimedean spiral pattern are determined. The</span>
+<span class="sd">    scanned path is determined from the probe `speed` and the scan `time`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l : float</span>
+<span class="sd">        The length of the area to scan in units of meters.</span>
+<span class="sd">    w : float</span>
+<span class="sd">        The width of the area to scan in units of meters.</span>
+<span class="sd">    speed : float</span>
+<span class="sd">        The probe speed in units of meters/second.</span>
+<span class="sd">    sample_rate : float</span>
+<span class="sd">        The sample rate in units of Hertz.</span>
+<span class="sd">    time : float</span>
+<span class="sd">        The scan time in units of seconds.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The coordinates of the samples arranged into a 2D array, such that each</span>
+<span class="sd">        row is a coordinate pair (x, y).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The orientation of the coordinate system is such that the width `w` is</span>
+<span class="sd">    measured along the x-axis whereas the length `l` is measured along the</span>
+<span class="sd">    y-axis. The width must equal the length for an archimedian sprial to make</span>
+<span class="sd">    sense.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import spiral_sample_surface</span>
+<span class="sd">    &gt;&gt;&gt; l = 1e-6</span>
+<span class="sd">    &gt;&gt;&gt; w = 1e-6</span>
+<span class="sd">    &gt;&gt;&gt; speed = 7e-7</span>
+<span class="sd">    &gt;&gt;&gt; sample_rate = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; time = 12.0</span>
+<span class="sd">    &gt;&gt;&gt; spiral_sample_surface(l, w, speed, sample_rate, time)</span>
+<span class="sd">    array([[  3.61074393e-07,   4.60846340e-07],</span>
+<span class="sd">           [  5.16981905e-07,   7.08474495e-07],</span>
+<span class="sd">           [  5.18627260e-07,   2.42473901e-07],</span>
+<span class="sd">           [  5.90470818e-07,   7.85303986e-07],</span>
+<span class="sd">           [  2.13777354e-07,   3.25138348e-07],</span>
+<span class="sd">           [  8.38392713e-07,   3.55407335e-07],</span>
+<span class="sd">           [  4.85640136e-07,   8.97652018e-07],</span>
+<span class="sd">           [  9.79367276e-08,   3.60017412e-07],</span>
+<span class="sd">           [  7.24145327e-07,   1.07666546e-07],</span>
+<span class="sd">           [  8.91388500e-07,   7.71842556e-07],</span>
+<span class="sd">           [  2.12224761e-07,   9.08883127e-07]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
+
+    <span class="n">sample_period</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sample_rate</span>
+    <span class="n">r_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">pitch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r_end</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="n">time</span><span class="p">)</span>
+
+    <span class="c"># Starting at t=0 yields a divide-by-zero problem. Therefore we start the</span>
+    <span class="c"># spiral at t=sample-period</span>
+    <span class="n">sample_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">sample_period</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">sample_rate</span> <span class="o">*</span> <span class="n">time</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pitch</span> <span class="o">*</span> <span class="n">speed</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sample_times</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">speed</span> <span class="o">*</span> <span class="n">sample_times</span> <span class="o">/</span> <span class="n">pitch</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">sample_times</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="c"># FIXME: This simple stretch yields a non-constant linear speed, which</span>
+    <span class="c"># clashes with the idea of the current interface to all sample methods.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    if w &gt; l:</span>
+<span class="sd">        coords[:, 0] = coords[:, 0] * w / l</span>
+<span class="sd">    else:</span>
+<span class="sd">        coords[:, 1] = coords[:, 1] * l / w</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">l</span> <span class="o">/</span> <span class="mi">2</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">coords</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_square_spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `square_spiral_sample_image` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    square_spiral_sample_image : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">scan_length</span><span class="p">,</span> <span class="s">&#39;scan_length&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                           <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_scan_length</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">num_points</span><span class="p">,</span> <span class="s">&#39;num_points&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_num_points</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="square_spiral_sample_image"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.square_spiral_sample_image">[docs]</a><span class="k">def</span> <span class="nf">square_spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample an image using a square spiral pattern.</span>
+
+<span class="sd">    The coordinates (in units of pixels) resulting from sampling an image of</span>
+<span class="sd">    size `h` times `w` using a square spiral pattern are determined. The</span>
+<span class="sd">    `scan_length` determines the length of the path scanned whereas</span>
+<span class="sd">    `num_points` indicates the number of samples taken on that path.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h : int</span>
+<span class="sd">        The height of the area to scan in units of pixels.</span>
+<span class="sd">    w : int</span>
+<span class="sd">        The width of the area to scan in units of pixels.</span>
+<span class="sd">    scan_length : float</span>
+<span class="sd">        The length of the path to scan in units of pixels.</span>
+<span class="sd">    num_points : int</span>
+<span class="sd">        The number of samples to take on the scanned path.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The coordinates of the samples arranged into a 2D array, such that each</span>
+<span class="sd">        row is a coordinate pair (x, y).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The orientation of the coordinate system is such that the width `w` is</span>
+<span class="sd">    measured along the x-axis whereas the height `h` is measured along the</span>
+<span class="sd">    y-axis.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import square_spiral_sample_image</span>
+<span class="sd">    &gt;&gt;&gt; h = 10</span>
+<span class="sd">    &gt;&gt;&gt; w = 10</span>
+<span class="sd">    &gt;&gt;&gt; scan_length = 50.0</span>
+<span class="sd">    &gt;&gt;&gt; num_points = 12</span>
+<span class="sd">    &gt;&gt;&gt; square_spiral_sample_image(h, w, scan_length, num_points)</span>
+<span class="sd">    array([[ 5.        ,  5.        ],</span>
+<span class="sd">           [ 6.28571429,  5.97619048],</span>
+<span class="sd">           [ 4.38095238,  3.71428571],</span>
+<span class="sd">           [ 2.42857143,  5.92857143],</span>
+<span class="sd">           [ 4.95238095,  7.57142857],</span>
+<span class="sd">           [ 7.57142857,  6.02380952],</span>
+<span class="sd">           [ 7.        ,  2.42857143],</span>
+<span class="sd">           [ 2.83333333,  2.42857143],</span>
+<span class="sd">           [ 1.14285714,  4.9047619 ],</span>
+<span class="sd">           [ 1.35714286,  8.85714286],</span>
+<span class="sd">           [ 5.52380952,  8.85714286],</span>
+<span class="sd">           [ 8.85714286,  8.02380952]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_square_spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">square_spiral_sample_surface</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                                          <span class="n">scan_length</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_points</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">+</span> <span class="mf">0.5</span>
+
+    <span class="k">return</span> <span class="n">coords</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_square_spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `square_spiral_sample_surface` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    square_spiral_sample_surface : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s">&#39;l&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_l</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_w</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="s">&#39;speed&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_speed</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">sample_rate</span><span class="p">,</span> <span class="s">&#39;sample_rate&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                           <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_sample_rate</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_time</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="square_spiral_sample_surface"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.square_spiral_sample_surface">[docs]</a><span class="k">def</span> <span class="nf">square_spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample a surface area using a square spiral pattern.</span>
+
+<span class="sd">    The coordinates (in units of meters) resulting from sampling an area of</span>
+<span class="sd">    size `l` times `w` using a square spiral pattern are determined. The</span>
+<span class="sd">    scanned path is determined from the probe `speed` and the scan `time`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l : float</span>
+<span class="sd">        The length of the area to scan in units of meters.</span>
+<span class="sd">    w : float</span>
+<span class="sd">        The width of the area to scan in units of meters.</span>
+<span class="sd">    speed : float</span>
+<span class="sd">        The probe speed in units of meters/second.</span>
+<span class="sd">    sample_rate : float</span>
+<span class="sd">        The sample rate in units of Hertz.</span>
+<span class="sd">    time : float</span>
+<span class="sd">        The scan time in units of seconds.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The coordinates of the samples arranged into a 2D array, such that each</span>
+<span class="sd">        row is a coordinate pair (x, y).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The orientation of the coordinate system is such that the width `w` is</span>
+<span class="sd">    measured along the x-axis whereas the length `l` is measured along the</span>
+<span class="sd">    y-axis.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import square_spiral_sample_surface</span>
+<span class="sd">    &gt;&gt;&gt; l = 1e-6</span>
+<span class="sd">    &gt;&gt;&gt; w = 1e-6</span>
+<span class="sd">    &gt;&gt;&gt; speed = 7e-7</span>
+<span class="sd">    &gt;&gt;&gt; sample_rate = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; time = 12.0</span>
+<span class="sd">    &gt;&gt;&gt; square_spiral_sample_surface(l, w, speed, sample_rate, time)</span>
+<span class="sd">    array([[  5.00000000e-07,   5.00000000e-07],</span>
+<span class="sd">           [  4.00000000e-07,   4.00000000e-07],</span>
+<span class="sd">           [  6.00000000e-07,   7.00000000e-07],</span>
+<span class="sd">           [  5.00000000e-07,   3.00000000e-07],</span>
+<span class="sd">           [  2.00000000e-07,   7.00000000e-07],</span>
+<span class="sd">           [  8.00000000e-07,   7.00000000e-07],</span>
+<span class="sd">           [  6.00000000e-07,   2.00000000e-07],</span>
+<span class="sd">           [  1.00000000e-07,   4.00000000e-07],</span>
+<span class="sd">           [  3.00000000e-07,   9.00000000e-07],</span>
+<span class="sd">           [  9.00000000e-07,   8.00000000e-07],</span>
+<span class="sd">           [  9.00000000e-07,   1.00000000e-07],</span>
+<span class="sd">           [  2.00000000e-07,   1.00000000e-07]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_square_spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">time</span><span class="p">)</span>
+    <span class="n">scan_length</span> <span class="o">=</span> <span class="n">speed</span> <span class="o">*</span> <span class="n">time</span>
+    <span class="n">sample_dist</span> <span class="o">=</span> <span class="n">scan_length</span> <span class="o">/</span> <span class="n">samples</span>
+    <span class="n">min_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">])</span>
+    <span class="n">delta_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="c"># Determine number of rotations and length of line segments in spiral</span>
+    <span class="n">roots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">polyroots</span><span class="p">(</span>
+        <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">scan_length</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">delta_dist</span><span class="p">),</span>
+         <span class="n">min_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">delta_dist</span> <span class="o">-</span> <span class="n">scan_length</span><span class="p">,</span>
+         <span class="n">min_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">delta_dist</span><span class="p">])</span>  <span class="c"># [c, b, a] in ax^2 + bx + c = 0</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">roots</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>  <span class="c"># scan_length ~= (1+1+2+2+..+N+N) * line_length</span>
+    <span class="n">line_len</span> <span class="o">=</span> <span class="n">min_size</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c"># Start spiral at (0, 0); later shift its position</span>
+    <span class="n">directions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]])</span>  <span class="c"># -x, +y, +x, -y</span>
+    <span class="n">direction_num</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># Start spiral by a horisontal line to the left</span>
+
+    <span class="c"># Handle possibly non-square sampling area</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">delta_dist</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">w</span> <span class="o">&gt;</span> <span class="n">l</span><span class="p">,</span> <span class="n">w</span> <span class="o">&lt;</span> <span class="n">l</span><span class="p">])</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># n \in (range(N) + 1)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># k = 0 &lt;-&gt; horisontal line segment; k = 1 &lt;-&gt; vertical line segment</span>
+    <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+        <span class="c"># Mark coordinates</span>
+        <span class="n">coords</span><span class="p">[</span><span class="n">sample</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">position</span>
+
+        <span class="c"># Update position</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">directions</span><span class="p">[</span><span class="n">direction_num</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">sample_dist</span>
+
+        <span class="c"># Handle corners</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">line_len</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+            <span class="c"># Fix overshoot from last iteration</span>
+            <span class="n">wrap_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">-</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">line_len</span> <span class="o">+</span>
+                                               <span class="n">delta</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="n">position</span> <span class="o">-</span> <span class="n">directions</span><span class="p">[</span><span class="n">direction_num</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">wrap_dist</span>
+
+            <span class="c"># Find offset if several corners are involved</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">wrap_dist</span> <span class="o">&gt;</span> <span class="n">n</span> <span class="o">*</span> <span class="n">line_len</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">delta</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="n">wrap_dist</span> <span class="o">=</span> <span class="n">wrap_dist</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">line_len</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">delta</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">direction_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">direction_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">direction_num</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="p">((</span><span class="n">n</span> <span class="o">*</span> <span class="n">line_len</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">delta</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">*</span>
+                                   <span class="n">directions</span><span class="p">[</span><span class="n">direction_num</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">direction_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">direction_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">direction_num</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="n">position</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">offset</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">directions</span><span class="p">[</span><span class="n">direction_num</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">wrap_dist</span>
+
+    <span class="c"># Shift to center of region</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">l</span> <span class="o">/</span> <span class="mi">2</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">coords</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_uniform_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `uniform_line_sample_image` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    uniform_line_sample_image : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">scan_length</span><span class="p">,</span> <span class="s">&#39;scan_length&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                           <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_scan_length</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">num_points</span><span class="p">,</span> <span class="s">&#39;num_points&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_num_points</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="uniform_line_sample_image"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.uniform_line_sample_image">[docs]</a><span class="k">def</span> <span class="nf">uniform_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample an image using a set of uniformly distributed straight lines.</span>
+
+<span class="sd">    The coordinates (in units of pixels) resulting from sampling an image of</span>
+<span class="sd">    size `h` times `w` using a pattern based on a set of uniformly distributed</span>
+<span class="sd">    straight lines are determined. The `scan_length` determines the length of</span>
+<span class="sd">    the path scanned whereas `num_points` indicates the number of samples taken</span>
+<span class="sd">    on that path.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h : int</span>
+<span class="sd">        The height of the area to scan in units of pixels.</span>
+<span class="sd">    w : int</span>
+<span class="sd">        The width of the area to scan in units of pixels.</span>
+<span class="sd">    scan_length : float</span>
+<span class="sd">        The length of the path to scan in units of pixels.</span>
+<span class="sd">    num_points : int</span>
+<span class="sd">        The number of samples to take on the scanned path.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The coordinates of the samples arranged into a 2D array, such that each</span>
+<span class="sd">        row is a coordinate pair (x, y).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The orientation of the coordinate system is such that the width `w` is</span>
+<span class="sd">    measured along the x-axis whereas the height `h` is measured along the</span>
+<span class="sd">    y-axis.</span>
+
+<span class="sd">    Each of the scanned lines span the entire width of the image with the</span>
+<span class="sd">    exception of the last line that may only be partially scanned if the</span>
+<span class="sd">    `scan_length` implies this. The top and bottom lines of the image are</span>
+<span class="sd">    always included in the scan.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import uniform_line_sample_image</span>
+<span class="sd">    &gt;&gt;&gt; h = 10</span>
+<span class="sd">    &gt;&gt;&gt; w = 10</span>
+<span class="sd">    &gt;&gt;&gt; scan_length = 50.0</span>
+<span class="sd">    &gt;&gt;&gt; num_points = 12</span>
+<span class="sd">    &gt;&gt;&gt; uniform_line_sample_image(h, w, scan_length, num_points)</span>
+<span class="sd">    array([[ 0.5       ,  0.5       ],</span>
+<span class="sd">           [ 5.04545455,  0.5       ],</span>
+<span class="sd">           [ 9.5       ,  0.59090909],</span>
+<span class="sd">           [ 7.11363636,  2.75      ],</span>
+<span class="sd">           [ 2.56818182,  2.75      ],</span>
+<span class="sd">           [ 0.72727273,  5.        ],</span>
+<span class="sd">           [ 5.27272727,  5.        ],</span>
+<span class="sd">           [ 9.5       ,  5.31818182],</span>
+<span class="sd">           [ 6.88636364,  7.25      ],</span>
+<span class="sd">           [ 2.34090909,  7.25      ],</span>
+<span class="sd">           [ 0.95454545,  9.5       ],</span>
+<span class="sd">           [ 5.5       ,  9.5       ]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_uniform_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">uniform_line_sample_surface</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                                         <span class="n">scan_length</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_points</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                                         <span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">+</span> <span class="mf">0.5</span>
+
+    <span class="k">return</span> <span class="n">coords</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_uniform_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `uniform_line_sample_surface` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    uniform_line_sample_surface : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s">&#39;l&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_l</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_w</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="s">&#39;speed&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_speed</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">sample_rate</span><span class="p">,</span> <span class="s">&#39;sample_rate&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                           <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_sample_rate</span><span class="p">})</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_min_time</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="uniform_line_sample_surface"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.uniform_line_sample_surface">[docs]</a><span class="k">def</span> <span class="nf">uniform_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample aa surface area using a set of uniformly distributed straight lines.</span>
+
+<span class="sd">    The coordinates (in units of meters) resulting from sampling an area of</span>
+<span class="sd">    size `l` times `w` using a pattern based on a set of uniformly distributed</span>
+<span class="sd">    straight lines are determined.  The scanned path is determined from the</span>
+<span class="sd">    probe `speed` and the scan `time`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l : float</span>
+<span class="sd">        The length of the area to scan in units of meters.</span>
+<span class="sd">    w : float</span>
+<span class="sd">        The width of the area to scan in units of meters.</span>
+<span class="sd">    speed : float</span>
+<span class="sd">        The probe speed in units of meters/second.</span>
+<span class="sd">    sample_rate : float</span>
+<span class="sd">        The sample rate in units of Hertz.</span>
+<span class="sd">    time : float</span>
+<span class="sd">        The scan time in units of seconds.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The coordinates of the samples arranged into a 2D array, such that each</span>
+<span class="sd">        row is a coordinate pair (x, y).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The orientation of the coordinate system is such that the width `w` is</span>
+<span class="sd">    measured along the x-axis whereas the height `l` is measured along the</span>
+<span class="sd">    y-axis.</span>
+
+<span class="sd">    Each of the scanned lines span the entire width of the image with the</span>
+<span class="sd">    exception of the last line that may only be partially scanned if the</span>
+<span class="sd">    `scan_length` implies this. The top and bottom lines of the image are</span>
+<span class="sd">    always included in the scan.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import uniform_line_sample_surface</span>
+<span class="sd">    &gt;&gt;&gt; l = 2e-6</span>
+<span class="sd">    &gt;&gt;&gt; w = 2e-6</span>
+<span class="sd">    &gt;&gt;&gt; speed = 7e-7</span>
+<span class="sd">    &gt;&gt;&gt; sample_rate = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; time = 12.0</span>
+<span class="sd">    &gt;&gt;&gt; uniform_line_sample_surface(l, w, speed, sample_rate, time)</span>
+<span class="sd">    array([[  0.00000000e+00,   0.00000000e+00],</span>
+<span class="sd">           [  7.00000000e-07,   0.00000000e+00],</span>
+<span class="sd">           [  1.40000000e-06,   0.00000000e+00],</span>
+<span class="sd">           [  2.00000000e-06,   1.00000000e-07],</span>
+<span class="sd">           [  1.86666667e-06,   6.66666667e-07],</span>
+<span class="sd">           [  1.16666667e-06,   6.66666667e-07],</span>
+<span class="sd">           [  4.66666667e-07,   6.66666667e-07],</span>
+<span class="sd">           [  0.00000000e+00,   9.00000000e-07],</span>
+<span class="sd">           [  2.66666667e-07,   1.33333333e-06],</span>
+<span class="sd">           [  9.66666667e-07,   1.33333333e-06],</span>
+<span class="sd">           [  1.66666667e-06,   1.33333333e-06],</span>
+<span class="sd">           [  2.00000000e-06,   1.70000000e-06],</span>
+<span class="sd">           [  1.60000000e-06,   2.00000000e-06]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_uniform_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">time</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">scan_length</span> <span class="o">=</span> <span class="n">speed</span> <span class="o">*</span> <span class="n">time</span>
+    <span class="n">sample_dist</span> <span class="o">=</span> <span class="n">scan_length</span> <span class="o">/</span> <span class="p">(</span><span class="n">samples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">lines_scan_length</span> <span class="o">=</span> <span class="n">scan_length</span> <span class="o">-</span> <span class="n">l</span>
+    <span class="n">num_lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">lines_scan_length</span> <span class="o">/</span> <span class="n">w</span><span class="p">)</span>
+
+    <span class="c"># We should always at least partially scan top and bottom lines.</span>
+    <span class="k">if</span> <span class="n">num_lines</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">num_lines</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num_lines</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">_get_line_scan_coords</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">sample_dist</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coords</span>
+
+</div>
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `unique_pixels` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    unique_pixels : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="s">&#39;coords&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;subdtype&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">,</span> <span class="s">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;coords.shape[1] must be 2.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">coords</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;All coordinates must be non-negative.&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="unique_pixels"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements.unique_pixels">[docs]</a><span class="k">def</span> <span class="nf">unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identify unique pixels from a set of coordinates.</span>
+
+<span class="sd">    The floating point `coords` are reduced to a unique set of integer pixels</span>
+<span class="sd">    by flooring the floating point values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The `k` floating point coordinates arranged into a 2D array where each</span>
+<span class="sd">        row is a coordinate pair (x, y), such that `coords` has size `k` x 2.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    unique_pixels : ndarray</span>
+<span class="sd">        The `l` &lt;= `k` unique (integer) pixels, such that `unique_pixels` is a</span>
+<span class="sd">        2D array and has size `l` x 2.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.imaging.measurements import unique_pixels</span>
+<span class="sd">    &gt;&gt;&gt; coords = np.array([[1.7, 1.0], [1.0, 1.2], [3.3, 4.3]])</span>
+<span class="sd">    &gt;&gt;&gt; unique_pixels(coords)</span>
+<span class="sd">    array([[1, 1],</span>
+<span class="sd">           [3, 4]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+
+    <span class="n">pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">pixels_struct</span> <span class="o">=</span> <span class="n">pixels</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">pixels</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">unique</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">pixels_struct</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">unique_pixels</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">index</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">unique_pixels</span>
+
+</div>
+<div class="viewcode-block" id="_get_line_scan_coords"><a class="viewcode-back" href="../../../magni.imaging.measurements.html#magni.imaging.measurements._get_line_scan_coords">[docs]</a><span class="k">def</span> <span class="nf">_get_line_scan_coords</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">sample_dist</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine the coordinates of the sampled lines in a line scanning.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lines : ndarray</span>
+<span class="sd">        The position (vertical distance from top of scan area) of the lines to</span>
+<span class="sd">        scan.</span>
+<span class="sd">    samples : int</span>
+<span class="sd">        The number of samples on the scan path.</span>
+<span class="sd">    sample_dist : float</span>
+<span class="sd">        The distance (path length) between samples.</span>
+<span class="sd">    l : float</span>
+<span class="sd">        The length of the area to scan in units of meters.</span>
+<span class="sd">    w : float</span>
+<span class="sd">        The width of the area to scan in units of meters.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : ndarray</span>
+<span class="sd">        The w and l coordinates arranged into a N_samples-by-2 array.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dir_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">dir_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">dir_up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">dir_right</span>
+
+    <span class="n">dist_target</span> <span class="o">=</span> <span class="n">w</span>
+    <span class="n">dist_epsilon</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">sample_dist</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+        <span class="n">dist_remaining</span> <span class="o">=</span> <span class="n">sample_dist</span>
+
+        <span class="k">while</span> <span class="n">dist_remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dist_remaining</span> <span class="o">&lt;=</span> <span class="n">dist_target</span><span class="p">:</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">dist_remaining</span> <span class="o">*</span> <span class="n">direction</span>
+                <span class="n">dist_target</span> <span class="o">=</span> <span class="n">dist_target</span> <span class="o">-</span> <span class="n">dist_remaining</span>
+                <span class="n">dist_remaining</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dist_remaining</span> <span class="o">-</span> <span class="n">dist_target</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">dist_epsilon</span><span class="p">:</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">dist_target</span> <span class="o">*</span> <span class="n">direction</span>
+                <span class="n">dist_target</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">dist_remaining</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">dist_target</span> <span class="o">*</span> <span class="n">direction</span>
+                <span class="c"># dist_target = 0</span>
+                <span class="n">dist_remaining</span> <span class="o">=</span> <span class="n">dist_remaining</span> <span class="o">-</span> <span class="n">dist_target</span>
+
+                <span class="k">if</span> <span class="p">((</span><span class="n">direction</span> <span class="o">==</span> <span class="n">dir_right</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">or</span>
+                        <span class="p">(</span><span class="n">direction</span> <span class="o">==</span> <span class="n">dir_left</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()):</span>
+                    <span class="n">direction</span> <span class="o">=</span> <span class="n">dir_up</span>
+                    <span class="n">dist_target</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">line</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="p">]</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">direction</span> <span class="o">=</span> <span class="n">dir_right</span> <span class="k">if</span> <span class="n">line</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">dir_left</span>
+                    <span class="n">dist_target</span> <span class="o">=</span> <span class="n">w</span>
+                    <span class="c"># line = line</span>
+
+        <span class="n">coords</span><span class="p">[</span><span class="n">sample</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">position</span>
+
+    <span class="k">return</span> <span class="n">coords</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

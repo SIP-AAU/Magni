@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.reproducibility.io module &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.reproducibility package" href="magni.reproducibility.html" />
+    <link rel="next" title="magni.utils package" href="magni.utils.html" />
+    <link rel="prev" title="magni.reproducibility._annotation module" href="magni.reproducibility._annotation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.utils.html" title="magni.utils package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.reproducibility._annotation.html" title="magni.reproducibility._annotation module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.reproducibility.html" accesskey="U">magni.reproducibility package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.reproducibility.io">
+<span id="magni-reproducibility-io-module"></span><h1>magni.reproducibility.io module<a class="headerlink" href="#module-magni.reproducibility.io" title="Permalink to this headline">¶</a></h1>
+<p>Module providing input/output functions to databases containing results from
+reproducible research.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>annotate_database(h5file)</dt>
+<dd>Function for annotating an existing HDF5 database.</dd>
+<dt>read_annotations(h5file)</dt>
+<dd>Function for reading annotations in an HDF5 database.</dd>
+<dt>remove_annotations(h5file)</dt>
+<dd>Function for removing annotations in an HDF5 database.</dd>
+</dl>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_conda_info" title="magni.reproducibility._annotation.get_conda_info"><tt class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility._annotation.get_conda_info</span></tt></a></dt>
+<dd>Conda annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_git_revision" title="magni.reproducibility._annotation.get_git_revision"><tt class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility._annotation.get_git_revision</span></tt></a></dt>
+<dd>Git annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_platform_info" title="magni.reproducibility._annotation.get_platform_info"><tt class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility._annotation.get_platform_info</span></tt></a></dt>
+<dd>Platform annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_datetime" title="magni.reproducibility._annotation.get_datetime"><tt class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility._annotation.get_datetime</span></tt></a></dt>
+<dd>Date and time annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_config" title="magni.reproducibility._annotation.get_magni_config"><tt class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility._annotation.get_magni_config</span></tt></a></dt>
+<dd>Magni config annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_info" title="magni.reproducibility._annotation.get_magni_info"><tt class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility._annotation.get_magni_info</span></tt></a></dt>
+<dd>Magni info annotation</dd>
+</dl>
+</div>
+<dl class="function">
+<dt id="magni.reproducibility.io.annotate_database">
+<tt class="descclassname">magni.reproducibility.io.</tt><tt class="descname">annotate_database</tt><big>(</big><em>h5file</em><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/io.html#annotate_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.annotate_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annotate an HDF5 database with information about Magni and the platform.</p>
+<p>The annotation consists of a group in the root of the <em class="xref py py-obj">h5file</em> having nodes
+that each provide information about Magni or the platform on which this
+function is run.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>h5file</strong> (<em>tables.file.File</em>) &#8211;
+The handle to the HDF5 database that should be annotated.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_conda_info" title="magni.reproducibility._annotation.get_conda_info"><tt class="xref py py-func docutils literal"><span class="pre">magni.reproducibility._annotation.get_conda_info()</span></tt></a></dt>
+<dd>Conda annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_git_revision" title="magni.reproducibility._annotation.get_git_revision"><tt class="xref py py-func docutils literal"><span class="pre">magni.reproducibility._annotation.get_git_revision()</span></tt></a></dt>
+<dd>Git annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_platform_info" title="magni.reproducibility._annotation.get_platform_info"><tt class="xref py py-func docutils literal"><span class="pre">magni.reproducibility._annotation.get_platform_info()</span></tt></a></dt>
+<dd>Platform annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_datetime" title="magni.reproducibility._annotation.get_datetime"><tt class="xref py py-func docutils literal"><span class="pre">magni.reproducibility._annotation.get_datetime()</span></tt></a></dt>
+<dd>Date and time annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_config" title="magni.reproducibility._annotation.get_magni_config"><tt class="xref py py-func docutils literal"><span class="pre">magni.reproducibility._annotation.get_magni_config()</span></tt></a></dt>
+<dd>Magni config annotation</dd>
+<dt><a class="reference internal" href="magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_info" title="magni.reproducibility._annotation.get_magni_info"><tt class="xref py py-func docutils literal"><span class="pre">magni.reproducibility._annotation.get_magni_info()</span></tt></a></dt>
+<dd>Magni info annotation</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The annotations of the database includes the following:</p>
+<ul class="simple">
+<li>conda_info - Information about Continuum Anacononda install</li>
+<li>git_revision - Git revision and tag of Magni</li>
+<li>platform_info - Information about the current platform (system)</li>
+<li>datetime - The current date and time</li>
+<li>magni_config - Infomation about the current configuration of Magni</li>
+<li>magni_info - Information from <em class="xref py py-obj">help(magni)</em></li>
+</ul>
+<p class="rubric">Examples</p>
+<p>Annotate the database named &#8216;db.hdf5&#8217;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">annotate_database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">&#39;db.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.reproducibility.io.read_annotations">
+<tt class="descclassname">magni.reproducibility.io.</tt><tt class="descname">read_annotations</tt><big>(</big><em>h5file</em><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/io.html#read_annotations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.read_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the annotations to an HDF5 database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>h5file</strong> (<em>tables.file.File</em>) &#8211;
+The handle to the HDF5 database from which the annotations is read.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>annotations</strong> (<em>dict</em>) &#8211;
+The annotations read from the HDF5 database.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> &#8211; 
+If the annotations to the HDF5 database does not conform to the Magni
+annotation standard.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The returned dict holds a key for each annotation in the database. The
+value corresponding to a given key is in itself a dict. See
+<em class="xref py py-obj">magni.reproducibility.annotate_database</em> for examples of such annotations.</p>
+<p class="rubric">Examples</p>
+<p>Read annotations from the database named &#8216;db.hdf5&#8217;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">read_annotations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">&#39;db.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">annotations</span> <span class="o">=</span> <span class="n">read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.reproducibility.io.remove_annotations">
+<tt class="descclassname">magni.reproducibility.io.</tt><tt class="descname">remove_annotations</tt><big>(</big><em>h5file</em><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/io.html#remove_annotations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.remove_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the annotations from an HDF5 database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>h5file</strong> (<em>tables.file.File</em>) &#8211;
+The handle to the HDF5 database from which the annotations is removed.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>Remove annotations from the database named &#8216;db.hdf5&#8217;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">remove_annotations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">&#39;db.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">remove_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.reproducibility.io module</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.reproducibility._annotation.html"
+                        title="previous chapter">magni.reproducibility._annotation module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.utils.html"
+                        title="next chapter">magni.utils package</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.utils.html" title="magni.utils package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.reproducibility._annotation.html" title="magni.reproducibility._annotation module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.reproducibility.html" >magni.reproducibility package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

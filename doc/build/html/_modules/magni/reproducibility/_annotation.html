@@ -1,0 +1,434 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.reproducibility._annotation &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for magni.reproducibility._annotation</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">..</span>
+<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    All rights reserved.</span>
+<span class="sd">    See LICENSE.rst for further information.</span>
+
+<span class="sd">Module providing functions that may be used to annotate data.</span>
+
+<span class="sd">Routine Listings</span>
+<span class="sd">----------------</span>
+<span class="sd">get_conda_info()</span>
+<span class="sd">    Function that returns information about a Continnum Anaconda install.</span>
+<span class="sd">get_datetime()</span>
+<span class="sd">    Function that returns information about the current date and time.</span>
+<span class="sd">get_git_revision()</span>
+<span class="sd">    Function that returns information about the `magni` git revision.</span>
+<span class="sd">get_magni_config()</span>
+<span class="sd">    Function that returns information about the current configuration of Magni.</span>
+<span class="sd">get_magni_info()</span>
+<span class="sd">    Function that returns genral information about Magni.</span>
+<span class="sd">get_platform_info()</span>
+<span class="sd">    Function that returns information about the platform used to run the code.</span>
+
+<span class="sd">Notes</span>
+<span class="sd">-----</span>
+<span class="sd">The return annotations are any nested level of dicts of dicts of strings.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pkgutil</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">pydoc</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">import</span> <span class="nn">magni</span>
+
+
+<div class="viewcode-block" id="get_conda_info"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_conda_info">[docs]</a><span class="k">def</span> <span class="nf">get_conda_info</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dictionary contianing information from Conda.</span>
+
+<span class="sd">    Conda is the package manager for the `Continuum Anaconda</span>
+<span class="sd">    &lt;https://store.continuum.io/cshop/anaconda/&gt;`_ scientific Python</span>
+<span class="sd">    distribution. This function will return various information about the</span>
+<span class="sd">    Anaconda installation on the system by quering the Conda package database.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    conda_info : dict</span>
+<span class="sd">        Various information from conda (see notes below for further details).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If the Python intepreter is unable to locate and import the conda package,</span>
+<span class="sd">    an empty dicionary is returned.</span>
+
+<span class="sd">    The returned dictionary contains the same infomation that is returned by</span>
+<span class="sd">    &quot;conda info&quot; in addition to an overview of the linked modules in the</span>
+<span class="sd">    Anaconda installation. Specifically, the returned dictionary has the</span>
+<span class="sd">    following keys:</span>
+
+<span class="sd">    * platform</span>
+<span class="sd">    * conda_version</span>
+<span class="sd">    * root_prefix</span>
+<span class="sd">    * default_prefix</span>
+<span class="sd">    * envs_dirs</span>
+<span class="sd">    * package_cache</span>
+<span class="sd">    * channels</span>
+<span class="sd">    * config_file</span>
+<span class="sd">    * is_foreign_system</span>
+<span class="sd">    * linked_modules</span>
+
+<span class="sd">    Additionally, the returned dictionary has a key named *status*, which can</span>
+<span class="sd">    have either of the following values:</span>
+
+<span class="sd">    * &#39;Succeeded&#39; (Everything seems to be OK)</span>
+<span class="sd">    * &#39;Failed&#39; (Import of conda failed - nothing else is returned)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">conda</span>
+        <span class="kn">import</span> <span class="nn">conda.config</span>
+        <span class="kn">import</span> <span class="nn">conda.install</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Failed&#39;</span><span class="p">}</span>
+
+    <span class="n">conda_info</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;platform&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">subdir</span><span class="p">,</span>
+                  <span class="s">&#39;conda_version&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
+                  <span class="s">&#39;root_prefix&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span>
+                  <span class="s">&#39;default_prefix&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">default_prefix</span><span class="p">,</span>
+                  <span class="s">&#39;envs_dirs&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">envs_dirs</span><span class="p">),</span>
+                  <span class="s">&#39;package_cache&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pkgs_dirs</span><span class="p">),</span>
+                  <span class="s">&#39;channels&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_channel_urls</span><span class="p">()),</span>
+                  <span class="s">&#39;config_file&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">rc_path</span><span class="p">),</span>
+                  <span class="s">&#39;is_foreign_system&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">foreign</span><span class="p">)),</span>
+                  <span class="s">&#39;linked_modules&#39;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span>
+                      <span class="n">conda</span><span class="o">.</span><span class="n">install</span><span class="o">.</span><span class="n">linked</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">))}</span>
+
+    <span class="n">modules_info</span> <span class="o">=</span> <span class="p">{</span><span class="n">module</span><span class="p">:</span>
+                    <span class="n">conda</span><span class="o">.</span><span class="n">install</span><span class="o">.</span><span class="n">is_linked</span><span class="p">(</span><span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;root_prefix&#39;</span><span class="p">],</span> <span class="n">module</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">]}</span>
+    <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;modules_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">modules_info</span>
+    <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">])</span>
+
+    <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Succeeded&#39;</span>
+
+    <span class="k">return</span> <span class="n">conda_info</span>
+
+</div>
+<div class="viewcode-block" id="get_datetime"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_datetime">[docs]</a><span class="k">def</span> <span class="nf">get_datetime</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dictionary holding the current date and time.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    date_time : dict</span>
+<span class="sd">        The dictionary holding the current date and time.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The returned dictionary has the following keys:</span>
+
+<span class="sd">    * today (date and time including timezone offset)</span>
+<span class="sd">    * utcnow (UTC date and time)</span>
+<span class="sd">    * pretty_utc (UTC date and time formatted according to current locale)</span>
+<span class="sd">    * status</span>
+
+<span class="sd">    The status entry informs about the success of the pretty_utc formatting.</span>
+<span class="sd">    It has one of the follwing values:</span>
+
+<span class="sd">    * Succeeded (Everything seems OK)</span>
+<span class="sd">    * Failed (It was not possible to format the time)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">date_time</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;today&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()),</span>
+                 <span class="s">&#39;utcnow&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span>
+                 <span class="s">&#39;pretty_utc&#39;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Succeeded&#39;</span><span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">date_time</span><span class="p">[</span><span class="s">&#39;pretty_utc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+            <span class="n">date_time</span><span class="p">[</span><span class="s">&#39;utcnow&#39;</span><span class="p">],</span> <span class="s">&#39;</span><span class="si">%c</span><span class="s">&#39;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">date_time</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Failed&#39;</span>
+
+    <span class="n">date_time</span><span class="p">[</span><span class="s">&#39;utcnow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">date_time</span><span class="p">[</span><span class="s">&#39;utcnow&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">date_time</span>
+
+</div>
+<div class="viewcode-block" id="get_git_revision"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_git_revision">[docs]</a><span class="k">def</span> <span class="nf">get_git_revision</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dictionary containing information about the current git revision.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    git_revision : dict</span>
+<span class="sd">        Information about the current git revision.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If the git revision extract succeeded, the returned dictionary has the</span>
+<span class="sd">    following keys:</span>
+
+<span class="sd">    * status (with value &#39;Succeeded&#39;)</span>
+<span class="sd">    * tag (output of &quot;git describe&quot;)</span>
+<span class="sd">    * branch (output of &quot;git describe --all&quot;)</span>
+
+<span class="sd">    If the git revision extract failed, the returned dictionary has the</span>
+<span class="sd">    following keys:</span>
+
+<span class="sd">    * status (with value &#39;Failed&#39;)</span>
+<span class="sd">    * returncode (returncode from failing git command)</span>
+<span class="sd">    * output (output from failing git command)</span>
+
+<span class="sd">    The &quot;git describe&quot; commands are run in the directory in which `magni` is</span>
+<span class="sd">    loaded from.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cur_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;tag&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+            <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;describe&#39;</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
+            <span class="s">&#39;branch&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+                <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;describe&#39;</span><span class="p">,</span> <span class="s">&#39;--all&#39;</span><span class="p">],</span>
+                <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
+            <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Succeeded&#39;</span><span class="p">}</span>
+
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Failed: CallProcessError&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;returncode&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span>
+                        <span class="s">&#39;output&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">}</span>
+
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Failed: OSError&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;errno&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span><span class="p">,</span>
+                        <span class="s">&#39;strrror&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">strerror</span><span class="p">}</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">git_revision</span>
+
+</div>
+<div class="viewcode-block" id="get_magni_config"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_config">[docs]</a><span class="k">def</span> <span class="nf">get_magni_config</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dictionary holding the current configuration of Magni.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    magni_config : dict</span>
+<span class="sd">        The dictionary holding the current configuration of Magni.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The returned dictionary has a key for each of the `config` modules in Magni</span>
+<span class="sd">    and its subpackages. The value of a given key is a dictionary with the</span>
+<span class="sd">    current configuration of the corresponding `config` module. Furthermore,</span>
+<span class="sd">    the returned dictionary has a status key, which can have either of the</span>
+<span class="sd">    following values:</span>
+
+<span class="sd">    * Succeeded (The entire configuration was extracted)</span>
+<span class="sd">    * Failed (It was not possible to get information from one or more modules)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">packages</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>
+                                     <span class="n">prefix</span><span class="o">=</span><span class="n">magni</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+
+    <span class="n">magni_config</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Succeeded&#39;</span><span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">ispkg</span> <span class="ow">in</span> <span class="n">packages</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">modname</span><span class="p">[</span><span class="o">-</span><span class="mi">7</span><span class="p">:]</span> <span class="o">==</span> <span class="s">&#39;.config&#39;</span> <span class="ow">and</span> <span class="n">modname</span> <span class="o">!=</span> <span class="s">&#39;magni.utils.config&#39;</span><span class="p">:</span>
+                <span class="n">settings</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">modname</span> <span class="o">+</span> <span class="s">&#39;.get()&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">setting</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">setting</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">settings</span><span class="p">[</span><span class="n">setting</span><span class="p">]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">setting</span><span class="p">])</span>
+
+                <span class="n">magni_config</span><span class="p">[</span><span class="n">modname</span><span class="p">]</span> <span class="o">=</span> <span class="n">settings</span>
+
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">magni_config</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Failed&#39;</span>
+
+    <span class="k">return</span> <span class="n">magni_config</span>
+
+</div>
+<div class="viewcode-block" id="get_magni_info"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_info">[docs]</a><span class="k">def</span> <span class="nf">get_magni_info</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a string representation of the output of help(magni).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    magni_info : dict</span>
+<span class="sd">        Information about magni.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The returned dictionary has a single key:</span>
+
+<span class="sd">    * help_magni (a string representation of help(magni))</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">magni_info</span> <span class="o">=</span> <span class="n">pydoc</span><span class="o">.</span><span class="n">render_doc</span><span class="p">(</span><span class="n">magni</span><span class="p">)</span>
+    <span class="n">magni_info</span><span class="p">,</span> <span class="n">subs</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">subn</span><span class="p">(</span><span class="s">r&#39;\x08([A-Z]|[a-z]|_)?&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">magni_info</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s">&#39;help_magni&#39;</span><span class="p">:</span> <span class="n">magni_info</span><span class="p">}</span>
+
+</div>
+<div class="viewcode-block" id="get_platform_info"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_platform_info">[docs]</a><span class="k">def</span> <span class="nf">get_platform_info</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dictionary containing information about the system platform.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    platform_info : dict</span>
+<span class="sd">        Various information about the system platform.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    platform : The Python module used to query information about the system.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The returned dictionary has the following keys:</span>
+
+<span class="sd">    * system</span>
+<span class="sd">    * node</span>
+<span class="sd">    * release</span>
+<span class="sd">    * version</span>
+<span class="sd">    * processor</span>
+<span class="sd">    * python</span>
+<span class="sd">    * libc</span>
+<span class="sd">    * linux</span>
+<span class="sd">    * mac_os</span>
+<span class="sd">    * win32</span>
+<span class="sd">    * status</span>
+
+<span class="sd">    The linux/mac_os/win32 entries are &quot;empty&quot; if they are not applicable.</span>
+
+<span class="sd">    If the processor information returned by `platform` is &quot;empty&quot;, a query of</span>
+<span class="sd">    `lscpu` is attempted in order to provide the necessary information.</span>
+
+<span class="sd">    The status entry informs about the success of the queries. It has one of</span>
+<span class="sd">    the follwing values:</span>
+
+<span class="sd">    * &#39;All OK&#39; (everything seems to be OK)</span>
+<span class="sd">    * &#39;Used lscpu in processor query&#39; (`lscpu` was used)</span>
+<span class="sd">    * &#39;Processor query failed&#39; (failed to get processor information)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">platform_info</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;system&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()),</span>
+                     <span class="s">&#39;node&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">()),</span>
+                     <span class="s">&#39;release&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">()),</span>
+                     <span class="s">&#39;version&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">version</span><span class="p">()),</span>
+                     <span class="s">&#39;machine&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()),</span>
+                     <span class="s">&#39;processor&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">()),</span>
+                     <span class="s">&#39;python&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()),</span>
+                     <span class="s">&#39;libc&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">libc_ver</span><span class="p">()),</span>
+                     <span class="s">&#39;linux&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">linux_distribution</span><span class="p">()),</span>
+                     <span class="s">&#39;mac_os&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">mac_ver</span><span class="p">()),</span>
+                     <span class="s">&#39;win32&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">win32_ver</span><span class="p">()),</span>
+                     <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;All OK&#39;</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;processor&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;processor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;lscpu&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Used lscpu in processor query&#39;</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
+            <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Processor query failed&#39;</span>
+
+    <span class="k">return</span> <span class="n">platform_info</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

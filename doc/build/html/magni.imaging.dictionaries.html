@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.imaging.dictionaries module &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
+    <link rel="next" title="magni.imaging.domains module" href="magni.imaging.domains.html" />
+    <link rel="prev" title="magni.imaging._util module" href="magni.imaging._util.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.imaging._util.html" title="magni.imaging._util module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.imaging.dictionaries">
+<span id="magni-imaging-dictionaries-module"></span><h1>magni.imaging.dictionaries module<a class="headerlink" href="#module-magni.imaging.dictionaries" title="Permalink to this headline">¶</a></h1>
+<p>Module providing fast linear operations wrapped in matrix emulators.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>get_DCT(shape)</dt>
+<dd>Get the DCT fast operation dictionary for the given image shape.</dd>
+<dt>get_DFT(shape)</dt>
+<dd>Get the DFT fast operation dictionary for the given image shape.</dd>
+</dl>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.imaging._fastops.html#module-magni.imaging._fastops" title="magni.imaging._fastops"><tt class="xref py py-mod docutils literal"><span class="pre">magni.imaging._fastops</span></tt></a></dt>
+<dd>Fast linear operations.</dd>
+<dt><a class="reference internal" href="magni.utils.matrices.html#module-magni.utils.matrices" title="magni.utils.matrices"><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils.matrices</span></tt></a></dt>
+<dd>Matrix emulators.</dd>
+</dl>
+</div>
+<dl class="function">
+<dt id="magni.imaging.dictionaries.get_DCT">
+<tt class="descclassname">magni.imaging.dictionaries.</tt><tt class="descname">get_DCT</tt><big>(</big><em>shape</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/dictionaries.html#get_DCT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.dictionaries.get_DCT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the DCT fast operation dictionary for the given image shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shape</strong> (<em>list or tuple</em>) &#8211;
+The shape of the image which the dictionary is the DCT dictionary.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>matrix</strong> (<em>magni.utils.matrices.Matrix</em>) &#8211;
+The specified DCT dictionary.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.utils.matrices.html#magni.utils.matrices.Matrix" title="magni.utils.matrices.Matrix"><tt class="xref py py-func docutils literal"><span class="pre">magni.utils.matrices.Matrix()</span></tt></a></dt>
+<dd>The matrix emulator class.</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<p>Create a dummy image:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">mat2vec</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Perform DCT in the ordinary way:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dct_normal</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">_fastops</span><span class="o">.</span><span class="n">dct2</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Perform DCT using the present function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.dictionaries</span> <span class="kn">import</span> <span class="n">get_DCT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matrix</span> <span class="o">=</span> <span class="n">get_DCT</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dct_matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Check that the two ways produce the same result:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">dct_matrix</span><span class="p">,</span> <span class="n">dct_normal</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.imaging.dictionaries.get_DFT">
+<tt class="descclassname">magni.imaging.dictionaries.</tt><tt class="descname">get_DFT</tt><big>(</big><em>shape</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/dictionaries.html#get_DFT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.dictionaries.get_DFT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the DFT fast operation dictionary for the given image shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shape</strong> (<em>list or tuple</em>) &#8211;
+The shape of the image which the dictionary is the DFT dictionary.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>matrix</strong> (<em>magni.utils.matrices.Matrix</em>) &#8211;
+The specified DFT dictionary.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.utils.matrices.html#magni.utils.matrices.Matrix" title="magni.utils.matrices.Matrix"><tt class="xref py py-func docutils literal"><span class="pre">magni.utils.matrices.Matrix()</span></tt></a></dt>
+<dd>The matrix emulator class.</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<p>Create a dummy image:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">mat2vec</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Perform DFT in the ordinary way:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dft_normal</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">_fastops</span><span class="o">.</span><span class="n">dft2</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Perform DFT using the present function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.dictionaries</span> <span class="kn">import</span> <span class="n">get_DFT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matrix</span> <span class="o">=</span> <span class="n">get_DFT</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dft_matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Check that the two ways produce the same result:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">dft_matrix</span><span class="p">,</span> <span class="n">dft_normal</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.imaging.dictionaries module</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.imaging._util.html"
+                        title="previous chapter">magni.imaging._util module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.imaging.domains.html"
+                        title="next chapter">magni.imaging.domains module</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.imaging._util.html" title="magni.imaging._util module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.cs.phase_transition._data module &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" />
+    <link rel="next" title="magni.cs.phase_transition._simulation module" href="magni.cs.phase_transition._simulation.html" />
+    <link rel="prev" title="magni.cs.phase_transition._backup module" href="magni.cs.phase_transition._backup.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition._simulation.html" title="magni.cs.phase_transition._simulation module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition._backup.html" title="magni.cs.phase_transition._backup module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.cs.phase_transition._data">
+<span id="magni-cs-phase-transition-data-module"></span><h1>magni.cs.phase_transition._data module<a class="headerlink" href="#module-magni.cs.phase_transition._data" title="Permalink to this headline">¶</a></h1>
+<p>Module providing problem suite instance generation functionality.</p>
+<p>The problem suite instances consist of a matrix, A, and a coefficient vector,
+alpha, with which the measurement vector, y, can be generated.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>generate_matrix(m, n)</dt>
+<dd>Generate a matrix belonging to a specific problem suite.</dd>
+<dt>generate_vector(n, k)</dt>
+<dd>Generate a vector belonging to a specific problem suite.</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The matrices and vectors generated in this module use the numpy.random
+submodule. Consequently, the calling script or function should control the seed
+to ensure reproducibility.</p>
+<p class="rubric">Examples</p>
+<p>Generate a problem suite instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.cs.phase_transition</span> <span class="kn">import</span> <span class="n">_data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_matrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_vector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="magni.cs.phase_transition._data.generate_matrix">
+<tt class="descclassname">magni.cs.phase_transition._data.</tt><tt class="descname">generate_matrix</tt><big>(</big><em>m</em>, <em>n</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/_data.html#generate_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._data.generate_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a matrix belonging to a specific problem suite.</p>
+<p>The available ensemble is the Uniform Spherical Ensemble. See Notes for a
+description of the ensemble.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>m</strong> (<em>int</em>) &#8211;
+The number of rows.</li>
+<li><strong>n</strong> (<em>int</em>) &#8211;
+The number of columns.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>A</strong> (<em>ndarray</em>) &#8211;
+The generated matrix.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<dl class="docutils">
+<dt>The Uniform Spherical Ensemble:</dt>
+<dd>The matrices of this ensemble have i.i.d. Gaussian entries and its
+columns are normalised to have unit length.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.cs.phase_transition._data.generate_vector">
+<tt class="descclassname">magni.cs.phase_transition._data.</tt><tt class="descname">generate_vector</tt><big>(</big><em>n</em>, <em>k</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/_data.html#generate_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._data.generate_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a vector belonging to a specific problem suite.</p>
+<p>The available ensembles are the Gaussian ensemble and the Rademacher
+ensemble. See Notes for a description of the ensembles. Which of the
+available ensembles is used, is specified as a configuration option. Note,
+that the non-zero <em class="xref py py-obj">k</em> non-zero coefficients are the <em class="xref py py-obj">k</em> first entries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> (<em>int</em>) &#8211;
+The length of the vector.</li>
+<li><strong>k</strong> (<em>int</em>) &#8211;
+The number of non-zero coefficients.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>alpha</strong> (<em>ndarray</em>) &#8211;
+The generated vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.cs.phase_transition.config.html#module-magni.cs.phase_transition.config" title="magni.cs.phase_transition.config"><tt class="xref py py-func docutils literal"><span class="pre">magni.cs.phase_transition.config()</span></tt></a></dt>
+<dd>Configuration options.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<dl class="docutils">
+<dt>The Gaussian ensemble :</dt>
+<dd>The non-zero coefficients are drawn from the normal Gaussian
+distribution.</dd>
+<dt>The Rademacher ensemble:</dt>
+<dd>The non-zero coefficients are drawn from the constant amplitude with
+random signs ensemble.</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.cs.phase_transition._data module</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.cs.phase_transition._backup.html"
+                        title="previous chapter">magni.cs.phase_transition._backup module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.cs.phase_transition._simulation.html"
+                        title="next chapter">magni.cs.phase_transition._simulation module</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition._simulation.html" title="magni.cs.phase_transition._simulation module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.cs.phase_transition._backup.html" title="magni.cs.phase_transition._backup module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

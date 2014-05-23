@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.imaging.preprocessing module &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
+    <link rel="next" title="magni.imaging.visualisation module" href="magni.imaging.visualisation.html" />
+    <link rel="prev" title="magni.imaging.measurements module" href="magni.imaging.measurements.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.imaging.visualisation.html" title="magni.imaging.visualisation module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.imaging.measurements.html" title="magni.imaging.measurements module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.imaging.preprocessing">
+<span id="magni-imaging-preprocessing-module"></span><h1>magni.imaging.preprocessing module<a class="headerlink" href="#module-magni.imaging.preprocessing" title="Permalink to this headline">¶</a></h1>
+<p>Module providing functionality to remove tilt in images.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>detilt(img, mask=None, mode=&#8217;plane_flatten&#8217;, degree=1, return_tilt=False)</dt>
+<dd>Function to remove tilt from an image.</dd>
+</dl>
+<dl class="function">
+<dt id="magni.imaging.preprocessing.detilt">
+<tt class="descclassname">magni.imaging.preprocessing.</tt><tt class="descname">detilt</tt><big>(</big><em>img</em>, <em>mask=None</em>, <em>mode='plane_flatten'</em>, <em>degree=1</em>, <em>return_tilt=False</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/preprocessing.html#detilt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.preprocessing.detilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the tilt in an image and return the detilted image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>ndarray</em>) &#8211;
+The image that is to be detilted.</li>
+<li><strong>mask</strong> (<em>ndarray, optional</em>) &#8211;
+Bool array of the same size as <em class="xref py py-obj">img</em> indicating the pixels to use in
+detilt (the default is None, which implies, that the the entire image
+is used)</li>
+<li><strong>mode</strong> (<em>{&#8216;line_flatten&#8217;, &#8216;plane_flatten&#8217;}, optional</em>) &#8211;
+The type of detilting applied (the default is plane_flatten).</li>
+<li><strong>degree</strong> (<em>int, optional</em>) &#8211;
+The degree of the polynomial used in line flattening
+(the default is 1).</li>
+<li><strong>return_tilt</strong> (<em>bool, optional</em>) &#8211;
+If True, the detilted image and the estimated tilt is returned (the
+default is False).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>img_detilt</strong> (<em>ndarray</em>) &#8211;
+Detilted image.</li>
+<li><strong>tilt</strong> (<em>ndarray, optional</em>) &#8211;
+The estimated tilt (image). Only returned if return_tilt is True.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If <em class="xref py py-obj">mode</em> is line flatten, the tilt in each horizontal line of pixels in
+the image is estimated by a polynomial fit independently of all other
+lines. If <em class="xref py py-obj">mode</em> is plane flatten, the tilt is estimated by fitting a plane
+to all pixels.</p>
+<p>If a custom <em class="xref py py-obj">mask</em> is specified, only the masked (True) pixels are used in
+the estimation of the tilt.</p>
+<p class="rubric">Examples</p>
+<p>For example, line flatten an image using a degree 1 polynomial</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.preprocessing</span> <span class="kn">import</span> <span class="n">detilt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">detilt</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;line_flatten&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[-0.16666667,  0.33333333, -0.16666667],</span>
+<span class="go">       [-0.33333333,  0.66666667, -0.33333333],</span>
+<span class="go">       [-0.16666667,  0.33333333, -0.16666667]])</span>
+</pre></div>
+</div>
+<p>Or plane flatten the image based on a mask and return the tilt</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">im</span><span class="p">,</span> <span class="n">ti</span> <span class="o">=</span> <span class="n">detilt</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;plane_flatten&#39;</span><span class="p">,</span> <span class="n">return_tilt</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">im</span>
+<span class="go">array([[  3.33333333e-01,  -3.33333333e-01,  -2.00000000e+00],</span>
+<span class="go">       [ -3.33333333e-01,   1.00000000e+00,   3.33333333e-01],</span>
+<span class="go">       [ -2.66453526e-15,   3.33333333e-01,  -3.33333333e-01]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ti</span>
+<span class="go">array([[-0.33333333,  2.33333333,  5.        ],</span>
+<span class="go">       [ 1.33333333,  4.        ,  6.66666667],</span>
+<span class="go">       [ 3.        ,  5.66666667,  8.33333333]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.imaging.preprocessing._line_flatten_tilt">
+<tt class="descclassname">magni.imaging.preprocessing.</tt><tt class="descname">_line_flatten_tilt</tt><big>(</big><em>img</em>, <em>mask</em>, <em>degree</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/preprocessing.html#_line_flatten_tilt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.preprocessing._line_flatten_tilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate tilt using the line flatten method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>ndarray</em>) &#8211;
+The image from which the tilt is estimated.</li>
+<li><strong>mask</strong> (<em>ndarray, or None</em>) &#8211;
+If not None, a bool ndarray of the the shape as <em class="xref py py-obj">img</em> indicating which
+pixels should be used in estimate of tilt.</li>
+<li><strong>degree</strong> (<em>int</em>) &#8211;
+The degree of the polynomial in the estimated line tilt.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tilt</strong> (<em>ndarray</em>) &#8211;
+The estimated tilt.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.imaging.preprocessing._plane_flatten_tilt">
+<tt class="descclassname">magni.imaging.preprocessing.</tt><tt class="descname">_plane_flatten_tilt</tt><big>(</big><em>img</em>, <em>mask</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/preprocessing.html#_plane_flatten_tilt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.preprocessing._plane_flatten_tilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate tilt using the plane flatten method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>ndarray</em>) &#8211;
+The image from which the tilt is estimated.</li>
+<li><strong>mask</strong> (<em>ndarray, or None</em>) &#8211;
+If not None, a bool ndarray of the the shape as <em class="xref py py-obj">img</em> indicating which
+pixels should be used in estimate of tilt.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tilt</strong> (<em>ndarray</em>) &#8211;
+The estimated tilt.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.imaging.preprocessing module</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.imaging.measurements.html"
+                        title="previous chapter">magni.imaging.measurements module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.imaging.visualisation.html"
+                        title="next chapter">magni.imaging.visualisation module</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.imaging.visualisation.html" title="magni.imaging.visualisation module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.imaging.measurements.html" title="magni.imaging.measurements module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

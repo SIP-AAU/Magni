@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Examples &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="magni package" href="magni.html" />
+    <link rel="prev" title="A Note on Notation" href="notation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.html" title="magni package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="notation.html" title="A Note on Notation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="examples">
+<span id="file-examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>All the examples are available as <a class="reference external" href="http://ipython.org/notebook.html">IPython Notebooks</a> in the magni folder under &#8216;/examples/&#8217;. For an introduction to getting started with IPython Notebook see the <a class="reference external" href="http://ipython.org/ipython-doc/stable/notebook/notebook.html">official documentation</a>.</p>
+<div class="section" id="starting-the-ipython-notebook">
+<h2>Starting the IPython Notebook<a class="headerlink" href="#starting-the-ipython-notebook" title="Permalink to this headline">¶</a></h2>
+<p>Starting the IPython Notebook basically boils down to running:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>ipython notebook
+</pre></div>
+</div>
+<p>from a shell with the working directory set to the Magni &#8216;/examples/&#8217; folder. Remember to make sure that <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> is available as described in <a class="reference internal" href="index.html#sec-installation"><em>Download and Installation</em></a> prior to starting the IPython Notebook.</p>
+</div>
+<div class="section" id="examples-overview">
+<h2>Examples overview<a class="headerlink" href="#examples-overview" title="Permalink to this headline">¶</a></h2>
+<p>An overview of the available examples is given in the below table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="43%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>IPython Notebook Name</strong></th>
+<th class="head"><strong>Example illustrates</strong></th>
+<th class="head"><strong>Magni functionality used</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>afm-io</td>
+<td><ul class="first last simple">
+<li>Reading data from mi-file.</li>
+<li>Handling the resulting buffers and images.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.afm.io.html#magni.afm.io.read_mi_file" title="magni.afm.io.read_mi_file"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm.io.read_mi_file</span></tt></a></li>
+<li><a class="reference internal" href="magni.afm.types.html#magni.afm.types.Buffer" title="magni.afm.types.Buffer"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm.types.Buffer</span></tt></a></li>
+<li><a class="reference internal" href="magni.afm.types.html#magni.afm.types.Image" title="magni.afm.types.Image"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm.types.Image</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>afm-reconstruction</td>
+<td><ul class="first last simple">
+<li>Reconstructing compressively sampled AFM images.</li>
+<li>Simulating reconstruction of compressively sampled
+images from raster scanned images.</li>
+<li>Calculating MSE and PSNR of reconstructed image.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.afm.reconstruction.html#module-magni.afm.reconstruction" title="magni.afm.reconstruction"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm.reconstruction</span></tt></a></li>
+<li><a class="reference internal" href="magni.imaging.evaluation.html#module-magni.imaging.evaluation" title="magni.imaging.evaluation"><tt class="xref py py-obj docutils literal"><span class="pre">magni.imaging.evaluation</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td>cs-phase_transition</td>
+<td><ul class="first last simple">
+<li>Estimating phase transitions using simulations.</li>
+<li>Plotting phase transitions.</li>
+<li>Plotting phase transition probability colormaps.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.cs.phase_transition._util.html#magni.cs.phase_transition._util.determine" title="magni.cs.phase_transition._util.determine"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition._util.determine</span></tt></a></li>
+<li><a class="reference internal" href="magni.cs.phase_transition.io.html#module-magni.cs.phase_transition.io" title="magni.cs.phase_transition.io"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition.io</span></tt></a></li>
+<li><a class="reference internal" href="magni.cs.phase_transition.plotting.html#module-magni.cs.phase_transition.plotting" title="magni.cs.phase_transition.plotting"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition.plotting</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>cs-phase_transition-config</td>
+<td><ul class="first last simple">
+<li>Using Magni configuration modules including setting
+and getting configuration values.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.cs.phase_transition.config.html#module-magni.cs.phase_transition.config" title="magni.cs.phase_transition.config"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition.config</span></tt></a></li>
+<li><a class="reference internal" href="magni.utils.config.html#module-magni.utils.config" title="magni.utils.config"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.config</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td>cs-reconstruction</td>
+<td><ul class="first last simple">
+<li>Reconstruction of compressively sampled 1D signals.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.cs.reconstruction.html#module-magni.cs.reconstruction" title="magni.cs.reconstruction"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.reconstruction</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>magni</td>
+<td><ul class="first last simple">
+<li>The typical work flow in compressively sampling and
+reconstructing AFM images using Magni.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.afm.html#module-magni.afm" title="magni.afm"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td>imaging-dictionaries</td>
+<td><ul class="first last simple">
+<li>Handling compressed sensing dictionaries using
+Magni.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.imaging.dictionaries.html#module-magni.imaging.dictionaries" title="magni.imaging.dictionaries"><tt class="xref py py-obj docutils literal"><span class="pre">magni.imaging.dictionaries</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>imaging-domains</td>
+<td><ul class="first last simple">
+<li>Easy handling of an image in the three domains:
+image, measurement and sparse (dictionary).</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage" title="magni.imaging.domains.MultiDomainImage"><tt class="xref py py-obj docutils literal"><span class="pre">magni.imaging.domains.MultiDomainImage</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td>imaging-measurements</td>
+<td><ul class="first last simple">
+<li>Handling sampling/measurement patterns using Magni.</li>
+<li>Sampling a surface.</li>
+<li>Sampling an image.</li>
+<li>Illustrating sampling patterns.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.imaging.measurements.html#module-magni.imaging.measurements" title="magni.imaging.measurements"><tt class="xref py py-obj docutils literal"><span class="pre">magni.imaging.measurements</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>imaging-preprocessing</td>
+<td><ul class="first last simple">
+<li>Pre-processing an image prior to sampling</li>
+<li>De-tilting AFM images.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.imaging.preprocessing.html#module-magni.imaging.preprocessing" title="magni.imaging.preprocessing"><tt class="xref py py-obj docutils literal"><span class="pre">magni.imaging.preprocessing</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td>reporducibility-io</td>
+<td><ul class="first last simple">
+<li>Annotating an HDF5 database to help in improving
+the reproducibility of the results it contains.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.reproducibility.io.html#module-magni.reproducibility.io" title="magni.reproducibility.io"><tt class="xref py py-obj docutils literal"><span class="pre">magni.reproducibility.io</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>util-matrices</td>
+<td><ul class="first last simple">
+<li>Using the special Magni Matrix and MatrixCollection
+classes.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.utils.matrices.html#magni.utils.matrices.Matrix" title="magni.utils.matrices.Matrix"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.matrices.Matrix</span></tt></a></li>
+<li><a class="reference internal" href="magni.utils.matrices.html#magni.utils.matrices.MatrixCollection" title="magni.utils.matrices.MatrixCollection"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.matrices.MatrixCollection</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td>utils-plotting</td>
+<td><ul class="first last simple">
+<li>Using the predefined plotting options in Magni to
+create clearer and more visually pleasing plots.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.utils.plotting.html#module-magni.utils.plotting" title="magni.utils.plotting"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.plotting</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>utils-validation</td>
+<td><ul class="first last simple">
+<li>Validation of function parameters</li>
+<li>Disabling input validation to reduce computation
+overhead</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.utils.validation.html#module-magni.utils.validation" title="magni.utils.validation"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.validation</span></tt></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Examples</a><ul>
+<li><a class="reference internal" href="#starting-the-ipython-notebook">Starting the IPython Notebook</a></li>
+<li><a class="reference internal" href="#examples-overview">Examples overview</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="notation.html"
+                        title="previous chapter">A Note on Notation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.html"
+                        title="next chapter">magni package</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.html" title="magni package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="notation.html" title="A Note on Notation"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

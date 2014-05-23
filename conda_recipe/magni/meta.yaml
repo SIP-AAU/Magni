@@ -1,0 +1,37 @@
+# Conda recipe for Magni
+
+package:
+  name: magni
+  version: '1.0.0'
+
+source:
+  fn: magni-1.0.0.tar.gz
+  url: https://pypi.python.org/packages/source/m/magni/magni-1.0.0.tar.gz
+  md5: 938899978fef20b8e16b3af5d6d44efc
+
+  patches:
+    - setup_py_conda.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    - numpy
+    - pytables
+    - scipy
+    - matplotlib
+
+test:
+  imports:
+    - magni
+
+about:
+  home: https://github.com/SIP-AAU/Magni
+  license: BSD 2-Clause
+  summary: A Python Package for Compressive Sampling Reconstruction of Atomic Force Microscopy Images
+  

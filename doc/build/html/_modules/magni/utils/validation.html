@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.utils.validation &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for magni.utils.validation</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">..</span>
+<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    All rights reserved.</span>
+<span class="sd">    See LICENSE.rst for further information.</span>
+
+<span class="sd">Module providing validation capability.</span>
+
+<span class="sd">The intention is to validate all public functions of the package such that</span>
+<span class="sd">erroneous arguments in calls are reported in an informative fashion rather than</span>
+<span class="sd">causing arbitrary exceptions or unexpected results. To avoid performance</span>
+<span class="sd">impairments, the validation can be disabled globally.</span>
+
+<span class="sd">Routine listings</span>
+<span class="sd">----------------</span>
+<span class="sd">decorate_validation(func)</span>
+<span class="sd">    Decorate a validation function (see Notes).</span>
+<span class="sd">disable_validation()</span>
+<span class="sd">    Disable validation globally (see Notes).</span>
+<span class="sd">validate(var, path, levels, ignore_none=False)</span>
+<span class="sd">    Validate the value of a variable according to a validation scheme.</span>
+<span class="sd">validate_ndarray(var, path, constraints)</span>
+<span class="sd">    Validate a numpy.ndarray according to a validation scheme.</span>
+
+<span class="sd">Notes</span>
+<span class="sd">-----</span>
+<span class="sd">To be able to disable validation (and to ensure consistency), for every public</span>
+<span class="sd">function a validation function with the same name prefixed by &#39;_validate_&#39;</span>
+<span class="sd">should be defined. This function should be decorated by `decorate_validation`,</span>
+<span class="sd">be placed just above the function which it decorates, and be called as the</span>
+<span class="sd">first thing with all arguments.</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">If, for example, the following function is defined:</span>
+
+<span class="sd">&gt;&gt;&gt; def greet(person, greeting):</span>
+<span class="sd">...     print(&#39;{}, {} {}.&#39;.format(greeting, person[&#39;title&#39;], person[&#39;name&#39;]))</span>
+
+<span class="sd">This function probably expects its argument, &#39;person&#39; to be a dictionary with</span>
+<span class="sd">keys &#39;title&#39; and &#39;name&#39; and its argument, &#39;greeting&#39; to be a string. If, for</span>
+<span class="sd">example, a list is passed as the first argument, a TypeError is raised with the</span>
+<span class="sd">description &#39;list indices must be integers, not str&#39;. While obviously correct,</span>
+<span class="sd">this message is not excessively informative to the user of the function.</span>
+<span class="sd">Instead, this module can be used to redefine the function as follows:</span>
+
+<span class="sd">&gt;&gt;&gt; from magni.utils.validation import validate, decorate_validation</span>
+<span class="sd">&gt;&gt;&gt; @decorate_validation</span>
+<span class="sd">... def _validate_greet(person, greeting):</span>
+<span class="sd">...     validate(person, &#39;person&#39;, {&#39;type&#39;: dict, &#39;keys&#39;: (&#39;title&#39;, &#39;name&#39;)})</span>
+<span class="sd">...     validate(greeting, &#39;greeting&#39;, {&#39;type&#39;: str})</span>
+<span class="sd">&gt;&gt;&gt; def greet(person, greeting):</span>
+<span class="sd">...     _validate_greet(person, greeting)</span>
+<span class="sd">...     print(&#39;{}, {} {}.&#39;.format(greeting, person[&#39;title&#39;], person[&#39;name&#39;]))</span>
+
+<span class="sd">If, again, a list is passed as the first argument, a TypeError with the</span>
+<span class="sd">description &#39;type(person) must be &lt;type &#39;dict&#39;&gt;&#39;. Now, the user of the function</span>
+<span class="sd">can easily identify the mistake and correct the call to read:</span>
+
+<span class="sd">&gt;&gt;&gt; greet({&#39;title&#39;: &#39;Mr.&#39;, &#39;name&#39;: &#39;Anderson&#39;}, &#39;You look surprised to see me&#39;)</span>
+<span class="sd">You look surprised to see me, Mr. Anderson.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<span class="n">_disabled</span> <span class="o">=</span> <span class="bp">False</span>
+
+
+<div class="viewcode-block" id="decorate_validation"><a class="viewcode-back" href="../../../magni.utils.validation.html#magni.utils.validation.decorate_validation">[docs]</a><span class="k">def</span> <span class="nf">decorate_validation</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorate a validation function (see module Notes).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">        The validation function which should be decorated.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    An example of a function which accepts only an integer as argument:</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.utils.validation import decorate_validation</span>
+<span class="sd">    &gt;&gt;&gt; @decorate_validation</span>
+<span class="sd">    ... def _validate_test(arg):</span>
+<span class="sd">    ...     magni.utils.validation.validate(arg, &#39;arg&#39;, {&#39;type&#39;: int})</span>
+<span class="sd">    &gt;&gt;&gt; def test(arg):</span>
+<span class="sd">    ...     _validate_test(arg)</span>
+<span class="sd">    ...     return</span>
+
+<span class="sd">    If the function is called with anything but an integer, it fails:</span>
+
+<span class="sd">    &gt;&gt;&gt; try:</span>
+<span class="sd">    ...     test(&#39;string&#39;)</span>
+<span class="sd">    ...     print(&#39;No exception occured&#39;)</span>
+<span class="sd">    ... except BaseException:</span>
+<span class="sd">    ...     print(&#39;An exception occured&#39;)</span>
+<span class="sd">    An exception occured</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrap a validation function (see module Notes).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args : tuple</span>
+<span class="sd">            The arguments passed to the decorated function.</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            The keyword arguments passed to the decorated function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_disabled</span><span class="p">:</span>
+            <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+</div>
+<div class="viewcode-block" id="disable_validation"><a class="viewcode-back" href="../../../magni.utils.validation.html#magni.utils.validation.disable_validation">[docs]</a><span class="k">def</span> <span class="nf">disable_validation</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Disable validation globally (see module Notes).</span>
+
+<span class="sd">    There is no equivalent function to enable validation since either any or</span>
+<span class="sd">    no function calls should be validated depending on the run mode.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    An example of a function which accepts only an integer as argument:</span>
+
+<span class="sd">    &gt;&gt;&gt; @magni.utils.validation.decorate_validation</span>
+<span class="sd">    ... def _validate_test(arg):</span>
+<span class="sd">    ...     magni.utils.validation.validate(arg, &#39;arg&#39;, {&#39;type&#39;: int})</span>
+<span class="sd">    &gt;&gt;&gt; def test(arg):</span>
+<span class="sd">    ...     _validate_test(arg)</span>
+<span class="sd">    ...     return</span>
+
+<span class="sd">    If the function is called with anything but an integer, it fails:</span>
+
+<span class="sd">    &gt;&gt;&gt; try:</span>
+<span class="sd">    ...     test(&#39;string&#39;)</span>
+<span class="sd">    ...     print(&#39;No exception occured&#39;)</span>
+<span class="sd">    ... except BaseException:</span>
+<span class="sd">    ...     print(&#39;An exception occured&#39;)</span>
+<span class="sd">    An exception occured</span>
+
+<span class="sd">    However, if validation is disabled, the same call does not fail:</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.utils.validation import disable_validation</span>
+<span class="sd">    &gt;&gt;&gt; disable_validation()</span>
+<span class="sd">    &gt;&gt;&gt; try:</span>
+<span class="sd">    ...     test(&#39;string&#39;)</span>
+<span class="sd">    ...     print(&#39;No exception occured&#39;)</span>
+<span class="sd">    ... except BaseException:</span>
+<span class="sd">    ...     print(&#39;An exception occured&#39;)</span>
+<span class="sd">    No exception occured</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">_disabled</span>
+    <span class="n">_disabled</span> <span class="o">=</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../../magni.utils.validation.html#magni.utils.validation.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">levels</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the value of a variable according to a validation scheme.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    var : None</span>
+<span class="sd">        The variable to validate which can take any type.</span>
+<span class="sd">    path : str</span>
+<span class="sd">        The path of the variable which is printed if the variable is invalid.</span>
+<span class="sd">    levels : list or tuple or dict</span>
+<span class="sd">        The validation scheme.</span>
+<span class="sd">    ignore_none : bool, optional</span>
+<span class="sd">        The flag indicating whether the variable is allowed to have the value</span>
+<span class="sd">        None (the default is False).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The `levels` parameter is either a dict or a sequence of dicts. If it is a</span>
+<span class="sd">    dict, it is considered a sequence of one dict. Each dict corresponds to the</span>
+<span class="sd">    validation scheme of a &#39;level&#39;: the first level consists of `var` itself,</span>
+<span class="sd">    the second level consists of any value in `var` if `var` is itself a list,</span>
+<span class="sd">    tuple, or dict, and so on.</span>
+
+<span class="sd">    A level is validated according to the keys and values of the dict</span>
+<span class="sd">    specifying the validation scheme of that level. See the source for details</span>
+<span class="sd">    on the usable keys and their function.</span>
+
+<span class="sd">    .. note:: It is assumed that `var`, `path`, `levels`, and `ignore_none`</span>
+<span class="sd">              are all valid arguments as these are not explicitly validated.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Define a function for reporting if an exception occurs when calling making</span>
+<span class="sd">    some call:</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.utils.validation import validate</span>
+<span class="sd">    &gt;&gt;&gt; def report(call):</span>
+<span class="sd">    ...     try:</span>
+<span class="sd">    ...         call()</span>
+<span class="sd">    ...         print(&#39;No exception occured&#39;)</span>
+<span class="sd">    ...     except BaseException:</span>
+<span class="sd">    ...         print(&#39;An exception occured&#39;)</span>
+
+<span class="sd">    An example of how to validate an integer:</span>
+
+<span class="sd">    &gt;&gt;&gt; var = 1</span>
+<span class="sd">    &gt;&gt;&gt; call = lambda: validate(var, &#39;var&#39;, {&#39;type&#39;: int})</span>
+<span class="sd">    &gt;&gt;&gt; report(call)</span>
+<span class="sd">    No exception occured</span>
+
+<span class="sd">    The above code fails when, e.g., a string is passed instead:</span>
+
+<span class="sd">    &gt;&gt;&gt; var = &#39;string&#39;</span>
+<span class="sd">    &gt;&gt;&gt; report(call)</span>
+<span class="sd">    An exception occured</span>
+
+<span class="sd">    An example of how to validate a tuple expected to hold two integers:</span>
+
+<span class="sd">    &gt;&gt;&gt; var = (42, 1337)</span>
+<span class="sd">    &gt;&gt;&gt; call = lambda: validate(var, &#39;var&#39;, ({&#39;type&#39;: tuple, &#39;len&#39;: 2},</span>
+<span class="sd">    ...                                      {&#39;type&#39;: int}))</span>
+<span class="sd">    &gt;&gt;&gt; report(call)</span>
+<span class="sd">    No exception occured</span>
+
+<span class="sd">    The above code fails when, e.g., a tuple with three integers is passed</span>
+<span class="sd">    instead:</span>
+
+<span class="sd">    &gt;&gt;&gt; var = (1, 2, 3)</span>
+<span class="sd">    &gt;&gt;&gt; report(call)</span>
+<span class="sd">    An exception occured</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">ignore_none</span> <span class="ow">and</span> <span class="n">var</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="n">levels</span><span class="p">]</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="s">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="ow">is</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;type({!r}) must be {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;type_in&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;type_in&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;type({!r}) must be in {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;type_in&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;class&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">]):</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;{!r} must be an instance of {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;val_in&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;val_in&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="s">&#39;{!r} must be in {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;val_in&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;min&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">var</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;min&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="s">&#39;{!r} must be &gt;= {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;min&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;max&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">var</span> <span class="o">&gt;</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;max&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="s">&#39;{!r} must be &lt;= {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;max&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;len&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">!=</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;len&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="s">&#39;{!r} must be of length {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;len&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;keys&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;keys&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">var</span><span class="p">:</span>
+                <span class="n">_error</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="s">&#39;{!r} must have the key {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="s">&#39;keys_in&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">var</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;keys_in&#39;</span><span class="p">]:</span>
+                <span class="n">_error</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="s">&#39;{!r} may only have keys in {!r}.&#39;</span><span class="p">,</span>
+                       <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;keys_in&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
+                <span class="n">validate</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s">&#39;{}[{}]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">var</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">validate</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s">&#39;{}[{}]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+</div>
+<div class="viewcode-block" id="validate_ndarray"><a class="viewcode-back" href="../../../magni.utils.validation.html#magni.utils.validation.validate_ndarray">[docs]</a><span class="k">def</span> <span class="nf">validate_ndarray</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="p">{},</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate a numpy.ndarray according to a validation scheme.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    var : numpy.ndarray</span>
+<span class="sd">        The variable to validate.</span>
+<span class="sd">    path : str</span>
+<span class="sd">        The path of the variable which is printed if the variable is invalid.</span>
+<span class="sd">    constraints : dict</span>
+<span class="sd">        The validation scheme.</span>
+<span class="sd">    ignore_none : bool, optional</span>
+<span class="sd">        Boolean indicating whether the variable is allowed to have the value</span>
+<span class="sd">        None (the default is False).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The variable is validated according to the keys and values of the dict</span>
+<span class="sd">    specifying the validation scheme. See the source for details on the usable</span>
+<span class="sd">    keys and their function.</span>
+
+<span class="sd">    .. note:: It is assumed that `var`, `path`, `levels`, and `ignore_none`</span>
+<span class="sd">              are all valid arguments as these are not explicitly validated.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Define a function for reporting if an exception occurs when calling making</span>
+<span class="sd">    some call:</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.utils.validation import validate_ndarray</span>
+<span class="sd">    &gt;&gt;&gt; def report(call):</span>
+<span class="sd">    ...     try:</span>
+<span class="sd">    ...         call()</span>
+<span class="sd">    ...         print(&#39;No exception occured&#39;)</span>
+<span class="sd">    ...     except BaseException:</span>
+<span class="sd">    ...         print(&#39;An exception occured&#39;)</span>
+
+<span class="sd">    An example of how to validate a float64 numpy.ndarray of shape (5,):</span>
+
+<span class="sd">    &gt;&gt;&gt; var = np.float64([1, 2, 3, 4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; call = lambda: validate_ndarray(var, &#39;var&#39;,</span>
+<span class="sd">    ...                                 {&#39;dtype&#39;: np.float64, &#39;shape&#39;: (5,)})</span>
+<span class="sd">    &gt;&gt;&gt; report(call)</span>
+<span class="sd">    No exception occured</span>
+
+<span class="sd">    The above code fails when, e.g., an int64 numpy.ndarray is passed instead:</span>
+
+<span class="sd">    &gt;&gt;&gt; var = np.int64([1, 2, 3, 4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; report(call)</span>
+<span class="sd">    An exception occured</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">ignore_none</span> <span class="ow">and</span> <span class="n">var</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">constraints</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;{!r} must be an instance of np.ndarray.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,))</span>
+
+    <span class="k">if</span> <span class="s">&#39;dtype&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">var</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;dtype&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;{!r}.dtype must be {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;dtype&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;subdtype&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;subdtype&#39;</span><span class="p">]):</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;{!r}.dtype must be a supdtype of {!r}.&#39;</span><span class="p">,</span>
+               <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;subdtype&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;shape&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">var</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;{!r}.shape must be {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="s">&#39;dim&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;dim&#39;</span><span class="p">]:</span>
+        <span class="n">_error</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;The dimension of {!r} must be {!r}.&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;dim&#39;</span><span class="p">]))</span>
+
+</div>
+<div class="viewcode-block" id="_error"><a class="viewcode-back" href="../../../magni.utils.validation.html#magni.utils.validation._error">[docs]</a><span class="k">def</span> <span class="nf">_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise an error of a given type with a given message.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    error : {&#39;type&#39;, &#39;value&#39;, &#39;key&#39;}</span>
+<span class="sd">        The type of the raised error.</span>
+<span class="sd">    message : str</span>
+<span class="sd">        The message of the raised error after being formatted using &#39;format&#39;.</span>
+<span class="sd">    args : list or tuple</span>
+<span class="sd">        The args passed to &#39;format&#39;.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">error</span> <span class="o">==</span> <span class="s">&#39;type&#39;</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="ne">TypeError</span>
+    <span class="k">elif</span> <span class="n">error</span> <span class="o">==</span> <span class="s">&#39;value&#39;</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="ne">ValueError</span>
+    <span class="k">elif</span> <span class="n">error</span> <span class="o">==</span> <span class="s">&#39;key&#39;</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="ne">KeyError</span>
+
+    <span class="k">raise</span> <span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

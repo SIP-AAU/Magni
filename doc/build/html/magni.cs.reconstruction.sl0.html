@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.cs.reconstruction.sl0 package &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.cs.reconstruction package" href="magni.cs.reconstruction.html" />
+    <link rel="next" title="magni.cs.reconstruction.sl0._modified module" href="magni.cs.reconstruction.sl0._modified.html" />
+    <link rel="prev" title="magni.cs.reconstruction.iht.config module" href="magni.cs.reconstruction.iht.config.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.cs.reconstruction.sl0._modified.html" title="magni.cs.reconstruction.sl0._modified module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.cs.reconstruction.iht.config.html" title="magni.cs.reconstruction.iht.config module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li><a href="magni.cs.reconstruction.html" accesskey="U">magni.cs.reconstruction package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.cs.reconstruction.sl0">
+<span id="magni-cs-reconstruction-sl0-package"></span><h1>magni.cs.reconstruction.sl0 package<a class="headerlink" href="#module-magni.cs.reconstruction.sl0" title="Permalink to this headline">¶</a></h1>
+<p>Subpackage providing implementations of Smoothed l0 Norm SL0).</p>
+<p>The implementations provided are the original SL0 reconstruction algorithm and
+a modified SL0 reconstruction algorithm. The algorithm used depends on the
+&#8216;algorithm&#8217; configuration option: &#8216;std&#8217; refers to the original algorithm while
+&#8216;mod&#8217; (default) refers to the modified algorithm.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>config</dt>
+<dd>Module providing configuration options for this subpackage.</dd>
+<dt>run(y, A)</dt>
+<dd>Run the specified SL0 reconstruction algorithm.</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>See <a class="reference internal" href="magni.cs.reconstruction.sl0._util.html#module-magni.cs.reconstruction.sl0._util" title="magni.cs.reconstruction.sl0._util"><tt class="xref py py-obj docutils literal"><span class="pre">_util</span></tt></a> for documentation of <tt class="xref py py-obj docutils literal"><span class="pre">run</span></tt>.</p>
+<p>The original SL0 reconstruction algorithm by Mohimani et. al is described in
+<a class="footnote-reference" href="#id4" id="id1">[1]</a> whereas the constraint elimiation intepretation of the original SL0
+algorithm by Cui et. al. is described in <a class="footnote-reference" href="#id5" id="id2">[2]</a>. The modified SL0 reconstruction
+algorithm by Oxvig et. al. is described in <a class="footnote-reference" href="#id6" id="id3">[3]</a>. Specifically, the provided
+sequential implementations are:</p>
+<div class="line-block">
+<div class="line">std : The standard SL0 algorithm</div>
+<div class="line-block">
+<div class="line">For delta &lt; 0.55: Standard projection algorithm by Mohimani et. al.</div>
+<div class="line">For delta &gt;= 0.55: Standard constraint elimination algorithm by Cui et.
+al.</div>
+</div>
+<div class="line">mod : The modified SL0 algorithm (the default)</div>
+<div class="line-block">
+<div class="line">For delta &lt; 0.55: Modified projection algorithm</div>
+<div class="line">For delta &gt;= 0.55: Modified constraint elimination algorithm</div>
+</div>
+</div>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>H. Mohimani, M. Babaie-Zadeh, and C. Jutten, &#8220;A Fast Approach for
+Overcomplete Sparse Decomposition Based on Smoothed l0 Norm&#8221;, <em>IEEE
+Transactions on Signal Processing</em>, vol. 57, no. 1, pp. 289-301, Jan. 2009.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Z. Cui, H. Zhang, and W. Lu, &#8220;An Improved Smoothed l0-norm Algorithm
+Based on Multiparameter Approximation Function&#8221;, <em>in 12th IEEE International
+Conference on Communication Technology (ICCT)</em>, Nanjing, China, Nov. 11-14,
+2011, pp. 942-945.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>C. S. Oxvig, P. S. Pedersen, T. Arildsen, and T. Larsen, &#8220;Surpassing the
+Theoretical 1-norm Phase Transition in Compressive Sensing by Tuning the
+Smoothed l0 Algorithm&#8221;, <em>in IEEE International Conference on Acoustics,
+Speech and Signal Processing (ICASSP)</em>, Vancouver, Canada, May 26-31, 2013,
+pp. 6019-6023.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="magni.cs.reconstruction.sl0._modified.html">magni.cs.reconstruction.sl0._modified module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.cs.reconstruction.sl0._original.html">magni.cs.reconstruction.sl0._original module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.cs.reconstruction.sl0._util.html">magni.cs.reconstruction.sl0._util module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.cs.reconstruction.sl0.config.html">magni.cs.reconstruction.sl0.config module</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.cs.reconstruction.sl0 package</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.cs.reconstruction.iht.config.html"
+                        title="previous chapter">magni.cs.reconstruction.iht.config module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.cs.reconstruction.sl0._modified.html"
+                        title="next chapter">magni.cs.reconstruction.sl0._modified module</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.cs.reconstruction.sl0._modified.html" title="magni.cs.reconstruction.sl0._modified module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.cs.reconstruction.iht.config.html" title="magni.cs.reconstruction.iht.config module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li><a href="magni.cs.reconstruction.html" >magni.cs.reconstruction package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.utils.plotting &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for magni.utils.plotting</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">..</span>
+<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    All rights reserved.</span>
+<span class="sd">    See LICENSE.rst for further information.</span>
+
+<span class="sd">Module providing utilities for control of plotting using `matplotlib`.</span>
+
+<span class="sd">The module has a number of public attributes which provide settings for</span>
+<span class="sd">colormap cycles, linestyle cycles, and marker cycles that may be used in</span>
+<span class="sd">combination with `matplotlib`.</span>
+
+<span class="sd">Routine listings</span>
+<span class="sd">----------------</span>
+<span class="sd">setup_matplotlib(settings={}, cmap=&#39;jet&#39;)</span>
+<span class="sd">    Function that set the Magni default `matplotlib` configuration.</span>
+<span class="sd">colour_collections : dict</span>
+<span class="sd">    Collections of colours that may be used in e.g., a `matplotlib`</span>
+<span class="sd">    color_cycle.</span>
+<span class="sd">seq_cmaps : list</span>
+<span class="sd">    Names of `matplotlib.cm` colormaps optimized for sequential data.</span>
+<span class="sd">div_cmaps : list</span>
+<span class="sd">    Names of `matplotlib.cm` colormaps optimized for diverging data.</span>
+<span class="sd">linestyles : list</span>
+<span class="sd">    A subset of linestyles from `matplotlib.lines`</span>
+<span class="sd">markers : list</span>
+<span class="sd">    A subset of markers from `matplotlib.markers`</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">Use the default Magni matplotlib settings.</span>
+
+<span class="sd">&gt;&gt;&gt; magni.utils.plotting.setup_matplotlib()</span>
+
+<span class="sd">Get the normalised &#39;Blue&#39; colour brew from the psp colour map:</span>
+
+<span class="sd">&gt;&gt;&gt; magni.utils.plotting.colour_collections[&#39;psp&#39;][&#39;Blue&#39;]</span>
+<span class="sd">((0.1255, 0.502, 0.8745),)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
+
+
+<div class="viewcode-block" id="_ColourCollection"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting._ColourCollection">[docs]</a><span class="k">class</span> <span class="nc">_ColourCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container for colour maps.</span>
+
+<span class="sd">    A single colour is stored as an RGB 3-tuple of integers in the interval</span>
+<span class="sd">    [0,255]. A set of related colours is termed a colour brew and is stored as</span>
+<span class="sd">    a list of colours. A set of related colour brews is termed a colour</span>
+<span class="sd">    collection and is stored as a dictionary. The dictionary key identifies</span>
+<span class="sd">    the name of the colour collection whereas the value is the list of colour</span>
+<span class="sd">    brews.</span>
+
+<span class="sd">    The default colour collections named &quot;cb*&quot; are colorblind safe, print</span>
+<span class="sd">    friendly, and photocopy-able. They have been created using the online</span>
+<span class="sd">    ColorBrewer 2.0 tool [1]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    brews : dict</span>
+<span class="sd">        The dictionary of colour brews from which the colour collection is</span>
+<span class="sd">        created.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Each colour brew is a list (or tuple) of length 3 lists (or tuples) of RGB</span>
+<span class="sd">    values.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] M. Harrower and C. A. Brewer, &quot;ColorBrewer.org: An Online Tool for</span>
+<span class="sd">       Selecting Colour Schemes for Maps&quot;, *The Cartographic Journal*, vol. 40,</span>
+<span class="sd">       pp. 27-37, 2003 (See also: http://colorbrewer2.org/)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+<div class="viewcode-block" id="_ColourCollection._validate_init"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting._ColourCollection._validate_init">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">brews</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the `__init__` function.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        _ColourCollection.__init__ : The validated function.</span>
+<span class="sd">        magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_validate</span><span class="p">(</span><span class="n">brews</span><span class="p">,</span> <span class="s">&#39;brews&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">},</span>
+                                   <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)},</span>
+                                   <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">),</span> <span class="s">&#39;len&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+                                   <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#39;max&#39;</span><span class="p">:</span> <span class="mi">255</span><span class="p">}])</span>
+</div>
+<div class="viewcode-block" id="_ColourCollection.__init__"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting._ColourCollection.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">brews</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_init</span><span class="p">(</span><span class="n">brews</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_brews</span> <span class="o">=</span> <span class="n">brews</span>
+</div>
+<div class="viewcode-block" id="_ColourCollection._validate_getitem"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting._ColourCollection._validate_getitem">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the `__getitem__` function.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        _ColourCollection.__getitem__ : The validated function.</span>
+<span class="sd">        magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_validate</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;val_in&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_brews</span><span class="o">.</span><span class="n">keys</span><span class="p">())})</span>
+</div>
+<div class="viewcode-block" id="_ColourCollection.__getitem__"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting._ColourCollection.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a single colour brew.</span>
+
+<span class="sd">        The returned colour brew is normalised in the sense of matplotlib</span>
+<span class="sd">        normalised rgb values, i.e., colours are 3-tuples of floats in the</span>
+<span class="sd">        interval [0, 1].</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the colour brew to return.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        brew : tuple</span>
+<span class="sd">            A colour brew list.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_getitem</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">tuple</span><span class="p">([</span><span class="nb">round</span><span class="p">(</span><span class="n">val</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">colour</span><span class="p">])</span>
+                      <span class="k">for</span> <span class="n">colour</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_brews</span><span class="p">[</span><span class="n">name</span><span class="p">]])</span>
+
+</div></div>
+<span class="n">colour_collections</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;cb4&#39;</span><span class="p">:</span> <span class="n">_ColourCollection</span><span class="p">({</span>
+        <span class="s">&#39;OrRd&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">254</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">217</span><span class="p">),</span> <span class="p">(</span><span class="mi">253</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">138</span><span class="p">),</span> <span class="p">(</span><span class="mi">252</span><span class="p">,</span> <span class="mi">141</span><span class="p">,</span> <span class="mi">89</span><span class="p">),</span>
+                 <span class="p">(</span><span class="mi">215</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">31</span><span class="p">)),</span>
+        <span class="s">&#39;PuOr&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">230</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">253</span><span class="p">,</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">99</span><span class="p">),</span> <span class="p">(</span><span class="mi">178</span><span class="p">,</span> <span class="mi">171</span><span class="p">,</span> <span class="mi">210</span><span class="p">),</span>
+                 <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">153</span><span class="p">))}),</span>
+    <span class="s">&#39;cb3&#39;</span><span class="p">:</span> <span class="n">_ColourCollection</span><span class="p">({</span>
+        <span class="s">&#39;BuGn&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">229</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">249</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">216</span><span class="p">,</span> <span class="mi">201</span><span class="p">),</span> <span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">162</span><span class="p">,</span> <span class="mi">95</span><span class="p">)),</span>
+        <span class="s">&#39;BuPu&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">224</span><span class="p">,</span> <span class="mi">236</span><span class="p">,</span> <span class="mi">244</span><span class="p">),</span> <span class="p">(</span><span class="mi">158</span><span class="p">,</span> <span class="mi">188</span><span class="p">,</span> <span class="mi">218</span><span class="p">),</span> <span class="p">(</span><span class="mi">136</span><span class="p">,</span> <span class="mi">86</span><span class="p">,</span> <span class="mi">167</span><span class="p">)),</span>
+        <span class="s">&#39;GuBu&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">224</span><span class="p">,</span> <span class="mi">243</span><span class="p">,</span> <span class="mi">219</span><span class="p">),</span> <span class="p">(</span><span class="mi">168</span><span class="p">,</span> <span class="mi">221</span><span class="p">,</span> <span class="mi">181</span><span class="p">),</span> <span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="mi">162</span><span class="p">,</span> <span class="mi">202</span><span class="p">)),</span>
+        <span class="s">&#39;OrRd&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">254</span><span class="p">,</span> <span class="mi">232</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">253</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">132</span><span class="p">),</span> <span class="p">(</span><span class="mi">227</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span>
+        <span class="s">&#39;PuBu&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">236</span><span class="p">,</span> <span class="mi">231</span><span class="p">,</span> <span class="mi">242</span><span class="p">),</span> <span class="p">(</span><span class="mi">166</span><span class="p">,</span> <span class="mi">189</span><span class="p">,</span> <span class="mi">219</span><span class="p">),</span> <span class="p">(</span><span class="mi">43</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">190</span><span class="p">)),</span>
+        <span class="s">&#39;PuBuGn&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">236</span><span class="p">,</span> <span class="mi">226</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span> <span class="p">(</span><span class="mi">166</span><span class="p">,</span> <span class="mi">189</span><span class="p">,</span> <span class="mi">219</span><span class="p">),</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">153</span><span class="p">)),</span>
+        <span class="s">&#39;PuRd&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">231</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">239</span><span class="p">),</span> <span class="p">(</span><span class="mi">201</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">199</span><span class="p">),</span> <span class="p">(</span><span class="mi">221</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">119</span><span class="p">)),</span>
+        <span class="s">&#39;RdPu&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">253</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">221</span><span class="p">),</span> <span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">159</span><span class="p">,</span> <span class="mi">181</span><span class="p">),</span> <span class="p">(</span><span class="mi">197</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">138</span><span class="p">)),</span>
+        <span class="s">&#39;YlGn&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">247</span><span class="p">,</span> <span class="mi">252</span><span class="p">,</span> <span class="mi">185</span><span class="p">),</span> <span class="p">(</span><span class="mi">173</span><span class="p">,</span> <span class="mi">221</span><span class="p">,</span> <span class="mi">142</span><span class="p">),</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">84</span><span class="p">)),</span>
+        <span class="s">&#39;YlGnBu&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">237</span><span class="p">,</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">177</span><span class="p">),</span> <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">205</span><span class="p">,</span> <span class="mi">187</span><span class="p">),</span> <span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">184</span><span class="p">)),</span>
+        <span class="s">&#39;YlOrBr&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">247</span><span class="p">,</span> <span class="mi">188</span><span class="p">),</span> <span class="p">(</span><span class="mi">254</span><span class="p">,</span> <span class="mi">196</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span> <span class="p">(</span><span class="mi">217</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">14</span><span class="p">)),</span>
+        <span class="s">&#39;YlOrRd&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">237</span><span class="p">,</span> <span class="mi">160</span><span class="p">),</span> <span class="p">(</span><span class="mi">254</span><span class="p">,</span> <span class="mi">178</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">32</span><span class="p">)),</span>
+        <span class="s">&#39;Blues&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">222</span><span class="p">,</span> <span class="mi">235</span><span class="p">,</span> <span class="mi">247</span><span class="p">),</span> <span class="p">(</span><span class="mi">158</span><span class="p">,</span> <span class="mi">202</span><span class="p">,</span> <span class="mi">225</span><span class="p">),</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">189</span><span class="p">)),</span>
+        <span class="s">&#39;Greens&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">229</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span> <span class="p">(</span><span class="mi">161</span><span class="p">,</span> <span class="mi">217</span><span class="p">,</span> <span class="mi">155</span><span class="p">),</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">84</span><span class="p">)),</span>
+        <span class="s">&#39;Greys&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">240</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span> <span class="p">(</span><span class="mi">189</span><span class="p">,</span> <span class="mi">189</span><span class="p">,</span> <span class="mi">189</span><span class="p">),</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">99</span><span class="p">)),</span>
+        <span class="s">&#39;Purples&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">239</span><span class="p">,</span> <span class="mi">237</span><span class="p">,</span> <span class="mi">245</span><span class="p">),</span> <span class="p">(</span><span class="mi">188</span><span class="p">,</span> <span class="mi">189</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span> <span class="p">(</span><span class="mi">117</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">177</span><span class="p">)),</span>
+        <span class="s">&#39;Reds&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">254</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">210</span><span class="p">),</span> <span class="p">(</span><span class="mi">252</span><span class="p">,</span> <span class="mi">146</span><span class="p">,</span> <span class="mi">114</span><span class="p">),</span> <span class="p">(</span><span class="mi">222</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">38</span><span class="p">)),</span>
+        <span class="s">&#39;PuOr&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">241</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="p">(</span><span class="mi">247</span><span class="p">,</span> <span class="mi">247</span><span class="p">,</span> <span class="mi">247</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">195</span><span class="p">))}),</span>
+    <span class="s">&#39;psp&#39;</span><span class="p">:</span> <span class="n">_ColourCollection</span><span class="p">({</span>
+        <span class="s">&#39;Blue&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">223</span><span class="p">),),</span>
+        <span class="s">&#39;Orange&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">223</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">32</span><span class="p">),),</span>
+        <span class="s">&#39;GreenY&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">223</span><span class="p">,</span> <span class="mi">32</span><span class="p">),),</span>
+        <span class="s">&#39;Purple&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">223</span><span class="p">),),</span>
+        <span class="s">&#39;Red&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">223</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">),),</span>
+        <span class="s">&#39;GreenB&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">223</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">),)}),</span>
+    <span class="s">&#39;bgg&#39;</span><span class="p">:</span> <span class="n">_ColourCollection</span><span class="p">({</span>
+        <span class="s">&#39;Black&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),),</span>
+        <span class="s">&#39;Green&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">191</span><span class="p">,</span> <span class="mi">0</span><span class="p">),),</span>
+        <span class="s">&#39;Grey&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">),)})}</span>
+
+
+<span class="n">seq_cmaps</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;YlOrRd&#39;</span><span class="p">,</span> <span class="s">&#39;YlOrRd_r&#39;</span><span class="p">,</span> <span class="s">&#39;YlGnBu&#39;</span><span class="p">,</span> <span class="s">&#39;YlGnBu_r&#39;</span><span class="p">,</span> <span class="s">&#39;PuBuGn&#39;</span><span class="p">,</span> <span class="s">&#39;PuBuGn_r&#39;</span><span class="p">,</span>
+             <span class="s">&#39;YlOrBr&#39;</span><span class="p">,</span> <span class="s">&#39;YlOrBr_r&#39;</span><span class="p">,</span> <span class="s">&#39;BuGn&#39;</span><span class="p">,</span> <span class="s">&#39;BuGn_r&#39;</span><span class="p">,</span> <span class="s">&#39;GnBu&#39;</span><span class="p">,</span> <span class="s">&#39;GnBu_r&#39;</span><span class="p">,</span>
+             <span class="s">&#39;PuBu&#39;</span><span class="p">,</span> <span class="s">&#39;PuBu_r&#39;</span><span class="p">,</span> <span class="s">&#39;PuRd&#39;</span><span class="p">,</span> <span class="s">&#39;PuRd_r&#39;</span><span class="p">]</span>
+<span class="n">div_cmaps</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;PRGn&#39;</span><span class="p">,</span> <span class="s">&#39;PRGn_r&#39;</span><span class="p">,</span> <span class="s">&#39;PiYG&#39;</span><span class="p">,</span> <span class="s">&#39;PiYG_r&#39;</span><span class="p">,</span> <span class="s">&#39;RdBu&#39;</span><span class="p">,</span> <span class="s">&#39;RdBu_r&#39;</span><span class="p">,</span> <span class="s">&#39;PuOr&#39;</span><span class="p">,</span>
+             <span class="s">&#39;PuOr_r&#39;</span><span class="p">,</span> <span class="s">&#39;RdGy&#39;</span><span class="p">,</span> <span class="s">&#39;RdGy_r&#39;</span><span class="p">]</span>
+<span class="n">linestyles</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="s">&#39;--&#39;</span><span class="p">,</span> <span class="s">&#39;-.&#39;</span><span class="p">,</span> <span class="s">&#39;:&#39;</span><span class="p">]</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="s">&#39;^&#39;</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_setup_matplotlib</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the `setup_matplotlib` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    setup_matplotlib : The validated function.</span>
+<span class="sd">    magni.util.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s">&#39;settings&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">}])</span>
+
+
+<div class="viewcode-block" id="setup_matplotlib"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting.setup_matplotlib">[docs]</a><span class="k">def</span> <span class="nf">setup_matplotlib</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="p">{},</span> <span class="n">cmap</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adjust the configuration of `matplotlib`.</span>
+
+<span class="sd">    Sets the default configuration of `matplotlib` to optimize for producing</span>
+<span class="sd">    high quality plots of the data produced by the functionality provided in</span>
+<span class="sd">    the Magni.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    settings : dict, optional</span>
+<span class="sd">       A dictionary of custom matplotlibrc settings. See examples for details</span>
+<span class="sd">       about the structure of the dictionary.</span>
+<span class="sd">    cmap : str or matplotlib.colors.Colormap, optional</span>
+<span class="sd">       Colormap to be used by matplotlib (the default is None, which implices</span>
+<span class="sd">       that the &#39;jet&#39; colormap is used).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    UserWarning</span>
+<span class="sd">       If the supplied custom settings are invalid.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example, set lines.linewidth=2 and lines.color=&#39;r&#39;.</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.utils.plotting import setup_matplotlib</span>
+<span class="sd">    &gt;&gt;&gt; custom_settings = {&#39;lines&#39;: {&#39;linewidth&#39;: 2, &#39;color&#39;: &#39;r&#39;}}</span>
+<span class="sd">    &gt;&gt;&gt; setup_matplotlib(custom_settings)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_setup_matplotlib</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">_settings</span><span class="p">,</span> <span class="n">_cmap</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">setting</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_settings</span><span class="p">:</span>
+            <span class="n">_settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">setting</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">setting</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">setting</span> <span class="ow">in</span> <span class="n">_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">setting</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">UserWarning</span><span class="p">(</span><span class="s">&#39;Setting {!r} ignored.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">_cmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">_cmap</span><span class="p">)</span>
+
+    <span class="n">_settings</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_cmap</span> <span class="o">=</span> <span class="bp">None</span>
+
+</div>
+<span class="n">_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;usetex&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">},</span>
+             <span class="s">&#39;font&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">},</span>
+             <span class="s">&#39;mathtext&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;fontset&#39;</span><span class="p">:</span> <span class="s">&#39;cm&#39;</span><span class="p">},</span>
+             <span class="s">&#39;pdf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;fonttype&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">},</span>
+             <span class="s">&#39;ps&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;fonttype&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">},</span>
+             <span class="s">&#39;legend&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;fontsize&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">},</span>
+             <span class="s">&#39;axes&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;color_cycle&#39;</span><span class="p">:</span> <span class="n">colour_collections</span><span class="p">[</span><span class="s">&#39;cb4&#39;</span><span class="p">][</span><span class="s">&#39;PuOr&#39;</span><span class="p">]},</span>
+             <span class="s">&#39;lines&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;linewidth&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+             <span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">8.0</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span>
+                        <span class="s">&#39;dpi&#39;</span><span class="p">:</span> <span class="mi">600</span><span class="p">},</span>
+             <span class="s">&#39;image&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;interpolation&#39;</span><span class="p">:</span> <span class="s">&#39;none&#39;</span><span class="p">}}</span>
+<span class="n">_cmap</span> <span class="o">=</span> <span class="s">&#39;jet&#39;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

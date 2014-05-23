@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.utils.multiprocessing._processing &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for magni.utils.multiprocessing._processing</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">..</span>
+<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    All rights reserved.</span>
+<span class="sd">    See LICENSE.rst for further information.</span>
+
+<span class="sd">Module providing the process function.</span>
+
+<span class="sd">Routine listings</span>
+<span class="sd">----------------</span>
+<span class="sd">process(func, namespace={}, args_list=None, kwargs_list=None, maxtasks=None)</span>
+<span class="sd">    Map multiple function calls to multiple processors.</span>
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">magni.utils.multiprocessing.config : Configuration options.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="kn">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">types</span>
+
+<span class="c"># disable mkl multiprocessing to avoid conflicts with manual multiprocessing</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">mkl</span>
+    <span class="n">_get_num_threads</span> <span class="o">=</span> <span class="n">mkl</span><span class="o">.</span><span class="n">get_max_threads</span>
+    <span class="n">_set_num_threads</span> <span class="o">=</span> <span class="n">mkl</span><span class="o">.</span><span class="n">set_num_threads</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_get_num_threads</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="n">_set_num_threads</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="mi">0</span>
+
+<span class="kn">from</span> <span class="nn">magni.utils.multiprocessing</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_config</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
+
+
+<span class="nd">@_decorate_validation</span>
+<span class="k">def</span> <span class="nf">_validate_process</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">,</span> <span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">maxtasks</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validation of the `process` function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    process : The validated function.</span>
+<span class="sd">    magni.utils.validation.validate : Validation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s">&#39;func&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">}])</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="s">&#39;namespace&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">}])</span>
+    <span class="n">requirement</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]}</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">args_list</span><span class="p">,</span> <span class="s">&#39;args_list&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">requirement</span><span class="p">,</span> <span class="n">requirement</span><span class="p">],</span> <span class="bp">True</span><span class="p">)</span>
+    <span class="n">_validate</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">,</span> <span class="s">&#39;kwargs_list&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">requirement</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">}],</span> <span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args_list</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">kwargs_list</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;args_list and kwargs_list cannot both be None.&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">args_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">kwargs_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args_list</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;len(args_list) must equal len(kwargs_list).&#39;</span><span class="p">)</span>
+
+    <span class="n">_validate</span><span class="p">(</span><span class="n">maxtasks</span><span class="p">,</span> <span class="s">&#39;maxtasks&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">},</span> <span class="bp">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="process"><a class="viewcode-back" href="../../../../magni.utils.multiprocessing._processing.html#magni.utils.multiprocessing._processing.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="p">{},</span> <span class="n">args_list</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">maxtasks</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Map multiple function calls to multiple processors.</span>
+
+<span class="sd">    For each entry in args_list and kwargs_list, a task is formed which is used</span>
+<span class="sd">    for a function call of the type `func(*args, **kwargs)`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">        A function handle to the function which the calls should be mapped to.</span>
+<span class="sd">    namespace : dict, optional</span>
+<span class="sd">        A dict whose keys and values should be globally available in func (the</span>
+<span class="sd">        default is an empty dict).</span>
+<span class="sd">    args_list : list or tuple, optional</span>
+<span class="sd">        A sequence of argument lists for the function calls (the default is</span>
+<span class="sd">        None, which implies that no arguments are used in the calls).</span>
+<span class="sd">    kwargs_list : list or tuple, optional</span>
+<span class="sd">        A sequence of keyword argument dicts for the function calls (the</span>
+<span class="sd">        default is None, which implies that no keyword arguments are used in</span>
+<span class="sd">        the calls).</span>
+<span class="sd">    maxtasks : int, optional</span>
+<span class="sd">        The maximum number of tasks of a process before it is replaced by a new</span>
+<span class="sd">        process (the default is None, which implies that processes are not</span>
+<span class="sd">        replaced).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    results : list</span>
+<span class="sd">        A list with the results from the function calls.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.utils.multiprocessing.config : Configuration options.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If the `workers` configuration option is equal to 0, map is used.</span>
+<span class="sd">    Otherwise, the map functionality of a multiprocessing worker pool is used.</span>
+
+<span class="sd">    Reasons for using this function over map or standard multiprocessing:</span>
+
+<span class="sd">    - Simplicity of the code over standard multiprocessing.</span>
+<span class="sd">    - Simplicity in switching between single- and multiprocessing.</span>
+<span class="sd">    - The use of both arguments and keyword arguments in the function calls.</span>
+<span class="sd">    - The reporting of exceptions before termination.</span>
+<span class="sd">    - The possibility of terminating multiprocessing with a single interrupt.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    An example of how to use args_list, and kwargs_list:</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.utils.multiprocessing._processing import process</span>
+<span class="sd">    &gt;&gt;&gt; def calculate(a, b, op=&#39;+&#39;):</span>
+<span class="sd">    ...     if op == &#39;+&#39;:</span>
+<span class="sd">    ...         return a + b</span>
+<span class="sd">    ...     elif op == &#39;-&#39;:</span>
+<span class="sd">    ...         return a - b</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt; args_list = [[5, 7], [9, 3]]</span>
+<span class="sd">    &gt;&gt;&gt; kwargs_list = [{&#39;op&#39;: &#39;+&#39;}, {&#39;op&#39;: &#39;-&#39;}]</span>
+<span class="sd">    &gt;&gt;&gt; process(calculate, args_list=args_list, kwargs_list=kwargs_list)</span>
+<span class="sd">    [12, 6]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_validate_process</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">,</span> <span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">maxtasks</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args_list</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">args_list</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">dct</span> <span class="ow">in</span> <span class="n">kwargs_list</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">kwargs_list</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">kwargs_list</span> <span class="o">=</span> <span class="p">[{}</span> <span class="k">for</span> <span class="n">lst</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">]</span>
+
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span> <span class="k">for</span> <span class="n">lst</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">]</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;workers&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_process_init</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_process_worker</span><span class="p">,</span> <span class="n">tasks</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">num_threads</span> <span class="o">=</span> <span class="n">_get_num_threads</span><span class="p">()</span>
+            <span class="n">_set_num_threads</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">workers</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;workers&#39;</span><span class="p">),</span> <span class="n">_process_init</span><span class="p">,</span>
+                              <span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">),</span> <span class="n">maxtasks</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">workers</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_process_worker</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">workers</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">workers</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <span class="n">_set_num_threads</span><span class="p">(</span><span class="n">num_threads</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span>
+
+</div>
+<div class="viewcode-block" id="_process_init"><a class="viewcode-back" href="../../../../magni.utils.multiprocessing._processing.html#magni.utils.multiprocessing._processing._process_init">[docs]</a><span class="k">def</span> <span class="nf">_process_init</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialise the process by making global variables available to it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">        A function handle to the function which the calls should be mapped to.</span>
+<span class="sd">    namespace : dict</span>
+<span class="sd">        A dict whose keys and values should be globally available in func.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">func</span><span class="o">.</span><span class="n">__globals__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="_process_worker"><a class="viewcode-back" href="../../../../magni.utils.multiprocessing._processing.html#magni.utils.multiprocessing._processing._process_worker">[docs]</a><span class="k">def</span> <span class="nf">_process_worker</span><span class="p">(</span><span class="n">fak_tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpack and map a task to the function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fak_tuple : tuple</span>
+<span class="sd">        A tuple (func, args, kwargs) containing the parameters listed below.</span>
+<span class="sd">    func : function</span>
+<span class="sd">        A function handle to the function which the calls should be mapped to.</span>
+<span class="sd">    args : list or tuple</span>
+<span class="sd">        The sequence of arguments that should be unpacked and passed.</span>
+<span class="sd">    kwargs : list or tuple</span>
+<span class="sd">        The sequence of keyword arguments that should be unpacked and passed.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If an exception is raised in `func`, the stacktrace of that exception is</span>
+<span class="sd">    printed since the exception is otherwise silenced until every task has been</span>
+<span class="sd">    executed when using multiple workers.</span>
+
+<span class="sd">    Also, a workaround has been implemented to allow KeyboardInterrupts to</span>
+<span class="sd">    interrupt the current tasks and all remaining tasks. This is done by</span>
+<span class="sd">    setting a global variable, when catching a KeyboardInterrupt, which is</span>
+<span class="sd">    checked for every call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">fak_tuple</span>
+
+    <span class="k">if</span> <span class="s">&#39;interrupted&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_process_worker</span><span class="o">.</span><span class="n">__globals__</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="n">_process_worker</span><span class="o">.</span><span class="n">__globals__</span><span class="p">[</span><span class="s">&#39;interrupted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;An exception has occured.&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

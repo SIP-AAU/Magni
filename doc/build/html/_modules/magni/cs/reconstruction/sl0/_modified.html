@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.cs.reconstruction.sl0._modified &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../../../_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for magni.cs.reconstruction.sl0._modified</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">..</span>
+<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    All rights reserved.</span>
+<span class="sd">    See LICENSE.rst for further information.</span>
+
+<span class="sd">Module providing the modified SL0 reconstruction algorithm.</span>
+
+<span class="sd">Routine listings</span>
+<span class="sd">----------------</span>
+<span class="sd">run(y, A)</span>
+<span class="sd">    Run the modified SL0 reconstruction algorithm.</span>
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">magni.cs.reconstruction.sl0.config : Configuration options.</span>
+
+<span class="sd">Notes</span>
+<span class="sd">-----</span>
+<span class="sd">| The modified SL0 reconstruction algorithm is described in [1]_.</span>
+<span class="sd">|     For delta &lt; 0.55: Modified projection algorithm</span>
+<span class="sd">|     For delta &gt;= 0.55: Modified constraint elimination algorithm</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">.. [1] C. S. Oxvig, P. S. Pedersen, T. Arildsen, and T. Larsen, &quot;Surpassing the</span>
+<span class="sd">   Theoretical 1-norm Phase Transition in Compressive Sensing by Tuning the</span>
+<span class="sd">   Smoothed l0 Algorithm&quot;, *in IEEE International Conference on Acoustics,</span>
+<span class="sd">   Speech and Signal Processing (ICASSP)*, Vancouver, Canada, May 26-31, 2013,</span>
+<span class="sd">   pp. 6019-6023.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+
+<span class="kn">from</span> <span class="nn">magni.cs.reconstruction.sl0</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_config</span>
+
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../../magni.cs.reconstruction.sl0._modified.html#magni.cs.reconstruction.sl0._modified.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the modified SL0 reconstruction algorithm.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : ndarray</span>
+<span class="sd">        The m x 1 measurement vector.</span>
+<span class="sd">    A : ndarray</span>
+<span class="sd">        The m x n matrix which is the product of the measurement matrix and the</span>
+<span class="sd">        dictionary matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    alpha : ndarray</span>
+<span class="sd">        The n x 1 reconstructed coefficient vector.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    _run_proj : The original projection algorithm.</span>
+<span class="sd">    _run_feas : The original constraint elimination algorithm.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example, recovering a vector from random measurements</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.cs.reconstruction.sl0._modified import run</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(seed=6021)</span>
+<span class="sd">    &gt;&gt;&gt; A = 1 / np.sqrt(80) * np.random.randn(80, 200)</span>
+<span class="sd">    &gt;&gt;&gt; x = np.zeros((200, 1))</span>
+<span class="sd">    &gt;&gt;&gt; x[:10] = 1</span>
+<span class="sd">    &gt;&gt;&gt; y = A.dot(x)</span>
+<span class="sd">    &gt;&gt;&gt; x_hat = run(y, A)</span>
+<span class="sd">    &gt;&gt;&gt; x_hat[:12]</span>
+<span class="sd">    array([[  9.99997941e-01],</span>
+<span class="sd">           [  9.99999463e-01],</span>
+<span class="sd">           [  1.00000090e+00],</span>
+<span class="sd">           [  9.99998622e-01],</span>
+<span class="sd">           [  1.00000078e+00],</span>
+<span class="sd">           [  9.99998433e-01],</span>
+<span class="sd">           [  1.00000025e+00],</span>
+<span class="sd">           [  1.00000346e+00],</span>
+<span class="sd">           [  1.00000088e+00],</span>
+<span class="sd">           [  9.99995474e-01],</span>
+<span class="sd">           [ -4.12075673e-07],</span>
+<span class="sd">           [  2.17244596e-07]])</span>
+<span class="sd">    &gt;&gt;&gt; (np.abs(x_hat) &gt; 1e-2).sum()</span>
+<span class="sd">    10</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.55</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_run_proj</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_run_feas</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+
+</div>
+<div class="viewcode-block" id="_calc_sigma_start"><a class="viewcode-back" href="../../../../../magni.cs.reconstruction.sl0._modified.html#magni.cs.reconstruction.sl0._modified._calc_sigma_start">[docs]</a><span class="k">def</span> <span class="nf">_calc_sigma_start</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the initial sigma factor for a given indeterminacy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    delta : float</span>
+<span class="sd">        The indeterminacy, m / n, of a system of equations of size m x n.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sigma_start : float</span>
+<span class="sd">        The initial sigma factor for the given indeterminacy.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.75</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="_run_feas"><a class="viewcode-back" href="../../../../../magni.cs.reconstruction.sl0._modified.html#magni.cs.reconstruction.sl0._modified._run_feas">[docs]</a><span class="k">def</span> <span class="nf">_run_feas</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the modified *feasibility* SL0 reconstruction algorithm.</span>
+
+<span class="sd">    This function implements the algorithm with a search on the feasible set.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : ndarray</span>
+<span class="sd">        The m x 1 measurement vector.</span>
+<span class="sd">    A : ndarray</span>
+<span class="sd">        The m x n matrix which is the product of the measurement matrix and the</span>
+<span class="sd">        dictionary matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    alpha : ndarray</span>
+<span class="sd">        The n x 1 reconstructed coefficient vector.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">param</span> <span class="o">=</span> <span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="n">sigma_update</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;sigma_update&#39;</span><span class="p">]</span>
+    <span class="n">sigma_min</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;sigma_min&#39;</span><span class="p">]</span>
+
+    <span class="n">L</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">]</span>
+    <span class="n">L_update</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;L_update&#39;</span><span class="p">]</span>
+
+    <span class="n">mu_start</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;mu_start&#39;</span><span class="p">]</span>
+    <span class="n">mu_end</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;mu_end&#39;</span><span class="p">]</span>
+
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;epsilon&#39;</span><span class="p">]</span>
+
+    <span class="n">Q</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">Q1</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">Q2</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:]</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="p">[:</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">:]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Q1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve_triangular</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;T&#39;</span><span class="p">))</span>
+
+    <span class="n">mult</span> <span class="o">=</span> <span class="n">_calc_sigma_start</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">mult</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="n">x_zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">sigma</span> <span class="o">&gt;</span> <span class="n">sigma_min</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">mult</span> <span class="o">*</span> <span class="n">sigma_update</span><span class="o">**</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mf">0.75</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.5</span><span class="p">:</span>
+                <span class="n">mu</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">mu_start</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mu</span> <span class="o">=</span> <span class="n">mu_start</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">mu_end</span>
+
+        <span class="n">x_prev</span> <span class="o">=</span> <span class="n">x_zeros</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_prev</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">epsilon</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="n">L</span><span class="p">:</span>
+            <span class="n">x_prev</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">x</span>
+            <span class="n">nabla</span> <span class="o">=</span> <span class="n">Q2</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">Q2</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mu</span> <span class="o">*</span> <span class="n">nabla</span><span class="p">)</span>  <span class="c"># Search on feasible set</span>
+
+            <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">sigma_update</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">L_update</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+
+</div>
+<div class="viewcode-block" id="_run_proj"><a class="viewcode-back" href="../../../../../magni.cs.reconstruction.sl0._modified.html#magni.cs.reconstruction.sl0._modified._run_proj">[docs]</a><span class="k">def</span> <span class="nf">_run_proj</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the original *projection* SL0 reconstruction algorithm.</span>
+
+<span class="sd">    This function implements the algorithm with an unconstrained gradient step</span>
+<span class="sd">    followed by a projection back onto the feasible set.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : ndarray</span>
+<span class="sd">        The m x 1 measurement vector.</span>
+<span class="sd">    A : ndarray</span>
+<span class="sd">        The m x n matrix which is the product of the measurement matrix and the</span>
+<span class="sd">        dictionary matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    alpha : ndarray</span>
+<span class="sd">        The n x 1 reconstructed coefficient vector.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">param</span> <span class="o">=</span> <span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="n">sigma_update</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;sigma_update&#39;</span><span class="p">]</span>
+    <span class="n">sigma_min</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;sigma_min&#39;</span><span class="p">]</span>
+
+    <span class="n">L</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">]</span>
+    <span class="n">L_update</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;L_update&#39;</span><span class="p">]</span>
+
+    <span class="n">mu_start</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;mu_start&#39;</span><span class="p">]</span>
+    <span class="n">mu_end</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;mu_end&#39;</span><span class="p">]</span>
+
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;epsilon&#39;</span><span class="p">]</span>
+
+    <span class="n">Q</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;economic&#39;</span><span class="p">)</span>
+    <span class="n">A_pinv</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">A_pinv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">mult</span> <span class="o">=</span> <span class="n">_calc_sigma_start</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">mult</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="n">x_zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">sigma</span> <span class="o">&gt;</span> <span class="n">sigma_min</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">mult</span> <span class="o">*</span> <span class="n">sigma_update</span><span class="o">**</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mf">0.75</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.5</span><span class="p">:</span>
+                <span class="n">mu</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">mu_start</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mu</span> <span class="o">=</span> <span class="n">mu_start</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">mu_end</span>
+
+        <span class="n">x_prev</span> <span class="o">=</span> <span class="n">x_zeros</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_prev</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">epsilon</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="n">L</span><span class="p">:</span>
+            <span class="n">x_prev</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">x</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">d</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">A_pinv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>  <span class="c"># Projection</span>
+
+            <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">sigma_update</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">L_update</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">x</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

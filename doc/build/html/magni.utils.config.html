@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>magni.utils.config module &mdash; Magni 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="magni.utils package" href="magni.utils.html" />
+    <link rel="next" title="magni.utils.matrices module" href="magni.utils.matrices.html" />
+    <link rel="prev" title="magni.utils._util module" href="magni.utils._util.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magni.utils.matrices.html" title="magni.utils.matrices module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="magni.utils._util.html" title="magni.utils._util module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.utils.html" accesskey="U">magni.utils package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-magni.utils.config">
+<span id="magni-utils-config-module"></span><h1>magni.utils.config module<a class="headerlink" href="#module-magni.utils.config" title="Permalink to this headline">¶</a></h1>
+<p>Module providing a robust configger class.</p>
+<div class="section" id="routine-listings">
+<h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Configger()</dt>
+<dd>Provide set and get functions to access a set of configuration options.</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This module does not itself contain any configuration options and thus has no
+get or set functions unlike the other config modules of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-obj docutils literal"><span class="pre">magni</span></tt></a>.</p>
+<dl class="class">
+<dt id="magni.utils.config.Configger">
+<em class="property">class </em><tt class="descclassname">magni.utils.config.</tt><tt class="descname">Configger</tt><big>(</big><em>param</em>, <em>requirements</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide set and get functions to access a set of configuration options.</p>
+<p>The set of configuration options, their default values, and their
+validation schemes are specified upon initialisation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>param</strong> (<em>dict</em>) &#8211;
+The configuration options along with their default values.</li>
+<li><strong>requirements</strong> (<em>dict</em>) &#8211;
+The validation schemes of the configuration options.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.utils.validation.html#module-magni.utils.validation" title="magni.utils.validation"><tt class="xref py py-class docutils literal"><span class="pre">magni.utils.validation</span></tt></a></dt>
+<dd>Validation.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p><em class="xref py py-obj">requirements</em> must contain the same keys as <em class="xref py py-obj">param</em>. For each key in
+<em class="xref py py-obj">requirements</em>, the value is used as validation scheme - see <a class="reference internal" href="#magni.utils.config.Configger.set" title="magni.utils.config.Configger.set"><tt class="xref py py-obj docutils literal"><span class="pre">set</span></tt></a> for
+further information.</p>
+<p class="rubric">Examples</p>
+<p>Instantiate Configger with the parameter &#8216;key&#8217; with default value &#8216;default&#8217;
+which can only assume string values.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils.config</span> <span class="kn">import</span> <span class="n">Configger</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">Configger</span><span class="p">({</span><span class="s">&#39;key&#39;</span><span class="p">:</span> <span class="s">&#39;default&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;key&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">}})</span>
+</pre></div>
+</div>
+<p>The parameter can either be retrieved by getting a copy of the entire
+parameter dictionary or by getting the specific key.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">{&#39;key&#39;: &#39;default&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">)</span>
+<span class="go">&#39;default&#39;</span>
+</pre></div>
+</div>
+<p>Likewise the parameter can either be changed by passing a dictionary with
+the parameter or by using a keyword argument.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s">&#39;key&#39;</span><span class="p">:</span> <span class="s">&#39;value&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">)</span>
+<span class="go">&#39;value&#39;</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="magni.utils.config.Configger._validate_init">
+<tt class="descname">_validate_init</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger._validate_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger._validate_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a validation function (see module Notes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) &#8211;
+The arguments passed to the decorated function.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
+The keyword arguments passed to the decorated function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.utils.config.Configger.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>param</em>, <em>requirements</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="magni.utils.config.Configger._validate_get">
+<tt class="descname">_validate_get</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger._validate_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger._validate_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a validation function (see module Notes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) &#8211;
+The arguments passed to the decorated function.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
+The keyword arguments passed to the decorated function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.utils.config.Configger.get">
+<tt class="descname">get</tt><big>(</big><em>key=None</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a copy of all parameters or a specific parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str or None, optional</em>) &#8211;
+The name of the key to retrieve (the default is None, which implies
+retrieving a copy of all parameters)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>value</strong> (<em>dict or None</em>) &#8211;
+The value of the specified key, if a key is not None. Otherwise,
+a copy of the parameter dictionary.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.utils.config.Configger._validate_set">
+<tt class="descname">_validate_set</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger._validate_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger._validate_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a validation function (see module Notes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) &#8211;
+The arguments passed to the decorated function.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
+The keyword arguments passed to the decorated function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.utils.config.Configger.set">
+<tt class="descname">set</tt><big>(</big><em>dictionary={}</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwrite the value of one or more parameters.</p>
+<p>Each value is validated according to the validation scheme of that
+parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dictionary</strong> (<em>dict, optional</em>) &#8211;
+A dictionary containing the key and value pairs to update.</li>
+<li><strong>kwargs</strong> (<em>dict, optional</em>) &#8211;
+Keyword arguments being the key and value pairs to update.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.utils.validation.html#magni.utils.validation.validate" title="magni.utils.validation.validate"><tt class="xref py py-meth docutils literal"><span class="pre">magni.utils.validation.validate()</span></tt></a></dt>
+<dd>Validation.</dd>
+</dl>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">magni.utils.config module</a><ul>
+<li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="magni.utils._util.html"
+                        title="previous chapter">magni.utils._util module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="magni.utils.matrices.html"
+                        title="next chapter">magni.utils.matrices module</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magni.utils.matrices.html" title="magni.utils.matrices module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="magni.utils._util.html" title="magni.utils._util module"
+             >previous</a> |</li>
+        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="magni.html" >magni package</a> &raquo;</li>
+          <li><a href="magni.utils.html" >magni.utils package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Magni developers.
+      Last updated on May 23, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
