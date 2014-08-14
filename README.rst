@@ -18,7 +18,7 @@ Magni
    Signal and Information Processing
 
 :Version:
-    1.0.0
+    1.0.1
 
 
 Introduction
@@ -111,3 +111,15 @@ be found in the Magni folder under '/doc/build/html/index.html'. The entire
 documentation is also available as a PDF file in the Magni folder under
 'doc/pdf/index.pdf'. Note, that neither the HTML version nor the PDF version of
 the documentation is provided through PyPI and binstar.
+
+
+Tests
+-----
+
+The tests provided with Magni are in the form of doctests. These can be run by
+executing the following commands from the '/doc/' folder:
+
+.. code:: bash
+
+  $ make docapi
+  $ make doctest

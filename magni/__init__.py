@@ -25,7 +25,7 @@ See the README file for additional information.
 
 """
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 from magni import afm
 from magni import cs
