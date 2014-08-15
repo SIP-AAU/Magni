@@ -18,6 +18,35 @@ from sphinx.ext.autosummary import autolink_role
 # Modify path to include the base dir for Magni itself.
 sys.path.insert(0, os.path.abspath('../../'))
 
+
+# -- Read The Docs setup -------------------------------------------------------
+# Workarounds for having readthedocs build the documentation
+# See also: https://read-the-docs.readthedocs.org/en/latest/faq.html
+
+# Documentation type: Sphinx Html
+# Use virtualenv
+# Requirements file: readthedocs-requirements.txt
+# Python interpreter: CPython 3.x
+
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd:
+    from unittest.mock import MagicMock
+
+    class Mock(MagicMock):
+        @classmethod
+        def __getattr__(cls, name):
+            return Mock()
+
+    MOCK_MODULES = ['scipy', 'scipy.fftpack', 'scipy.stats', 'tables',
+                    'matplotlib', 'matplotlib.pyplot']
+    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+    html_style = 'default.css'  # Use default Sphinx Theme
+
+    latex_documents = (None, None)  # Disable PDF generation (hack)
+    epub_cover = (None, None)  # Disable epub generation (hack)
+
+
 # -- General configuration -----------------------------------------------------
 
 # Minimal Sphinx version needed to build the documentation.
