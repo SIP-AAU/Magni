@@ -113,6 +113,20 @@ documentation is also available as a PDF file in the Magni folder under
 the documentation is provided through PyPI and binstar.
 
 
+Citing Magni
+------------
+
+A Magni software metapaper has been published:
+
+Oxvig, C.S., Pedersen, P.S., Arildsen, T, Østergaard, J and Larsen, T 2014.
+Magni: A Python Package for Compressive Sampling and Reconstruction of Atomic
+Force Microscopy Images. Journal of Open Research Software 2(1):e29,
+DOI: http://dx.doi.org/10.5334/jors.bk
+
+Please consider citing this paper if you publish any work in which you have used Magni.
+
+
+
 Tests
 -----
 
