@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.matrices module &mdash; Magni 1.0.0 documentation</title>
+    <title>magni.utils.matrices module &mdash; Magni 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
     <link rel="up" title="magni.utils package" href="magni.utils.html" />
     <link rel="next" title="magni.utils.plotting module" href="magni.utils.plotting.html" />
     <link rel="prev" title="magni.utils.config module" href="magni.utils.config.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.utils.config.html" title="magni.utils.config module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.utils.html" accesskey="U">magni.utils package</a> &raquo;</li> 
       </ul>
@@ -120,6 +120,7 @@ The shape of the emulated matrix.</li>
 </div>
 <p>The example matrix will behave just like an explicit matrix:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
 <span class="go">array([[-1.],</span>
 <span class="go">       [-2.],</span>
@@ -292,6 +293,7 @@ The collection of <a class="reference internal" href="#magni.utils.matrices.Matr
 matrix:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">vec</span><span class="p">:</span> <span class="o">-</span><span class="n">vec</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">negate</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">matrices</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="p">(),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">negate</span><span class="o">.</span><span class="n">A</span>
 <span class="go">array([[-1., -0., -0.],</span>
 <span class="go">       [-0., -1., -0.],</span>
@@ -515,14 +517,14 @@ The result of the multiplication.</td>
         <li class="right" >
           <a href="magni.utils.config.html" title="magni.utils.config module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.utils.html" >magni.utils package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on May 23, 2014.
+      Last updated on Nov 25, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>

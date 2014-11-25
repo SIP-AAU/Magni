@@ -74,8 +74,8 @@ def calculate_mse(x_org, x_recons):
     >>> from magni.imaging.evaluation import calculate_mse
     >>> x_org = np.arange(4).reshape(2, 2)
     >>> x_recons = np.ones((2,2))
-    >>> calculate_mse(x_org, x_recons)
-    1.5
+    >>> print('{:.2f}'.format(calculate_mse(x_org, x_recons)))
+    1.50
 
     """
 
@@ -137,8 +137,8 @@ def calculate_psnr(x_org, x_recons, peak):
     >>> x_org = np.arange(4).reshape(2, 2)
     >>> x_recons = np.ones((2,2))
     >>> peak = 3
-    >>> calculate_psnr(x_org, x_recons, peak)
-    7.7815125038364368
+    >>> print('{:.2f}'.format(calculate_psnr(x_org, x_recons, peak)))
+    7.78
 
     """
 
@@ -192,8 +192,8 @@ def calculate_retained_energy(x_org, x_recons):
     >>> from magni.imaging.evaluation import calculate_retained_energy
     >>> x_org = np.arange(4).reshape(2, 2)
     >>> x_recons = np.ones((2,2))
-    >>> calculate_retained_energy(x_org, x_recons)
-    28.571428571428569
+    >>> print('{:.2f}'.format(calculate_retained_energy(x_org, x_recons)))
+    28.57
 
     """
 

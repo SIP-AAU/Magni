@@ -12,7 +12,7 @@ combination with `matplotlib`.
 
 Routine listings
 ----------------
-setup_matplotlib(settings={}, cmap='jet')
+setup_matplotlib(settings={}, cmap=None)
     Function that set the Magni default `matplotlib` configuration.
 colour_collections : dict
     Collections of colours that may be used in e.g., a `matplotlib`
@@ -221,7 +221,7 @@ def setup_matplotlib(settings={}, cmap=None):
        about the structure of the dictionary.
     cmap : str or matplotlib.colors.Colormap, optional
        Colormap to be used by matplotlib (the default is None, which implices
-       that the 'jet' colormap is used).
+       that the 'coolwarm' colormap is used).
 
     Raises
     ------
@@ -274,4 +274,4 @@ _settings = {'text': {'usetex': False},
              'figure': {'figsize': (8.0, 8.0 / ((1 + np.sqrt(5)) / 2)),
                         'dpi': 600},
              'image': {'interpolation': 'none'}}
-_cmap = 'jet'
+_cmap = 'coolwarm'

@@ -1,4 +1,38 @@
 ==================
+1.1.0 (2014-11-25)
+==================
+
+Version 1.1.0 is primarily an improvement of the IPython Notebook examples and
+the docstring examples. Furthermore, this version includes minor improvements
+and bug fixes.
+
+
+Additions
+---------
+
+- Added markdown comments and more visual output to the IPython Notebook
+  examples.
+
+
+Improvements
+------------
+
+- Changed docstring examples to yield more robust output and thus pass
+  doctests in a wider variety of environments.
+- Changed docstring examples relying on the provided example.mi file to
+  unconditionally pass rather than fail if the example file is unavailable.
+- Changed the default colormap from 'jet' to 'coolwarm'.
+- Made minor improvements to selected parts of the package.
+
+
+Bug Fixes
+---------
+
+- Fixed a number of minor bugs.
+
+
+
+==================
 1.0.0 (2014-05-23)
 ==================
 

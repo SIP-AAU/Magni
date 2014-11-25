@@ -20,7 +20,6 @@ from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 
-from magni.utils import plotting as _plotting
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate as _validate
 from magni.utils.validation import validate_ndarray as _validate_ndarray
@@ -90,7 +89,6 @@ def plot_phase_transitions(curves, plot_l1=True, output_path=None):
 
     _validate_plot_phase_transitions(curves, plot_l1, output_path)
 
-    _plotting.setup_matplotlib()
     fig, axes = plt.subplots(1, 1)
 
     for curve in curves:
@@ -207,7 +205,6 @@ def plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
 
     X, Y = np.meshgrid(x, y)
 
-    _plotting.setup_matplotlib()
     fig, axes = plt.subplots(1, 1)
     p_mesh = axes.pcolormesh(X, Y, probs.T, vmin=0, vmax=1, edgecolor='face')
     c_bar = plt.colorbar(p_mesh)

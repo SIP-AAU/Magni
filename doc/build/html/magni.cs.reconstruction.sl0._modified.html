@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.reconstruction.sl0._modified module &mdash; Magni 1.0.0 documentation</title>
+    <title>magni.cs.reconstruction.sl0._modified module &mdash; Magni 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
     <link rel="up" title="magni.cs.reconstruction.sl0 package" href="magni.cs.reconstruction.sl0.html" />
     <link rel="next" title="magni.cs.reconstruction.sl0._original module" href="magni.cs.reconstruction.sl0._original.html" />
     <link rel="prev" title="magni.cs.reconstruction.sl0 package" href="magni.cs.reconstruction.sl0.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.cs.reconstruction.sl0.html" title="magni.cs.reconstruction.sl0 package"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li><a href="magni.cs.reconstruction.html" >magni.cs.reconstruction package</a> &raquo;</li>
@@ -132,19 +132,20 @@ The n x 1 reconstructed coefficient vector.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_hat</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_hat</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span>
-<span class="go">array([[  9.99997941e-01],</span>
-<span class="go">       [  9.99999463e-01],</span>
-<span class="go">       [  1.00000090e+00],</span>
-<span class="go">       [  9.99998622e-01],</span>
-<span class="go">       [  1.00000078e+00],</span>
-<span class="go">       [  9.99998433e-01],</span>
-<span class="go">       [  1.00000025e+00],</span>
-<span class="go">       [  1.00000346e+00],</span>
-<span class="go">       [  1.00000088e+00],</span>
-<span class="go">       [  9.99995474e-01],</span>
-<span class="go">       [ -4.12075673e-07],</span>
-<span class="go">       [  2.17244596e-07]])</span>
+<span class="go">array([[ 0.99999794],</span>
+<span class="go">       [ 0.99999946],</span>
+<span class="go">       [ 1.0000009 ],</span>
+<span class="go">       [ 0.99999862],</span>
+<span class="go">       [ 1.00000078],</span>
+<span class="go">       [ 0.99999843],</span>
+<span class="go">       [ 1.00000025],</span>
+<span class="go">       [ 1.00000346],</span>
+<span class="go">       [ 1.00000088],</span>
+<span class="go">       [ 0.99999547],</span>
+<span class="go">       [-0.00000041],</span>
+<span class="go">       [ 0.00000022]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x_hat</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="go">10</span>
 </pre></div>
@@ -274,7 +275,7 @@ The n x 1 reconstructed coefficient vector.</p>
         <li class="right" >
           <a href="magni.cs.reconstruction.sl0.html" title="magni.cs.reconstruction.sl0 package"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li><a href="magni.cs.reconstruction.html" >magni.cs.reconstruction package</a> &raquo;</li>
@@ -283,7 +284,7 @@ The n x 1 reconstructed coefficient vector.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on May 23, 2014.
+      Last updated on Nov 25, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>

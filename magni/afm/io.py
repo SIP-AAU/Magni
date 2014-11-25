@@ -72,7 +72,8 @@ def read_mi_file(path):
     >>> from magni.afm.io import read_mi_file
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
-    >>> mi_file = read_mi_file(path)
+    >>> if os.path.isfile(path):
+    ...     mi_file = read_mi_file(path)
 
     """
 

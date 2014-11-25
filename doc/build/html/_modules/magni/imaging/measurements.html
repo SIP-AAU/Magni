@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.measurements &mdash; Magni 1.0.0 documentation</title>
+    <title>magni.imaging.measurements &mdash; Magni 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -237,7 +237,7 @@
         <span class="k">return</span> <span class="n">vec</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">measure_T</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">vec</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">output</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span>
         <span class="k">return</span> <span class="n">output</span>
 
@@ -319,8 +319,14 @@
 
     <span class="n">_validate_plot_pattern</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">output_path</span><span class="p">)</span>
 
-    <span class="n">fs</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">([</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">]))</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">/</span> <span class="mi">10</span>
-    <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">({</span><span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">l</span> <span class="o">/</span> <span class="n">fs</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)}})</span>
+    <span class="n">figsize</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;figure.figsize&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">w</span> <span class="o">/</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">figsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">figsize_local</span> <span class="o">=</span> <span class="p">[</span><span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">l</span> <span class="o">/</span> <span class="n">w</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">figsize_local</span> <span class="o">=</span> <span class="p">[</span><span class="n">figsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span> <span class="o">/</span> <span class="n">l</span><span class="p">,</span> <span class="n">figsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">({</span><span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="n">figsize_local</span><span class="p">}})</span>
 
     <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
@@ -370,6 +376,8 @@
 
     <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+    <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">({</span><span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="n">figsize</span><span class="p">}})</span>
 
 </div>
 <span class="nd">@_decorate_validation</span>
@@ -444,9 +452,14 @@
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
     <span class="n">mask</span><span class="p">[</span><span class="n">pixels</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pixels</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="n">fs</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">([</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">]))</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">/</span> <span class="mi">10</span>
-    <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">({</span><span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span> <span class="o">/</span> <span class="n">fs</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)}},</span>
-                               <span class="n">cmap</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">figsize</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;figure.figsize&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">w</span> <span class="o">/</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">figsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">figsize_local</span> <span class="o">=</span> <span class="p">[</span><span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">h</span> <span class="o">/</span> <span class="n">w</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">figsize_local</span> <span class="o">=</span> <span class="p">[</span><span class="n">figsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span> <span class="o">/</span> <span class="n">h</span><span class="p">,</span> <span class="n">figsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">({</span><span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="n">figsize_local</span><span class="p">}})</span>
 
     <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">_imshow</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">show_axis</span><span class="o">=</span><span class="s">&#39;top&#39;</span><span class="p">)</span>
@@ -458,6 +471,8 @@
 
     <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+    <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">({</span><span class="s">&#39;figure&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;figsize&#39;</span><span class="p">:</span> <span class="n">figsize</span><span class="p">}})</span>
 
 </div>
 <span class="nd">@_decorate_validation</span>
@@ -541,6 +556,7 @@
 <span class="sd">    &gt;&gt;&gt; scan_length = 50.0</span>
 <span class="sd">    &gt;&gt;&gt; num_points = 12</span>
 <span class="sd">    &gt;&gt;&gt; seed = 6021</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; random_line_sample_image(h, w, scan_length, num_points, seed=seed)</span>
 <span class="sd">    array([[ 0.5       ,  0.5       ],</span>
 <span class="sd">           [ 5.04545455,  0.5       ],</span>
@@ -661,21 +677,21 @@
 <span class="sd">    &gt;&gt;&gt; sample_rate = 1.0</span>
 <span class="sd">    &gt;&gt;&gt; time = 12.0</span>
 <span class="sd">    &gt;&gt;&gt; seed = 6021</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; random_line_sample_surface(l, w, speed, sample_rate, time, seed=seed)</span>
-<span class="sd">    array([[  0.00000000e+00,   0.00000000e+00],</span>
-<span class="sd">           [  7.00000000e-07,   0.00000000e+00],</span>
-<span class="sd">           [  1.40000000e-06,   0.00000000e+00],</span>
-<span class="sd">           [  2.00000000e-06,   1.00000000e-07],</span>
-<span class="sd">           [  1.37499259e-06,   1.74992590e-07],</span>
-<span class="sd">           [  6.74992590e-07,   1.74992590e-07],</span>
-<span class="sd">           [  0.00000000e+00,   2.00000000e-07],</span>
-<span class="sd">           [  0.00000000e+00,   9.00000000e-07],</span>
-<span class="sd">           [  2.22879572e-08,   1.57771204e-06],</span>
-<span class="sd">           [  7.22287957e-07,   1.57771204e-06],</span>
-<span class="sd">           [  1.42228796e-06,   1.57771204e-06],</span>
-<span class="sd">           [  2.00000000e-06,   1.70000000e-06],</span>
-<span class="sd">           [  1.60000000e-06,   2.00000000e-06]])</span>
-
+<span class="sd">    array([[ 0.        ,  0.        ],</span>
+<span class="sd">           [ 0.0000007 ,  0.        ],</span>
+<span class="sd">           [ 0.0000014 ,  0.        ],</span>
+<span class="sd">           [ 0.000002  ,  0.0000001 ],</span>
+<span class="sd">           [ 0.00000137,  0.00000017],</span>
+<span class="sd">           [ 0.00000067,  0.00000017],</span>
+<span class="sd">           [ 0.        ,  0.0000002 ],</span>
+<span class="sd">           [ 0.        ,  0.0000009 ],</span>
+<span class="sd">           [ 0.00000002,  0.00000158],</span>
+<span class="sd">           [ 0.00000072,  0.00000158],</span>
+<span class="sd">           [ 0.00000142,  0.00000158],</span>
+<span class="sd">           [ 0.000002  ,  0.0000017 ],</span>
+<span class="sd">           [ 0.0000016 ,  0.000002  ]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -777,6 +793,7 @@
 <span class="sd">    &gt;&gt;&gt; w = 10</span>
 <span class="sd">    &gt;&gt;&gt; scan_length = 50.0</span>
 <span class="sd">    &gt;&gt;&gt; num_points = 12</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; spiral_sample_image(h, w, scan_length, num_points)</span>
 <span class="sd">    array([[ 6.28776846,  5.17074073],</span>
 <span class="sd">           [ 3.13304898,  5.24133767],</span>
@@ -870,18 +887,19 @@
 <span class="sd">    &gt;&gt;&gt; speed = 7e-7</span>
 <span class="sd">    &gt;&gt;&gt; sample_rate = 1.0</span>
 <span class="sd">    &gt;&gt;&gt; time = 12.0</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; spiral_sample_surface(l, w, speed, sample_rate, time)</span>
-<span class="sd">    array([[  3.61074393e-07,   4.60846340e-07],</span>
-<span class="sd">           [  5.16981905e-07,   7.08474495e-07],</span>
-<span class="sd">           [  5.18627260e-07,   2.42473901e-07],</span>
-<span class="sd">           [  5.90470818e-07,   7.85303986e-07],</span>
-<span class="sd">           [  2.13777354e-07,   3.25138348e-07],</span>
-<span class="sd">           [  8.38392713e-07,   3.55407335e-07],</span>
-<span class="sd">           [  4.85640136e-07,   8.97652018e-07],</span>
-<span class="sd">           [  9.79367276e-08,   3.60017412e-07],</span>
-<span class="sd">           [  7.24145327e-07,   1.07666546e-07],</span>
-<span class="sd">           [  8.91388500e-07,   7.71842556e-07],</span>
-<span class="sd">           [  2.12224761e-07,   9.08883127e-07]])</span>
+<span class="sd">    array([[ 0.00000036,  0.00000046],</span>
+<span class="sd">           [ 0.00000052,  0.00000071],</span>
+<span class="sd">           [ 0.00000052,  0.00000024],</span>
+<span class="sd">           [ 0.00000059,  0.00000079],</span>
+<span class="sd">           [ 0.00000021,  0.00000033],</span>
+<span class="sd">           [ 0.00000084,  0.00000036],</span>
+<span class="sd">           [ 0.00000049,  0.0000009 ],</span>
+<span class="sd">           [ 0.0000001 ,  0.00000036],</span>
+<span class="sd">           [ 0.00000072,  0.00000011],</span>
+<span class="sd">           [ 0.00000089,  0.00000077],</span>
+<span class="sd">           [ 0.00000021,  0.00000091]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -976,6 +994,7 @@
 <span class="sd">    &gt;&gt;&gt; w = 10</span>
 <span class="sd">    &gt;&gt;&gt; scan_length = 50.0</span>
 <span class="sd">    &gt;&gt;&gt; num_points = 12</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; square_spiral_sample_image(h, w, scan_length, num_points)</span>
 <span class="sd">    array([[ 5.        ,  5.        ],</span>
 <span class="sd">           [ 6.28571429,  5.97619048],</span>
@@ -1064,19 +1083,20 @@
 <span class="sd">    &gt;&gt;&gt; speed = 7e-7</span>
 <span class="sd">    &gt;&gt;&gt; sample_rate = 1.0</span>
 <span class="sd">    &gt;&gt;&gt; time = 12.0</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; square_spiral_sample_surface(l, w, speed, sample_rate, time)</span>
-<span class="sd">    array([[  5.00000000e-07,   5.00000000e-07],</span>
-<span class="sd">           [  4.00000000e-07,   4.00000000e-07],</span>
-<span class="sd">           [  6.00000000e-07,   7.00000000e-07],</span>
-<span class="sd">           [  5.00000000e-07,   3.00000000e-07],</span>
-<span class="sd">           [  2.00000000e-07,   7.00000000e-07],</span>
-<span class="sd">           [  8.00000000e-07,   7.00000000e-07],</span>
-<span class="sd">           [  6.00000000e-07,   2.00000000e-07],</span>
-<span class="sd">           [  1.00000000e-07,   4.00000000e-07],</span>
-<span class="sd">           [  3.00000000e-07,   9.00000000e-07],</span>
-<span class="sd">           [  9.00000000e-07,   8.00000000e-07],</span>
-<span class="sd">           [  9.00000000e-07,   1.00000000e-07],</span>
-<span class="sd">           [  2.00000000e-07,   1.00000000e-07]])</span>
+<span class="sd">    array([[ 0.0000005,  0.0000005],</span>
+<span class="sd">           [ 0.0000004,  0.0000004],</span>
+<span class="sd">           [ 0.0000006,  0.0000007],</span>
+<span class="sd">           [ 0.0000005,  0.0000003],</span>
+<span class="sd">           [ 0.0000002,  0.0000007],</span>
+<span class="sd">           [ 0.0000008,  0.0000007],</span>
+<span class="sd">           [ 0.0000006,  0.0000002],</span>
+<span class="sd">           [ 0.0000001,  0.0000004],</span>
+<span class="sd">           [ 0.0000003,  0.0000009],</span>
+<span class="sd">           [ 0.0000009,  0.0000008],</span>
+<span class="sd">           [ 0.0000009,  0.0000001],</span>
+<span class="sd">           [ 0.0000002,  0.0000001]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1211,6 +1231,7 @@
 <span class="sd">    &gt;&gt;&gt; w = 10</span>
 <span class="sd">    &gt;&gt;&gt; scan_length = 50.0</span>
 <span class="sd">    &gt;&gt;&gt; num_points = 12</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; uniform_line_sample_image(h, w, scan_length, num_points)</span>
 <span class="sd">    array([[ 0.5       ,  0.5       ],</span>
 <span class="sd">           [ 5.04545455,  0.5       ],</span>
@@ -1307,20 +1328,21 @@
 <span class="sd">    &gt;&gt;&gt; speed = 7e-7</span>
 <span class="sd">    &gt;&gt;&gt; sample_rate = 1.0</span>
 <span class="sd">    &gt;&gt;&gt; time = 12.0</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; uniform_line_sample_surface(l, w, speed, sample_rate, time)</span>
-<span class="sd">    array([[  0.00000000e+00,   0.00000000e+00],</span>
-<span class="sd">           [  7.00000000e-07,   0.00000000e+00],</span>
-<span class="sd">           [  1.40000000e-06,   0.00000000e+00],</span>
-<span class="sd">           [  2.00000000e-06,   1.00000000e-07],</span>
-<span class="sd">           [  1.86666667e-06,   6.66666667e-07],</span>
-<span class="sd">           [  1.16666667e-06,   6.66666667e-07],</span>
-<span class="sd">           [  4.66666667e-07,   6.66666667e-07],</span>
-<span class="sd">           [  0.00000000e+00,   9.00000000e-07],</span>
-<span class="sd">           [  2.66666667e-07,   1.33333333e-06],</span>
-<span class="sd">           [  9.66666667e-07,   1.33333333e-06],</span>
-<span class="sd">           [  1.66666667e-06,   1.33333333e-06],</span>
-<span class="sd">           [  2.00000000e-06,   1.70000000e-06],</span>
-<span class="sd">           [  1.60000000e-06,   2.00000000e-06]])</span>
+<span class="sd">    array([[ 0.        ,  0.        ],</span>
+<span class="sd">           [ 0.0000007 ,  0.        ],</span>
+<span class="sd">           [ 0.0000014 ,  0.        ],</span>
+<span class="sd">           [ 0.000002  ,  0.0000001 ],</span>
+<span class="sd">           [ 0.00000187,  0.00000067],</span>
+<span class="sd">           [ 0.00000117,  0.00000067],</span>
+<span class="sd">           [ 0.00000047,  0.00000067],</span>
+<span class="sd">           [ 0.        ,  0.0000009 ],</span>
+<span class="sd">           [ 0.00000027,  0.00000133],</span>
+<span class="sd">           [ 0.00000097,  0.00000133],</span>
+<span class="sd">           [ 0.00000167,  0.00000133],</span>
+<span class="sd">           [ 0.000002  ,  0.0000017 ],</span>
+<span class="sd">           [ 0.0000016 ,  0.000002  ]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1397,7 +1419,7 @@
 
     <span class="n">_validate_unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
 
-    <span class="n">pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
 
     <span class="n">pixels_struct</span> <span class="o">=</span> <span class="n">pixels</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">pixels</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">unique</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">pixels_struct</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -1503,13 +1525,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on May 23, 2014.
+      Last updated on Nov 25, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>

@@ -58,7 +58,7 @@ The HTML documentation may be built from source using the supplied Makefile in t
 .. note:: 
    In the *make docapi* command it is assumed that the python interpreter is available on the PATH under the name *python*. If the python interpreter is available under another name, the PYTHONINT variable may be set, e.g. "make PYTHONINT=python2 docapi" if the python interpreter is named python2.
 
-Run "make clean" to remove all builds created by |sphinx|_ under '/doc/build'.
+Run :code:`make clean` to remove all builds created by |sphinx|_ under '/doc/build'.
 
 
 .. _sec_the_package:
@@ -66,9 +66,9 @@ Run "make clean" to remove all builds created by |sphinx|_ under '/doc/build'.
 The Package
 -----------
 
-The source code of :py:mod:`magni` is released under the `BSD 2-Clause <http://opensource.org/licenses/BSD-2-Clause>`_, see the :ref:`sec_license` section. This is an `Open Source Initiative (OSI) <http://opensource.org>`_ complient licence. To install :py:mod:`magni`, follow the instructions given under :ref:`sec_installation`.
+The source code of :py:mod:`magni` is released under the `BSD 2-Clause <http://opensource.org/licenses/BSD-2-Clause>`_ license, see the :ref:`sec_license` section. To install :py:mod:`magni`, follow the instructions given under :ref:`sec_installation`.
 
-:py:mod:`magni` has been tested with `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ 1.9.0 (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of :ref:`sec_dependencies` for :py:mod:`magni`.
+:py:mod:`magni` has been tested with `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of :ref:`sec_dependencies` for :py:mod:`magni`.
 
 
 .. _sec_license:
@@ -164,7 +164,7 @@ executing the following commands from the '/doc/' folder:
 Bug Reports
 -----------
 
-Found a bug? Bug report may be submitted using the magni `GitHub issue tracker <https://github.com/SIP-AAU/Magni/issues>`_. Please include all relevant details in the bug report, e.g. version of Magni, input/output data, stack traces, etc. If the supplied information does not entail preproducibility of the problem, there is no way we can fix it. 
+Found a bug? Bug report may be submitted using the magni `GitHub issue tracker <https://github.com/SIP-AAU/Magni/issues>`_. Please include all relevant details in the bug report, e.g. version of Magni, input/output data, stack traces, etc. If the supplied information does not entail reproducibility of the problem, there is no way we can fix it. 
 
 .. note::
    **Due to limited funds, we are unfortunately unable make any guarantees, whatsoever, that reported bugs will be fixed.**

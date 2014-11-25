@@ -104,6 +104,7 @@ def run(y, A):
     >>> x[:10] = 1
     >>> y = A.dot(x)
     >>> x_hat = run(y, A)
+    >>> np.set_printoptions(suppress=True)
     >>> x_hat[:12]
     array([[ 0.99836297],
            [ 1.00029086],

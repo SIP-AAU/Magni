@@ -189,7 +189,7 @@ def construct_measurement_matrix(coords, h, w):
         return vec[mask]
 
     def measure_T(vec):
-        output = np.zeros((h * w, 1))
+        output = np.zeros((h * w, 1), dtype=vec.dtype)
         output[mask] = vec
         return output
 
@@ -271,8 +271,14 @@ def plot_pattern(l, w, coords, mode, output_path=None):
 
     _validate_plot_pattern(l, w, coords, mode, output_path)
 
-    fs = (np.abs([l, w])).min() / 10
-    _plotting.setup_matplotlib({'figure': {'figsize': (l / fs, w / fs)}})
+    figsize = plt.rcParams['figure.figsize']
+
+    if w / l > figsize[0] / figsize[1]:
+        figsize_local = [figsize[0], figsize[0] * l / w]
+    else:
+        figsize_local = [figsize[1] * w / l, figsize[1]]
+
+    _plotting.setup_matplotlib({'figure': {'figsize': figsize_local}})
 
     fig, axes = plt.subplots(1, 1)
     axes.plot(coords[:, 0], coords[:, 1],
@@ -322,6 +328,8 @@ def plot_pattern(l, w, coords, mode, output_path=None):
 
     if output_path is not None:
         plt.savefig(output_path)
+
+    _plotting.setup_matplotlib({'figure': {'figsize': figsize}})
 
 
 @_decorate_validation
@@ -396,9 +404,14 @@ def plot_pixel_mask(h, w, pixels, output_path=None):
     mask = np.zeros((h, w))
     mask[pixels[:, 1], pixels[:, 0]] = 1
 
-    fs = (np.abs([h, w])).min() / 10
-    _plotting.setup_matplotlib({'figure': {'figsize': (h / fs, w / fs)}},
-                               cmap='gray')
+    figsize = plt.rcParams['figure.figsize']
+
+    if w / h > figsize[0] / figsize[1]:
+        figsize_local = [figsize[0], figsize[0] * h / w]
+    else:
+        figsize_local = [figsize[1] * w / h, figsize[1]]
+
+    _plotting.setup_matplotlib({'figure': {'figsize': figsize_local}})
 
     fig, axes = plt.subplots(1, 1)
     _imshow(mask, ax=axes, show_axis='top')
@@ -410,6 +423,8 @@ def plot_pixel_mask(h, w, pixels, output_path=None):
 
     if output_path is not None:
         plt.savefig(output_path)
+
+    _plotting.setup_matplotlib({'figure': {'figsize': figsize}})
 
 
 @_decorate_validation
@@ -493,6 +508,7 @@ def random_line_sample_image(h, w, scan_length, num_points, discrete=None,
     >>> scan_length = 50.0
     >>> num_points = 12
     >>> seed = 6021
+    >>> np.set_printoptions(suppress=True)
     >>> random_line_sample_image(h, w, scan_length, num_points, seed=seed)
     array([[ 0.5       ,  0.5       ],
            [ 5.04545455,  0.5       ],
@@ -613,21 +629,21 @@ def random_line_sample_surface(l, w, speed, sample_rate, time, discrete=None,
     >>> sample_rate = 1.0
     >>> time = 12.0
     >>> seed = 6021
+    >>> np.set_printoptions(suppress=True)
     >>> random_line_sample_surface(l, w, speed, sample_rate, time, seed=seed)
-    array([[  0.00000000e+00,   0.00000000e+00],
-           [  7.00000000e-07,   0.00000000e+00],
-           [  1.40000000e-06,   0.00000000e+00],
-           [  2.00000000e-06,   1.00000000e-07],
-           [  1.37499259e-06,   1.74992590e-07],
-           [  6.74992590e-07,   1.74992590e-07],
-           [  0.00000000e+00,   2.00000000e-07],
-           [  0.00000000e+00,   9.00000000e-07],
-           [  2.22879572e-08,   1.57771204e-06],
-           [  7.22287957e-07,   1.57771204e-06],
-           [  1.42228796e-06,   1.57771204e-06],
-           [  2.00000000e-06,   1.70000000e-06],
-           [  1.60000000e-06,   2.00000000e-06]])
-
+    array([[ 0.        ,  0.        ],
+           [ 0.0000007 ,  0.        ],
+           [ 0.0000014 ,  0.        ],
+           [ 0.000002  ,  0.0000001 ],
+           [ 0.00000137,  0.00000017],
+           [ 0.00000067,  0.00000017],
+           [ 0.        ,  0.0000002 ],
+           [ 0.        ,  0.0000009 ],
+           [ 0.00000002,  0.00000158],
+           [ 0.00000072,  0.00000158],
+           [ 0.00000142,  0.00000158],
+           [ 0.000002  ,  0.0000017 ],
+           [ 0.0000016 ,  0.000002  ]])
 
     """
 
@@ -729,6 +745,7 @@ def spiral_sample_image(h, w, scan_length, num_points):
     >>> w = 10
     >>> scan_length = 50.0
     >>> num_points = 12
+    >>> np.set_printoptions(suppress=True)
     >>> spiral_sample_image(h, w, scan_length, num_points)
     array([[ 6.28776846,  5.17074073],
            [ 3.13304898,  5.24133767],
@@ -822,18 +839,19 @@ def spiral_sample_surface(l, w, speed, sample_rate, time):
     >>> speed = 7e-7
     >>> sample_rate = 1.0
     >>> time = 12.0
+    >>> np.set_printoptions(suppress=True)
     >>> spiral_sample_surface(l, w, speed, sample_rate, time)
-    array([[  3.61074393e-07,   4.60846340e-07],
-           [  5.16981905e-07,   7.08474495e-07],
-           [  5.18627260e-07,   2.42473901e-07],
-           [  5.90470818e-07,   7.85303986e-07],
-           [  2.13777354e-07,   3.25138348e-07],
-           [  8.38392713e-07,   3.55407335e-07],
-           [  4.85640136e-07,   8.97652018e-07],
-           [  9.79367276e-08,   3.60017412e-07],
-           [  7.24145327e-07,   1.07666546e-07],
-           [  8.91388500e-07,   7.71842556e-07],
-           [  2.12224761e-07,   9.08883127e-07]])
+    array([[ 0.00000036,  0.00000046],
+           [ 0.00000052,  0.00000071],
+           [ 0.00000052,  0.00000024],
+           [ 0.00000059,  0.00000079],
+           [ 0.00000021,  0.00000033],
+           [ 0.00000084,  0.00000036],
+           [ 0.00000049,  0.0000009 ],
+           [ 0.0000001 ,  0.00000036],
+           [ 0.00000072,  0.00000011],
+           [ 0.00000089,  0.00000077],
+           [ 0.00000021,  0.00000091]])
 
     """
 
@@ -928,6 +946,7 @@ def square_spiral_sample_image(h, w, scan_length, num_points):
     >>> w = 10
     >>> scan_length = 50.0
     >>> num_points = 12
+    >>> np.set_printoptions(suppress=True)
     >>> square_spiral_sample_image(h, w, scan_length, num_points)
     array([[ 5.        ,  5.        ],
            [ 6.28571429,  5.97619048],
@@ -1016,19 +1035,20 @@ def square_spiral_sample_surface(l, w, speed, sample_rate, time):
     >>> speed = 7e-7
     >>> sample_rate = 1.0
     >>> time = 12.0
+    >>> np.set_printoptions(suppress=True)
     >>> square_spiral_sample_surface(l, w, speed, sample_rate, time)
-    array([[  5.00000000e-07,   5.00000000e-07],
-           [  4.00000000e-07,   4.00000000e-07],
-           [  6.00000000e-07,   7.00000000e-07],
-           [  5.00000000e-07,   3.00000000e-07],
-           [  2.00000000e-07,   7.00000000e-07],
-           [  8.00000000e-07,   7.00000000e-07],
-           [  6.00000000e-07,   2.00000000e-07],
-           [  1.00000000e-07,   4.00000000e-07],
-           [  3.00000000e-07,   9.00000000e-07],
-           [  9.00000000e-07,   8.00000000e-07],
-           [  9.00000000e-07,   1.00000000e-07],
-           [  2.00000000e-07,   1.00000000e-07]])
+    array([[ 0.0000005,  0.0000005],
+           [ 0.0000004,  0.0000004],
+           [ 0.0000006,  0.0000007],
+           [ 0.0000005,  0.0000003],
+           [ 0.0000002,  0.0000007],
+           [ 0.0000008,  0.0000007],
+           [ 0.0000006,  0.0000002],
+           [ 0.0000001,  0.0000004],
+           [ 0.0000003,  0.0000009],
+           [ 0.0000009,  0.0000008],
+           [ 0.0000009,  0.0000001],
+           [ 0.0000002,  0.0000001]])
 
     """
 
@@ -1163,6 +1183,7 @@ def uniform_line_sample_image(h, w, scan_length, num_points):
     >>> w = 10
     >>> scan_length = 50.0
     >>> num_points = 12
+    >>> np.set_printoptions(suppress=True)
     >>> uniform_line_sample_image(h, w, scan_length, num_points)
     array([[ 0.5       ,  0.5       ],
            [ 5.04545455,  0.5       ],
@@ -1259,20 +1280,21 @@ def uniform_line_sample_surface(l, w, speed, sample_rate, time):
     >>> speed = 7e-7
     >>> sample_rate = 1.0
     >>> time = 12.0
+    >>> np.set_printoptions(suppress=True)
     >>> uniform_line_sample_surface(l, w, speed, sample_rate, time)
-    array([[  0.00000000e+00,   0.00000000e+00],
-           [  7.00000000e-07,   0.00000000e+00],
-           [  1.40000000e-06,   0.00000000e+00],
-           [  2.00000000e-06,   1.00000000e-07],
-           [  1.86666667e-06,   6.66666667e-07],
-           [  1.16666667e-06,   6.66666667e-07],
-           [  4.66666667e-07,   6.66666667e-07],
-           [  0.00000000e+00,   9.00000000e-07],
-           [  2.66666667e-07,   1.33333333e-06],
-           [  9.66666667e-07,   1.33333333e-06],
-           [  1.66666667e-06,   1.33333333e-06],
-           [  2.00000000e-06,   1.70000000e-06],
-           [  1.60000000e-06,   2.00000000e-06]])
+    array([[ 0.        ,  0.        ],
+           [ 0.0000007 ,  0.        ],
+           [ 0.0000014 ,  0.        ],
+           [ 0.000002  ,  0.0000001 ],
+           [ 0.00000187,  0.00000067],
+           [ 0.00000117,  0.00000067],
+           [ 0.00000047,  0.00000067],
+           [ 0.        ,  0.0000009 ],
+           [ 0.00000027,  0.00000133],
+           [ 0.00000097,  0.00000133],
+           [ 0.00000167,  0.00000133],
+           [ 0.000002  ,  0.0000017 ],
+           [ 0.0000016 ,  0.000002  ]])
 
     """
 
@@ -1349,7 +1371,7 @@ def unique_pixels(coords):
 
     _validate_unique_pixels(coords)
 
-    pixels = np.floor(coords).astype(np.int64)
+    pixels = np.floor(coords).astype(np.int64, order='C')
 
     pixels_struct = pixels.view(pixels.dtype.descr * 2)
     unique, index = np.unique(pixels_struct, return_index=True)

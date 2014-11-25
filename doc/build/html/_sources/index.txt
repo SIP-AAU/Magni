@@ -1,6 +1,6 @@
-====================================
+===================
 Magni Documentation
-====================================
+===================
 
 :py:mod:`magni` is a Python package developed by Christian Schou Oxvig and Patrick Steffen Pedersen in collaboration with Jan Østergaard, Thomas Arildsen, Tobias L. Jensen, and Torben Larsen. The work was supported by 1) the Danish Council for Independent Research | Technology and Production Sciences - via grant DFF-1335-00278 for the project `Enabling Fast Image Acquisition for Atomic Force Microscopy using Compressed Sensing <http://sip-aau.github.io/FastAFM/>`_ and 2) the Danish e-Infrastructure Cooperation - via a grant for a high performance computing system for the project "High Performance Computing SMP Server for Signal Processing".
 
@@ -22,7 +22,7 @@ The sensing part of the acquisition generates sensed data from regular images po
 - **Reproducibility** (:py:mod:`magni.reproducibility`): Tools that may aid in increasing the reproducibility of result obtained using :py:mod:`magni`.
 - **Utilities** (:py:mod:`magni.utils`): General Python utilities including multiprocessing, tracing, and validation.
 
-See :ref:`sec_other_resources` as well as :ref:`sec_notation` for further documentation related to the project and the :ref:`sec_examples` to draw inspiration from.
+See :ref:`sec_other_resources` as well as :ref:`sec_notation` for further documentation related to the project and the :ref:`sec_tests` and :ref:`sec_examples` to draw inspiration from.
 
 .. rubric:: References
 
@@ -51,14 +51,14 @@ The HTML documentation may be built from source using the supplied Makefile in t
 
 .. code:: bash
 
-    make sourceclean
-    make docapi
-    make html
+    $ make sourceclean
+    $ make docapi
+    $ make html
 
 .. note:: 
    In the *make docapi* command it is assumed that the python interpreter is available on the PATH under the name *python*. If the python interpreter is available under another name, the PYTHONINT variable may be set, e.g. "make PYTHONINT=python2 docapi" if the python interpreter is named python2.
 
-Run "make clean" to remove all builds created by |sphinx|_ under '/doc/build'.
+Run :code:`make clean` to remove all builds created by |sphinx|_ under '/doc/build'.
 
 
 .. _sec_the_package:
@@ -66,9 +66,9 @@ Run "make clean" to remove all builds created by |sphinx|_ under '/doc/build'.
 The Package
 -----------
 
-The source code of :py:mod:`magni` is released under the `BSD 2-Clause <http://opensource.org/licenses/BSD-2-Clause>`_, see the :ref:`sec_license` section. This is an `Open Source Initiative (OSI) <http://opensource.org>`_ complient licence. To install :py:mod:`magni`, follow the instructions given under :ref:`sec_installation`.
+The source code of :py:mod:`magni` is released under the `BSD 2-Clause <http://opensource.org/licenses/BSD-2-Clause>`_ license, see the :ref:`sec_license` section. To install :py:mod:`magni`, follow the instructions given under :ref:`sec_installation`.
 
-:py:mod:`magni` has been tested with `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ 1.9.0 (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of :ref:`sec_dependencies` for :py:mod:`magni`.
+:py:mod:`magni` has been tested with `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of :ref:`sec_dependencies` for :py:mod:`magni`.
 
 
 .. _sec_license:
@@ -76,26 +76,7 @@ The source code of :py:mod:`magni` is released under the `BSD 2-Clause <http://o
 License
 =======
 
-Copyright (c) 2014,
-
-Primary developers
-  Christian Schou Oxvig and Patrick Steffen Pedersen.
-
-Additional developers
-  Jan Østergaard, Thomas Arildsen, Tobias L. Jensen, and Torben Larsen.
-
-Institution
-  Aalborg University, Department of Electronic Systems, Signal and Information
-  Processing, Niels Jernes Vej 12, DK-9220 Aalborg, Denmark.
-
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.. include:: ../../LICENSE.rst
 
 
 .. _sec_installation:
@@ -161,7 +142,21 @@ You may use the *dep_check.py* script found in the Magni folder under '/magni/te
 
 .. code:: bash
 
-  python dep_check.py
+  $ python dep_check.py
+
+
+.. _sec_tests:
+
+Tests
+-----
+
+The tests provided with Magni are in the form of doctests. These can be run by
+executing the following commands from the '/doc/' folder:
+
+.. code:: bash
+
+  $ make docapi
+  $ make doctest
 
 
 .. _sec_bug_reports:
@@ -169,7 +164,7 @@ You may use the *dep_check.py* script found in the Magni folder under '/magni/te
 Bug Reports
 -----------
 
-Found a bug? Bug report may be submitted using the magni `GitHub issue tracker <https://github.com/SIP-AAU/Magni/issues>`_. Please include all relevant details in the bug report, e.g. version of Magni, input/output data, stack traces, etc. If the supplied information does not entail preproducibility of the problem, there is no way we can fix it. 
+Found a bug? Bug report may be submitted using the magni `GitHub issue tracker <https://github.com/SIP-AAU/Magni/issues>`_. Please include all relevant details in the bug report, e.g. version of Magni, input/output data, stack traces, etc. If the supplied information does not entail reproducibility of the problem, there is no way we can fix it. 
 
 .. note::
    **Due to limited funds, we are unfortunately unable make any guarantees, whatsoever, that reported bugs will be fixed.**
@@ -180,6 +175,8 @@ Other Resources
 ---------------
 
 Papers published in relation to the `Enabling Fast Image Acquisition for Atomic Force Microscopy using Compressed Sensing <http://sip-aau.github.io/FastAFM/>`_ project:
+
+- \C. S. Oxvig, P. S. Pedersen, T. Arildsen, J. Østergaard, and T. Larsen, "Magni: A Python Package for Compressive Sampling and Reconstruction of Atomic Force Microscopy Images", *Journal of Open Research Software*, vol. 2, no. 1, p. e29, Oct. 2014, :doi:`10.5334/jors.bk`.
 
 - \T. L. Jensen, T. Arildsen, J. Østergaard, and T. Larsen, "Reconstruction of Undersampled Atomic Force Microscopy Images : Interpolation versus Basis Pursuit", in *International Conference on Signal-Image Technology & Internet-Based Systems (SITIS)*, Kyoto, Japan, December 2 - 5, 2013, pp. 130-135, :doi:`10.1109/SITIS.2013.32`.
 

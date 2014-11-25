@@ -87,6 +87,7 @@ def detilt(img, mask=None, mode='plane_flatten', degree=1, return_tilt=False):
 
     >>> from magni.imaging.preprocessing import detilt
     >>> img = np.array([[0, 2, 3], [1, 5, 7], [3, 6, 8]], dtype=np.float)
+    >>> np.set_printoptions(suppress=True)
     >>> detilt(img, mode='line_flatten', degree=1)
     array([[-0.16666667,  0.33333333, -0.16666667],
            [-0.33333333,  0.66666667, -0.33333333],
@@ -96,10 +97,11 @@ def detilt(img, mask=None, mode='plane_flatten', degree=1, return_tilt=False):
 
     >>> mask = np.array([[1, 1, 0], [1, 0, 1], [0, 1, 1]], dtype=np.bool)
     >>> im, ti = detilt(img, mask=mask, mode='plane_flatten', return_tilt=True)
+    >>> np.set_printoptions(suppress=True)
     >>> im
-    array([[  3.33333333e-01,  -3.33333333e-01,  -2.00000000e+00],
-           [ -3.33333333e-01,   1.00000000e+00,   3.33333333e-01],
-           [ -2.66453526e-15,   3.33333333e-01,  -3.33333333e-01]])
+    array([[ 0.33333333, -0.33333333, -2.        ],
+           [-0.33333333,  1.        ,  0.33333333],
+           [-0.        ,  0.33333333, -0.33333333]])
     >>> ti
     array([[-0.33333333,  2.33333333,  5.        ],
            [ 1.33333333,  4.        ,  6.66666667],

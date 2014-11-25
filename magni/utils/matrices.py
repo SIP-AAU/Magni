@@ -74,6 +74,7 @@ class Matrix():
     The example matrix will behave just like an explicit matrix:
 
     >>> vec = np.float64([1, 2, 3]).reshape(3, 1)
+    >>> np.set_printoptions(suppress=True)
     >>> matrix.dot(vec)
     array([[-1.],
            [-2.],
@@ -251,6 +252,7 @@ class MatrixCollection():
 
     >>> func = lambda vec: -vec
     >>> negate = magni.utils.matrices.Matrix(func, func, (), (3, 3))
+    >>> np.set_printoptions(suppress=True)
     >>> negate.A
     array([[-1., -0., -0.],
            [-0., -1., -0.],

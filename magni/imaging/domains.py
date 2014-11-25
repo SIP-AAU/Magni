@@ -72,6 +72,7 @@ class MultiDomainImage(object):
 
     Can be retrieved both as measurements:
 
+    >>> np.set_printoptions(suppress=True)
     >>> domains.measurements
     array([[ 1.],
            [ 1.]])

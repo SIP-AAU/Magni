@@ -71,7 +71,7 @@ def get_DCT(shape):
 
     Perform DCT in the ordinary way:
 
-    >>> dct_normal = magni.imaging._fastops.dct2(vec, *img.shape)
+    >>> dct_normal = magni.imaging._fastops.dct2(vec, img.shape)
 
     Perform DCT using the present function:
 
@@ -89,7 +89,7 @@ def get_DCT(shape):
     _validate_get_DCT(shape)
 
     entries = shape[0] * shape[1]
-    return _Matrix(_fastops.idct2, _fastops.dct2, shape, (entries, entries))
+    return _Matrix(_fastops.idct2, _fastops.dct2, (shape,), (entries, entries))
 
 
 @_decorate_validation
@@ -135,7 +135,7 @@ def get_DFT(shape):
 
     Perform DFT in the ordinary way:
 
-    >>> dft_normal = magni.imaging._fastops.dft2(vec, *img.shape)
+    >>> dft_normal = magni.imaging._fastops.dft2(vec, img.shape)
 
     Perform DFT using the present function:
 
@@ -153,4 +153,4 @@ def get_DFT(shape):
     _validate_get_DFT(shape)
 
     entries = shape[0] * shape[1]
-    return _Matrix(_fastops.idft2, _fastops.dft2, shape, (entries, entries))
+    return _Matrix(_fastops.idft2, _fastops.dft2, (shape,), (entries, entries))

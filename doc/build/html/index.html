@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Magni Documentation &mdash; Magni 1.0.0 documentation</title>
+    <title>Magni Documentation &mdash; Magni 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.0.0 documentation" href="#" />
+    <link rel="top" title="Magni 1.1.0 documentation" href="#" />
     <link rel="next" title="A Note on Notation" href="notation.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="notation.html" title="A Note on Notation"
              accesskey="N">next</a> |</li>
-        <li><a href="#">Magni 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Magni 1.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -63,7 +63,7 @@ The sensing part of the acquisition generates sensed data from regular images po
 <li><strong>Reproducibility</strong> (<a class="reference internal" href="magni.reproducibility.html#module-magni.reproducibility" title="magni.reproducibility"><tt class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility</span></tt></a>): Tools that may aid in increasing the reproducibility of result obtained using <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>.</li>
 <li><strong>Utilities</strong> (<a class="reference internal" href="magni.utils.html#module-magni.utils" title="magni.utils"><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils</span></tt></a>): General Python utilities including multiprocessing, tracing, and validation.</li>
 </ul>
-<p>See <a class="reference internal" href="#sec-other-resources"><em>Other Resources</em></a> as well as <a class="reference internal" href="#sec-notation"><em>Notation</em></a> for further documentation related to the project and the <a class="reference internal" href="#sec-examples"><em>Examples</em></a> to draw inspiration from.</p>
+<p>See <a class="reference internal" href="#sec-other-resources"><em>Other Resources</em></a> as well as <a class="reference internal" href="#sec-notation"><em>Notation</em></a> for further documentation related to the project and the <a class="reference internal" href="#sec-tests"><em>Tests</em></a> and <a class="reference internal" href="#sec-examples"><em>Examples</em></a> to draw inspiration from.</p>
 <p class="rubric">References</p>
 <table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -97,24 +97,26 @@ The sensing part of the acquisition generates sensed data from regular images po
 <div class="section" id="building-the-documentation">
 <span id="sec-building-the-documentation"></span><h3>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h3>
 <p>The HTML documentation may be built from source using the supplied Makefile in the magni folder under &#8216;/doc/&#8217;. Make sure the required <a class="reference internal" href="#sec-dependencies"><em>Dependencies</em></a> for building the documentaion are installed. The build process consists of running three commands:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>make sourceclean
-make docapi
-make html
+<div class="code bash highlight-python"><div class="highlight"><pre>$ make sourceclean
+$ make docapi
+$ make html
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the <em>make docapi</em> command it is assumed that the python interpreter is available on the PATH under the name <em>python</em>. If the python interpreter is available under another name, the PYTHONINT variable may be set, e.g. &#8220;make PYTHONINT=python2 docapi&#8221; if the python interpreter is named python2.</p>
 </div>
-<p>Run &#8220;make clean&#8221; to remove all builds created by <a class="reference external" href="http://sphinx-doc.org/"><tt class="docutils literal"><span class="pre">Sphinx</span></tt></a> under &#8216;/doc/build&#8217;.</p>
+<p>Run <tt class="code docutils literal"><span class="pre">make</span> <span class="pre">clean</span></tt> to remove all builds created by <a class="reference external" href="http://sphinx-doc.org/"><tt class="docutils literal"><span class="pre">Sphinx</span></tt></a> under &#8216;/doc/build&#8217;.</p>
 </div>
 </div>
 <div class="section" id="the-package">
 <span id="sec-the-package"></span><h2>The Package<a class="headerlink" href="#the-package" title="Permalink to this headline">¶</a></h2>
-<p>The source code of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> is released under the <a class="reference external" href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a>, see the <a class="reference internal" href="#sec-license"><em>License</em></a> section. This is an <a class="reference external" href="http://opensource.org">Open Source Initiative (OSI)</a> complient licence. To install <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>, follow the instructions given under <a class="reference internal" href="#sec-installation"><em>Download and Installation</em></a>.</p>
-<p><a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> has been tested with <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Anaconda</a> 1.9.0 (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of <a class="reference internal" href="#sec-dependencies"><em>Dependencies</em></a> for <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>.</p>
+<p>The source code of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> is released under the <a class="reference external" href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a> license, see the <a class="reference internal" href="#sec-license"><em>License</em></a> section. To install <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>, follow the instructions given under <a class="reference internal" href="#sec-installation"><em>Download and Installation</em></a>.</p>
+<p><a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> has been tested with <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Anaconda</a> (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of <a class="reference internal" href="#sec-dependencies"><em>Dependencies</em></a> for <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>.</p>
 <div class="section" id="license">
 <span id="sec-license"></span><h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
+<p>Magni is licensed under the OSI-approved BSD 2-Clause License. See
+<a class="reference external" href="http://opensource.org/licenses/BSD-2-Clause">http://opensource.org/licenses/BSD-2-Clause</a> for further information.</p>
 <p>Copyright (c) 2014,</p>
 <dl class="docutils">
 <dt>Primary developers</dt>
@@ -123,15 +125,28 @@ make html
 <dd>Jan Østergaard, Thomas Arildsen, Tobias L. Jensen, and Torben Larsen.</dd>
 <dt>Institution</dt>
 <dd>Aalborg University, Department of Electronic Systems, Signal and Information
-Processing, Niels Jernes Vej 12, DK-9220 Aalborg, Denmark.</dd>
+Processing, Fredrik Bajers Vej 7, DK-9220 Aalborg, Denmark.</dd>
 </dl>
 <p>All rights reserved.</p>
-<p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
+<p>Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:</p>
 <ol class="arabic simple">
-<li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li>
-<li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li>
+<li>Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.</li>
+<li>Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.</li>
 </ol>
-<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &#8220;AS IS&#8221; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &#8220;AS IS&#8221; AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 </div>
 <div class="section" id="download-and-installation">
 <span id="sec-installation"></span><h3>Download and Installation<a class="headerlink" href="#download-and-installation" title="Permalink to this headline">¶</a></h3>
@@ -164,14 +179,23 @@ Processing, Niels Jernes Vej 12, DK-9220 Aalborg, Denmark.</dd>
 <p class="last">When using the <a class="reference internal" href="magni.utils.multiprocessing.html#module-magni.utils.multiprocessing" title="magni.utils.multiprocessing"><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils.multiprocessing</span></tt></a> subpackage, it is generally a good idea to restrict acceleration libraries like MKL or OpenBLAS to use a single thread. If MKL is installed, this is done automatically at runtime in the <a class="reference internal" href="magni.utils.multiprocessing.html#module-magni.utils.multiprocessing" title="magni.utils.multiprocessing"><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils.multiprocessing</span></tt></a> subpackage. If other libraries than MKL are used, the user has to manually set an appropriate evironmental variable, e.g. OMP_NUM_THREADS.</p>
 </div>
 <p>You may use the <em>dep_check.py</em> script found in the Magni folder under &#8216;/magni/tests/&#8217; to check for missing dependencies for Magni. Simply run the script to print a dependency report, e.g.:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>python dep_check.py
+<div class="code bash highlight-python"><div class="highlight"><pre>$ python dep_check.py
 </pre></div>
 </div>
 </div>
 </div>
+<div class="section" id="tests">
+<span id="sec-tests"></span><h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<p>The tests provided with Magni are in the form of doctests. These can be run by
+executing the following commands from the &#8216;/doc/&#8217; folder:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ make docapi
+$ make doctest
+</pre></div>
+</div>
+</div>
 <div class="section" id="bug-reports">
 <span id="sec-bug-reports"></span><h2>Bug Reports<a class="headerlink" href="#bug-reports" title="Permalink to this headline">¶</a></h2>
-<p>Found a bug? Bug report may be submitted using the magni <a class="reference external" href="https://github.com/SIP-AAU/Magni/issues">GitHub issue tracker</a>. Please include all relevant details in the bug report, e.g. version of Magni, input/output data, stack traces, etc. If the supplied information does not entail preproducibility of the problem, there is no way we can fix it.</p>
+<p>Found a bug? Bug report may be submitted using the magni <a class="reference external" href="https://github.com/SIP-AAU/Magni/issues">GitHub issue tracker</a>. Please include all relevant details in the bug report, e.g. version of Magni, input/output data, stack traces, etc. If the supplied information does not entail reproducibility of the problem, there is no way we can fix it.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Due to limited funds, we are unfortunately unable make any guarantees, whatsoever, that reported bugs will be fixed.</strong></p>
@@ -181,6 +205,7 @@ Processing, Niels Jernes Vej 12, DK-9220 Aalborg, Denmark.</dd>
 <span id="sec-other-resources"></span><h2>Other Resources<a class="headerlink" href="#other-resources" title="Permalink to this headline">¶</a></h2>
 <p>Papers published in relation to the <a class="reference external" href="http://sip-aau.github.io/FastAFM/">Enabling Fast Image Acquisition for Atomic Force Microscopy using Compressed Sensing</a> project:</p>
 <ul class="simple">
+<li>C. S. Oxvig, P. S. Pedersen, T. Arildsen, J. Østergaard, and T. Larsen, &#8220;Magni: A Python Package for Compressive Sampling and Reconstruction of Atomic Force Microscopy Images&#8221;, <em>Journal of Open Research Software</em>, vol. 2, no. 1, p. e29, Oct. 2014, <a class="reference external" href="http://dx.doi.org/10.5334/jors.bk">doi:10.5334/jors.bk</a>.</li>
 <li>T. L. Jensen, T. Arildsen, J. Østergaard, and T. Larsen, &#8220;Reconstruction of Undersampled Atomic Force Microscopy Images : Interpolation versus Basis Pursuit&#8221;, in <em>International Conference on Signal-Image Technology &amp; Internet-Based Systems (SITIS)</em>, Kyoto, Japan, December 2 - 5, 2013, pp. 130-135, <a class="reference external" href="http://dx.doi.org/10.1109/SITIS.2013.32">doi:10.1109/SITIS.2013.32</a>.</li>
 </ul>
 </div>
@@ -293,6 +318,7 @@ Processing, Niels Jernes Vej 12, DK-9220 Aalborg, Denmark.</dd>
 <li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
 <li><a class="reference internal" href="#bug-reports">Bug Reports</a></li>
 <li><a class="reference internal" href="#other-resources">Other Resources</a></li>
 </ul>
@@ -331,12 +357,12 @@ Processing, Niels Jernes Vej 12, DK-9220 Aalborg, Denmark.</dd>
         <li class="right" >
           <a href="notation.html" title="A Note on Notation"
              >next</a> |</li>
-        <li><a href="#">Magni 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Magni 1.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on May 23, 2014.
+      Last updated on Nov 25, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>

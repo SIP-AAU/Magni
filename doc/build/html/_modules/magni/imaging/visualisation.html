@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation &mdash; Magni 1.0.0 documentation</title>
+    <title>magni.imaging.visualisation &mdash; Magni 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -224,13 +224,14 @@
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.visualisation import shift_mean</span>
 <span class="sd">    &gt;&gt;&gt; x_org = np.arange(4).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; x_mod = np.ones((2, 2))</span>
-<span class="sd">    &gt;&gt;&gt; x_org.mean()</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;{:.1f}&#39;.format(x_org.mean()))</span>
 <span class="sd">    1.5</span>
-<span class="sd">    &gt;&gt;&gt; x_mod.mean()</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;{:.1f}&#39;.format(x_mod.mean()))</span>
 <span class="sd">    1.0</span>
 <span class="sd">    &gt;&gt;&gt; shifted_x_mod = shift_mean(x_mod, x_org)</span>
-<span class="sd">    &gt;&gt;&gt; shifted_x_mod.mean()</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;{:.1f}&#39;.format(shifted_x_mod.mean()))</span>
 <span class="sd">    1.5</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; shifted_x_mod</span>
 <span class="sd">    array([[ 1.5,  1.5],</span>
 <span class="sd">           [ 1.5,  1.5]])</span>
@@ -286,6 +287,7 @@
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.visualisation import stretch_image</span>
 <span class="sd">    &gt;&gt;&gt; img = np.arange(4, dtype=np.float).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; stretched_img = stretch_image(img, 1.0)</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; stretched_img</span>
 <span class="sd">    array([[ 0.        ,  0.33333333],</span>
 <span class="sd">           [ 0.66666667,  1.        ]])</span>
@@ -297,7 +299,12 @@
     <span class="n">min_</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
     <span class="n">max_</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">max_val</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">img</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">max_</span> <span class="o">&gt;</span> <span class="n">min_</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">max_val</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">img</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">img</span> <span class="o">-</span> <span class="n">min_</span>
+
+    <span class="k">return</span> <span class="n">val</span></div>
 </pre></div>
 
           </div>
@@ -328,13 +335,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on May 23, 2014.
+      Last updated on Nov 25, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>

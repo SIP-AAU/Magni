@@ -11,7 +11,7 @@ Additional developers
 
 Institution
   Aalborg University, Department of Electronic Systems, Signal and Information
-  Processing, Niels Jernes Vej 12, DK-9220 Aalborg, Denmark.
+  Processing, Fredrik Bajers Vej 7, DK-9220 Aalborg, Denmark.
 
 All rights reserved.
 

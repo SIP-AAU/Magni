@@ -18,7 +18,7 @@ Magni
    Signal and Information Processing
 
 :Version:
-    1.0.1
+    1.1.0
 
 
 Introduction

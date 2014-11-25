@@ -25,7 +25,7 @@ An overview of the available examples is given in the below table:
 ===========================    ======================================================    =========================================
 **IPython Notebook Name**      **Example illustrates**                                   **Magni functionality used**
 ===========================    ======================================================    =========================================
-afm-io                         * Reading data from mi-file.                              * `magni.afm.io.read_mi_file`
+afm-io                         * Reading data from a mi-file.                            * `magni.afm.io.read_mi_file`
                                * Handling the resulting buffers and images.              * `magni.afm.types.Buffer`
                                                                                          * `magni.afm.types.Image`
 

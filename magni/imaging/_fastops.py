@@ -32,7 +32,7 @@ from magni.utils.validation import validate_ndarray as _validate_ndarray
 
 
 @_decorate_validation
-def _validate_transform(x, m, n):
+def _validate_transform(x, mn_tuple):
     """
     Validatate a 2D transform.
 
@@ -42,12 +42,14 @@ def _validate_transform(x, m, n):
 
     """
 
+    m, n = mn_tuple
+
     _validate(m, 'm', {'type': int, 'min': 1})
     _validate(n, 'n', {'type': int, 'min': 1})
     _validate_ndarray(x, 'x', {'shape': (m * n, 1)})
 
 
-def dct2(x, m, n):
+def dct2(x, mn_tuple):
     """
     Apply the 2D Discrete Cosine Transform (DCT) to `x`.
 
@@ -74,7 +76,8 @@ def dct2(x, m, n):
 
     """
 
-    _validate_transform(x, m, n)
+    m, n = mn_tuple
+    _validate_transform(x, (m, n))
 
     # 2D DCT using the seperability property of the 1D DCT.
     # http://stackoverflow.com/questions/14325795/scipys-fftpack-dct-and-idct
@@ -87,7 +90,7 @@ def dct2(x, m, n):
     return _mat2vec(result)
 
 
-def idct2(x, m, n):
+def idct2(x, mn_tuple):
     """
     Apply the 2D Inverse Discrete Cosine Transform (iDCT) to `x`.
 
@@ -114,7 +117,8 @@ def idct2(x, m, n):
 
     """
 
-    _validate_transform(x, m, n)
+    m, n = mn_tuple
+    _validate_transform(x, (m, n))
 
     result = _vec2mat(x, (m, n))
     result = scipy.fftpack.idct(result, norm='ortho').T
@@ -122,7 +126,7 @@ def idct2(x, m, n):
     return _mat2vec(result)
 
 
-def dft2(x, m, n):
+def dft2(x, mn_tuple):
     """
     Apply the 2D Discrete Fourier Transform (DFT) to `x`.
 
@@ -149,12 +153,13 @@ def dft2(x, m, n):
 
     """
 
-    _validate_transform(x, m, n)
+    m, n = mn_tuple
+    _validate_transform(x, (m, n))
 
     return _mat2vec(np.fft.fft2(_vec2mat(x, (m, n))))
 
 
-def idft2(x, m, n):
+def idft2(x, mn_tuple):
     """
     Apply the 2D Inverse Discrete Fourier Transform (iDFT) to `x`.
 
@@ -181,7 +186,8 @@ def idft2(x, m, n):
 
     """
 
-    _validate_transform(x, m, n)
+    m, n = mn_tuple
+    _validate_transform(x, (m, n))
 
     output = _mat2vec(np.fft.ifft2(_vec2mat(x, (m, n))))
 

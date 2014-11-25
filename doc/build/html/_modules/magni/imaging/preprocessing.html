@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.preprocessing &mdash; Magni 1.0.0 documentation</title>
+    <title>magni.imaging.preprocessing &mdash; Magni 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -135,6 +135,7 @@
 
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.preprocessing import detilt</span>
 <span class="sd">    &gt;&gt;&gt; img = np.array([[0, 2, 3], [1, 5, 7], [3, 6, 8]], dtype=np.float)</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; detilt(img, mode=&#39;line_flatten&#39;, degree=1)</span>
 <span class="sd">    array([[-0.16666667,  0.33333333, -0.16666667],</span>
 <span class="sd">           [-0.33333333,  0.66666667, -0.33333333],</span>
@@ -144,10 +145,11 @@
 
 <span class="sd">    &gt;&gt;&gt; mask = np.array([[1, 1, 0], [1, 0, 1], [0, 1, 1]], dtype=np.bool)</span>
 <span class="sd">    &gt;&gt;&gt; im, ti = detilt(img, mask=mask, mode=&#39;plane_flatten&#39;, return_tilt=True)</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
 <span class="sd">    &gt;&gt;&gt; im</span>
-<span class="sd">    array([[  3.33333333e-01,  -3.33333333e-01,  -2.00000000e+00],</span>
-<span class="sd">           [ -3.33333333e-01,   1.00000000e+00,   3.33333333e-01],</span>
-<span class="sd">           [ -2.66453526e-15,   3.33333333e-01,  -3.33333333e-01]])</span>
+<span class="sd">    array([[ 0.33333333, -0.33333333, -2.        ],</span>
+<span class="sd">           [-0.33333333,  1.        ,  0.33333333],</span>
+<span class="sd">           [-0.        ,  0.33333333, -0.33333333]])</span>
 <span class="sd">    &gt;&gt;&gt; ti</span>
 <span class="sd">    array([[-0.33333333,  2.33333333,  5.        ],</span>
 <span class="sd">           [ 1.33333333,  4.        ,  6.66666667],</span>
@@ -294,13 +296,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on May 23, 2014.
+      Last updated on Nov 25, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>

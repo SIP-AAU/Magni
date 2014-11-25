@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation module &mdash; Magni 1.0.0 documentation</title>
+    <title>magni.imaging.visualisation module &mdash; Magni 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.0.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="prev" title="magni.imaging.preprocessing module" href="magni.imaging.preprocessing.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -150,13 +150,14 @@ A copy of <em class="xref py py-obj">x_mod</em> with the same mean value as <em 
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">shift_mean</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_mod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_org</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
 <span class="go">1.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
 <span class="go">1.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">shifted_x_mod</span> <span class="o">=</span> <span class="n">shift_mean</span><span class="p">(</span><span class="n">x_mod</span><span class="p">,</span> <span class="n">x_org</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shifted_x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shifted_x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
 <span class="go">1.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">shifted_x_mod</span>
 <span class="go">array([[ 1.5,  1.5],</span>
 <span class="go">       [ 1.5,  1.5]])</span>
@@ -194,6 +195,7 @@ A stretched copy of the input image.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">stretch_image</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
 <span class="go">array([[ 0.        ,  0.33333333],</span>
 <span class="go">       [ 0.66666667,  1.        ]])</span>
@@ -253,14 +255,14 @@ A stretched copy of the input image.</p>
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on May 23, 2014.
+      Last updated on Nov 25, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>

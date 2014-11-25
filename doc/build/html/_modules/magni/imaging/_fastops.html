@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging._fastops &mdash; Magni 1.0.0 documentation</title>
+    <title>magni.imaging._fastops &mdash; Magni 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.0.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -80,7 +80,7 @@
 
 
 <span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mn_tuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validatate a 2D transform.</span>
 
@@ -90,12 +90,14 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">mn_tuple</span>
+
     <span class="n">_validate</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
     <span class="n">_validate</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s">&#39;n&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
     <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">m</span> <span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)})</span>
 
 
-<div class="viewcode-block" id="dct2"><a class="viewcode-back" href="../../../magni.imaging._fastops.html#magni.imaging._fastops.dct2">[docs]</a><span class="k">def</span> <span class="nf">dct2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="dct2"><a class="viewcode-back" href="../../../magni.imaging._fastops.html#magni.imaging._fastops.dct2">[docs]</a><span class="k">def</span> <span class="nf">dct2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mn_tuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply the 2D Discrete Cosine Transform (DCT) to `x`.</span>
 
@@ -122,7 +124,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">mn_tuple</span>
+    <span class="n">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
     <span class="c"># 2D DCT using the seperability property of the 1D DCT.</span>
     <span class="c"># http://stackoverflow.com/questions/14325795/scipys-fftpack-dct-and-idct</span>
@@ -135,7 +138,7 @@
     <span class="k">return</span> <span class="n">_mat2vec</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="idct2"><a class="viewcode-back" href="../../../magni.imaging._fastops.html#magni.imaging._fastops.idct2">[docs]</a><span class="k">def</span> <span class="nf">idct2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="idct2"><a class="viewcode-back" href="../../../magni.imaging._fastops.html#magni.imaging._fastops.idct2">[docs]</a><span class="k">def</span> <span class="nf">idct2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mn_tuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply the 2D Inverse Discrete Cosine Transform (iDCT) to `x`.</span>
 
@@ -162,7 +165,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">mn_tuple</span>
+    <span class="n">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">_vec2mat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">fftpack</span><span class="o">.</span><span class="n">idct</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s">&#39;ortho&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
@@ -170,7 +174,7 @@
     <span class="k">return</span> <span class="n">_mat2vec</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="dft2"><a class="viewcode-back" href="../../../magni.imaging._fastops.html#magni.imaging._fastops.dft2">[docs]</a><span class="k">def</span> <span class="nf">dft2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="dft2"><a class="viewcode-back" href="../../../magni.imaging._fastops.html#magni.imaging._fastops.dft2">[docs]</a><span class="k">def</span> <span class="nf">dft2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mn_tuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply the 2D Discrete Fourier Transform (DFT) to `x`.</span>
 
@@ -197,12 +201,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">mn_tuple</span>
+    <span class="n">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">_mat2vec</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">_vec2mat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))))</span>
 
 </div>
-<div class="viewcode-block" id="idft2"><a class="viewcode-back" href="../../../magni.imaging._fastops.html#magni.imaging._fastops.idft2">[docs]</a><span class="k">def</span> <span class="nf">idft2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="idft2"><a class="viewcode-back" href="../../../magni.imaging._fastops.html#magni.imaging._fastops.idft2">[docs]</a><span class="k">def</span> <span class="nf">idft2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mn_tuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply the 2D Inverse Discrete Fourier Transform (iDFT) to `x`.</span>
 
@@ -229,7 +234,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">mn_tuple</span>
+    <span class="n">_validate_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
     <span class="n">output</span> <span class="o">=</span> <span class="n">_mat2vec</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft2</span><span class="p">(</span><span class="n">_vec2mat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))))</span>
 
@@ -267,13 +273,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.0.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on May 23, 2014.
+      Last updated on Nov 25, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>

@@ -176,13 +176,14 @@ def shift_mean(x_mod, x_org):
     >>> from magni.imaging.visualisation import shift_mean
     >>> x_org = np.arange(4).reshape(2, 2)
     >>> x_mod = np.ones((2, 2))
-    >>> x_org.mean()
+    >>> print('{:.1f}'.format(x_org.mean()))
     1.5
-    >>> x_mod.mean()
+    >>> print('{:.1f}'.format(x_mod.mean()))
     1.0
     >>> shifted_x_mod = shift_mean(x_mod, x_org)
-    >>> shifted_x_mod.mean()
+    >>> print('{:.1f}'.format(shifted_x_mod.mean()))
     1.5
+    >>> np.set_printoptions(suppress=True)
     >>> shifted_x_mod
     array([[ 1.5,  1.5],
            [ 1.5,  1.5]])
@@ -238,6 +239,7 @@ def stretch_image(img, max_val):
     >>> from magni.imaging.visualisation import stretch_image
     >>> img = np.arange(4, dtype=np.float).reshape(2, 2)
     >>> stretched_img = stretch_image(img, 1.0)
+    >>> np.set_printoptions(suppress=True)
     >>> stretched_img
     array([[ 0.        ,  0.33333333],
            [ 0.66666667,  1.        ]])
@@ -249,4 +251,9 @@ def stretch_image(img, max_val):
     min_ = img.min()
     max_ = img.max()
 
-    return max_val / (max_ - min_) * (img - min_)
+    if max_ > min_:
+        val = max_val / (max_ - min_) * (img - min_)
+    else:
+        val = img - min_
+
+    return val
