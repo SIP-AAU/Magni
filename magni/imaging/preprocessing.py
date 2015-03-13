@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -19,28 +19,8 @@ import numpy as np
 
 import magni.imaging
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_detilt(img, mask, mode, degree, return_tilt):
-    """
-    Validate the `detilt` function.
-
-    See Also
-    --------
-    magni.utils.validation.validate : Validation
-
-    """
-
-    _validate_ndarray(img, 'img', {'dim': 2, 'subdtype': np.floating})
-    _validate_ndarray(mask, 'mask', {'shape': img.shape, 'dtype': np.bool_},
-                      ignore_none=True)
-    _validate(mode, 'mode', {'type': str, 'val_in': ['plane_flatten',
-                                                     'line_flatten']})
-    _validate(degree, 'degree', {'type': int, 'min': 1})
-    _validate(return_tilt, 'return_tilt', {'type': bool})
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def detilt(img, mask=None, mode='plane_flatten', degree=1, return_tilt=False):
@@ -85,6 +65,7 @@ def detilt(img, mask=None, mode='plane_flatten', degree=1, return_tilt=False):
     --------
     For example, line flatten an image using a degree 1 polynomial
 
+    >>> import numpy as np
     >>> from magni.imaging.preprocessing import detilt
     >>> img = np.array([[0, 2, 3], [1, 5, 7], [3, 6, 8]], dtype=np.float)
     >>> np.set_printoptions(suppress=True)
@@ -95,21 +76,29 @@ def detilt(img, mask=None, mode='plane_flatten', degree=1, return_tilt=False):
 
     Or plane flatten the image based on a mask and return the tilt
 
-    >>> mask = np.array([[1, 1, 0], [1, 0, 1], [0, 1, 1]], dtype=np.bool)
+    >>> mask = np.array([[1, 0, 0], [1, 0, 1], [0, 1, 1]], dtype=np.bool)
     >>> im, ti = detilt(img, mask=mask, mode='plane_flatten', return_tilt=True)
     >>> np.set_printoptions(suppress=True)
     >>> im
-    array([[ 0.33333333, -0.33333333, -2.        ],
-           [-0.33333333,  1.        ,  0.33333333],
-           [-0.        ,  0.33333333, -0.33333333]])
+    array([[ 0.11111111, -0.66666667, -2.44444444],
+           [-0.33333333,  0.88888889,  0.11111111],
+           [ 0.22222222,  0.44444444, -0.33333333]])
     >>> ti
-    array([[-0.33333333,  2.33333333,  5.        ],
-           [ 1.33333333,  4.        ,  6.66666667],
-           [ 3.        ,  5.66666667,  8.33333333]])
+    array([[-0.11111111,  2.66666667,  5.44444444],
+           [ 1.33333333,  4.11111111,  6.88888889],
+           [ 2.77777778,  5.55555556,  8.33333333]])
 
     """
 
-    _validate_detilt(img, mask, mode, degree, return_tilt)
+    @_decorate_validation
+    def validate_input():
+        _numeric('img', 'floating', shape=(-1, -1))
+        _numeric('mask', 'boolean', shape=img.shape, ignore_none=True)
+        _generic('mode', 'string', value_in=('plane_flatten', 'line_flatten'))
+        _numeric('degree', 'integer', range_='[1;inf)')
+        _numeric('return_tilt', 'boolean')
+
+    validate_input()
 
     if mode == 'line_flatten':
         tilt = _line_flatten_tilt(img, mask, degree)

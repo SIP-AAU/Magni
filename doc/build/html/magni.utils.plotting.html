@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.plotting module &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.utils.plotting module &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,9 +25,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="up" title="magni.utils package" href="magni.utils.html" />
-    <link rel="next" title="magni.utils.validation module" href="magni.utils.validation.html" />
     <link rel="prev" title="magni.utils.matrices module" href="magni.utils.matrices.html" /> 
   </head>
   <body>
@@ -38,12 +37,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="magni.utils.validation.html" title="magni.utils.validation module"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
           <a href="magni.utils.matrices.html" title="magni.utils.matrices module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.utils.html" accesskey="U">magni.utils package</a> &raquo;</li> 
       </ul>
@@ -79,7 +75,8 @@ color_cycle.</dd>
 </dl>
 <p class="rubric">Examples</p>
 <p>Use the default Magni matplotlib settings.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Get the normalised &#8216;Blue&#8217; colour brew from the psp colour map:</p>
@@ -124,44 +121,9 @@ pp. 27-37, 2003 (See also: <a class="reference external" href="http://colorbrewe
 </tbody>
 </table>
 <dl class="method">
-<dt id="magni.utils.plotting._ColourCollection._validate_init">
-<tt class="descname">_validate_init</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/utils/plotting.html#_ColourCollection._validate_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.plotting._ColourCollection._validate_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrap a validation function (see module Notes).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>tuple</em>) &#8211;
-The arguments passed to the decorated function.</li>
-<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
-The keyword arguments passed to the decorated function.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="magni.utils.plotting._ColourCollection.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>brews</em><big>)</big><a class="reference internal" href="_modules/magni/utils/plotting.html#_ColourCollection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.plotting._ColourCollection.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="magni.utils.plotting._ColourCollection._validate_getitem">
-<tt class="descname">_validate_getitem</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/magni/utils/plotting.html#_ColourCollection._validate_getitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.plotting._ColourCollection._validate_getitem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate the <a class="reference internal" href="#magni.utils.plotting._ColourCollection.__getitem__" title="magni.utils.plotting._ColourCollection.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a> function.</p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#magni.utils.plotting._ColourCollection.__getitem__" title="magni.utils.plotting._ColourCollection.__getitem__"><tt class="xref py py-meth docutils literal"><span class="pre">_ColourCollection.__getitem__()</span></tt></a></dt>
-<dd>The validated function.</dd>
-<dt><a class="reference internal" href="magni.utils.validation.html#magni.utils.validation.validate" title="magni.utils.validation.validate"><tt class="xref py py-meth docutils literal"><span class="pre">magni.utils.validation.validate()</span></tt></a></dt>
-<dd>Validation.</dd>
-</dl>
-</div>
-</dd></dl>
 
 <dl class="method">
 <dt id="magni.utils.plotting._ColourCollection.__getitem__">
@@ -207,7 +169,7 @@ that the &#8216;coolwarm&#8217; colormap is used).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">UserWarning</span></tt> &#8211; 
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">UserWarning</span></tt> &#8211;
 If the supplied custom settings are invalid.</p>
 </td>
 </tr>
@@ -242,9 +204,6 @@ If the supplied custom settings are invalid.</p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="magni.utils.matrices.html"
                         title="previous chapter">magni.utils.matrices module</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="magni.utils.validation.html"
-                        title="next chapter">magni.utils.validation module</a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -269,20 +228,17 @@ If the supplied custom settings are invalid.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="magni.utils.validation.html" title="magni.utils.validation module"
-             >next</a> |</li>
-        <li class="right" >
           <a href="magni.utils.matrices.html" title="magni.utils.matrices module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.utils.html" >magni.utils package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

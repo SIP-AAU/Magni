@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.reconstruction.iht._original &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.cs.reconstruction.iht._original &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../../../index.html" />
     <link rel="up" title="Module code" href="../../../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.cs.reconstruction.iht._original</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -80,32 +80,11 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
 
-<span class="kn">from</span> <span class="nn">magni.cs.reconstruction.iht</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_config</span>
+<span class="kn">from</span> <span class="nn">magni.cs.reconstruction.iht</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_conf</span>
 <span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="kn">import</span> <span class="n">Matrix</span> <span class="k">as</span> <span class="n">_Matrix</span>
 <span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="kn">import</span> <span class="n">MatrixCollection</span> <span class="k">as</span> <span class="n">_MatrixC</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
-
-
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `run` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    run : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">_Matrix</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">_MatrixC</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;A must be a matrix.&#39;</span><span class="p">)</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../../magni.cs.reconstruction.iht._original.html#magni.cs.reconstruction.iht._original.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
@@ -145,6 +124,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    For example, recovering a vector from random measurements</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.cs.reconstruction.iht._original import run</span>
 <span class="sd">    &gt;&gt;&gt; np.random.seed(seed=6021)</span>
 <span class="sd">    &gt;&gt;&gt; A = 1 / np.sqrt(80) * np.random.randn(80, 200)</span>
@@ -171,28 +151,33 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
-    <span class="n">_param</span> <span class="o">=</span> <span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-    <span class="n">convert</span> <span class="o">=</span> <span class="n">_param</span><span class="p">[</span><span class="s">&#39;precision_float&#39;</span><span class="p">]</span>
-    <span class="n">kappa</span> <span class="o">=</span> <span class="n">_param</span><span class="p">[</span><span class="s">&#39;kappa&#39;</span><span class="p">]</span>
-    <span class="n">tol</span> <span class="o">=</span> <span class="n">_param</span><span class="p">[</span><span class="s">&#39;tolerance&#39;</span><span class="p">]</span>
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="n">convert</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;precision_float&#39;</span><span class="p">]</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;kappa_fixed&#39;</span><span class="p">]</span>
+    <span class="n">tol</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;tolerance&#39;</span><span class="p">]</span>
     <span class="n">far</span> <span class="o">=</span> <span class="n">_calculate_far</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">Lambda</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">far</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
     <span class="n">stdQ1</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.25</span><span class="p">))</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_param</span><span class="p">[</span><span class="s">&#39;threshold_rho&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;threshold_fixed&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">convert</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_param</span><span class="p">[</span><span class="s">&#39;iterations&#39;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;iterations&#39;</span><span class="p">]):</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">kappa</span> <span class="o">*</span> <span class="n">c</span>
 
-        <span class="k">if</span> <span class="n">_param</span><span class="p">[</span><span class="s">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;far&#39;</span><span class="p">:</span>
-            <span class="n">thres</span> <span class="o">=</span> <span class="p">(</span><span class="n">kappa</span> <span class="o">*</span> <span class="n">Lambda</span> <span class="o">*</span> <span class="n">convert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">ravel</span><span class="p">())))</span>
-                     <span class="o">/</span> <span class="n">stdQ1</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">_param</span><span class="p">[</span><span class="s">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;oracle&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;far&#39;</span><span class="p">:</span>
+            <span class="n">thres</span> <span class="o">=</span> <span class="p">(</span><span class="n">kappa</span> <span class="o">*</span> <span class="n">Lambda</span> <span class="o">*</span> <span class="n">convert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">ravel</span><span class="p">())))</span> <span class="o">/</span>
+                     <span class="n">stdQ1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;oracle&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">thres</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -279,14 +264,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

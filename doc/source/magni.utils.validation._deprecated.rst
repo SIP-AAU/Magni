@@ -1,7 +1,7 @@
-magni.cs.reconstruction.iht.config module
+magni.utils.validation._deprecated module
 =========================================
 
-.. automodule:: magni.cs.reconstruction.iht.config
+.. automodule:: magni.utils.validation._deprecated
     :members:
     :undoc-members:
     :show-inheritance:

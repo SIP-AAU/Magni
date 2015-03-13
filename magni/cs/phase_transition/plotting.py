@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -10,7 +10,9 @@ Routine listings
 ----------------
 plot_phase_transitions(curves, plot_l1=True, output_path=None)
     Function for plotting phase transition boundary curves.
-plot_phase_transition_colormap(dist, delta, rho, plot_l1=True, output_path=None)
+plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
+    output_path=None)
+
     Function for plotting reconstruction probabilities in the phase space.
 
 """
@@ -21,26 +23,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_plot_phase_transitions(curves, plot_l1, output_path):
-    """
-    Validate the `plot_phase_transitions` function.
-
-    See Also
-    --------
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(curves, 'curves',
-              [{'type_in': (list, tuple)},
-               {'type': dict, 'keys': ('delta', 'rho', 'label')}])
-    _validate(plot_l1, 'plot_l1', {'type': bool})
-    _validate(output_path, 'output_path', {'type': str}, ignore_none=True)
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_levels as _levels
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def plot_phase_transitions(curves, plot_l1=True, output_path=None):
@@ -78,6 +63,7 @@ def plot_phase_transitions(curves, plot_l1=True, output_path=None):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.cs.phase_transition.plotting import plot_phase_transitions
     >>> delta = np.array([0.1, 0.2, 0.9])
     >>> rho = np.array([0.1, 0.3, 0.8])
@@ -87,7 +73,23 @@ def plot_phase_transitions(curves, plot_l1=True, output_path=None):
 
     """
 
-    _validate_plot_phase_transitions(curves, plot_l1, output_path)
+    @_decorate_validation
+    def validate_input():
+        _levels('curves', (_generic(None, 'collection'),
+                           _generic(None, 'mapping',
+                                    has_keys=('delta', 'rho', 'label'))))
+
+        for i, curve in enumerate(curves):
+            _numeric(('curves', i, 'delta'), 'floating', range_='[0;1]',
+                     shape=(-1,))
+            _numeric(('curves', i, 'rho'), 'floating', range_='[0;1]',
+                     shape=(curve['delta'].shape[0],))
+            _generic(('curves', i, 'label'), 'string')
+
+        _numeric('plot_l1', 'boolean')
+        _generic('output_path', 'string', ignore_none=True)
+
+    validate_input()
 
     fig, axes = plt.subplots(1, 1)
 
@@ -105,26 +107,6 @@ def plot_phase_transitions(curves, plot_l1=True, output_path=None):
 
     if output_path is not None:
         plt.savefig(output_path)
-
-
-@_decorate_validation
-def _validate_plot_phase_transition_colormap(dist, delta, rho, plot_l1,
-                                             output_path):
-    """
-    Validate the `plot_phase_transition_colormap` function.
-
-    See Also
-    --------
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(delta, 'delta')
-    _validate_ndarray(rho, 'rho', {'shape': (rho.shape[0],)})
-    _validate_ndarray(dist, 'dist', {'dim': 3, 'shape': (
-        delta.shape[0], rho.shape[0], dist.shape[2])})
-    _validate(plot_l1, 'plot_l1', {'type': bool})
-    _validate(output_path, 'output_path', {'type': str}, ignore_none=True)
 
 
 def plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
@@ -180,6 +162,7 @@ def plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.cs.phase_transition.plotting import (
     ...     plot_phase_transition_colormap)
     >>> delta = np.array([0.2, 0.5, 0.8])
@@ -192,8 +175,16 @@ def plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
 
     """
 
-    _validate_plot_phase_transition_colormap(dist, delta, rho, plot_l1,
-                                             output_path)
+    @_decorate_validation
+    def validate_input():
+        _numeric('delta', 'floating', range_='[0;1]', shape=(-1,))
+        _numeric('rho', 'floating', range_='[0;1]', shape=(-1,))
+        _numeric('dist', 'floating', range_='[0;inf]',
+                 shape=(delta.shape[0], rho.shape[0], -1))
+        _numeric('plot_l1', 'boolean')
+        _generic('output_path', 'string', ignore_none=True)
+
+    validate_input()
 
     probs = np.sum(dist < 1e-4, axis=-1, dtype=float) / np.size(dist, -1)
 

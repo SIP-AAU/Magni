@@ -1,7 +1,7 @@
 Magni is licensed under the OSI-approved BSD 2-Clause License. See
 http://opensource.org/licenses/BSD-2-Clause for further information.
 
-Copyright (c) 2014,
+Copyright (c) 2014-2015,
 
 Primary developers
   Christian Schou Oxvig and Patrick Steffen Pedersen.

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -17,7 +17,7 @@ matrices
 plotting
     Module providing utilities for control of plotting using `matplotlib`.
 validation
-    Module providing validation capability.
+    Subpackage providing validation capability.
 split_path(path)
     Split a path into folder path, file name, and file extension.
 

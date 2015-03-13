@@ -55,8 +55,8 @@ needs_sphinx = '1.2'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.mathjax',
-              'sphinx.ext.viewcode', 'sphinx.ext.doctest',
-              'sphinx.ext.extlinks', 'sphinxcontrib.napoleon']
+              'sphinx.ext.viewcode', 'sphinx.ext.extlinks',
+              'sphinxcontrib.napoleon']
 
 if tags.has('no_viewcode_ext'):
     extensions.remove('sphinx.ext.viewcode')
@@ -244,35 +244,6 @@ def skip_special_members(app, what, name, obj, skip, options):
 
 # -- Options for Todo ----------------------------------------------------------
 todo_include_todos = True
-
-
-# -- Options for Doctest -------------------------------------------------------
-doctest_global_setup = """
-import os
-
-import numpy as np
-
-import magni
-
-test_cwd = os.getcwd()
-test_cwd_split = test_cwd.split(os.sep)
-if test_cwd_split[-2] == 'magni' and test_cwd_split[-1] == 'doc':
-    test_build_dir = test_cwd + os.sep + 'build' + os.sep + 'doctest'
-
-    try:
-       os.mkdir(test_build_dir)
-    except OSError:
-       pass
-
-    os.chdir(test_build_dir)
-
-"""
-
-doctest_global_cleanup = """
-os.chdir(test_cwd)
-
-"""
-
 
 # -- Options for Extlinks ------------------------------------------------------
 extlinks = {'doi': ('http://dx.doi.org/%s', 'doi:')}

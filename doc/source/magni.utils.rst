@@ -13,6 +13,7 @@ Subpackages
     :maxdepth: 1
 
     magni.utils.multiprocessing
+    magni.utils.validation
 
 Submodules
 ----------
@@ -24,4 +25,3 @@ Submodules
     magni.utils.config
     magni.utils.matrices
     magni.utils.plotting
-    magni.utils.validation

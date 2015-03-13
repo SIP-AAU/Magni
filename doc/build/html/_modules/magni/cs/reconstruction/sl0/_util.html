@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.reconstruction.sl0._util &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.cs.reconstruction.sl0._util &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../../../index.html" />
     <link rel="up" title="Module code" href="../../../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.cs.reconstruction.sl0._util</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -59,27 +59,13 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
-<span class="kn">from</span> <span class="nn">magni.cs.reconstruction.sl0</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_config</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">magni.cs.reconstruction.sl0</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_conf</span>
 <span class="kn">from</span> <span class="nn">magni.cs.reconstruction.sl0</span> <span class="kn">import</span> <span class="n">_modified</span>
 <span class="kn">from</span> <span class="nn">magni.cs.reconstruction.sl0</span> <span class="kn">import</span> <span class="n">_original</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
-
-
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `run` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    run : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../../magni.cs.reconstruction.sl0._util.html#magni.cs.reconstruction.sl0._util.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
@@ -88,7 +74,7 @@
 
 <span class="sd">    The available SL0 reconstruction algorithms are the original SL0 and the</span>
 <span class="sd">    modified SL0. Which of the available SL0 reconstruction algorithms is used,</span>
-<span class="sd">    is specified as a configuration option.</span>
+<span class="sd">    is specified as configuration options.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -118,14 +104,27 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
-    <span class="n">algorithm</span> <span class="o">=</span> <span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;algorithm&#39;</span><span class="p">)</span>
+    <span class="n">validate_input</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s">&#39;std&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">A</span>
+
+    <span class="k">if</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;mu&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;sigma_start&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;fixed&#39;</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">_original</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s">&#39;mod&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;geometric&#39;</span> <span class="ow">and</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;mu&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;step&#39;</span> <span class="ow">and</span>
+          <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;sigma_start&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;reciprocal&#39;</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">_modified</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s">&quot;Currently, only the following configuration combinations of (L, &quot;</span>
+            <span class="s">&quot;mu, sigma_start) are implemented: (&#39;fixed&#39;, &#39;fixed&#39;, &#39;fixed&#39;) &quot;</span>
+            <span class="s">&quot;and (&#39;geometric&#39;, &#39;step&#39;, &#39;reciprocal&#39;).&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">x</span></div>
 </pre></div>
@@ -158,14 +157,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

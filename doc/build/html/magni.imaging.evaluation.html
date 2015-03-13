@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.evaluation module &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.imaging.evaluation module &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.imaging.measurements module" href="magni.imaging.measurements.html" />
     <link rel="prev" title="magni.imaging.domains module" href="magni.imaging.domains.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -96,7 +96,8 @@ Mean Squared Error (MSE).</p>
 <p>where <em class="xref py py-obj">N</em> is the number of entries in <em class="xref py py-obj">x_org</em>.</p>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_mse</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_mse</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_recons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calculate_mse</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">)))</span>
@@ -135,9 +136,12 @@ Peak Signal to Noise Ratio (PSNR) in dB.</p>
 \[10 \cdot \log_{10}\left(\frac{peak^2}{ 1/N \cdot \sum(x_{org} -
 x_{recons})^2}\right)\]</div>
 <p>where <em class="xref py py-obj">N</em> is the number of entries in <em class="xref py py-obj">x_org</em>.</p>
+<p>If <span class="math">\(|x_{org} - x_{recons}| &lt;= (10^{-8} + 1^{-5} * |x_{recons}|)\)</span>
+then <tt class="xref py py-obj docutils literal"><span class="pre">np.inf</span></tt> is returned.</p>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_psnr</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_psnr</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_recons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">peak</span> <span class="o">=</span> <span class="mi">3</span>
@@ -157,7 +161,7 @@ x_{recons})^2}\right)\]</div>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x_org</strong> (<em>ndarray</em>) &#8211;
-Array of original values.</li>
+Array of original values (must not be all zeros).</li>
 <li><strong>x_recons</strong> (<em>ndarray</em>) &#8211;
 Array of reconstruction values.</li>
 </ul>
@@ -175,7 +179,8 @@ Percentage of retained energy in reconstruction.</p>
 \[\frac{\sum x_{recons}^2}{\sum x_{org}^2} \cdot 100\%\]</div>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_retained_energy</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_retained_energy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_recons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calculate_retained_energy</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">)))</span>
@@ -236,15 +241,15 @@ Percentage of retained energy in reconstruction.</p>
         <li class="right" >
           <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.afm.io module &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.afm.io module &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="up" title="magni.afm package" href="magni.afm.html" />
     <link rel="next" title="magni.afm.reconstruction module" href="magni.afm.reconstruction.html" />
-    <link rel="prev" title="magni.afm.config module" href="magni.afm.config.html" /> 
+    <link rel="prev" title="magni.afm._config module" href="magni.afm._config.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,9 +41,9 @@
           <a href="magni.afm.reconstruction.html" title="magni.afm.reconstruction module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="magni.afm.config.html" title="magni.afm.config module"
+          <a href="magni.afm._config.html" title="magni.afm._config module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.afm.html" accesskey="U">magni.afm package</a> &raquo;</li> 
       </ul>
@@ -94,7 +94,8 @@ types of data and thus the class of the output can vary.</p>
 <p class="rubric">Examples</p>
 <p>An example of how to use read_mi_file to read the example MI file provided
 with the package:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.afm.io</span> <span class="kn">import</span> <span class="n">read_mi_file</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.afm.io</span> <span class="kn">import</span> <span class="n">read_mi_file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s">&#39;example.mi&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
@@ -169,8 +170,8 @@ different value types and the conversion from the string representation.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="magni.afm.config.html"
-                        title="previous chapter">magni.afm.config module</a></p>
+  <p class="topless"><a href="magni.afm._config.html"
+                        title="previous chapter">magni.afm._config module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.afm.reconstruction.html"
                         title="next chapter">magni.afm.reconstruction module</a></p>
@@ -201,17 +202,17 @@ different value types and the conversion from the string representation.</p>
           <a href="magni.afm.reconstruction.html" title="magni.afm.reconstruction module"
              >next</a> |</li>
         <li class="right" >
-          <a href="magni.afm.config.html" title="magni.afm.config module"
+          <a href="magni.afm._config.html" title="magni.afm._config module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.afm.html" >magni.afm package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

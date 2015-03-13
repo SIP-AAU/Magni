@@ -52,8 +52,14 @@ def create_package_file(root, master_package, subroot, py_files, opts, subs):
     text += format_directive(subroot, master_package)
     text += '\n'
 
+    if 'magni.tests' in text:
+        return
+
     # Build a list of directories that are subpackages (contain an INITPY file)
     subs = [sub for sub in subs if path.isfile(path.join(root, sub, INITPY))]
+
+    if 'tests' in subs:
+        subs.remove('tests')
 
     # If there are some package directories, add a TOC for theses subpackages
     if subs:
@@ -65,8 +71,11 @@ def create_package_file(root, master_package, subroot, py_files, opts, subs):
         text += '\n'
 
     submods = [path.splitext(sub)[0] for sub in py_files
-               if not shall_skip(path.join(root, sub), opts)
-               and sub != INITPY]
+               if not shall_skip(path.join(root, sub), opts) and sub != INITPY]
+
+    if 'run_tests' in submods:
+        submods = []
+
     if submods:
         text += format_heading(2, 'Submodules')
         if opts.separatemodules:
@@ -93,7 +102,7 @@ def create_package_file(root, master_package, subroot, py_files, opts, subs):
                 text += '\n'
 
     write_file(makename(master_package, subroot), text, opts)
-
+    return
 
 if __name__ == '__main__':
     """Monkey patch the sphinx.apidoc module."""

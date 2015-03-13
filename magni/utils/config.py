@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -8,13 +8,13 @@ Module providing a robust configger class.
 
 Routine listings
 ----------------
-Configger()
-    Provide set and get functions to access a set of configuration options.
+Configger(object)
+    Provide functionality to access a set of configuration options.
 
 Notes
 -----
 This module does not itself contain any configuration options and thus has no
-get or set functions unlike the other config modules of `magni`.
+access to any configuration options unlike the other config modules of `magni`.
 
 """
 
@@ -22,21 +22,23 @@ from __future__ import division
 from itertools import chain
 
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_levels as _levels
+from magni.utils.validation import validate_numeric as _numeric
 
 
-class Configger():
+class Configger(object):
     """
-    Provide set and get functions to access a set of configuration options.
+    Provide functionality to access a set of configuration options.
 
     The set of configuration options, their default values, and their
     validation schemes are specified upon initialisation.
 
     Parameters
     ----------
-    param : dict
-        The configuration options along with their default values.
-    requirements : dict
+    params : dict
+        The configuration options and their default values.
+    valids : dict
         The validation schemes of the configuration options.
 
     See Also
@@ -45,144 +47,267 @@ class Configger():
 
     Notes
     -----
-    `requirements` must contain the same keys as `param`. For each key in
-    `requirements`, the value is used as validation scheme - see `set` for
-    further information.
+    `valids` must contain the same keys as `params`. For each key in 'valids',
+    the first value is the validation function ('generic', 'levels', or
+    'numeric'), whereas the remaining values are passed to that validation
+    function.
 
     Examples
     --------
     Instantiate Configger with the parameter 'key' with default value 'default'
     which can only assume string values.
 
+    >>> import magni
     >>> from magni.utils.config import Configger
-    >>> config = Configger({'key': 'default'}, {'key': {'type': str}})
+    >>> valid = magni.utils.validation.validate_generic(None, 'string')
+    >>> config = Configger({'key': 'default'}, {'key': valid})
 
-    The parameter can either be retrieved by getting a copy of the entire
-    parameter dictionary or by getting the specific key.
+    The number of parameters can be retrieved as the length:
 
-    >>> config.get()
-    {'key': 'default'}
-    >>> config.get('key')
+    >>> len(config)
+    1
+
+    That parameter can be retrieved in a number of ways:
+
+    >>> config['key']
     'default'
 
-    Likewise the parameter can either be changed by passing a dictionary with
-    the parameter or by using a keyword argument.
+    >>> for key, value in config.items():
+    ...     print('key: {!r}, value: {!r}'.format(key, value))
+    key: 'key', value: 'default'
 
-    >>> config.set({'key': 'value'})
-    >>> config.set(key='value')
-    >>> config.get('key')
+    >>> for key in config.keys():
+    ...     print('key: {!r}'.format(key))
+    key: 'key'
+
+    >>> for value in config.values():
+    ...     print('value: {!r}'.format(value))
+    value: 'default'
+
+    Likewise, the parameter can be changed in a number of ways:
+
+    >>> config['key'] = 'value'
+    >>> config['key']
     'value'
+
+    >>> config.update({'key': 'value changed by dict'})
+    >>> config['key']
+    'value changed by dict'
+
+    >>> config.update(key='value changed by keyword')
+    >>> config['key']
+    'value changed by keyword'
+
+    Finally, the parameter can be reset to the default value at any point:
+
+    >>> config.reset()
+    >>> config['key']
+    'default'
 
     """
 
-    @_decorate_validation
-    def _validate_init(self, param, requirements):
+    _funcs = {'generic': _generic, 'levels': _levels, 'numeric': _numeric}
+
+    def __init__(self, params, valids):
+        @_decorate_validation
+        def validate_input():
+            _generic('params', 'mapping')
+            _levels('valids', (
+                _generic(None, 'mapping', has_keys=tuple(params.keys())),
+                _generic(None, 'explicit collection')))
+
+            for key in valids.keys():
+                _generic(('valids', key, 0), 'string',
+                         value_in=tuple(self._funcs.keys()))
+
+        validate_input()
+
+        self._default = params.copy()
+        self._params = params
+        self._valids = valids
+
+    def __getitem__(self, name):
         """
-        Validate the `__init__` function.
-
-        See Also
-        --------
-        Configger.__init__ : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        _validate(param, 'param', {'type': dict})
-        _validate(requirements, 'requirements',
-                  [{'type': dict}, {'type_in': [list, tuple, dict]}])
-
-        if not sorted(param.keys()) == sorted(requirements.keys()):
-            raise KeyError('param and requirements must have the same keys.')
-
-    def __init__(self, param, requirements):
-        self._validate_init(param, requirements)
-
-        self._param = param
-        self._requirements = requirements
-
-    @_decorate_validation
-    def _validate_get(self, key):
-        """
-        Validate the `get` function.
-
-        See Also
-        --------
-        Configger.get : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        _validate(key, 'key', {'val_in': list(self._param.keys())}, True)
-
-    def get(self, key=None):
-        """
-        Retrieve a copy of all parameters or a specific parameter.
+        Get the value of a configuration parameter.
 
         Parameters
         ----------
-        key : str or None, optional
-            The name of the key to retrieve (the default is None, which implies
-            retrieving a copy of all parameters)
+        name : str
+            The name of the parameter.
 
         Returns
         -------
-        value : dict or None
-            The value of the specified key, if a key is not None. Otherwise,
-            a copy of the parameter dictionary.
+        value : None
+            The value of the parameter.
 
         """
 
-        self._validate_get(key)
+        @_decorate_validation
+        def validate_input():
+            _generic('name', 'string', value_in=tuple(self._params.keys()))
 
-        if key is None:
-            value = self._param.copy()
-        else:
-            value = self._param[key]
+        validate_input()
 
-        return value
+        return self._params[name]
 
-    @_decorate_validation
-    def _validate_set(self, dictionary, kwargs):
+    def __len__(self):
         """
-        Validate the `set` function.
+        Get the number of configuration parameters.
+
+        Returns
+        -------
+        length : int
+            The number of parameters.
+
+        """
+
+        return len(self._params)
+
+    def __setitem__(self, name, value):
+        """
+        Set the value of a configuration parameter.
+
+        The value is validated according to the validation scheme of that
+        parameter.
+
+        Parameters
+        ----------
+        name : str
+            The name of the parameter.
+        value : None
+            The new value of the parameter.
+
+        """
+
+        @_decorate_validation
+        def validate_input():
+            _generic('name', 'string', value_in=tuple(self._params.keys()))
+            validation = self._valids[name]
+            self._funcs[validation[0]]('value', *validation[1:])
+
+        validate_input()
+
+        self._params[name] = value
+
+    def get(self, key=None):
+        """
+        Deprecated method.
 
         See Also
         --------
-        Configger.set : The validated function.
-        magni.utils.validation.validate : Validation.
+        Configger.__getitem__ : Replacing method.
+        Configger.items : Replacing method.
+        Configger.keys : Replacing method.
+        Configger.values : Replacing method.
 
         """
 
-        keys = list(self._param.keys())
-        _validate(dictionary, 'dictionary', {'type': dict, 'keys_in': keys})
-        _validate(kwargs, 'kwargs', {'keys_in': keys})
+        raise DeprecationWarning("'get' will be removed in version 1.3.0 - "
+                                 "use 'var[name]', 'items', 'keys', or "
+                                 "'values' instead.")
 
-        all_items = dict(chain(dictionary.items(), kwargs.items())).items()
-        for key, value in all_items:
-            _validate(value, key, self._requirements[key])
+        if key is None:
+            return dict(self.items())
+        else:
+            return self[key]
+
+    def items(self):
+        """
+        Get the configuration parameters as key, value pairs.
+
+        Returns
+        -------
+        items : set-like
+            The list of parameters.
+
+        """
+
+        for key in self.keys():
+            yield (key, self[key])
+
+    def keys(self):
+        """
+        Get the configuration parameter keys.
+
+        Returns
+        -------
+        keys : set-like
+            The keys.
+
+        """
+
+        return self._params.keys()
+
+    def reset(self):
+        """
+        Reset the parameter values to the default values.
+
+        """
+
+        self._params = self._default.copy()
 
     def set(self, dictionary={}, **kwargs):
         """
-        Overwrite the value of one or more parameters.
+        Deprecated method.
+
+        See Also
+        --------
+        Configger.__setitem__ : Replacing function.
+
+        """
+
+        raise DeprecationWarning("'set' will be removed in version 1.3.0 - "
+                                 "use 'var[name] = value' or 'update' "
+                                 "instead.")
+
+        self.update(dictionary, **kwargs)
+
+    def update(self, params={}, **kwargs):
+        """
+        Update the value of one or more configuration parameters.
 
         Each value is validated according to the validation scheme of that
         parameter.
 
         Parameters
         ----------
-        dictionary : dict, optional
-            A dictionary containing the key and value pairs to update.
-        kwargs : dict, optional
-            Keyword arguments being the key and value pairs to update.
-
-        See Also
-        --------
-        magni.utils.validation.validate : Validation.
+        params : dict, optional
+            A dictionary containing the key and values to update. (the default
+            value is an empty dictionary)
+        kwargs : dict
+            Keyword arguments being the key and values to update.
 
         """
 
-        self._validate_set(dictionary, kwargs)
+        @_decorate_validation
+        def validate_input():
+            _generic('params', 'mapping', keys_in=tuple(self._params.keys()))
 
-        all_items = dict(chain(dictionary.items(), kwargs.items())).items()
-        for key, value in all_items:
-            self._param[key] = value
+            for name, var in (('params', params), ('kwargs', kwargs)):
+                for key in var.keys():
+                    validation = self._valids[key]
+                    self._funcs[validation[0]]((name, key), *validation[1:])
+
+        validate_input()
+
+        if params is not None:
+            for key, value in params.items():
+                self[key] = value
+
+        if len(kwargs) > 0:
+            for key, value in kwargs.items():
+                self[key] = value
+
+    def values(self):
+        """
+        Get the configuration parameter values.
+
+        Returns
+        -------
+        values : set-like
+            The values.
+
+        """
+
+        for key in self.keys():
+            yield self[key]

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -14,7 +14,7 @@ a modified SL0 reconstruction algorithm. The algorithm used depends on the
 Routine listings
 ----------------
 config
-    Module providing configuration options for this subpackage.
+    Configger providing configuration options for this subpackage.
 run(y, A)
     Run the specified SL0 reconstruction algorithm.
 
@@ -53,5 +53,5 @@ References
 
 """
 
-from magni.cs.reconstruction.sl0 import config
+from magni.cs.reconstruction.sl0._config import configger as config
 from magni.cs.reconstruction.sl0._util import run

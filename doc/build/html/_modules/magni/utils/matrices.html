@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.matrices &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.utils.matrices &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.utils.matrices</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -61,9 +61,9 @@
 
 <span class="sd">Routine listings</span>
 <span class="sd">----------------</span>
-<span class="sd">Matrix()</span>
+<span class="sd">Matrix(magni.utils.validation.types.MatrixBase)</span>
 <span class="sd">    Wrap fast linear operations in a matrix emulator.</span>
-<span class="sd">MatrixCollection()</span>
+<span class="sd">MatrixCollection(magni.utils.validation.types.MatrixBase)</span>
 <span class="sd">    Wrap multiple matrix emulators in a single matrix emulator.</span>
 
 <span class="sd">See Also</span>
@@ -78,11 +78,13 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation.types</span> <span class="kn">import</span> <span class="n">MatrixBase</span> <span class="k">as</span> <span class="n">_MatrixBase</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_levels</span> <span class="k">as</span> <span class="n">_levels</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
-<div class="viewcode-block" id="Matrix"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix">[docs]</a><span class="k">class</span> <span class="nc">Matrix</span><span class="p">():</span>
+<div class="viewcode-block" id="Matrix"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix">[docs]</a><span class="k">class</span> <span class="nc">Matrix</span><span class="p">(</span><span class="n">_MatrixBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap fast linear operations in a matrix emulator.</span>
 
@@ -106,10 +108,15 @@
 <span class="sd">    shape : list or tuple</span>
 <span class="sd">        The shape of the emulated matrix.</span>
 
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.utils.validation.types.MatrixBase : Superclass of the present class.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    For example, the negative identity matrix could be emulated as</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np, magni</span>
 <span class="sd">    &gt;&gt;&gt; from magni.utils.matrices import Matrix</span>
 <span class="sd">    &gt;&gt;&gt; func = lambda vec: -vec</span>
 <span class="sd">    &gt;&gt;&gt; matrix = Matrix(func, func, (), (3, 3))</span>
@@ -145,30 +152,23 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="Matrix._validate_init"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix._validate_init">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `__init__` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        Matrix.__init__ : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_validate</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s">&#39;func&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">})</span>
-        <span class="n">_validate</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="s">&#39;trans&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">})</span>
-        <span class="n">_validate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s">&#39;args&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)})</span>
-        <span class="n">_validate</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="s">&#39;shape&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)},</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">}])</span>
-</div>
 <div class="viewcode-block" id="Matrix.__init__"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_init</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="n">_MatrixBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">,</span>
+                             <span class="p">((</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)),</span> <span class="n">shape</span><span class="p">)</span>
+
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;func&#39;</span><span class="p">,</span> <span class="s">&#39;function&#39;</span><span class="p">)</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;trans&#39;</span><span class="p">,</span> <span class="s">&#39;function&#39;</span><span class="p">)</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;args&#39;</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">)</span>
+            <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;shape&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                              <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">)))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trans</span> <span class="o">=</span> <span class="n">trans</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="n">args</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">shape</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Matrix.A"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix.A">[docs]</a>    <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -206,20 +206,6 @@
         <span class="k">return</span> <span class="n">output</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Matrix.shape"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix.shape">[docs]</a>    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the shape of the matrix.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        shape : tuple</span>
-<span class="sd">            The shape of the matrix.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
-</div>
-    <span class="nd">@property</span>
 <div class="viewcode-block" id="Matrix.T"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix.T">[docs]</a>    <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the transpose of the matrix.</span>
@@ -239,20 +225,6 @@
 
         <span class="k">return</span> <span class="n">Matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trans</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </div>
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="Matrix._validate_dot"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix._validate_dot">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `dot` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        Matrix.dot : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate_matrix : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="s">&#39;vec&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
-</div>
 <div class="viewcode-block" id="Matrix.dot"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Multiply the matrix with a vector.</span>
@@ -269,12 +241,17 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_dot</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;vec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="MatrixCollection"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection">[docs]</a><span class="k">class</span> <span class="nc">MatrixCollection</span><span class="p">():</span>
+<div class="viewcode-block" id="MatrixCollection"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection">[docs]</a><span class="k">class</span> <span class="nc">MatrixCollection</span><span class="p">(</span><span class="n">_MatrixBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap multiple matrix emulators in a single matrix emulator.</span>
 
@@ -291,6 +268,7 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
+<span class="sd">    magni.utils.validation.types.MatrixBase : Superclass of the present class.</span>
 <span class="sd">    Matrix : Matrix emulator.</span>
 
 <span class="sd">    Examples</span>
@@ -298,6 +276,7 @@
 <span class="sd">    For example, two matrix emulators can be combined into one. That is, the</span>
 <span class="sd">    matrix:</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np, magni</span>
 <span class="sd">    &gt;&gt;&gt; func = lambda vec: -vec</span>
 <span class="sd">    &gt;&gt;&gt; negate = magni.utils.matrices.Matrix(func, func, (), (3, 3))</span>
 <span class="sd">    &gt;&gt;&gt; np.set_printoptions(suppress=True)</span>
@@ -350,27 +329,24 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="MatrixCollection._validate_init"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection._validate_init">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrices</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `__init__` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        MatrixCollection.__init__ : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_validate</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="s">&#39;matrices&#39;</span><span class="p">,</span>
-                  <span class="p">[{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)},</span> <span class="p">{</span><span class="s">&#39;class&#39;</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">}])</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matrices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">matrices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The matrices must have compatible shapes.&#39;</span><span class="p">)</span>
-</div>
 <div class="viewcode-block" id="MatrixCollection.__init__"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrices</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_init</span><span class="p">(</span><span class="n">matrices</span><span class="p">)</span>
+        <span class="n">_MatrixBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">,</span>
+                             <span class="p">((</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)),</span> <span class="bp">None</span><span class="p">)</span>
+
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;matrices&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">),</span>
+                                 <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="n">Matrix</span><span class="p">,</span> <span class="n">MatrixCollection</span><span class="p">))))</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matrices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;The value of &gt;&gt;matrices[{}].shape[1]&lt;&lt;, {!r}, &#39;</span>
+                           <span class="s">&#39;must be equal to the value of &#39;</span>
+                           <span class="s">&#39;&gt;&gt;matrices[{}].shape[0]&lt;&lt;, {!r}.&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                                <span class="n">matrices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span> <span class="o">=</span> <span class="n">matrices</span>
 </div>
@@ -447,20 +423,6 @@
 
         <span class="k">return</span> <span class="n">MatrixCollection</span><span class="p">([</span><span class="n">matrix</span><span class="o">.</span><span class="n">T</span> <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
 </div>
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="MatrixCollection._validate_dot"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection._validate_dot">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `dot` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        MatrixCollection.dot : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate_matrix : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="s">&#39;vec&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
-</div>
 <div class="viewcode-block" id="MatrixCollection.dot"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Multiply the matrix with a vector.</span>
@@ -477,7 +439,12 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_dot</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;vec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">vec</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
@@ -513,14 +480,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

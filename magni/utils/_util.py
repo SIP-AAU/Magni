@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -13,22 +13,7 @@ from __future__ import division
 import os
 
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-
-
-@_decorate_validation
-def _validate_split_path(path):
-    """
-    Validate the `split_path` function.
-
-    See Also
-    --------
-    split_path : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(path, 'path', {'type': str})
+from magni.utils.validation import validate_generic as _generic
 
 
 def split_path(path):
@@ -59,6 +44,7 @@ def split_path(path):
     --------
     Concatenate a dummy path and split it using the present function:
 
+    >>> import os
     >>> from magni.utils._util import split_path
     >>> path = 'folder' + os.sep + 'file' + os.path.extsep + 'extension'
     >>> parts = split_path(path)
@@ -67,9 +53,13 @@ def split_path(path):
 
     """
 
-    _validate_split_path(path)
+    @_decorate_validation
+    def validate_input():
+        _generic('path', 'string')
 
-    path = os.path.realpath(path)
+    validate_input()
+
+    path = os.path.realpath(str(path))
     pos = str.rfind(path, os.path.sep) + 1
     path, name = path[:pos], path[pos:]
 

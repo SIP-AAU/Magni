@@ -47,7 +47,7 @@ The included subpackages, modules, classes and functions are documented through 
 Building the Documentation
 ==========================
 
-The HTML documentation may be built from source using the supplied Makefile in the magni folder under '/doc/'. Make sure the required :ref:`sec_dependencies` for building the documentaion are installed. The build process consists of running three commands:
+The HTML documentation may be built from source using the supplied Makefile in the magni folder under '/doc/'. Make sure the required :ref:`sec_dependencies` for building the documentation are installed. The build process consists of running three commands:
 
 .. code:: bash
 
@@ -101,17 +101,25 @@ Dependencies
 
 **Required** third party dependencies for :py:mod:`magni` are:
 
-- |pytables|_  (Tested on version >=3.1)
-- |numpy|_ (Tested on version >= 1.8)
-- |scipy|_ (Tested on version >= 0.13)
+
 - |matplotlib|_ (Tested on version >= 1.3)
+- |numpy|_ (Tested on version >= 1.8)
+- |pytables|_  (Tested on version >= 3.1)
+- |scipy|_ (Tested on version >= 0.14)
 
 **Optional** third party dependencies for :py:mod:`magni` are:
 
-- |ipython|_ (Tested on version >= 1.1) (For running the IPython notebook examples)
+- |coverage|_ (Tested on version >= 3.7) (For running the test suite script)
+- |ipython|_ (Tested on version >= 2.1) (For running the IPython notebook examples)
 - |mkl|_ (Tested on version >= 11.1) (For accelerated vector operations)
+- |napoleon|_ (Tested on version >= 0.2.8) (For building the documentation from source)
+- |nose|_ (Tested on version >= 1.3) (For running unittests and doctests)
+- |pep8|_ (Tested on version >= 1.5) (For running style check tests)
+- |pil|_ (Tested on version >= 1.1.7) (For running the IPython notebook examples as tests)
+- |pyflakes|_ (Tested on version >= 0.8) (For running style check tests)
+- |radon|_ (Tested on version >= 1.2) (For running style check tests)
 - |sphinx|_ (Tested on version >= 1.2) (For building the documentation from source)
-- |napoleon|_ (Tested on version >= 0.2.6) (For building the documentation from source)
+
 
 .. note:: 
 
@@ -137,6 +145,18 @@ Dependencies
 .. _sphinx: http://sphinx-doc.org/
 .. |napoleon| replace:: ``Napoleon``
 .. _napoleon: http://sphinxcontrib-napoleon.readthedocs.org/en/latest/
+.. |nose| replace:: ``Nose``
+.. _nose: https://nose.readthedocs.org/en/latest/
+.. |pep8| replace:: ``PEP8``
+.. _pep8: http://pep8.readthedocs.org/en/latest/
+.. |pyflakes| replace:: ``Pyflakes``
+.. _pyflakes: https://launchpad.net/pyflakes
+.. |radon| replace:: ``Radon``
+.. _radon: https://radon.readthedocs.org/en/latest/
+.. |coverage| replace:: ``Coverage``
+.. _coverage: http://nedbatchelder.com/code/coverage/
+.. |pil| replace:: ``PIL (or Pillow)``
+.. _pil: http://www.pythonware.com/products/pil/
 
 You may use the *dep_check.py* script found in the Magni folder under '/magni/tests/' to check for missing dependencies for Magni. Simply run the script to print a dependency report, e.g.:
 
@@ -150,14 +170,21 @@ You may use the *dep_check.py* script found in the Magni folder under '/magni/te
 Tests
 -----
 
-The tests provided with Magni are in the form of doctests. These can be run by
-executing the following commands from the '/doc/' folder:
+A test suite consisting of unittests, doctests, the IPython notebook examples, and several style checks is included in :py:mod:`magni`. The tests are organized in python modules found in the Magni folder under '/magni/tests/'. Each module features one or more :py:mod:`unittest.TestCase` classes containing the tests. Thus, the tests may be invoked using any test runner that supports the :py:mod:`unittest.TestCase`. E.g. running the wrapper for the doctests using |nose|_ is done by issuing:
 
 .. code:: bash
 
-  $ make docapi
-  $ make doctest
+  $ nosetests magni/tests/wrap_doctests.py
 
+The entire test suite may be run by executing the convenience script :code:`run_tests.py`:
+
+.. code:: bash
+
+   $ magni/tests/run_tests.py
+
+.. note::
+
+   This convenience script assumes that :py:mod:`magni` is available on the PYTHONPATH as explained under :ref:`sec_installation`.
 
 .. _sec_bug_reports:
 

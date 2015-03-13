@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -55,23 +55,14 @@ class File():
 
     """
 
-    @_decorate_validation
-    def _validate_init(self, args, kwargs):
-        """
-        Validate the `__init__` function.
-
-        See Also
-        --------
-        File.__init__ : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        if len(args) == 0 and not 'filename' in kwargs:
-            raise ValueError('File must be called with a filename argument.')
-
     def __init__(self, *args, **kwargs):
-        self._validate_init(args, kwargs)
+        @_decorate_validation
+        def validate_input():
+            if len(args) == 0 and 'filename' not in kwargs:
+                raise ValueError('File must be called with a filename '
+                                 'argument.')
+
+        validate_input()
 
         self._args = args
         self._kwargs = kwargs

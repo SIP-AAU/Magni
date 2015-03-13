@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -22,23 +22,7 @@ from __future__ import division
 import numpy as np
 
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_calculate_mse(x_org, x_recons):
-    """
-    Validate the `calculate_mse` function.
-
-    See Also
-    --------
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(x_org, 'x_org', {})
-    _validate_ndarray(x_recons, 'x_recons', {'shape': x_org.shape})
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def calculate_mse(x_org, x_recons):
@@ -71,6 +55,7 @@ def calculate_mse(x_org, x_recons):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.evaluation import calculate_mse
     >>> x_org = np.arange(4).reshape(2, 2)
     >>> x_recons = np.ones((2,2))
@@ -79,25 +64,14 @@ def calculate_mse(x_org, x_recons):
 
     """
 
-    _validate_calculate_retained_energy(x_org, x_recons)
+    @_decorate_validation
+    def validate_input():
+        _numeric('x_org', ('integer', 'floating'), shape=None)
+        _numeric('x_recons', ('integer', 'floating'), shape=x_org.shape)
+
+    validate_input()
 
     return ((x_org - x_recons) ** 2).mean()
-
-
-@_decorate_validation
-def _validate_calculate_psnr(x_org, x_recons, peak):
-    """
-    Validate the `calculate_psnr` function.
-
-    See Also
-    --------
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(x_org, 'x_org', {})
-    _validate_ndarray(x_recons, 'x_recons', {'shape': x_org.shape})
-    _validate(peak, 'peak', {'type_in': [float, int], 'min': 0})
 
 
 def calculate_psnr(x_org, x_recons, peak):
@@ -129,10 +103,14 @@ def calculate_psnr(x_org, x_recons, peak):
 
     where `N` is the number of entries in `x_org`.
 
+    If :math:`|x_{org} - x_{recons}| <= (10^{-8} + 1^{-5} * |x_{recons}|)`
+    then `np.inf` is returned.
+
     Examples
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.evaluation import calculate_psnr
     >>> x_org = np.arange(4).reshape(2, 2)
     >>> x_recons = np.ones((2,2))
@@ -142,24 +120,20 @@ def calculate_psnr(x_org, x_recons, peak):
 
     """
 
-    _validate_calculate_psnr(x_org, x_recons, peak)
+    @_decorate_validation
+    def validate_input():
+        _numeric('x_org', ('integer', 'floating'), shape=None)
+        _numeric('x_recons', ('integer', 'floating'), shape=x_org.shape)
+        _numeric('peak', ('integer', 'floating'), range_='(0;inf)')
 
-    return 10 * np.log10(peak**2 / ((x_org - x_recons) ** 2).mean())
+    validate_input()
 
+    if np.allclose(x_org, x_recons):
+        psnr = np.inf
+    else:
+        psnr = 10 * np.log10(peak**2 / ((x_org - x_recons) ** 2).mean())
 
-@_decorate_validation
-def _validate_calculate_retained_energy(x_org, x_recons):
-    """
-    Validate the `calculate_retained_energy` function.
-
-    See Also
-    --------
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(x_org, 'x_org', {})
-    _validate_ndarray(x_recons, 'x_recons', {'shape': x_org.shape})
+    return psnr
 
 
 def calculate_retained_energy(x_org, x_recons):
@@ -169,7 +143,7 @@ def calculate_retained_energy(x_org, x_recons):
     Parameters
     ----------
     x_org : ndarray
-        Array of original values.
+        Array of original values (must not be all zeros).
     x_recons : ndarray
         Array of reconstruction values.
 
@@ -189,6 +163,7 @@ def calculate_retained_energy(x_org, x_recons):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.evaluation import calculate_retained_energy
     >>> x_org = np.arange(4).reshape(2, 2)
     >>> x_recons = np.ones((2,2))
@@ -197,6 +172,15 @@ def calculate_retained_energy(x_org, x_recons):
 
     """
 
-    _validate_calculate_retained_energy(x_org, x_recons)
+    @_decorate_validation
+    def validate_input():
+        _numeric('x_org', ('integer', 'floating'), shape=None)
+
+        if np.count_nonzero(x_org) == 0:
+            raise ValueError('x_org must not be all zeros')
+
+        _numeric('x_recons', ('integer', 'floating'), shape=x_org.shape)
+
+    validate_input()
 
     return (x_recons ** 2).sum() / (x_org ** 2).sum() * 100

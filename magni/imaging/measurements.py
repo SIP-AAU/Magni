@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -95,8 +95,8 @@ from magni.imaging.visualisation import imshow as _imshow
 from magni.utils.matrices import Matrix as _Matrix
 from magni.utils import plotting as _plotting
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_numeric as _numeric
 
 # In principle most of the AFM-scanning related parameters should just be
 # positive, however we have settled for:
@@ -107,24 +107,6 @@ _min_sample_rate = 1.0  # [Hz]
 _min_time = 1.0  # [s]
 _min_scan_length = 1e-9  # [m]
 _min_num_points = 1  # []
-
-
-@_decorate_validation
-def _validate_construct_measurement_matrix(coords, h, w):
-    """
-    Validate the `construct_measurement_matrix` function.
-
-    See Also
-    --------
-    construct_measurement_matrix : The validated function.
-    magni.utils.validation.validate : Validation.
-    magni.utils.validation.validate_ndarray : Validation.
-
-    """
-
-    _validate_ndarray(coords, 'coords', {'shape': (coords.shape[0], 2)})
-    _validate(h, 'h', {'type': int, 'min': 1})
-    _validate(w, 'w', {'type': int, 'min': 1})
 
 
 def construct_measurement_matrix(coords, h, w):
@@ -156,6 +138,7 @@ def construct_measurement_matrix(coords, h, w):
     --------
     Create a dummy 5 by 5 pixel image and an example sampling pattern:
 
+    >>> import numpy as np, magni
     >>> img = np.arange(25, dtype=np.float).reshape(5, 5)
     >>> vec = magni.imaging.mat2vec(img)
     >>> coords = magni.imaging.measurements.uniform_line_sample_image(
@@ -180,7 +163,17 @@ def construct_measurement_matrix(coords, h, w):
 
     """
 
-    _validate_construct_measurement_matrix(coords, h, w)
+    @_decorate_validation
+    def validate_input():
+        _numeric('coords', 'floating', shape=(-1, 2))
+        _numeric('h', 'integer', range_='[1;inf)')
+        _numeric('w', 'integer', range_='[1;inf)')
+        _numeric('coords[:, 0]', 'floating', range_='[0;{}]'.format(w),
+                 shape=(-1,), var=coords[:, 0])
+        _numeric('coords[:, 1]', 'floating', range_='[0;{}]'.format(h),
+                 shape=(-1,), var=coords[:, 1])
+
+    validate_input()
 
     coords = unique_pixels(coords)
     mask = coords[:, 0] * w + coords[:, 1]
@@ -194,33 +187,6 @@ def construct_measurement_matrix(coords, h, w):
         return output
 
     return _Matrix(measure, measure_T, [], (len(mask), h * w))
-
-
-@_decorate_validation
-def _validate_plot_pattern(l, w, coords, mode, output_path):
-    """
-    Validate the `plot_pattern` function.
-
-    See Also
-    --------
-    plot_pattern : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(mode, 'mode', {'type': str, 'val_in': {'surface', 'image'}})
-    _validate_ndarray(coords, 'coords', {'subdtype': np.floating, 'dim': 2})
-    _validate(output_path, 'output_path', {'type': str}, ignore_none=True)
-
-    if coords.shape[1] != 2:
-        raise TypeError('coords.shape[1] must be 2.')
-
-    if mode == 'surface':
-        _validate(l, 'l', {'type': float, 'min': _min_l})
-        _validate(w, 'w', {'type': float, 'min': _min_w})
-    elif mode == 'image':
-        _validate(l, 'l', {'type': int, 'min': 2})
-        _validate(w, 'w', {'type': int, 'min': 2})
 
 
 def plot_pattern(l, w, coords, mode, output_path=None):
@@ -260,16 +226,42 @@ def plot_pattern(l, w, coords, mode, output_path=None):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.measurements import plot_pattern
     >>> l = 3
     >>> w = 3
-    >>> coords = np.array([[0, 0], [1, 1], [2, 1]], dtype=np.float)
+    >>> coords = np.array([[0, 0], [1, 1], [2, 1]])
     >>> mode = 'image'
     >>> plot_pattern(l, w, coords, mode)
 
     """
 
-    _validate_plot_pattern(l, w, coords, mode, output_path)
+    @_decorate_validation
+    def validate_input():
+        _generic('mode', 'string', value_in=('surface', 'image'))
+
+        if mode == 'surface':
+            _numeric('l', 'floating', range_='[{};inf)'.format(_min_l))
+            _numeric('w', 'floating', range_='[{};inf)'.format(_min_w))
+            _numeric('coords', 'floating', shape=(-1, 2))
+            _numeric('coords[:, 0]', 'floating', range_='[0;{}]'.format(w),
+                     shape=(-1,), var=coords[:, 0])
+            _numeric('coords[:, 1]', 'floating', range_='[0;{}]'.format(l),
+                     shape=(-1,), var=coords[:, 1])
+        elif mode == 'image':
+            _numeric('l', 'integer', range_='[2;inf)')
+            _numeric('w', 'integer', range_='[2;inf)')
+            _numeric('coords', ('integer', 'floating'), shape=(-1, 2))
+            _numeric('coords[:, 0]', ('integer', 'floating'),
+                     range_='[0;{})'.format(w), shape=(-1,),
+                     var=coords[:, 0])
+            _numeric('coords[:, 1]', ('integer', 'floating'),
+                     range_='[0;{})'.format(l), shape=(-1,),
+                     var=coords[:, 1])
+
+        _generic('output_path', 'string', ignore_none=True)
+
+    validate_input()
 
     figsize = plt.rcParams['figure.figsize']
 
@@ -332,36 +324,6 @@ def plot_pattern(l, w, coords, mode, output_path=None):
     _plotting.setup_matplotlib({'figure': {'figsize': figsize}})
 
 
-@_decorate_validation
-def _validate_plot_pixel_mask(h, w, pixels, output_path):
-    """
-    Validate the `plot_pixel_mask` function.
-
-    See Also
-    --------
-    plot_pixel_mask : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(h, 'h', {'type': int, 'min': 2})
-    _validate(w, 'w', {'type': int, 'min': 2})
-    _validate_ndarray(pixels, 'pixels', {'subdtype': np.integer, 'dim': 2})
-    _validate(output_path, 'output_path', {'type': str}, ignore_none=True)
-
-    if pixels.shape[1] != 2:
-        raise TypeError('pixels.shape[1] must be 2.')
-
-    if pixels.min() < 0:
-        raise TypeError('All pixel coordinates must be non-negative.')
-
-    if pixels[:, 0].max() > w - 1:
-        raise TypeError('Pixel x-coordinates must not exceed pixel width.')
-
-    if pixels[:, 1].max() > h - 1:
-        raise TypeError('Pixel y-coordinates must not exceed pixel heigth.')
-
-
 def plot_pixel_mask(h, w, pixels, output_path=None):
     """
     Display a binary image that shows the given pixel mask.
@@ -391,6 +353,7 @@ def plot_pixel_mask(h, w, pixels, output_path=None):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.measurements import plot_pixel_mask
     >>> h = 3
     >>> w = 3
@@ -399,7 +362,18 @@ def plot_pixel_mask(h, w, pixels, output_path=None):
 
     """
 
-    _validate_plot_pixel_mask(h, w, pixels, output_path)
+    @_decorate_validation
+    def validate_input():
+        _numeric('h', 'integer', range_='[2;inf)')
+        _numeric('w', 'integer', range_='[2;inf)')
+        _numeric('pixels', 'integer', shape=(-1, 2))
+        _numeric('pixels[:, 0]', 'integer', range_='[0;{}]'.format(w - 1),
+                 shape=(-1,), var=pixels[:, 0])
+        _numeric('pixels[:, 1]', 'integer', range_='[0;{}]'.format(h - 1),
+                 shape=(-1,), var=pixels[:, 1])
+        _generic('output_path', 'string', ignore_none=True)
+
+    validate_input()
 
     mask = np.zeros((h, w))
     mask[pixels[:, 1], pixels[:, 0]] = 1
@@ -425,29 +399,6 @@ def plot_pixel_mask(h, w, pixels, output_path=None):
         plt.savefig(output_path)
 
     _plotting.setup_matplotlib({'figure': {'figsize': figsize}})
-
-
-@_decorate_validation
-def _validate_random_line_sample_image(h, w, scan_length, num_points, discrete,
-                                       seed):
-    """
-    Validate the `random_line_sample_image` function.
-
-    See Also
-    --------
-    random_line_sample_image : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(h, 'h', {'type': int, 'min': 2})
-    _validate(w, 'w', {'type': int, 'min': 2})
-    _validate(scan_length, 'scan_length', {'type': float,
-                                           'min': _min_scan_length})
-    _validate(num_points, 'num_points', {'type': int, 'min': _min_num_points})
-    _validate(discrete, 'discrete', {'type': int, 'min': 2},
-              ignore_none=True)
-    _validate(seed, 'seed', {'type': int, 'min': 0}, ignore_none=True)
 
 
 def random_line_sample_image(h, w, scan_length, num_points, discrete=None,
@@ -511,22 +462,32 @@ def random_line_sample_image(h, w, scan_length, num_points, discrete=None,
     >>> np.set_printoptions(suppress=True)
     >>> random_line_sample_image(h, w, scan_length, num_points, seed=seed)
     array([[ 0.5       ,  0.5       ],
-           [ 5.04545455,  0.5       ],
-           [ 9.5       ,  0.59090909],
-           [ 5.65110302,  1.28746666],
-           [ 1.10564847,  1.28746666],
-           [ 0.5       ,  5.22727273],
-           [ 3.29121172,  6.98151556],
-           [ 7.83666626,  6.98151556],
-           [ 7.23606783,  7.59970419],
-           [ 2.69061328,  7.59970419],
-           [ 0.95454545,  9.5       ],
-           [ 5.5       ,  9.5       ]])
+           [ 4.59090909,  0.5       ],
+           [ 8.68181818,  0.5       ],
+           [ 7.01473938,  1.28746666],
+           [ 2.92383029,  1.28746666],
+           [ 0.5       ,  2.95454545],
+           [ 0.5       ,  7.04545455],
+           [ 4.03665944,  7.59970419],
+           [ 8.12756853,  7.59970419],
+           [ 8.68181818,  9.5       ],
+           [ 4.59090909,  9.5       ],
+           [ 0.5       ,  9.5       ]])
 
     """
 
-    _validate_random_line_sample_image(h, w, scan_length, num_points, discrete,
-                                       seed)
+    @_decorate_validation
+    def validate_input():
+        _numeric('h', 'integer', range_='[2;inf)')
+        _numeric('w', 'integer', range_='[2;inf)')
+        _numeric('scan_length', 'floating',
+                 range_='[{};inf)'.format(_min_scan_length))
+        _numeric('num_points', 'integer',
+                 range_='[{};inf)'.format(_min_num_points))
+        _numeric('discrete', 'integer', range_='[2;inf)', ignore_none=True)
+        _numeric('seed', 'integer', range_='[0;inf)', ignore_none=True)
+
+    validate_input()
 
     coords = random_line_sample_surface(float(h - 1), float(w - 1),
                                         scan_length, float(num_points - 1),
@@ -534,38 +495,6 @@ def random_line_sample_image(h, w, scan_length, num_points, discrete=None,
     coords = coords + 0.5
 
     return coords
-
-
-@_decorate_validation
-def _validate_random_line_sample_surface(l, w, speed, sample_rate, time,
-                                         discrete, seed):
-    """
-    Validate the `random_line_sample_surface` function.
-
-    See Also
-    --------
-    random_line_sample_surface : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(l, 'l', {'type': float, 'min': _min_l})
-    _validate(w, 'w', {'type': float, 'min': _min_w})
-    _validate(speed, 'speed', {'type': float, 'min': _min_speed})
-    _validate(sample_rate, 'sample_rate', {'type': float,
-                                           'min': _min_sample_rate})
-    _validate(time, 'time', {'type': float, 'min': _min_time})
-
-    _validate(discrete, 'discrete', {'type': int, 'min': 2},
-              ignore_none=True)
-    _validate(seed, 'seed', {'type': int, 'min': 0}, ignore_none=True)
-
-    if (speed * time - 2 * w - l) / w <= -1:
-        # Estimated number of lines in addition to top and bottom lines must
-        # exceed -1 to avoid drawing a negative number of lines at random.
-        raise ValueError('(speed * time - 2 * w - l) / w must exceed -1.' +
-                         'The current value is {!r}.'
-                         .format((speed * time - 2 * w - l) / w))
 
 
 def random_line_sample_surface(l, w, speed, sample_rate, time, discrete=None,
@@ -632,29 +561,47 @@ def random_line_sample_surface(l, w, speed, sample_rate, time, discrete=None,
     >>> np.set_printoptions(suppress=True)
     >>> random_line_sample_surface(l, w, speed, sample_rate, time, seed=seed)
     array([[ 0.        ,  0.        ],
-           [ 0.0000007 ,  0.        ],
-           [ 0.0000014 ,  0.        ],
-           [ 0.000002  ,  0.0000001 ],
-           [ 0.00000137,  0.00000017],
-           [ 0.00000067,  0.00000017],
-           [ 0.        ,  0.0000002 ],
-           [ 0.        ,  0.0000009 ],
-           [ 0.00000002,  0.00000158],
-           [ 0.00000072,  0.00000158],
-           [ 0.00000142,  0.00000158],
-           [ 0.000002  ,  0.0000017 ],
-           [ 0.0000016 ,  0.000002  ]])
+           [ 0.00000067,  0.        ],
+           [ 0.00000133,  0.        ],
+           [ 0.000002  ,  0.        ],
+           [ 0.000002  ,  0.00000067],
+           [ 0.000002  ,  0.00000133],
+           [ 0.00000158,  0.00000158],
+           [ 0.00000091,  0.00000158],
+           [ 0.00000024,  0.00000158],
+           [ 0.        ,  0.000002  ],
+           [ 0.00000067,  0.000002  ],
+           [ 0.00000133,  0.000002  ],
+           [ 0.000002  ,  0.000002  ]])
 
     """
 
-    _validate_random_line_sample_surface(l, w, speed, sample_rate, time,
-                                         discrete, seed)
+    @_decorate_validation
+    def validate_input():
+        _numeric('l', 'floating', range_='[{};inf)'.format(_min_l))
+        _numeric('w', 'floating', range_='[{};inf)'.format(_min_w))
+        _numeric('speed', 'floating', range_='[{};inf)'.format(_min_speed))
+        _numeric('sample_rate', 'floating',
+                 range_='[{};inf)'.format(_min_sample_rate))
+        _numeric('time', 'floating', range_='[{};inf)'.format(_min_time))
+        _numeric('discrete', 'integer', range_='[2;inf)', ignore_none=True)
+        _numeric('seed', 'integer', range_='[0;inf)', ignore_none=True)
+
+        if (speed * time - 2 * w - l) / w <= -1:
+            # Estimated number of lines in addition to top and bottom lines
+            # must exceed -1 to avoid drawing a negative number of lines at
+            # random.
+            msg = ('The value of >>(speed * time - 2 * w - l) / w<<, {!r}, '
+                   'must be > -1.')
+            raise ValueError(msg.format((speed * time - 2 * w - l) / w))
+
+    validate_input()
 
     samples = int(sample_rate * time) + 1
-    scan_length = speed * time
+    scan_length = np.floor((speed * time - l) / w) * w + l
     sample_dist = scan_length / (samples - 1)
     lines_scan_length = scan_length - 2 * w - l
-    num_lines = np.int(np.ceil(lines_scan_length / w))
+    num_lines = np.int(np.round(lines_scan_length / w))
 
     if seed is not None:
         np.random.seed(seed)
@@ -677,30 +624,6 @@ def random_line_sample_surface(l, w, speed, sample_rate, time, discrete=None,
     coords = _get_line_scan_coords(lines, samples, sample_dist, l, w)
 
     return coords
-
-
-@_decorate_validation
-def _validate_spiral_sample_image(h, w, scan_length, num_points):
-    """
-    Validate the `spiral_sample_image` function.
-
-    See Also
-    --------
-    spiral_sample_image : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(h, 'h', {'type': int, 'min': 2})
-    _validate(w, 'w', {'type': int, 'min': 2})
-
-    if h != w:
-        raise ValueError('h must equal w for an archimedian spiral to make ' +
-                         'sense.')
-
-    _validate(scan_length, 'scan_length', {'type': float,
-                                           'min': _min_scan_length})
-    _validate(num_points, 'num_points', {'type': int, 'min': _min_num_points})
 
 
 def spiral_sample_image(h, w, scan_length, num_points):
@@ -761,38 +684,28 @@ def spiral_sample_image(h, w, scan_length, num_points):
 
     """
 
-    _validate_spiral_sample_image(h, w, scan_length, num_points)
+    @_decorate_validation
+    def validate_input():
+        _numeric('h', 'integer', range_='[2;inf)')
+        _numeric('w', 'integer', range_='[2;inf)')
+
+        if h != w:
+            msg = ('The value of >>h<<, {!r}, must equal the value of >>w<<, '
+                   '{!r}, for an archimedian spiral to make sense.')
+            raise ValueError(msg.format(h, w))
+
+        _numeric('scan_length', 'floating',
+                 range_='[{};inf)'.format(_min_scan_length))
+        _numeric('num_points', 'integer',
+                 range_='[{};inf)'.format(_min_num_points))
+
+    validate_input()
 
     coords = spiral_sample_surface(float(h - 1), float(w - 1),
                                    scan_length, float(num_points), 1.0)
     coords = coords + 0.5
 
     return coords
-
-
-@_decorate_validation
-def _validate_spiral_sample_surface(l, w, speed, sample_rate, time):
-    """
-    Validate the `spiral_sample_surface` function.
-
-    See Also
-    --------
-    spiral_sample_surface : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(l, 'l', {'type': float, 'min': _min_l})
-    _validate(w, 'w', {'type': float, 'min': _min_w})
-
-    if l != w:
-        raise ValueError('l must equal w for an archimedian sprial to make' +
-                         'sense.')
-
-    _validate(speed, 'speed', {'type': float, 'min': _min_speed})
-    _validate(sample_rate, 'sample_rate', {'type': float,
-                                           'min': _min_sample_rate})
-    _validate(time, 'time', {'type': float, 'min': _min_time})
 
 
 def spiral_sample_surface(l, w, speed, sample_rate, time):
@@ -855,7 +768,22 @@ def spiral_sample_surface(l, w, speed, sample_rate, time):
 
     """
 
-    _validate_spiral_sample_surface(l, w, speed, sample_rate, time)
+    @_decorate_validation
+    def validate_input():
+        _numeric('l', 'floating', range_='[{};inf)'.format(_min_l))
+        _numeric('w', 'floating', range_='[{};inf)'.format(_min_w))
+
+        if l != w:
+            msg = ('The value of >>h<<, {!r}, must equal the value of >>w<<, '
+                   '{!r}, for an archimedian spiral to make sense.')
+            raise ValueError(msg.format(l, w))
+
+        _numeric('speed', 'floating', range_='[{};inf)'.format(_min_speed))
+        _numeric('sample_rate', 'floating',
+                 range_='[{};inf)'.format(_min_sample_rate))
+        _numeric('time', 'floating', range_='[{};inf)'.format(_min_time))
+
+    validate_input()
 
     sample_period = 1 / sample_rate
     r_end = np.min([l, w]) / 2
@@ -884,25 +812,6 @@ def spiral_sample_surface(l, w, speed, sample_rate, time):
     coords = coords + np.array([w / 2, l / 2])
 
     return coords
-
-
-@_decorate_validation
-def _validate_square_spiral_sample_image(h, w, scan_length, num_points):
-    """
-    Validate the `square_spiral_sample_image` function.
-
-    See Also
-    --------
-    square_spiral_sample_image : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(h, 'h', {'type': int, 'min': 2})
-    _validate(w, 'w', {'type': int, 'min': 2})
-    _validate(scan_length, 'scan_length', {'type': float,
-                                           'min': _min_scan_length})
-    _validate(num_points, 'num_points', {'type': int, 'min': _min_num_points})
 
 
 def square_spiral_sample_image(h, w, scan_length, num_points):
@@ -963,33 +872,22 @@ def square_spiral_sample_image(h, w, scan_length, num_points):
 
     """
 
-    _validate_square_spiral_sample_image(h, w, scan_length, num_points)
+    @_decorate_validation
+    def validate_input():
+        _numeric('h', 'integer', range_='[2;inf)')
+        _numeric('w', 'integer', range_='[2;inf)')
+        _numeric('scan_length', 'floating',
+                 range_='[{};inf)'.format(_min_scan_length))
+        _numeric('num_points', 'integer',
+                 range_='[{};inf)'.format(_min_num_points))
+
+    validate_input()
 
     coords = square_spiral_sample_surface(float(h - 1), float(w - 1),
                                           scan_length, float(num_points), 1.0)
     coords = coords + 0.5
 
     return coords
-
-
-@_decorate_validation
-def _validate_square_spiral_sample_surface(l, w, speed, sample_rate, time):
-    """
-    Validate the `square_spiral_sample_surface` function.
-
-    See Also
-    --------
-    square_spiral_sample_surface : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(l, 'l', {'type': float, 'min': _min_l})
-    _validate(w, 'w', {'type': float, 'min': _min_w})
-    _validate(speed, 'speed', {'type': float, 'min': _min_speed})
-    _validate(sample_rate, 'sample_rate', {'type': float,
-                                           'min': _min_sample_rate})
-    _validate(time, 'time', {'type': float, 'min': _min_time})
 
 
 def square_spiral_sample_surface(l, w, speed, sample_rate, time):
@@ -1052,7 +950,16 @@ def square_spiral_sample_surface(l, w, speed, sample_rate, time):
 
     """
 
-    _validate_square_spiral_sample_surface(l, w, speed, sample_rate, time)
+    @_decorate_validation
+    def validate_input():
+        _numeric('l', 'floating', range_='[{};inf)'.format(_min_l))
+        _numeric('w', 'floating', range_='[{};inf)'.format(_min_w))
+        _numeric('speed', 'floating', range_='[{};inf)'.format(_min_speed))
+        _numeric('sample_rate', 'floating',
+                 range_='[{};inf)'.format(_min_sample_rate))
+        _numeric('time', 'floating', range_='[{};inf)'.format(_min_time))
+
+    validate_input()
 
     samples = int(sample_rate * time)
     scan_length = speed * time
@@ -1117,25 +1024,6 @@ def square_spiral_sample_surface(l, w, speed, sample_rate, time):
     return coords
 
 
-@_decorate_validation
-def _validate_uniform_line_sample_image(h, w, scan_length, num_points):
-    """
-    Validate the `uniform_line_sample_image` function.
-
-    See Also
-    --------
-    uniform_line_sample_image : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(h, 'h', {'type': int, 'min': 2})
-    _validate(w, 'w', {'type': int, 'min': 2})
-    _validate(scan_length, 'scan_length', {'type': float,
-                                           'min': _min_scan_length})
-    _validate(num_points, 'num_points', {'type': int, 'min': _min_num_points})
-
-
 def uniform_line_sample_image(h, w, scan_length, num_points):
     """
     Sample an image using a set of uniformly distributed straight lines.
@@ -1186,21 +1074,30 @@ def uniform_line_sample_image(h, w, scan_length, num_points):
     >>> np.set_printoptions(suppress=True)
     >>> uniform_line_sample_image(h, w, scan_length, num_points)
     array([[ 0.5       ,  0.5       ],
-           [ 5.04545455,  0.5       ],
-           [ 9.5       ,  0.59090909],
-           [ 7.11363636,  2.75      ],
-           [ 2.56818182,  2.75      ],
-           [ 0.72727273,  5.        ],
-           [ 5.27272727,  5.        ],
-           [ 9.5       ,  5.31818182],
-           [ 6.88636364,  7.25      ],
-           [ 2.34090909,  7.25      ],
-           [ 0.95454545,  9.5       ],
-           [ 5.5       ,  9.5       ]])
+           [ 4.59090909,  0.5       ],
+           [ 8.68181818,  0.5       ],
+           [ 9.22727273,  3.5       ],
+           [ 5.13636364,  3.5       ],
+           [ 1.04545455,  3.5       ],
+           [ 1.04545455,  6.5       ],
+           [ 5.13636364,  6.5       ],
+           [ 9.22727273,  6.5       ],
+           [ 8.68181818,  9.5       ],
+           [ 4.59090909,  9.5       ],
+           [ 0.5       ,  9.5       ]])
 
     """
 
-    _validate_uniform_line_sample_image(h, w, scan_length, num_points)
+    @_decorate_validation
+    def validate_input():
+        _numeric('h', 'integer', range_='[2;inf)')
+        _numeric('w', 'integer', range_='[2;inf)')
+        _numeric('scan_length', 'floating',
+                 range_='[{};inf)'.format(_min_scan_length))
+        _numeric('num_points', 'integer',
+                 range_='[{};inf)'.format(_min_num_points))
+
+    validate_input()
 
     coords = uniform_line_sample_surface(float(h - 1), float(w - 1),
                                          scan_length, float(num_points - 1),
@@ -1209,26 +1106,6 @@ def uniform_line_sample_image(h, w, scan_length, num_points):
     coords = coords + 0.5
 
     return coords
-
-
-@_decorate_validation
-def _validate_uniform_line_sample_surface(l, w, speed, sample_rate, time):
-    """
-    Validate the `uniform_line_sample_surface` function.
-
-    See Also
-    --------
-    uniform_line_sample_surface : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(l, 'l', {'type': float, 'min': _min_l})
-    _validate(w, 'w', {'type': float, 'min': _min_w})
-    _validate(speed, 'speed', {'type': float, 'min': _min_speed})
-    _validate(sample_rate, 'sample_rate', {'type': float,
-                                           'min': _min_sample_rate})
-    _validate(time, 'time', {'type': float, 'min': _min_time})
 
 
 def uniform_line_sample_surface(l, w, speed, sample_rate, time):
@@ -1283,28 +1160,37 @@ def uniform_line_sample_surface(l, w, speed, sample_rate, time):
     >>> np.set_printoptions(suppress=True)
     >>> uniform_line_sample_surface(l, w, speed, sample_rate, time)
     array([[ 0.        ,  0.        ],
-           [ 0.0000007 ,  0.        ],
-           [ 0.0000014 ,  0.        ],
-           [ 0.000002  ,  0.0000001 ],
-           [ 0.00000187,  0.00000067],
-           [ 0.00000117,  0.00000067],
-           [ 0.00000047,  0.00000067],
-           [ 0.        ,  0.0000009 ],
-           [ 0.00000027,  0.00000133],
-           [ 0.00000097,  0.00000133],
-           [ 0.00000167,  0.00000133],
-           [ 0.000002  ,  0.0000017 ],
-           [ 0.0000016 ,  0.000002  ]])
+           [ 0.00000067,  0.        ],
+           [ 0.00000133,  0.        ],
+           [ 0.000002  ,  0.        ],
+           [ 0.000002  ,  0.00000067],
+           [ 0.00000167,  0.000001  ],
+           [ 0.000001  ,  0.000001  ],
+           [ 0.00000033,  0.000001  ],
+           [ 0.        ,  0.00000133],
+           [ 0.        ,  0.000002  ],
+           [ 0.00000067,  0.000002  ],
+           [ 0.00000133,  0.000002  ],
+           [ 0.000002  ,  0.000002  ]])
 
     """
 
-    _validate_uniform_line_sample_surface(l, w, speed, sample_rate, time)
+    @_decorate_validation
+    def validate_input():
+        _numeric('l', 'floating', range_='[{};inf)'.format(_min_l))
+        _numeric('w', 'floating', range_='[{};inf)'.format(_min_w))
+        _numeric('speed', 'floating', range_='[{};inf)'.format(_min_speed))
+        _numeric('sample_rate', 'floating',
+                 range_='[{};inf)'.format(_min_sample_rate))
+        _numeric('time', 'floating', range_='[{};inf)'.format(_min_time))
+
+    validate_input()
 
     samples = int(sample_rate * time) + 1
-    scan_length = speed * time
+    scan_length = np.floor((speed * time - l) / w) * w + l
     sample_dist = scan_length / (samples - 1)
     lines_scan_length = scan_length - l
-    num_lines = np.ceil(lines_scan_length / w)
+    num_lines = int(np.round(lines_scan_length / w))
 
     # We should always at least partially scan top and bottom lines.
     if num_lines < 2:
@@ -1315,27 +1201,6 @@ def uniform_line_sample_surface(l, w, speed, sample_rate, time):
     coords = _get_line_scan_coords(lines, samples, sample_dist, l, w)
 
     return coords
-
-
-@_decorate_validation
-def _validate_unique_pixels(coords):
-    """
-    Validate the `unique_pixels` function.
-
-    See Also
-    --------
-    unique_pixels : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(coords, 'coords', {'subdtype': np.floating, 'dim': 2})
-
-    if coords.shape[1] != 2:
-        raise TypeError('coords.shape[1] must be 2.')
-
-    if coords.min() < 0:
-        raise TypeError('All coordinates must be non-negative.')
 
 
 def unique_pixels(coords):
@@ -1361,15 +1226,20 @@ def unique_pixels(coords):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.measurements import unique_pixels
     >>> coords = np.array([[1.7, 1.0], [1.0, 1.2], [3.3, 4.3]])
-    >>> unique_pixels(coords)
+    >>> np.int_(unique_pixels(coords))
     array([[1, 1],
            [3, 4]])
 
     """
 
-    _validate_unique_pixels(coords)
+    @_decorate_validation
+    def validate_input():
+        _numeric('coords', 'floating', range_='[0;inf)', shape=(-1, 2))
+
+    validate_input()
 
     pixels = np.floor(coords).astype(np.int64, order='C')
 
@@ -1445,5 +1315,9 @@ def _get_line_scan_coords(lines, samples, sample_dist, l, w):
                     # line = line
 
         coords[sample, :] = position
+
+    coords[coords < 0] = 0
+    coords[:, 0][coords[:, 0] > w] = w
+    coords[:, 1][coords[:, 1] > l] = l
 
     return coords

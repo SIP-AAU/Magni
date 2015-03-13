@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -13,11 +13,13 @@ https://wiki.python.org/moin/Distutils/VersionComparison
 
 """
 
-import re
-import platform
+from __future__ import division
+from distutils.version import StrictVersion
 import importlib
 from itertools import chain
-from distutils.version import StrictVersion
+import platform
+import re
+import sys
 
 
 # Package names vs import names
@@ -29,7 +31,13 @@ pac_names = {'python': 'Python',
              'mkl': 'MKL',
              'sphinx': 'Sphinx',
              'IPython': 'IPython',
-             'sphinxcontrib.napoleon': 'Napoleon'}
+             'sphinxcontrib.napoleon': 'Napoleon',
+             'pyflakes': 'Pyflakes',
+             'pep8': 'PEP8',
+             'radon': 'Radon',
+             'nose': 'Nose',
+             'coverage': 'Coverage',
+             'PIL': 'PIL'}
 
 
 # Minimum version requirements
@@ -37,15 +45,21 @@ python2_min_ver = '2.7'
 python3_min_ver = '3.3'
 
 deps = {'numpy': '1.8',
-        'scipy': '0.13',
+        'scipy': '0.14',
         'tables': '3.1',
         'matplotlib': '1.3'}
 
 opt_deps = {'mkl': '11.1',
             'sphinx': '1.2',
-            'IPython': '1.1'}
+            'IPython': '2.1',
+            'pyflakes': '0.8',
+            'pep8': '1.5',
+            'radon': '1.2',
+            'nose': '1.3',
+            'coverage': '3.7',
+            'PIL': '1.1.7'}
 
-ver_broken_opt_deps = {'sphinxcontrib.napoleon': '0.2.6'}
+ver_broken_opt_deps = {'sphinxcontrib.napoleon': '0.2.8'}
 
 status = {}
 
@@ -78,10 +92,13 @@ for pac in all_deps:
     try:
         p = importlib.import_module(pac)
 
-        # Fix MKL service vs library version problem
+        # Fix packages that do not have a __version__ magic
         if pac == 'mkl':
             p.__version__ = re.search('\d+\.\d+\.\d+',
                                       p.get_version_string()).group()
+        elif pac == 'PIL':
+            import PIL.Image
+            p.__version__ = PIL.Image.VERSION
 
         if StrictVersion(p.__version__) < StrictVersion(all_deps[pac]):
             status[pac] = ('WARN: Tested on version >= ' + all_deps[pac] +
@@ -139,3 +156,8 @@ for opt in opt_deps:
 
 for opt in ver_broken_opt_deps:
     _print_dep_report(opt, status)
+
+# Exit 1 in case of failures
+for val in status.values():
+    if 'FAIL' in val:
+        sys.exit(1)

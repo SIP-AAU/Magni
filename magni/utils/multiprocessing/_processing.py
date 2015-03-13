@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -19,6 +19,8 @@ magni.utils.multiprocessing.config : Configuration options.
 
 from __future__ import division
 import multiprocessing as mp
+import os
+import sys
 import traceback
 import types
 
@@ -28,39 +30,17 @@ try:
     _get_num_threads = mkl.get_max_threads
     _set_num_threads = mkl.set_num_threads
 except ImportError:
-    _get_num_threads = lambda: 0
-    _set_num_threads = lambda n: 0
+    def _get_num_threads():
+        return 0
+
+    def _set_num_threads(n):
+        pass
 
 from magni.utils.multiprocessing import config as _config
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-
-
-@_decorate_validation
-def _validate_process(func, namespace, args_list, kwargs_list, maxtasks):
-    """
-    Validation of the `process` function.
-
-    See Also
-    --------
-    process : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(func, 'func', [{'type': types.FunctionType}])
-    _validate(namespace, 'namespace', [{'type': dict}])
-    requirement = {'type_in': [list, tuple]}
-    _validate(args_list, 'args_list', [requirement, requirement], True)
-    _validate(kwargs_list, 'kwargs_list', [requirement, {'type': dict}], True)
-
-    if args_list is None and kwargs_list is None:
-        raise ValueError('args_list and kwargs_list cannot both be None.')
-    elif args_list is not None and kwargs_list is not None:
-        if len(args_list) != len(kwargs_list):
-            raise ValueError('len(args_list) must equal len(kwargs_list).')
-
-    _validate(maxtasks, 'maxtasks', {'type': int}, True)
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_levels as _levels
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def process(func, namespace={}, args_list=None, kwargs_list=None,
@@ -130,7 +110,28 @@ def process(func, namespace={}, args_list=None, kwargs_list=None,
 
     """
 
-    _validate_process(func, namespace, args_list, kwargs_list, maxtasks)
+    @_decorate_validation
+    def validate_input():
+        _generic('func', 'function')
+        _generic('namespace', 'mapping')
+        _levels('args_list', (_generic(None, 'collection', ignore_none=True),
+                              _generic(None, 'explicit collection')))
+        _levels('kwargs_list', (_generic(None, 'collection', ignore_none=True),
+                                _generic(None, 'mapping')))
+
+        if args_list is None and kwargs_list is None:
+            msg = ('The value of >>args_list<<, {!r}, and/or the value of '
+                   '>>kwargs_list<<, {!r}, must be different from {!r}.')
+            raise ValueError(msg.format(args_list, kwargs_list, None))
+        elif args_list is not None and kwargs_list is not None:
+            if len(args_list) != len(kwargs_list):
+                msg = ('The value of >>len(args_list)<<, {!r}, must be equal '
+                       'to the value of >>len(kwargs_list)<<, {!r}.')
+                raise ValueError(msg.format(len(args_list), len(kwargs_list)))
+
+        _numeric('maxtasks', 'integer', range_='(0;inf)', ignore_none=True)
+
+    validate_input()
 
     if args_list is None:
         args_list = [[] for dct in kwargs_list]
@@ -141,14 +142,18 @@ def process(func, namespace={}, args_list=None, kwargs_list=None,
     tasks = [func for lst in args_list]
     tasks = list(zip(tasks, args_list, kwargs_list))
 
-    if _config.get('workers') == 0:
+    if _config['workers'] == 0:
         _process_init(func, namespace)
         results = list(map(_process_worker, tasks))
     else:
+        if os.name == 'nt' and sys.version_info.major == 2:
+            raise NotImplementedError('This function is not available under '
+                                      'Windows with Python 2.')
+
         try:
             num_threads = _get_num_threads()
             _set_num_threads(1)
-            workers = mp.Pool(_config.get('workers'), _process_init,
+            workers = mp.Pool(_config['workers'], _process_init,
                               (func, namespace), maxtasks)
             results = workers.map(_process_worker, tasks, chunksize=1)
         finally:
@@ -210,6 +215,10 @@ def _process_worker(fak_tuple):
             return func(*args, **kwargs)
         except KeyboardInterrupt:
             _process_worker.__globals__['interrupted'] = True
-        except BaseException:
+        except BaseException as e:
             print(traceback.format_exc())
-            raise RuntimeError('An exception has occured.')
+
+            if _config['silence_exceptions']:
+                return e
+            else:
+                raise RuntimeError('An exception has occured.')

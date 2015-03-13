@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation module &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.imaging.visualisation module &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="prev" title="magni.imaging.preprocessing module" href="magni.imaging.preprocessing.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -72,7 +72,7 @@ that may exploit the provided functions for adjusting the image intensity.</p>
 </dl>
 <dl class="function">
 <dt id="magni.imaging.visualisation.imshow">
-<tt class="descclassname">magni.imaging.visualisation.</tt><tt class="descname">imshow</tt><big>(</big><em>X</em>, <em>ax=None</em>, <em>intensity_func=None</em>, <em>intensity_args=()</em>, <em>show_axis='none'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/visualisation.html#imshow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.imshow" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">magni.imaging.visualisation.</tt><tt class="descname">imshow</tt><big>(</big><em>X</em>, <em>ax=None</em>, <em>intensity_func=None</em>, <em>intensity_args=()</em>, <em>show_axis='frame'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/visualisation.html#imshow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.imshow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display an image.</p>
 <p>Wrap <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></tt> to display a possibly intensity manipulated
 version of the image <em class="xref py py-obj">X</em>.</p>
@@ -93,10 +93,11 @@ no intensity manipulation is used).</li>
 <li><strong>intensity_args</strong> (<em>list or tuple, optional</em>) &#8211;
 The arguments that are passed to the <em class="xref py py-obj">intensity_func</em> (the default is
 (), which implies that no arguments are passed).</li>
-<li><strong>show_axis</strong> (<em>{&#8216;none&#8217;, &#8216;top&#8217;, &#8216;inherit&#8217;}</em>) &#8211;
+<li><strong>show_axis</strong> (<em>{&#8216;none&#8217;, &#8216;top&#8217;, &#8216;inherit&#8217;, &#8216;frame&#8217;}</em>) &#8211;
 How the x- and y-axis are display. If &#8216;none&#8217;, no axis are displayed. If
 &#8216;top&#8217;, the x-axis is displayed at the top of the image. If &#8216;inherit&#8217;,
-the axis display is inherited from <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></tt>.</li>
+the axis display is inherited from <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></tt>. If
+&#8216;frame&#8217; only the frame is shown and not the ticks.</li>
 </ul>
 </td>
 </tr>
@@ -115,7 +116,8 @@ The AxesImage returned by matplotlibs imshow.</p>
 </div>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">imshow</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">imshow</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">add_k</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">X</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">X</span> <span class="o">+</span> <span class="n">k</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">im_out</span> <span class="o">=</span> <span class="n">imshow</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">intensity_func</span><span class="o">=</span><span class="n">add_k</span><span class="p">,</span> <span class="n">intensity_args</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
@@ -147,7 +149,8 @@ A copy of <em class="xref py py-obj">x_mod</em> with the same mean value as <em 
 </table>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">shift_mean</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">shift_mean</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_mod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_org</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
@@ -192,7 +195,8 @@ A stretched copy of the input image.</p>
 <em class="xref py py-obj">max_val</em>] using a linear stretch.</p>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">stretch_image</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">stretch_image</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -255,15 +259,15 @@ A stretched copy of the input image.</p>
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

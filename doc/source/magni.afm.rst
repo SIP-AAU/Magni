@@ -12,7 +12,7 @@ Submodules
 .. toctree::
     :maxdepth: 1
 
-    magni.afm.config
+    magni.afm._config
     magni.afm.io
     magni.afm.reconstruction
     magni.afm.types

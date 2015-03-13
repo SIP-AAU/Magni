@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility.io module &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.reproducibility.io module &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="up" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="next" title="magni.utils package" href="magni.utils.html" />
     <link rel="prev" title="magni.reproducibility._annotation module" href="magni.reproducibility._annotation.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.reproducibility._annotation.html" title="magni.reproducibility._annotation module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.reproducibility.html" accesskey="U">magni.reproducibility package</a> &raquo;</li> 
       </ul>
@@ -130,7 +130,8 @@ The handle to the HDF5 database that should be annotated.</td>
 </ul>
 <p class="rubric">Examples</p>
 <p>Annotate the database named &#8216;db.hdf5&#8217;:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">annotate_database</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">annotate_database</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">&#39;db.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
 </pre></div>
@@ -151,7 +152,7 @@ The handle to the HDF5 database from which the annotations is read.</td>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>annotations</strong> (<em>dict</em>) &#8211;
 The annotations read from the HDF5 database.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> &#8211; 
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> &#8211;
 If the annotations to the HDF5 database does not conform to the Magni
 annotation standard.</td>
 </tr>
@@ -163,7 +164,8 @@ value corresponding to a given key is in itself a dict. See
 <em class="xref py py-obj">magni.reproducibility.annotate_database</em> for examples of such annotations.</p>
 <p class="rubric">Examples</p>
 <p>Read annotations from the database named &#8216;db.hdf5&#8217;:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">read_annotations</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">read_annotations</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">&#39;db.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="n">annotations</span> <span class="o">=</span> <span class="n">read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
 </pre></div>
@@ -185,7 +187,8 @@ The handle to the HDF5 database from which the annotations is removed.</td>
 </table>
 <p class="rubric">Examples</p>
 <p>Remove annotations from the database named &#8216;db.hdf5&#8217;:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">remove_annotations</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">remove_annotations</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">&#39;db.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="n">remove_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
 </pre></div>
@@ -244,15 +247,15 @@ The handle to the HDF5 database from which the annotations is removed.</td>
         <li class="right" >
           <a href="magni.reproducibility._annotation.html" title="magni.reproducibility._annotation module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.reproducibility.html" >magni.reproducibility package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

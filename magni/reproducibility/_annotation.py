@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -237,16 +237,23 @@ def get_magni_config():
     packages = pkgutil.walk_packages(path=magni.__path__,
                                      prefix=magni.__name__ + '.')
 
-    magni_config = {'status': 'Succeeded'}
+    magni_config = dict()
     try:
         for importer, modname, ispkg in packages:
-            if modname[-7:] == '.config' and modname != 'magni.utils.config':
-                settings = eval(modname + '.get()')
-                for setting in settings:
-                    if not isinstance(settings[setting], str):
-                        settings[setting] = repr(settings[setting])
+            if modname[-8:] == '._config':
+                try:
+                    settings = dict(eval(modname).configger.items())
+                except AttributeError:
+                    # Skip base Configgers, e.g. cs.reconcstruction.config
+                    pass
+                else:
+                    for setting in settings:
+                        if not isinstance(settings[setting], str):
+                            settings[setting] = repr(settings[setting])
 
-                magni_config[modname] = settings
+                    magni_config[modname[:-7] + modname[-6:]] = settings
+
+        magni_config['status'] = 'Succeeded'
 
     except AttributeError:
         magni_config['status'] = 'Failed'

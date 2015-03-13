@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -9,7 +9,7 @@ Subpackage providing an implementation of Iterative Hard Thresholding (IHT).
 Routine listings
 ----------------
 config
-    Module providing configuration options for this subpackage.
+    Configger providing configuration options for this subpackage.
 run(y, A)
     Run the IHT reconstruction algorithm.
 
@@ -27,5 +27,5 @@ References
 
 """
 
-from magni.cs.reconstruction.iht import config
+from magni.cs.reconstruction.iht._config import configger as config
 from magni.cs.reconstruction.iht._original import run

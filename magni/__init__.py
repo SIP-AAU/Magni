@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -25,10 +25,10 @@ See the README file for additional information.
 
 """
 
-__version__ = '1.1.0'
-
 from magni import afm
 from magni import cs
 from magni import imaging
 from magni import reproducibility
 from magni import utils
+
+__version__ = '1.2.0'

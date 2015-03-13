@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -25,23 +25,9 @@ from __future__ import division
 from magni.imaging import _fastops
 from magni.utils.matrices import Matrix as _Matrix
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-
-
-@_decorate_validation
-def _validate_get_DCT(shape):
-    """
-    Validate the `get_DCT` function.
-
-    See Also
-    --------
-    get_DCT : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(shape, 'shape',
-              [{'type_in': (list, tuple), 'len': 2}, {'type': int, 'min': 1}])
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_levels as _levels
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def get_DCT(shape):
@@ -66,6 +52,7 @@ def get_DCT(shape):
     --------
     Create a dummy image:
 
+    >>> import numpy as np, magni
     >>> img = np.random.randn(64, 64)
     >>> vec = magni.imaging.mat2vec(img)
 
@@ -86,26 +73,15 @@ def get_DCT(shape):
 
     """
 
-    _validate_get_DCT(shape)
+    @_decorate_validation
+    def validate_input():
+        _levels('shape', (_generic(None, 'explicit collection', len_=2),
+                          _numeric(None, 'integer', range_='[1;inf)')))
+
+    validate_input()
 
     entries = shape[0] * shape[1]
     return _Matrix(_fastops.idct2, _fastops.dct2, (shape,), (entries, entries))
-
-
-@_decorate_validation
-def _validate_get_DFT(shape):
-    """
-    Validate the `get_DFT` function.
-
-    See Also
-    --------
-    get_DFT : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(shape, 'shape',
-              [{'type_in': (list, tuple), 'len': 2}, {'type': int, 'min': 1}])
 
 
 def get_DFT(shape):
@@ -130,6 +106,7 @@ def get_DFT(shape):
     --------
     Create a dummy image:
 
+    >>> import numpy as np, magni
     >>> img = np.random.randn(64, 64)
     >>> vec = magni.imaging.mat2vec(img)
 
@@ -150,7 +127,12 @@ def get_DFT(shape):
 
     """
 
-    _validate_get_DFT(shape)
+    @_decorate_validation
+    def validate_input():
+        _levels('shape', (_generic(None, 'explicit collection', len_=2),
+                          _numeric(None, 'integer', range_='[1;inf)')))
+
+    validate_input()
 
     entries = shape[0] * shape[1]
     return _Matrix(_fastops.idft2, _fastops.dft2, (shape,), (entries, entries))

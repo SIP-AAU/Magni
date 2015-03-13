@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.imaging.visualisation &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.imaging.visualisation</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -78,33 +78,12 @@
 
 <span class="kn">from</span> <span class="nn">magni.utils</span> <span class="kn">import</span> <span class="n">plotting</span> <span class="k">as</span> <span class="n">_plotting</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
-
-
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_imshow</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">intensity_func</span><span class="p">,</span> <span class="n">intensity_args</span><span class="p">,</span> <span class="n">show_axis</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `imshow` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    imshow : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="s">&#39;X&#39;</span><span class="p">)</span>
-    <span class="n">_validate</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s">&#39;ax&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;class&#39;</span><span class="p">:</span> <span class="n">mpl</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">},</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">_validate</span><span class="p">(</span><span class="n">intensity_func</span><span class="p">,</span> <span class="s">&#39;intensity_func&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">},</span>
-              <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">_validate</span><span class="p">(</span><span class="n">intensity_args</span><span class="p">,</span> <span class="s">&#39;intensity_args&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)})</span>
-    <span class="n">_validate</span><span class="p">(</span><span class="n">show_axis</span><span class="p">,</span> <span class="s">&#39;show_axis&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                       <span class="s">&#39;val_in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">,</span> <span class="s">&#39;top&#39;</span><span class="p">,</span> <span class="s">&#39;inherit&#39;</span><span class="p">)})</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="imshow"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.imshow">[docs]</a><span class="k">def</span> <span class="nf">imshow</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">intensity_func</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">intensity_args</span><span class="o">=</span><span class="p">(),</span>
-           <span class="n">show_axis</span><span class="o">=</span><span class="s">&#39;none&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+           <span class="n">show_axis</span><span class="o">=</span><span class="s">&#39;frame&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Display an image.</span>
 
@@ -125,10 +104,11 @@
 <span class="sd">    intensity_args : list or tuple, optional</span>
 <span class="sd">        The arguments that are passed to the `intensity_func` (the default is</span>
 <span class="sd">        (), which implies that no arguments are passed).</span>
-<span class="sd">    show_axis : {&#39;none&#39;, &#39;top&#39;, &#39;inherit&#39;}</span>
+<span class="sd">    show_axis : {&#39;none&#39;, &#39;top&#39;, &#39;inherit&#39;, &#39;frame&#39;}</span>
 <span class="sd">        How the x- and y-axis are display. If &#39;none&#39;, no axis are displayed. If</span>
 <span class="sd">        &#39;top&#39;, the x-axis is displayed at the top of the image. If &#39;inherit&#39;,</span>
-<span class="sd">        the axis display is inherited from `matplotlib.pyplot.imshow`.</span>
+<span class="sd">        the axis display is inherited from `matplotlib.pyplot.imshow`. If</span>
+<span class="sd">        &#39;frame&#39; only the frame is shown and not the ticks.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -143,6 +123,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    For example,</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.visualisation import imshow</span>
 <span class="sd">    &gt;&gt;&gt; X = np.arange(4).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; add_k = lambda X, k: X + k</span>
@@ -150,7 +131,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_imshow</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">intensity_func</span><span class="p">,</span> <span class="n">intensity_args</span><span class="p">,</span> <span class="n">show_axis</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;X&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;boolean&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;ax&#39;</span><span class="p">,</span> <span class="n">mpl</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;intensity_func&#39;</span><span class="p">,</span> <span class="s">&#39;function&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;intensity_args&#39;</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;show_axis&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">value_in</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">,</span> <span class="s">&#39;top&#39;</span><span class="p">,</span> <span class="s">&#39;inherit&#39;</span><span class="p">,</span>
+                                                  <span class="s">&#39;frame&#39;</span><span class="p">))</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">()</span>
 
@@ -168,6 +158,11 @@
     <span class="c"># Display of axis</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s">&#39;none&#39;</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s">&#39;top&#39;</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s">&#39;top&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s">&#39;frame&#39;</span><span class="p">:</span>
         <span class="n">xlabels</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()</span>
         <span class="n">ylabels</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()</span>
         <span class="n">empty_xlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">xlabels</span><span class="p">)</span>
@@ -175,32 +170,12 @@
         <span class="n">axes</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">empty_xlabels</span><span class="p">)</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">empty_ylabels</span><span class="p">)</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s">&#39;top&#39;</span><span class="p">:</span>
-        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
-        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s">&#39;top&#39;</span><span class="p">)</span>
 
     <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">im_out</span>
 
 </div>
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_shift_mean</span><span class="p">(</span><span class="n">x_mod</span><span class="p">,</span> <span class="n">x_org</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `shift_mean` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    shift_mean : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="s">&#39;x_mod&#39;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x_mod</span><span class="p">,</span> <span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;dtype&#39;</span><span class="p">:</span> <span class="n">x_mod</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-                                       <span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="n">x_mod</span><span class="o">.</span><span class="n">shape</span><span class="p">})</span>
-
-
 <div class="viewcode-block" id="shift_mean"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.shift_mean">[docs]</a><span class="k">def</span> <span class="nf">shift_mean</span><span class="p">(</span><span class="n">x_mod</span><span class="p">,</span> <span class="n">x_org</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Shift the mean value of `x_mod` such that it equals the mean of `x_org`.</span>
@@ -221,6 +196,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    For example,</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.visualisation import shift_mean</span>
 <span class="sd">    &gt;&gt;&gt; x_org = np.arange(4).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; x_mod = np.ones((2, 2))</span>
@@ -238,27 +214,17 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_shift_mean</span><span class="p">(</span><span class="n">x_mod</span><span class="p">,</span> <span class="n">x_org</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_mod&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                 <span class="n">shape</span><span class="o">=</span><span class="n">x_mod</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">x_mod</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_org</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 
 </div>
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">max_val</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `stretch_image` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    stretch_image : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s">&#39;img&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;subdtype&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">})</span>
-    <span class="n">_validate</span><span class="p">(</span><span class="n">max_val</span><span class="p">,</span> <span class="s">&#39;max_val&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
-
-
 <div class="viewcode-block" id="stretch_image"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.stretch_image">[docs]</a><span class="k">def</span> <span class="nf">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">max_val</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stretch image such that pixels values are in the range [0, `max_val`].</span>
@@ -284,6 +250,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    For example,</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.visualisation import stretch_image</span>
 <span class="sd">    &gt;&gt;&gt; img = np.arange(4, dtype=np.float).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; stretched_img = stretch_image(img, 1.0)</span>
@@ -294,7 +261,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">max_val</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;img&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;max_val&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">range_</span><span class="o">=</span><span class="s">&#39;(0;inf)&#39;</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="n">min_</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
     <span class="n">max_</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
@@ -335,14 +307,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

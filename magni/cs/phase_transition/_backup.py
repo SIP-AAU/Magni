@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -38,7 +38,7 @@ import os
 
 import numpy as np
 
-from magni.cs.phase_transition import config as _config
+from magni.cs.phase_transition import config as _conf
 from magni.utils.multiprocessing import File as _File
 
 
@@ -60,7 +60,7 @@ def create(path):
 
     """
 
-    shape = [_config.get(key) for key in ['delta', 'rho', 'monte_carlo']]
+    shape = [_conf[key] for key in ['delta', 'rho', 'monte_carlo']]
     shape = [len(shape[0]), len(shape[1]), shape[2]]
     time = dist = np.zeros(shape)
     status = np.zeros(shape[:2], np.bool8)

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -30,7 +30,7 @@ import time
 import numpy as np
 
 from magni.cs.phase_transition import _backup
-from magni.cs.phase_transition import config as _config
+from magni.cs.phase_transition import config as _conf
 from magni.cs.phase_transition import _data
 from magni.utils.multiprocessing import File as _File
 from magni.utils.multiprocessing import process as _process
@@ -65,9 +65,8 @@ def run(algorithm, path, label):
         _backup.create(tmp_file)
 
     done = _backup.get(tmp_file)
-    shape = _config.get()
-    shape = [len(shape['delta']), len(shape['rho']), shape['monte_carlo']]
-    np.random.seed(_config.get('seed'))
+    shape = [len(_conf['delta']), len(_conf['rho']), _conf['monte_carlo']]
+    np.random.seed(_conf['seed'])
     seeds = np.random.randint(0, 2**30, shape)
 
     tasks = [(algorithm, (i, j), seeds[i, j], tmp_file)
@@ -125,15 +124,15 @@ def _simulate(algorithm, ij_tuple, seeds, path):
 
     i, j = ij_tuple
 
-    n = _config.get('n')
-    m = int(np.round(n * _config.get('delta')[i]))
-    k = int(np.round(m * _config.get('rho')[j]))
+    n = _conf['problem_size']
+    m = int(np.round(n * _conf['delta'][i]))
+    k = int(np.round(m * _conf['rho'][j]))
 
-    stat_time = np.zeros(_config.get('monte_carlo'), dtype=np.float64)
+    stat_time = np.zeros(_conf['monte_carlo'], dtype=np.float64)
     stat_dist = stat_time.copy()
 
     if k > 0:
-        for l in range(_config.get('monte_carlo')):
+        for l in range(_conf['monte_carlo']):
             np.random.seed(seeds[l])
             A = _data.generate_matrix(m, n)
             x = _data.generate_vector(n, k)

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -39,7 +39,7 @@ from __future__ import division
 import numpy as np
 import scipy
 
-from magni.cs.reconstruction.sl0 import config as _config
+from magni.cs.reconstruction.sl0 import config as _conf
 
 
 def run(y, A):
@@ -68,6 +68,7 @@ def run(y, A):
     --------
     For example, recovering a vector from random measurements
 
+    >>> import numpy as np
     >>> from magni.cs.reconstruction.sl0._original import run
     >>> np.random.seed(seed=6021)
     >>> A = 1 / np.sqrt(80) * np.random.randn(80, 200)
@@ -123,16 +124,16 @@ def _run_feas(y, A):
 
     """
 
-    param = _config.get()
-    sigma_min = param['sigma_min']
-    L = int(np.round(param['L']))
-    mu = param['mu']
-    sigma_update = param['sigma_update']
+    sigma_min = _conf['sigma_stop_fixed']
+    L = int(np.round(_conf['L_fixed']))
+    mu = _conf['mu_fixed']
+    sigma_update = _conf['sigma_geometric']
 
     Q, R = scipy.linalg.qr(A.T, mode='economic')
     IP = np.eye(A.shape[1]) - Q.dot(Q.T)
     x = Q.dot(scipy.linalg.solve_triangular(R, y, trans='T'))
-    sigma = param['precision_float'](2) * np.abs(x).max()
+    sigma = (_conf['precision_float'](_conf['sigma_start_fixed']) *
+             np.abs(x).max())
 
     while sigma > sigma_min:
         for j in range(L):
@@ -166,16 +167,16 @@ def _run_proj(y, A):
 
     """
 
-    param = _config.get()
-    sigma_min = param['sigma_min']
-    L = int(np.round(param['L']))
-    mu = param['mu']
-    sigma_update = param['sigma_update']
+    sigma_min = _conf['sigma_stop_fixed']
+    L = int(np.round(_conf['L_fixed']))
+    mu = _conf['mu_fixed']
+    sigma_update = _conf['sigma_geometric']
 
     Q, R = scipy.linalg.qr(A.T, mode='economic')
     A_pinv = Q.dot(scipy.linalg.inv(R.T))
     x = A_pinv.dot(y)
-    sigma = param['precision_float'](2) * np.abs(x).max()
+    sigma = (_conf['precision_float'](_conf['sigma_start_fixed']) *
+             np.abs(x).max())
 
     while sigma > sigma_min:
         for j in range(L):

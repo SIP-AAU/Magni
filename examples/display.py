@@ -1,33 +1,9 @@
 import numpy as np
 np.set_printoptions(linewidth=120)
 
-from magni.utils.validation import (
-    decorate_validation as _decorate_validation,
-    validate as _validate)
-
-
-@_decorate_validation
-def _validate_print_table(columns, headers, bars):
-    """
-    Validate the `print_table` function.
-
-    See Also
-    --------
-    print_table : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    lst = (list, tuple)
-    _validate(columns, 'columns', [{'type_in': lst}, {'type_in': lst}])
-    _validate(columns, 'columns', [{}, {'len': len(columns[0])}])
-    cols = len(columns)
-    _validate(headers, 'headers', [{'type_in': lst, 'len': cols},
-                                   {'type': str}], True)
-
-    if type(bars) is not str:
-        _validate(bars, 'bars', [{'type_in': lst, 'len': cols - 1},
-                                 {'type': str}])
+from magni.utils.validation import decorate_validation as _decorate_validation
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_levels as _levels
 
 
 def print_table(columns, headers=None, bars='|'):
@@ -56,7 +32,28 @@ def print_table(columns, headers=None, bars='|'):
 
     """
 
-    _validate_print_table(columns, headers, bars)
+    @_decorate_validation
+    def validate_input():
+        _levels('columns', (_generic(None, 'explicit collection'),
+                            _generic(None, 'explicit collection')))
+
+        if len(columns) > 0:
+            _levels('columns', (_generic(None, 'explicit collection'),
+                                _generic(None, 'explicit collection',
+                                         len_=len(columns[0]))))
+
+        _levels('headers', (_generic(None, 'explicit collection',
+                                     len_=len(columns), ignore_none=True),
+                            _generic(None, 'string')))
+
+        try:
+            _generic('bars', 'string')
+        except TypeError:
+            _levels('bars', (_generic(None, 'explicit collection',
+                                      len_=len(columns) - 1),
+                             _generic(None, 'string')))
+
+    validate_input()
 
     if headers is not None:
         hr_index = 0

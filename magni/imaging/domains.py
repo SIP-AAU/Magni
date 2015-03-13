@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -18,7 +18,7 @@ from __future__ import division
 from magni.utils.matrices import Matrix as _Matrix
 from magni.utils.matrices import MatrixCollection as _MatrixC
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate_ndarray as _validate_ndarray
+from magni.utils.validation import validate_numeric as _numeric
 
 
 class MultiDomainImage(object):
@@ -49,6 +49,7 @@ class MultiDomainImage(object):
     --------
     Define a measurement matrix which skips every other sample:
 
+    >>> import numpy as np, magni
     >>> func = lambda vec: vec[::2]
     >>> func_T = lambda vec: np.float64([vec[0], 0, vec[1]]).reshape(3, 1)
     >>> Phi = magni.utils.matrices.Matrix(func, func_T, (), (2, 3))
@@ -86,35 +87,14 @@ class MultiDomainImage(object):
 
     """
 
-    @_decorate_validation
-    def _validate_init(self, Phi, Psi):
-        """
-        Validate the `__init__` function.
-
-        See Also
-        --------
-        MultiDomainImage.__init__ : The validated function.
-        magni.utils.validation.validate_matrix : Validation.
-
-        """
-
-        try:
-            _validate_ndarray(Phi, 'Phi')
-        except TypeError:
-            if not isinstance(Phi, _Matrix) and not isinstance(Phi, _MatrixC):
-                raise TypeError('Phi must be a matrix.')
-
-        try:
-            _validate_ndarray(Psi, 'Psi')
-        except TypeError:
-            if not isinstance(Psi, _Matrix) and not isinstance(Psi, _MatrixC):
-                raise TypeError('Psi must be a matrix.')
-
-        if Phi.shape[1] != Psi.shape[0]:
-            raise ValueError('Phi and Psi must have compatible shapes.')
-
     def __init__(self, Phi, Psi):
-        self._validate_init(Phi, Psi)
+        @_decorate_validation
+        def validate_input():
+            _numeric('Phi', ('integer', 'floating', 'complex'), shape=(-1, -1))
+            _numeric('Psi', ('integer', 'floating', 'complex'),
+                     shape=(Phi.shape[1], -1))
+
+        validate_input()
 
         self._Phi = Phi
         self._Psi = Psi
@@ -144,20 +124,6 @@ class MultiDomainImage(object):
 
             return self._coefficients
 
-    @_decorate_validation
-    def _validate_coefficients(self, value):
-        """
-        Validate the `coefficients.setter` function.
-
-        See Also
-        --------
-        MultiDomainImage.coefficients.setter : The validated function.
-        magni.utils.validation.validate_ndarray : Validation.
-
-        """
-
-        _validate_ndarray(value, 'value', {'shape': (self._Psi.shape[1], 1)})
-
     @coefficients.setter
     def coefficients(self, value):
         """
@@ -170,7 +136,12 @@ class MultiDomainImage(object):
 
         """
 
-        self._validate_coefficients(value)
+        @_decorate_validation
+        def validate_input():
+            _numeric('value', ('integer', 'floating', 'complex'),
+                     shape=(self._Psi.shape[1], 1))
+
+        validate_input()
 
         self._measurements = None
         self._image = None
@@ -198,20 +169,6 @@ class MultiDomainImage(object):
 
             return self._image
 
-    @_decorate_validation
-    def _validate_image(self, value):
-        """
-        Validate the `image.setter` function.
-
-        See Also
-        --------
-        MultiDomainImage.image.setter : The validated function.
-        magni.utils.validation.validate_ndarray : Validation.
-
-        """
-
-        _validate_ndarray(value, 'value', {'shape': (self._Phi.shape[1], 1)})
-
     @image.setter
     def image(self, value):
         """
@@ -224,7 +181,12 @@ class MultiDomainImage(object):
 
         """
 
-        self._validate_image(value)
+        @_decorate_validation
+        def validate_input():
+            _numeric('value', ('integer', 'floating', 'complex'),
+                     shape=(self._Phi.shape[1], 1))
+
+        validate_input()
 
         self._measurements = None
         self._image = value
@@ -252,20 +214,6 @@ class MultiDomainImage(object):
 
             return self._measurements
 
-    @_decorate_validation
-    def _validate_measurements(self, value):
-        """
-        Validate the `measurements.setter` function.
-
-        See Also
-        --------
-        MultiDomainImage.measurements.setter : The validated function.
-        magni.utils.validation.validate_ndarray : Validation.
-
-        """
-
-        _validate_ndarray(value, 'value', {'shape': (self._Phi.shape[0], 1)})
-
     @measurements.setter
     def measurements(self, value):
         """
@@ -278,7 +226,12 @@ class MultiDomainImage(object):
 
         """
 
-        self._validate_measurements(value)
+        @_decorate_validation
+        def validate_input():
+            _numeric('value', ('integer', 'floating', 'complex'),
+                     shape=(self._Phi.shape[0], 1))
+
+        validate_input()
 
         self._measurements = value
         self._image = None

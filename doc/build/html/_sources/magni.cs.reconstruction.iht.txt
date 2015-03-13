@@ -12,5 +12,5 @@ Submodules
 .. toctree::
     :maxdepth: 1
 
+    magni.cs.reconstruction.iht._config
     magni.cs.reconstruction.iht._original
-    magni.cs.reconstruction.iht.config

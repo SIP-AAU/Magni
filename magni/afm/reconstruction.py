@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -19,7 +19,7 @@ from __future__ import division
 
 import numpy as np
 
-from magni.afm import config as _config
+from magni.afm import config as _conf
 from magni.cs.reconstruction import iht as _iht
 from magni.cs.reconstruction import sl0 as _sl0
 from magni.imaging import evaluation as _eval
@@ -27,38 +27,7 @@ from magni.imaging import visualisation as _visualisation
 from magni.utils.matrices import Matrix as _Matrix
 from magni.utils.matrices import MatrixCollection as _MatrixC
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_analyse(x, Phi, Psi):
-    """
-    Validate the `analyse` function.
-
-    See Also
-    --------
-    analyse : The validated function.
-    magni.utils.validation.validate_ndarray : Validation.
-    magni.utils.validation.validate_matrix : Validation.
-
-    """
-
-    try:
-        _validate_ndarray(Phi, 'Phi')
-    except TypeError:
-        if not isinstance(Phi, _Matrix) and not isinstance(Phi, _MatrixC):
-            raise TypeError('Phi must be a matrix.')
-
-    try:
-        _validate_ndarray(Psi, 'Psi')
-    except TypeError:
-        if not isinstance(Psi, _Matrix) and not isinstance(Psi, _MatrixC):
-            raise TypeError('Psi must be a matrix.')
-
-    if Phi.shape[1] != Psi.shape[0]:
-        raise ValueError('Phi and Psi must have compatible shapes.')
-
-    _validate_ndarray(x, 'x', {'shape': (Phi.shape[1], 1)})
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def analyse(x, Phi, Psi):
@@ -90,6 +59,7 @@ def analyse(x, Phi, Psi):
     dictionary are defined. First, the example MI file provided with the
     package is loaded:
 
+    >>> import os, numpy as np, magni
     >>> from magni.afm.reconstruction import analyse
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
@@ -130,7 +100,15 @@ def analyse(x, Phi, Psi):
 
     """
 
-    _validate_analyse(x, Phi, Psi)
+    @_decorate_validation
+    def validate_input():
+        _numeric('x', ('integer', 'floating', 'complex'), shape=(-1, 1))
+        _numeric('Phi', ('integer', 'floating', 'complex'),
+                 shape=(-1, x.shape[0]))
+        _numeric('Psi', ('integer', 'floating', 'complex'),
+                 shape=(x.shape[0], -1))
+
+    validate_input()
 
     y = Phi.dot(x)
     x_hat = reconstruct(y, Phi, Psi)
@@ -142,37 +120,6 @@ def analyse(x, Phi, Psi):
     psnr = _eval.calculate_psnr(x_scaled, x_hat_scaled, 1.0)
 
     return (mse, psnr)
-
-
-@_decorate_validation
-def _validate_reconstruct(y, Phi, Psi):
-    """
-    Validate the `reconstruct` function.
-
-    See Also
-    --------
-    reconstruct : The validated function.
-    magni.utils.validation.validate_ndarray : Validation.
-    magni.utils.validation.validate_matrix : Validation.
-
-    """
-
-    try:
-        _validate_ndarray(Phi, 'Phi')
-    except TypeError:
-        if not isinstance(Phi, _Matrix) and not isinstance(Phi, _MatrixC):
-            raise TypeError('Phi must be a matrix.')
-
-    try:
-        _validate_ndarray(Psi, 'Psi')
-    except TypeError:
-        if not isinstance(Psi, _Matrix) and not isinstance(Psi, _MatrixC):
-            raise TypeError('Psi must be a matrix.')
-
-    if Phi.shape[1] != Psi.shape[0]:
-        raise ValueError('Phi and Psi must have compatible shapes.')
-
-    _validate_ndarray(y, 'y', {'shape': (Phi.shape[0], 1)})
 
 
 def reconstruct(y, Phi, Psi):
@@ -204,6 +151,7 @@ def reconstruct(y, Phi, Psi):
     dictionary are defined. First, the example MI file provided with the
     package is loaded:
 
+    >>> import os, numpy as np, magni
     >>> from magni.afm.reconstruction import reconstruct
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
@@ -246,10 +194,18 @@ def reconstruct(y, Phi, Psi):
 
     """
 
-    _validate_reconstruct(y, Phi, Psi)
+    @_decorate_validation
+    def validate_input():
+        _numeric('y', ('integer', 'floating', 'complex'), shape=(-1, 1))
+        _numeric('Phi', ('integer', 'floating', 'complex'),
+                 shape=(y.shape[0], -1))
+        _numeric('Psi', ('integer', 'floating', 'complex'),
+                 shape=(Phi.shape[1], -1))
+
+    validate_input()
 
     A = _MatrixC((Phi, Psi))
-    algorithm = _config.get('algorithm')
+    algorithm = _conf['algorithm']
 
     if algorithm == 'iht':
         algorithm = _iht.run

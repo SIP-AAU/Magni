@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -34,22 +34,7 @@ import tables
 
 from magni.reproducibility import _annotation
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-
-
-@_decorate_validation
-def _validate_annotate_database(h5file):
-    """
-    Validate the `annotate_database` function.
-
-    See Also
-    --------
-    annotate_database : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(h5file, 'h5file', {'class': tables.file.File})
+from magni.utils.validation import validate_generic as _generic
 
 
 def annotate_database(h5file):
@@ -90,13 +75,18 @@ def annotate_database(h5file):
     --------
     Annotate the database named 'db.hdf5':
 
+    >>> import magni
     >>> from magni.reproducibility.io import annotate_database
     >>> with magni.utils.multiprocessing.File('db.hdf5', mode='a') as h5file:
     ...     annotate_database(h5file)
 
     """
 
-    _validate_annotate_database(h5file)
+    @_decorate_validation
+    def validate_input():
+        _generic('h5file', tables.file.File)
+
+    validate_input()
 
     annotations = {'conda_info': json.dumps(_annotation.get_conda_info()),
                    'git_revision': json.dumps(_annotation.get_git_revision()),
@@ -116,21 +106,6 @@ def annotate_database(h5file):
         raise tables.NodeError('The database has already been annotated. ' +
                                'Remove the existing annotation prior to ' +
                                '(re)annotating the database.')
-
-
-@_decorate_validation
-def _validate_read_annotations(h5file):
-    """
-    Validate the `read_annotations` function.
-
-    See Also
-    --------
-    read_annotations : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(h5file, 'h5file', {'class': tables.file.File})
 
 
 def read_annotations(h5file):
@@ -163,13 +138,18 @@ def read_annotations(h5file):
     --------
     Read annotations from the database named 'db.hdf5':
 
+    >>> import magni
     >>> from magni.reproducibility.io import read_annotations
     >>> with magni.utils.multiprocessing.File('db.hdf5', mode='r') as h5file:
     ...    annotations = read_annotations(h5file)
 
     """
 
-    _validate_read_annotations(h5file)
+    @_decorate_validation
+    def validate_input():
+        _generic('h5file', tables.file.File)
+
+    validate_input()
 
     try:
         h5_annotations = h5file.get_node('/', name='annotations')
@@ -191,21 +171,6 @@ def read_annotations(h5file):
     return annotations
 
 
-@_decorate_validation
-def _validate_remove_annotations(h5file):
-    """
-    Validate the `remove_annotations` function.
-
-    See Also
-    --------
-    remove_annotations : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(h5file, 'h5file', {'class': tables.file.File})
-
-
 def remove_annotations(h5file):
     """
     Remove the annotations from an HDF5 database.
@@ -219,13 +184,18 @@ def remove_annotations(h5file):
     --------
     Remove annotations from the database named 'db.hdf5':
 
+    >>> import magni
     >>> from magni.reproducibility.io import remove_annotations
     >>> with magni.utils.multiprocessing.File('db.hdf5', mode='a') as h5file:
     ...    remove_annotations(h5file)
 
     """
 
-    _validate_remove_annotations(h5file)
+    @_decorate_validation
+    def validate_input():
+        _generic('h5file', tables.file.File)
+
+    validate_input()
 
     try:
         h5file.remove_node('/', 'annotations', recursive=True)

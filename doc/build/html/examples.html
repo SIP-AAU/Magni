@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Examples &mdash; Magni 1.1.0 documentation</title>
+    <title>Examples &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="next" title="magni package" href="magni.html" />
     <link rel="prev" title="A Note on Notation" href="notation.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="notation.html" title="A Note on Notation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -86,22 +86,18 @@
 </td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="magni.afm.io.html#magni.afm.io.read_mi_file" title="magni.afm.io.read_mi_file"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm.io.read_mi_file</span></tt></a></li>
-<li><a class="reference internal" href="magni.afm.types.html#magni.afm.types.Buffer" title="magni.afm.types.Buffer"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm.types.Buffer</span></tt></a></li>
-<li><a class="reference internal" href="magni.afm.types.html#magni.afm.types.Image" title="magni.afm.types.Image"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm.types.Image</span></tt></a></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>afm-reconstruction</td>
+<tr class="row-odd"><td>cs-phase_transition-config</td>
 <td><ul class="first last simple">
-<li>Reconstructing compressively sampled AFM images.</li>
-<li>Simulating reconstruction of compressively sampled
-images from raster scanned images.</li>
-<li>Calculating MSE and PSNR of reconstructed image.</li>
+<li>Using Magni configuration modules including setting
+and getting configuration values.</li>
 </ul>
 </td>
 <td><ul class="first last simple">
-<li><a class="reference internal" href="magni.afm.reconstruction.html#module-magni.afm.reconstruction" title="magni.afm.reconstruction"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm.reconstruction</span></tt></a></li>
-<li><a class="reference internal" href="magni.imaging.evaluation.html#module-magni.imaging.evaluation" title="magni.imaging.evaluation"><tt class="xref py py-obj docutils literal"><span class="pre">magni.imaging.evaluation</span></tt></a></li>
+<li><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition.config</span></tt></li>
+<li><a class="reference internal" href="magni.utils.config.html#module-magni.utils.config" title="magni.utils.config"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.config</span></tt></a></li>
 </ul>
 </td>
 </tr>
@@ -119,36 +115,13 @@ images from raster scanned images.</li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>cs-phase_transition-config</td>
-<td><ul class="first last simple">
-<li>Using Magni configuration modules including setting
-and getting configuration values.</li>
-</ul>
-</td>
-<td><ul class="first last simple">
-<li><a class="reference internal" href="magni.cs.phase_transition.config.html#module-magni.cs.phase_transition.config" title="magni.cs.phase_transition.config"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition.config</span></tt></a></li>
-<li><a class="reference internal" href="magni.utils.config.html#module-magni.utils.config" title="magni.utils.config"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.config</span></tt></a></li>
-</ul>
-</td>
-</tr>
-<tr class="row-even"><td>cs-reconstruction</td>
+<tr class="row-odd"><td>cs-reconstruction</td>
 <td><ul class="first last simple">
 <li>Reconstruction of compressively sampled 1D signals.</li>
 </ul>
 </td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="magni.cs.reconstruction.html#module-magni.cs.reconstruction" title="magni.cs.reconstruction"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.reconstruction</span></tt></a></li>
-</ul>
-</td>
-</tr>
-<tr class="row-odd"><td>magni</td>
-<td><ul class="first last simple">
-<li>The typical work flow in compressively sampling and
-reconstructing AFM images using Magni.</li>
-</ul>
-</td>
-<td><ul class="first last simple">
-<li><a class="reference internal" href="magni.afm.html#module-magni.afm" title="magni.afm"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm</span></tt></a></li>
 </ul>
 </td>
 </tr>
@@ -198,7 +171,19 @@ image, measurement and sparse (dictionary).</li>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td>reporducibility-io</td>
+<tr class="row-even"><td>magni</td>
+<td><ul class="first last simple">
+<li>The typical work flow in compressively sampling and
+reconstructing AFM images using Magni.</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.afm.html#module-magni.afm" title="magni.afm"><tt class="xref py py-obj docutils literal"><span class="pre">magni.afm</span></tt></a></li>
+<li><a class="reference internal" href="magni.imaging.html#module-magni.imaging" title="magni.imaging"><tt class="xref py py-obj docutils literal"><span class="pre">magni.imaging</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>reporducibility-io</td>
 <td><ul class="first last simple">
 <li>Annotating an HDF5 database to help in improving
 the reproducibility of the results it contains.</li>
@@ -209,7 +194,7 @@ the reproducibility of the results it contains.</li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>util-matrices</td>
+<tr class="row-even"><td>util-matrices</td>
 <td><ul class="first last simple">
 <li>Using the special Magni Matrix and MatrixCollection
 classes.</li>
@@ -218,6 +203,16 @@ classes.</li>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="magni.utils.matrices.html#magni.utils.matrices.Matrix" title="magni.utils.matrices.Matrix"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.matrices.Matrix</span></tt></a></li>
 <li><a class="reference internal" href="magni.utils.matrices.html#magni.utils.matrices.MatrixCollection" title="magni.utils.matrices.MatrixCollection"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.matrices.MatrixCollection</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>utils-multiprocessing</td>
+<td><ul class="first last simple">
+<li>Doing multiprocessing using Magni</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="magni.utils.multiprocessing.html#module-magni.utils.multiprocessing" title="magni.utils.multiprocessing"><tt class="xref py py-obj docutils literal"><span class="pre">magni.utils.multiprocessing</span></tt></a></li>
 </ul>
 </td>
 </tr>
@@ -299,13 +294,13 @@ overhead</li>
         <li class="right" >
           <a href="notation.html" title="A Note on Notation"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

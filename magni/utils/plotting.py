@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -30,6 +30,7 @@ Examples
 --------
 Use the default Magni matplotlib settings.
 
+>>> import magni
 >>> magni.utils.plotting.setup_matplotlib()
 
 Get the normalised 'Blue' colour brew from the psp colour map:
@@ -46,7 +47,9 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_levels as _levels
+from magni.utils.validation import validate_numeric as _numeric
 
 
 class _ColourCollection(object):
@@ -83,40 +86,17 @@ class _ColourCollection(object):
 
     """
 
-    @_decorate_validation
-    def _validate_init(self, brews):
-        """
-        Validate the `__init__` function.
-
-        See Also
-        --------
-        _ColourCollection.__init__ : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        _validate(brews, 'brews', [{'type': dict},
-                                   {'type_in': (list, tuple)},
-                                   {'type_in': (list, tuple), 'len': 3},
-                                   {'type': int, 'min': 0, 'max': 255}])
-
     def __init__(self, brews):
-        self._validate_init(brews)
+        @_decorate_validation
+        def validate_input():
+            _levels('brews', (_generic(None, 'mapping'),
+                              _generic(None, 'explicit collection'),
+                              _generic(None, 'explicit collection', len_=3),
+                              _numeric(None, 'integer', range_='[0;255]')))
+
+        validate_input()
 
         self._brews = brews
-
-    def _validate_getitem(self, name):
-        """
-        Validate the `__getitem__` function.
-
-        See Also
-        --------
-        _ColourCollection.__getitem__ : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        _validate(name, 'name', {'val_in': list(self._brews.keys())})
 
     def __getitem__(self, name):
         """
@@ -138,7 +118,11 @@ class _ColourCollection(object):
 
         """
 
-        self._validate_getitem(name)
+        @_decorate_validation
+        def validate_input():
+            _generic('name', 'string', value_in=tuple(self._brews.keys()))
+
+        validate_input()
 
         return tuple([tuple([round(val / 255, 4) for val in colour])
                       for colour in self._brews[name]])
@@ -191,21 +175,6 @@ linestyles = ['-', '--', '-.', ':']
 markers = ['o', '^', 'x', '+', 'd']
 
 
-@_decorate_validation
-def _validate_setup_matplotlib(settings):
-    """
-    Validate the `setup_matplotlib` function.
-
-    See Also
-    --------
-    setup_matplotlib : The validated function.
-    magni.util.validation.validate : Validation.
-
-    """
-
-    _validate(settings, 'settings', [{'type': dict}, {'type': dict}])
-
-
 def setup_matplotlib(settings={}, cmap=None):
     """
     Adjust the configuration of `matplotlib`.
@@ -238,7 +207,13 @@ def setup_matplotlib(settings={}, cmap=None):
 
     """
 
-    _validate_setup_matplotlib(settings)
+    @_decorate_validation
+    def validate_input():
+        _levels('settings', (_generic(None, 'mapping'),
+                             _generic(None, 'mapping')))
+        _generic('cmap', 'string', ignore_none=True)
+
+    validate_input()
 
     global _settings, _cmap
 

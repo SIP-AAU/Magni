@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -13,9 +13,9 @@ interchangably in other parts of the package.
 
 Routine listings
 ----------------
-Matrix()
+Matrix(magni.utils.validation.types.MatrixBase)
     Wrap fast linear operations in a matrix emulator.
-MatrixCollection()
+MatrixCollection(magni.utils.validation.types.MatrixBase)
     Wrap multiple matrix emulators in a single matrix emulator.
 
 See Also
@@ -30,11 +30,13 @@ import types
 import numpy as np
 
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
+from magni.utils.validation.types import MatrixBase as _MatrixBase
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_levels as _levels
+from magni.utils.validation import validate_numeric as _numeric
 
 
-class Matrix():
+class Matrix(_MatrixBase):
     """
     Wrap fast linear operations in a matrix emulator.
 
@@ -58,10 +60,15 @@ class Matrix():
     shape : list or tuple
         The shape of the emulated matrix.
 
+    See Also
+    --------
+    magni.utils.validation.types.MatrixBase : Superclass of the present class.
+
     Examples
     --------
     For example, the negative identity matrix could be emulated as
 
+    >>> import numpy as np, magni
     >>> from magni.utils.matrices import Matrix
     >>> func = lambda vec: -vec
     >>> matrix = Matrix(func, func, (), (3, 3))
@@ -97,30 +104,23 @@ class Matrix():
 
     """
 
-    @_decorate_validation
-    def _validate_init(self, func, trans, args, shape):
-        """
-        Validate the `__init__` function.
-
-        See Also
-        --------
-        Matrix.__init__ : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        _validate(func, 'func', {'type': types.FunctionType})
-        _validate(trans, 'trans', {'type': types.FunctionType})
-        _validate(args, 'args', {'type_in': (list, tuple)})
-        _validate(shape, 'shape', [{'type_in': (list, tuple)}, {'type': int}])
-
     def __init__(self, func, trans, args, shape):
-        self._validate_init(func, trans, args, shape)
+        _MatrixBase.__init__(self, np.complex_,
+                             ((-np.inf, np.inf), (-np.inf, np.inf)), shape)
+
+        @_decorate_validation
+        def validate_input():
+            _generic('func', 'function')
+            _generic('trans', 'function')
+            _generic('args', 'explicit collection')
+            _levels('shape', (_generic(None, 'explicit collection', len_=2),
+                              _numeric(None, 'integer')))
+
+        validate_input()
 
         self._func = func
         self._trans = trans
         self._args = args
-        self._shape = shape
 
     @property
     def A(self):
@@ -158,20 +158,6 @@ class Matrix():
         return output
 
     @property
-    def shape(self):
-        """
-        Get the shape of the matrix.
-
-        Returns
-        -------
-        shape : tuple
-            The shape of the matrix.
-
-        """
-
-        return self._shape
-
-    @property
     def T(self):
         """
         Get the transpose of the matrix.
@@ -191,20 +177,6 @@ class Matrix():
 
         return Matrix(self._trans, self._func, self._args, self._shape[::-1])
 
-    @_decorate_validation
-    def _validate_dot(self, vec):
-        """
-        Validate the `dot` function.
-
-        See Also
-        --------
-        Matrix.dot : The validated function.
-        magni.utils.validation.validate_matrix : Validation.
-
-        """
-
-        _validate_ndarray(vec, 'vec', {'shape': (self.shape[1], 1)})
-
     def dot(self, vec):
         """
         Multiply the matrix with a vector.
@@ -221,12 +193,17 @@ class Matrix():
 
         """
 
-        self._validate_dot(vec)
+        @_decorate_validation
+        def validate_input():
+            _numeric('vec', ('integer', 'floating', 'complex'),
+                     shape=(self.shape[1], 1))
+
+        validate_input()
 
         return self._func(vec, *self._args)
 
 
-class MatrixCollection():
+class MatrixCollection(_MatrixBase):
     """
     Wrap multiple matrix emulators in a single matrix emulator.
 
@@ -243,6 +220,7 @@ class MatrixCollection():
 
     See Also
     --------
+    magni.utils.validation.types.MatrixBase : Superclass of the present class.
     Matrix : Matrix emulator.
 
     Examples
@@ -250,6 +228,7 @@ class MatrixCollection():
     For example, two matrix emulators can be combined into one. That is, the
     matrix:
 
+    >>> import numpy as np, magni
     >>> func = lambda vec: -vec
     >>> negate = magni.utils.matrices.Matrix(func, func, (), (3, 3))
     >>> np.set_printoptions(suppress=True)
@@ -302,27 +281,24 @@ class MatrixCollection():
 
     """
 
-    @_decorate_validation
-    def _validate_init(self, matrices):
-        """
-        Validate the `__init__` function.
-
-        See Also
-        --------
-        MatrixCollection.__init__ : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        _validate(matrices, 'matrices',
-                  [{'type_in': (list, tuple)}, {'class': Matrix}])
-
-        for i in range(len(matrices) - 1):
-            if matrices[0].shape[1] != matrices[1].shape[0]:
-                raise ValueError('The matrices must have compatible shapes.')
-
     def __init__(self, matrices):
-        self._validate_init(matrices)
+        _MatrixBase.__init__(self, np.complex_,
+                             ((-np.inf, np.inf), (-np.inf, np.inf)), None)
+
+        @_decorate_validation
+        def validate_input():
+            _levels('matrices', (_generic(None, 'explicit collection'),
+                                 _generic(None, (Matrix, MatrixCollection))))
+
+            for i in range(len(matrices) - 1):
+                if matrices[i].shape[1] != matrices[i + 1].shape[0]:
+                    msg = ('The value of >>matrices[{}].shape[1]<<, {!r}, '
+                           'must be equal to the value of '
+                           '>>matrices[{}].shape[0]<<, {!r}.')
+                    raise ValueError(msg.format(i, matrices[i].shape[1], i + 1,
+                                                matrices[i + 1].shape[0]))
+
+        validate_input()
 
         self._matrices = matrices
 
@@ -399,20 +375,6 @@ class MatrixCollection():
 
         return MatrixCollection([matrix.T for matrix in self._matrices[::-1]])
 
-    @_decorate_validation
-    def _validate_dot(self, vec):
-        """
-        Validate the `dot` function.
-
-        See Also
-        --------
-        MatrixCollection.dot : The validated function.
-        magni.utils.validation.validate_matrix : Validation.
-
-        """
-
-        _validate_ndarray(vec, 'vec', {'shape': (self.shape[1], 1)})
-
     def dot(self, vec):
         """
         Multiply the matrix with a vector.
@@ -429,7 +391,12 @@ class MatrixCollection():
 
         """
 
-        self._validate_dot(vec)
+        @_decorate_validation
+        def validate_input():
+            _numeric('vec', ('integer', 'floating', 'complex'),
+                     shape=(self.shape[1], 1))
+
+        validate_input()
 
         for matrix in self._matrices[::-1]:
             vec = matrix.dot(vec)

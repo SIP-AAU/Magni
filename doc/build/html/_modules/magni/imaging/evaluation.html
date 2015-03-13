@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.evaluation &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.imaging.evaluation &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.imaging.evaluation</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -70,23 +70,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
-
-
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_calculate_mse</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `calculate_mse` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x_recons</span><span class="p">,</span> <span class="s">&#39;x_recons&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="n">x_org</span><span class="o">.</span><span class="n">shape</span><span class="p">})</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="calculate_mse"><a class="viewcode-back" href="../../../magni.imaging.evaluation.html#magni.imaging.evaluation.calculate_mse">[docs]</a><span class="k">def</span> <span class="nf">calculate_mse</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">):</span>
@@ -119,6 +103,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    For example,</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.evaluation import calculate_mse</span>
 <span class="sd">    &gt;&gt;&gt; x_org = np.arange(4).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; x_recons = np.ones((2,2))</span>
@@ -127,27 +112,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_calculate_retained_energy</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_recons&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="n">x_org</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="p">((</span><span class="n">x_org</span> <span class="o">-</span> <span class="n">x_recons</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
 </div>
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_calculate_psnr</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">,</span> <span class="n">peak</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `calculate_psnr` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x_recons</span><span class="p">,</span> <span class="s">&#39;x_recons&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="n">x_org</span><span class="o">.</span><span class="n">shape</span><span class="p">})</span>
-    <span class="n">_validate</span><span class="p">(</span><span class="n">peak</span><span class="p">,</span> <span class="s">&#39;peak&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
-
-
 <div class="viewcode-block" id="calculate_psnr"><a class="viewcode-back" href="../../../magni.imaging.evaluation.html#magni.imaging.evaluation.calculate_psnr">[docs]</a><span class="k">def</span> <span class="nf">calculate_psnr</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">,</span> <span class="n">peak</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Calculate Peak Signal to Noise Ratio (PSNR) between `x_recons` and `x_org`.</span>
@@ -177,10 +151,14 @@
 
 <span class="sd">    where `N` is the number of entries in `x_org`.</span>
 
+<span class="sd">    If :math:`|x_{org} - x_{recons}| &lt;= (10^{-8} + 1^{-5} * |x_{recons}|)`</span>
+<span class="sd">    then `np.inf` is returned.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    For example,</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.evaluation import calculate_psnr</span>
 <span class="sd">    &gt;&gt;&gt; x_org = np.arange(4).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; x_recons = np.ones((2,2))</span>
@@ -190,26 +168,22 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_calculate_psnr</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">,</span> <span class="n">peak</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_recons&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="n">x_org</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;peak&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">range_</span><span class="o">=</span><span class="s">&#39;(0;inf)&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">peak</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">((</span><span class="n">x_org</span> <span class="o">-</span> <span class="n">x_recons</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">):</span>
+        <span class="n">psnr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">psnr</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">peak</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">((</span><span class="n">x_org</span> <span class="o">-</span> <span class="n">x_recons</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">psnr</span>
 
 </div>
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_calculate_retained_energy</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `calculate_retained_energy` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x_recons</span><span class="p">,</span> <span class="s">&#39;x_recons&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="n">x_org</span><span class="o">.</span><span class="n">shape</span><span class="p">})</span>
-
-
 <div class="viewcode-block" id="calculate_retained_energy"><a class="viewcode-back" href="../../../magni.imaging.evaluation.html#magni.imaging.evaluation.calculate_retained_energy">[docs]</a><span class="k">def</span> <span class="nf">calculate_retained_energy</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Calculate percentage of energy retained in reconstruction.</span>
@@ -217,7 +191,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x_org : ndarray</span>
-<span class="sd">        Array of original values.</span>
+<span class="sd">        Array of original values (must not be all zeros).</span>
 <span class="sd">    x_recons : ndarray</span>
 <span class="sd">        Array of reconstruction values.</span>
 
@@ -237,6 +211,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    For example,</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.evaluation import calculate_retained_energy</span>
 <span class="sd">    &gt;&gt;&gt; x_org = np.arange(4).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; x_recons = np.ones((2,2))</span>
@@ -245,7 +220,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_calculate_retained_energy</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">x_org</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;x_org must not be all zeros&#39;</span><span class="p">)</span>
+
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_recons&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="n">x_org</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="n">x_recons</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_org</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span></div>
 </pre></div>
@@ -278,14 +262,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

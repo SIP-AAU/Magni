@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.config &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.utils.config &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.utils.config</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -56,13 +56,13 @@
 
 <span class="sd">Routine listings</span>
 <span class="sd">----------------</span>
-<span class="sd">Configger()</span>
-<span class="sd">    Provide set and get functions to access a set of configuration options.</span>
+<span class="sd">Configger(object)</span>
+<span class="sd">    Provide functionality to access a set of configuration options.</span>
 
 <span class="sd">Notes</span>
 <span class="sd">-----</span>
 <span class="sd">This module does not itself contain any configuration options and thus has no</span>
-<span class="sd">get or set functions unlike the other config modules of `magni`.</span>
+<span class="sd">access to any configuration options unlike the other config modules of `magni`.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -70,21 +70,23 @@
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_levels</span> <span class="k">as</span> <span class="n">_levels</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
-<div class="viewcode-block" id="Configger"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger">[docs]</a><span class="k">class</span> <span class="nc">Configger</span><span class="p">():</span>
+<div class="viewcode-block" id="Configger"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger">[docs]</a><span class="k">class</span> <span class="nc">Configger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provide set and get functions to access a set of configuration options.</span>
+<span class="sd">    Provide functionality to access a set of configuration options.</span>
 
 <span class="sd">    The set of configuration options, their default values, and their</span>
 <span class="sd">    validation schemes are specified upon initialisation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    param : dict</span>
-<span class="sd">        The configuration options along with their default values.</span>
-<span class="sd">    requirements : dict</span>
+<span class="sd">    params : dict</span>
+<span class="sd">        The configuration options and their default values.</span>
+<span class="sd">    valids : dict</span>
 <span class="sd">        The validation schemes of the configuration options.</span>
 
 <span class="sd">    See Also</span>
@@ -93,147 +95,270 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    `requirements` must contain the same keys as `param`. For each key in</span>
-<span class="sd">    `requirements`, the value is used as validation scheme - see `set` for</span>
-<span class="sd">    further information.</span>
+<span class="sd">    `valids` must contain the same keys as `params`. For each key in &#39;valids&#39;,</span>
+<span class="sd">    the first value is the validation function (&#39;generic&#39;, &#39;levels&#39;, or</span>
+<span class="sd">    &#39;numeric&#39;), whereas the remaining values are passed to that validation</span>
+<span class="sd">    function.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Instantiate Configger with the parameter &#39;key&#39; with default value &#39;default&#39;</span>
 <span class="sd">    which can only assume string values.</span>
 
+<span class="sd">    &gt;&gt;&gt; import magni</span>
 <span class="sd">    &gt;&gt;&gt; from magni.utils.config import Configger</span>
-<span class="sd">    &gt;&gt;&gt; config = Configger({&#39;key&#39;: &#39;default&#39;}, {&#39;key&#39;: {&#39;type&#39;: str}})</span>
+<span class="sd">    &gt;&gt;&gt; valid = magni.utils.validation.validate_generic(None, &#39;string&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; config = Configger({&#39;key&#39;: &#39;default&#39;}, {&#39;key&#39;: valid})</span>
 
-<span class="sd">    The parameter can either be retrieved by getting a copy of the entire</span>
-<span class="sd">    parameter dictionary or by getting the specific key.</span>
+<span class="sd">    The number of parameters can be retrieved as the length:</span>
 
-<span class="sd">    &gt;&gt;&gt; config.get()</span>
-<span class="sd">    {&#39;key&#39;: &#39;default&#39;}</span>
-<span class="sd">    &gt;&gt;&gt; config.get(&#39;key&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; len(config)</span>
+<span class="sd">    1</span>
+
+<span class="sd">    That parameter can be retrieved in a number of ways:</span>
+
+<span class="sd">    &gt;&gt;&gt; config[&#39;key&#39;]</span>
 <span class="sd">    &#39;default&#39;</span>
 
-<span class="sd">    Likewise the parameter can either be changed by passing a dictionary with</span>
-<span class="sd">    the parameter or by using a keyword argument.</span>
+<span class="sd">    &gt;&gt;&gt; for key, value in config.items():</span>
+<span class="sd">    ...     print(&#39;key: {!r}, value: {!r}&#39;.format(key, value))</span>
+<span class="sd">    key: &#39;key&#39;, value: &#39;default&#39;</span>
 
-<span class="sd">    &gt;&gt;&gt; config.set({&#39;key&#39;: &#39;value&#39;})</span>
-<span class="sd">    &gt;&gt;&gt; config.set(key=&#39;value&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; config.get(&#39;key&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; for key in config.keys():</span>
+<span class="sd">    ...     print(&#39;key: {!r}&#39;.format(key))</span>
+<span class="sd">    key: &#39;key&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; for value in config.values():</span>
+<span class="sd">    ...     print(&#39;value: {!r}&#39;.format(value))</span>
+<span class="sd">    value: &#39;default&#39;</span>
+
+<span class="sd">    Likewise, the parameter can be changed in a number of ways:</span>
+
+<span class="sd">    &gt;&gt;&gt; config[&#39;key&#39;] = &#39;value&#39;</span>
+<span class="sd">    &gt;&gt;&gt; config[&#39;key&#39;]</span>
 <span class="sd">    &#39;value&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; config.update({&#39;key&#39;: &#39;value changed by dict&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; config[&#39;key&#39;]</span>
+<span class="sd">    &#39;value changed by dict&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; config.update(key=&#39;value changed by keyword&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; config[&#39;key&#39;]</span>
+<span class="sd">    &#39;value changed by keyword&#39;</span>
+
+<span class="sd">    Finally, the parameter can be reset to the default value at any point:</span>
+
+<span class="sd">    &gt;&gt;&gt; config.reset()</span>
+<span class="sd">    &gt;&gt;&gt; config[&#39;key&#39;]</span>
+<span class="sd">    &#39;default&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="Configger._validate_init"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger._validate_init">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">requirements</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `__init__` function.</span>
+    <span class="n">_funcs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;generic&#39;</span><span class="p">:</span> <span class="n">_generic</span><span class="p">,</span> <span class="s">&#39;levels&#39;</span><span class="p">:</span> <span class="n">_levels</span><span class="p">,</span> <span class="s">&#39;numeric&#39;</span><span class="p">:</span> <span class="n">_numeric</span><span class="p">}</span>
 
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        Configger.__init__ : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate : Validation.</span>
+<div class="viewcode-block" id="Configger.__init__"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">valids</span><span class="p">):</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;params&#39;</span><span class="p">,</span> <span class="s">&#39;mapping&#39;</span><span class="p">)</span>
+            <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;valids&#39;</span><span class="p">,</span> <span class="p">(</span>
+                <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;mapping&#39;</span><span class="p">,</span> <span class="n">has_keys</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
+                <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">)))</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">valids</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">_generic</span><span class="p">((</span><span class="s">&#39;valids&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&#39;string&#39;</span><span class="p">,</span>
+                         <span class="n">value_in</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_funcs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
-        <span class="n">_validate</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s">&#39;param&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">})</span>
-        <span class="n">_validate</span><span class="p">(</span><span class="n">requirements</span><span class="p">,</span> <span class="s">&#39;requirements&#39;</span><span class="p">,</span>
-                  <span class="p">[{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;type_in&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]}])</span>
+        <span class="n">validate_input</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">requirements</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;param and requirements must have the same keys.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_valids</span> <span class="o">=</span> <span class="n">valids</span>
 </div>
-<div class="viewcode-block" id="Configger.__init__"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">requirements</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_init</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">requirements</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_param</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_requirements</span> <span class="o">=</span> <span class="n">requirements</span>
-</div>
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="Configger._validate_get"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger._validate_get">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="Configger.__getitem__"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `get` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        Configger.get : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_validate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;val_in&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param</span><span class="o">.</span><span class="n">keys</span><span class="p">())},</span> <span class="bp">True</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="Configger.get"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve a copy of all parameters or a specific parameter.</span>
+<span class="sd">        Get the value of a configuration parameter.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key : str or None, optional</span>
-<span class="sd">            The name of the key to retrieve (the default is None, which implies</span>
-<span class="sd">            retrieving a copy of all parameters)</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the parameter.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        value : dict or None</span>
-<span class="sd">            The value of the specified key, if a key is not None. Otherwise,</span>
-<span class="sd">            a copy of the parameter dictionary.</span>
+<span class="sd">        value : None</span>
+<span class="sd">            The value of the parameter.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">value_in</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">validate_input</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 </div>
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="Configger._validate_set"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger._validate_set">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Configger.__len__"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `set` function.</span>
+<span class="sd">        Get the number of configuration parameters.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        length : int</span>
+<span class="sd">            The number of parameters.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Configger.__setitem__"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.__setitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the value of a configuration parameter.</span>
+
+<span class="sd">        The value is validated according to the validation scheme of that</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the parameter.</span>
+<span class="sd">        value : None</span>
+<span class="sd">            The new value of the parameter.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">value_in</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+            <span class="n">validation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valids</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_funcs</span><span class="p">[</span><span class="n">validation</span><span class="p">[</span><span class="mi">0</span><span class="p">]](</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">validation</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="Configger.get"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deprecated method.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        Configger.set : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate : Validation.</span>
+<span class="sd">        Configger.__getitem__ : Replacing method.</span>
+<span class="sd">        Configger.items : Replacing method.</span>
+<span class="sd">        Configger.keys : Replacing method.</span>
+<span class="sd">        Configger.values : Replacing method.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="n">_validate</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="s">&#39;dictionary&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="s">&#39;keys_in&#39;</span><span class="p">:</span> <span class="n">keys</span><span class="p">})</span>
-        <span class="n">_validate</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="s">&#39;kwargs&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;keys_in&#39;</span><span class="p">:</span> <span class="n">keys</span><span class="p">})</span>
+        <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s">&quot;&#39;get&#39; will be removed in version 1.3.0 - &quot;</span>
+                                 <span class="s">&quot;use &#39;var[name]&#39;, &#39;items&#39;, &#39;keys&#39;, or &quot;</span>
+                                 <span class="s">&quot;&#39;values&#39; instead.&quot;</span><span class="p">)</span>
 
-        <span class="n">all_items</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">all_items</span><span class="p">:</span>
-            <span class="n">_validate</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requirements</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Configger.items"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the configuration parameters as key, value pairs.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        items : set-like</span>
+<span class="sd">            The list of parameters.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="Configger.keys"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the configuration parameter keys.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        keys : set-like</span>
+<span class="sd">            The keys.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Configger.reset"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset the parameter values to the default values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Configger.set"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overwrite the value of one or more parameters.</span>
+<span class="sd">        Deprecated method.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Configger.__setitem__ : Replacing function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s">&quot;&#39;set&#39; will be removed in version 1.3.0 - &quot;</span>
+                                 <span class="s">&quot;use &#39;var[name] = value&#39; or &#39;update&#39; &quot;</span>
+                                 <span class="s">&quot;instead.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Configger.update"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the value of one or more configuration parameters.</span>
 
 <span class="sd">        Each value is validated according to the validation scheme of that</span>
 <span class="sd">        parameter.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dictionary : dict, optional</span>
-<span class="sd">            A dictionary containing the key and value pairs to update.</span>
-<span class="sd">        kwargs : dict, optional</span>
-<span class="sd">            Keyword arguments being the key and value pairs to update.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        magni.utils.validation.validate : Validation.</span>
+<span class="sd">        params : dict, optional</span>
+<span class="sd">            A dictionary containing the key and values to update. (the default</span>
+<span class="sd">            value is an empty dictionary)</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Keyword arguments being the key and values to update.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_set</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;params&#39;</span><span class="p">,</span> <span class="s">&#39;mapping&#39;</span><span class="p">,</span> <span class="n">keys_in</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
-        <span class="n">all_items</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">all_items</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_param</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div></div>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">((</span><span class="s">&#39;params&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;kwargs&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">var</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">validation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valids</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_funcs</span><span class="p">[</span><span class="n">validation</span><span class="p">[</span><span class="mi">0</span><span class="p">]]((</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="o">*</span><span class="n">validation</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="Configger.values"><a class="viewcode-back" href="../../../magni.utils.config.html#magni.utils.config.Configger.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the configuration parameter values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        values : set-like</span>
+<span class="sd">            The values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div></div>
 </pre></div>
 
           </div>
@@ -264,14 +389,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

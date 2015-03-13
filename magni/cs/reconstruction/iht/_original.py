@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -32,32 +32,11 @@ from __future__ import division
 import numpy as np
 import scipy.stats
 
-from magni.cs.reconstruction.iht import config as _config
+from magni.cs.reconstruction.iht import config as _conf
 from magni.utils.matrices import Matrix as _Matrix
 from magni.utils.matrices import MatrixCollection as _MatrixC
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_run(y, A):
-    """
-    Validate the `run` function.
-
-    See Also
-    --------
-    run : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    try:
-        _validate_ndarray(A, 'A')
-    except TypeError:
-        if not isinstance(A, _Matrix) and not isinstance(A, _MatrixC):
-            raise TypeError('A must be a matrix.')
-
-    _validate_ndarray(y, 'y', {'shape': (A.shape[0], 1)})
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def run(y, A):
@@ -97,6 +76,7 @@ def run(y, A):
     --------
     For example, recovering a vector from random measurements
 
+    >>> import numpy as np
     >>> from magni.cs.reconstruction.iht._original import run
     >>> np.random.seed(seed=6021)
     >>> A = 1 / np.sqrt(80) * np.random.randn(80, 200)
@@ -123,28 +103,33 @@ def run(y, A):
 
     """
 
-    _validate_run(y, A)
+    @_decorate_validation
+    def validate_input():
+        _numeric('y', ('integer', 'floating', 'complex'), shape=(-1, 1))
+        _numeric('A', ('integer', 'floating', 'complex'),
+                 shape=(y.shape[0], -1))
 
-    _param = _config.get()
-    convert = _param['precision_float']
-    kappa = _param['kappa']
-    tol = _param['tolerance']
+    validate_input()
+
+    convert = _conf['precision_float']
+    kappa = _conf['kappa_fixed']
+    tol = _conf['tolerance']
     far = _calculate_far(A.shape[0] / A.shape[1])
     Lambda = convert(scipy.stats.norm.ppf(1 - far / 2))
     stdQ1 = convert(scipy.stats.norm.ppf(1 - 0.25))
-    k = int(_param['threshold_rho'] * A.shape[0])
+    k = int(_conf['threshold_fixed'] * A.shape[0])
 
     x = np.zeros((A.shape[1], 1), dtype=convert)
     r = y.copy()
 
-    for it in range(_param['iterations']):
+    for it in range(_conf['iterations']):
         c = A.T.dot(r)
         x = x + kappa * c
 
-        if _param['threshold'] == 'far':
-            thres = (kappa * Lambda * convert(np.median(np.abs(c.ravel())))
-                     / stdQ1)
-        elif _param['threshold'] == 'oracle':
+        if _conf['threshold'] == 'far':
+            thres = (kappa * Lambda * convert(np.median(np.abs(c.ravel()))) /
+                     stdQ1)
+        elif _conf['threshold'] == 'oracle':
             if k == 0:
                 thres = np.abs(x.ravel()).max() + 1
             elif k == A.shape[0]:

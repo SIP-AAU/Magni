@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -25,22 +25,7 @@ import numpy as np
 
 from magni.afm import types as _types
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-
-
-@_decorate_validation
-def _validate_read_mi_file(path):
-    """
-    Validate the `read_mi_file` function.
-
-    See Also
-    --------
-    read_mi_file : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(path, path, {'type': str})
+from magni.utils.validation import validate_generic as _generic
 
 
 def read_mi_file(path):
@@ -69,6 +54,7 @@ def read_mi_file(path):
     An example of how to use read_mi_file to read the example MI file provided
     with the package:
 
+    >>> import os, magni
     >>> from magni.afm.io import read_mi_file
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
@@ -77,10 +63,11 @@ def read_mi_file(path):
 
     """
 
-    _validate_read_mi_file(path)
+    @_decorate_validation
+    def validate_input():
+        _generic('path', 'string')
 
-    if not os.path.isfile(path):
-        raise IOError("The file {!r} does not exist.".format(path))
+    validate_input()
 
     try:
         f = open(path, 'rb')
@@ -95,7 +82,7 @@ def read_mi_file(path):
     hdrs = [(key.strip(), _convert_mi_value(val)) for key, val in hdrs]
 
     if hdrs[0][0].lower() != 'filetype' or hdrs[-1][0].lower() != 'data':
-        raise IOError("The file {!r} is not a valid MI file.".format(path))
+        raise IOError('The file, {!r}, must be a valid .mi file.'.format(path))
 
     buf = buf[index + 1:]
 
@@ -105,7 +92,8 @@ def read_mi_file(path):
     elif hdrs[0][1].lower() == 'spectroscopy':
         raise NotImplementedError("'Spectroscopy' file type not implemented.")
     else:
-        raise IOError("Unknown file type {!r}.".format(hdrs[0][1]))
+        raise IOError('The file type, {!r}, must be in {!r}.'
+                      .format(hdrs[0][1], ('Image', 'Spectroscopy')))
 
     return obj
 
@@ -140,12 +128,12 @@ def _convert_mi_image_data(buf, datatype):
         data = np.frombuffer(buf, np.int32)
         data = np.float64(data) / 2**31
     elif datatype == 'ASCII':
-        data = np.int16([int(val) for val in buf.split()])
+        data = np.int16(map(int, buf.split()))
         data = np.float64(data) / 2**15
     elif datatype == 'ASCII_ABSOLUTE':
-        data = np.float64([float(val) for val in buf.split()])
+        data = np.float64(map(float, buf.split()))
     elif datatype == 'ASCII_MULTICOLUMN':
-        data = np.float64([[float(val) for val in row.split()]
+        data = np.float64([map(float, row.split())
                            for row in buf.split('\n')]).flatten('F')
     else:
         raise IOError("Unknown data type {!r}.".format(datatype))

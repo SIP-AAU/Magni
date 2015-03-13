@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -26,6 +26,7 @@ Examples
 --------
 Generate a problem suite instance:
 
+>>> import numpy as np
 >>> from magni.cs.phase_transition import _data
 >>> m, n, k = 400, 800, 100
 >>> A = _data.generate_matrix(m, n)
@@ -38,7 +39,7 @@ from __future__ import division
 
 import numpy as np
 
-from magni.cs.phase_transition import config as _config
+from magni.cs.phase_transition import config as _conf
 
 
 def generate_matrix(m, n):
@@ -113,7 +114,7 @@ def generate_vector(n, k):
     """
 
     x = np.zeros((n, 1))
-    coefficients = _config.get('coefficients')
+    coefficients = _conf['coefficients']
 
     if coefficients == 'rademacher':
         x[:k, 0] = np.random.randint(0, 2, k) * 2 - 1

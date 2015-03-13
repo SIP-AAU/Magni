@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -9,7 +9,7 @@ Subpackage providing phase transition determination.
 Routine listings
 ----------------
 config
-    Module providing configuration options for this subpackage.
+    Configger providing configuration options for this subpackage.
 io
     Module providing input/output functionality for stored phase transitions.
 plotting
@@ -35,7 +35,7 @@ References
 
 """
 
-from magni.cs.phase_transition import config
+from magni.cs.phase_transition._config import configger as config
 from magni.cs.phase_transition import io
 from magni.cs.phase_transition import plotting
 from magni.cs.phase_transition._util import determine

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -13,22 +13,7 @@ from __future__ import division
 import numpy as np
 
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_mat2vec(x):
-    """
-    Validatate the `mat2vec` function.
-
-    See also
-    --------
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(x, 'x', {'dim': 2})
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def mat2vec(x):
@@ -57,6 +42,7 @@ def mat2vec(x):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging._util import mat2vec
     >>> x = np.arange(4).reshape(2, 2)
     >>> x
@@ -70,27 +56,14 @@ def mat2vec(x):
 
     """
 
-    _validate_mat2vec(x)
+    @_decorate_validation
+    def validate_input():
+        _numeric('x', ('boolean', 'integer', 'floating', 'complex'),
+                 shape=(-1, -1))
+
+    validate_input()
 
     return x.T.reshape(-1, 1)
-
-
-@_decorate_validation
-def _validate_vec2mat(x, mn_tuple):
-    """
-    Validatate the `vec2mat` function.
-
-    See also
-    --------
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    m, n = mn_tuple
-
-    _validate(m, 'm', {'type': int, 'min': 1})
-    _validate(n, 'n', {'type': int, 'min': 1})
-    _validate_ndarray(x, 'x', {'shape': (m * n, 1)})
 
 
 def vec2mat(x, mn_tuple):
@@ -126,6 +99,7 @@ def vec2mat(x, mn_tuple):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging._util import vec2mat
     >>> x = np.arange(4).reshape(4, 1)
     >>> x
@@ -141,6 +115,13 @@ def vec2mat(x, mn_tuple):
 
     m, n = mn_tuple
 
-    _validate_vec2mat(x, (m, n))
+    @_decorate_validation
+    def validate_input():
+        _numeric('m', 'integer', range_='[1;inf)')
+        _numeric('n', 'integer', range_='[1;inf)')
+        _numeric('x', ('boolean', 'integer', 'floating', 'complex'),
+                 shape=(m * n, 1))
+
+    validate_input()
 
     return x.reshape(n, m).T

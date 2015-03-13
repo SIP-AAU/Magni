@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -18,39 +18,8 @@ from magni.cs.phase_transition import _analysis
 from magni.cs.phase_transition import _simulation
 from magni.utils.multiprocessing import File as _File
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-
-
-@_decorate_validation
-def _validate_determine(algorithm, path, label, overwrite):
-    """
-    Validate the `determine` function.
-
-    See Also
-    --------
-    determine : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(algorithm, 'algorithm', {'type': types.FunctionType})
-    _validate(path, 'path', {'type': str})
-    _validate(label, 'label', {'type': str})
-
-    # regular expression matching invalid characters
-    regexp = re.compile(r'[^a-zA-Z0-9 ,.\-_/]')
-
-    if regexp.search(label):
-        raise RuntimeError("label may not contain {!r}."
-                           .format(regexp.search(label).group()))
-
-    # regular expression matching labels without empty path components
-    regexp = re.compile(r'^([^/]+/)*[^/]+$')
-
-    if not regexp.search(label):
-        raise RuntimeError('label may not contain empty path components.')
-
-    _validate(overwrite, 'overwrite', {'type': bool})
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def determine(algorithm, path, label='default', overwrite=False):
@@ -74,7 +43,6 @@ def determine(algorithm, path, label='default', overwrite=False):
 
     See Also
     --------
-    magni.cs.phase_transition.config : Configuration options.
     magni.cs.phase_transition._simulation.run : The actual simulation.
     magni.cs.phase_transition._analysis.run : The actual phase determination.
 
@@ -85,7 +53,29 @@ def determine(algorithm, path, label='default', overwrite=False):
 
     """
 
-    _validate_determine(algorithm, path, label, overwrite)
+    @_decorate_validation
+    def validate_input():
+        _generic('algorithm', 'function')
+        _generic('path', 'string')
+        _generic('label', 'string')
+
+        # regular expression matching invalid characters
+        match = re.search(r'[^a-zA-Z0-9 ,.\-_/]', label)
+
+        if match is not None:
+            msg = 'The value of >>label<<, {!r}, may not contain {!r}.'
+            raise RuntimeError(msg.format(label, match.group()))
+
+        # regular expression matching labels without empty path components
+        match = re.search(r'^([^/]+/)*[^/]+$', label)
+
+        if match is None:
+            msg = "The value of >>label<<, {!r}, may not contain '' folders."
+            raise RuntimeError(msg.format(label))
+
+        _numeric('overwrite', 'boolean')
+
+    validate_input()
 
     if os.path.isfile(path):
         with _File(path, 'r') as f:

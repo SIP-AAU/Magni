@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -30,33 +30,12 @@ import matplotlib.pyplot as plt
 
 from magni.utils import plotting as _plotting
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_imshow(X, ax, intensity_func, intensity_args, show_axis):
-    """
-    Validate the `imshow` function.
-
-    See Also
-    --------
-    imshow : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(X, 'X')
-    _validate(ax, 'ax', {'class': mpl.axes.Axes}, ignore_none=True)
-    _validate(intensity_func, 'intensity_func', {'type': types.FunctionType},
-              ignore_none=True)
-    _validate(intensity_args, 'intensity_args', {'type_in': (list, tuple)})
-    _validate(show_axis, 'show_axis', {'type': str,
-                                       'val_in': ('none', 'top', 'inherit')})
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def imshow(X, ax=None, intensity_func=None, intensity_args=(),
-           show_axis='none', **kwargs):
+           show_axis='frame', **kwargs):
     """
     Display an image.
 
@@ -77,10 +56,11 @@ def imshow(X, ax=None, intensity_func=None, intensity_args=(),
     intensity_args : list or tuple, optional
         The arguments that are passed to the `intensity_func` (the default is
         (), which implies that no arguments are passed).
-    show_axis : {'none', 'top', 'inherit'}
+    show_axis : {'none', 'top', 'inherit', 'frame'}
         How the x- and y-axis are display. If 'none', no axis are displayed. If
         'top', the x-axis is displayed at the top of the image. If 'inherit',
-        the axis display is inherited from `matplotlib.pyplot.imshow`.
+        the axis display is inherited from `matplotlib.pyplot.imshow`. If
+        'frame' only the frame is shown and not the ticks.
 
     Returns
     -------
@@ -95,6 +75,7 @@ def imshow(X, ax=None, intensity_func=None, intensity_args=(),
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.visualisation import imshow
     >>> X = np.arange(4).reshape(2, 2)
     >>> add_k = lambda X, k: X + k
@@ -102,7 +83,16 @@ def imshow(X, ax=None, intensity_func=None, intensity_args=(),
 
     """
 
-    _validate_imshow(X, ax, intensity_func, intensity_args, show_axis)
+    @_decorate_validation
+    def validate_input():
+        _numeric('X', ('boolean', 'integer', 'floating'), shape=(-1, -1))
+        _generic('ax', mpl.axes.Axes, ignore_none=True)
+        _generic('intensity_func', 'function', ignore_none=True)
+        _generic('intensity_args', 'explicit collection')
+        _generic('show_axis', 'string', value_in=('none', 'top', 'inherit',
+                                                  'frame'))
+
+    validate_input()
 
     _plotting.setup_matplotlib()
 
@@ -120,6 +110,11 @@ def imshow(X, ax=None, intensity_func=None, intensity_args=(),
     # Display of axis
     axes = plt.gca()
     if show_axis == 'none':
+        axes.axis('off')
+    elif show_axis == 'top':
+        axes.xaxis.tick_top()
+        axes.xaxis.set_label_position('top')
+    elif show_axis == 'frame':
         xlabels = axes.get_xticklabels()
         ylabels = axes.get_yticklabels()
         empty_xlabels = ['']*len(xlabels)
@@ -127,30 +122,10 @@ def imshow(X, ax=None, intensity_func=None, intensity_args=(),
         axes.set_xticklabels(empty_xlabels)
         axes.set_yticklabels(empty_ylabels)
         axes.tick_params(length=0)
-    elif show_axis == 'top':
-        axes.xaxis.tick_top()
-        axes.xaxis.set_label_position('top')
 
     plt.sca(ca)
 
     return im_out
-
-
-@_decorate_validation
-def _validate_shift_mean(x_mod, x_org):
-    """
-    Validate the `shift_mean` function.
-
-    See Also
-    --------
-    shift_mean : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(x_org, 'x_mod', {})
-    _validate_ndarray(x_mod, 'x_org', {'dtype': x_mod.dtype,
-                                       'shape': x_mod.shape})
 
 
 def shift_mean(x_mod, x_org):
@@ -173,6 +148,7 @@ def shift_mean(x_mod, x_org):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.visualisation import shift_mean
     >>> x_org = np.arange(4).reshape(2, 2)
     >>> x_mod = np.ones((2, 2))
@@ -190,25 +166,15 @@ def shift_mean(x_mod, x_org):
 
     """
 
-    _validate_shift_mean(x_mod, x_org)
+    @_decorate_validation
+    def validate_input():
+        _numeric('x_mod', ('integer', 'floating', 'complex'), shape=(-1, -1))
+        _numeric('x_org', ('integer', 'floating', 'complex'),
+                 shape=x_mod.shape)
+
+    validate_input()
 
     return x_mod + (x_org.mean() - x_mod.mean())
-
-
-@_decorate_validation
-def _validate_stretch_image(img, max_val):
-    """
-    Validate the `stretch_image` function.
-
-    See Also
-    --------
-    stretch_image : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(img, 'img', {'subdtype': np.floating})
-    _validate(max_val, 'max_val', {'type_in': [int, float], 'min': 0})
 
 
 def stretch_image(img, max_val):
@@ -236,6 +202,7 @@ def stretch_image(img, max_val):
     --------
     For example,
 
+    >>> import numpy as np
     >>> from magni.imaging.visualisation import stretch_image
     >>> img = np.arange(4, dtype=np.float).reshape(2, 2)
     >>> stretched_img = stretch_image(img, 1.0)
@@ -246,7 +213,12 @@ def stretch_image(img, max_val):
 
     """
 
-    _validate_stretch_image(img, max_val)
+    @_decorate_validation
+    def validate_input():
+        _numeric('img', 'floating', shape=(-1, -1))
+        _numeric('max_val', ('integer', 'floating'), range_='(0;inf)')
+
+    validate_input()
 
     min_ = img.min()
     max_ = img.max()

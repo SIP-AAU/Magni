@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.reconstruction.sl0._modified &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.cs.reconstruction.sl0._modified &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../../../index.html" />
     <link rel="up" title="Module code" href="../../../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.cs.reconstruction.sl0._modified</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -84,7 +84,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
 
-<span class="kn">from</span> <span class="nn">magni.cs.reconstruction.sl0</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_config</span>
+<span class="kn">from</span> <span class="nn">magni.cs.reconstruction.sl0</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_conf</span>
 
 
 <div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../../magni.cs.reconstruction.sl0._modified.html#magni.cs.reconstruction.sl0._modified.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
@@ -113,6 +113,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    For example, recovering a vector from random measurements</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.cs.reconstruction.sl0._modified import run</span>
 <span class="sd">    &gt;&gt;&gt; np.random.seed(seed=6021)</span>
 <span class="sd">    &gt;&gt;&gt; A = 1 / np.sqrt(80) * np.random.randn(80, 200)</span>
@@ -163,7 +164,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.75</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;sigma_start_reciprocal&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="_run_feas"><a class="viewcode-back" href="../../../../../magni.cs.reconstruction.sl0._modified.html#magni.cs.reconstruction.sl0._modified._run_feas">[docs]</a><span class="k">def</span> <span class="nf">_run_feas</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
@@ -187,18 +188,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">param</span> <span class="o">=</span> <span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">sigma_update</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;sigma_geometric&#39;</span><span class="p">]</span>
+    <span class="n">sigma_min</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;sigma_stop_fixed&#39;</span><span class="p">]</span>
 
-    <span class="n">sigma_update</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;sigma_update&#39;</span><span class="p">]</span>
-    <span class="n">sigma_min</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;sigma_min&#39;</span><span class="p">]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;L_geometric_start&#39;</span><span class="p">]</span>
+    <span class="n">L_update</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;L_geometric_ratio&#39;</span><span class="p">]</span>
 
-    <span class="n">L</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">]</span>
-    <span class="n">L_update</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;L_update&#39;</span><span class="p">]</span>
+    <span class="n">mu_start</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;mu_step_start&#39;</span><span class="p">]</span>
+    <span class="n">mu_end</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;mu_step_end&#39;</span><span class="p">]</span>
 
-    <span class="n">mu_start</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;mu_start&#39;</span><span class="p">]</span>
-    <span class="n">mu_end</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;mu_end&#39;</span><span class="p">]</span>
-
-    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;epsilon&#39;</span><span class="p">]</span>
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;epsilon&#39;</span><span class="p">]</span>
 
     <span class="n">Q</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="n">Q1</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
@@ -262,18 +261,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">param</span> <span class="o">=</span> <span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">sigma_update</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;sigma_geometric&#39;</span><span class="p">]</span>
+    <span class="n">sigma_min</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;sigma_stop_fixed&#39;</span><span class="p">]</span>
 
-    <span class="n">sigma_update</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;sigma_update&#39;</span><span class="p">]</span>
-    <span class="n">sigma_min</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;sigma_min&#39;</span><span class="p">]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;L_geometric_start&#39;</span><span class="p">]</span>
+    <span class="n">L_update</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;L_geometric_ratio&#39;</span><span class="p">]</span>
 
-    <span class="n">L</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">]</span>
-    <span class="n">L_update</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;L_update&#39;</span><span class="p">]</span>
+    <span class="n">mu_start</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;mu_step_start&#39;</span><span class="p">]</span>
+    <span class="n">mu_end</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;mu_step_end&#39;</span><span class="p">]</span>
 
-    <span class="n">mu_start</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;mu_start&#39;</span><span class="p">]</span>
-    <span class="n">mu_end</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;mu_end&#39;</span><span class="p">]</span>
-
-    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;epsilon&#39;</span><span class="p">]</span>
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;epsilon&#39;</span><span class="p">]</span>
 
     <span class="n">Q</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;economic&#39;</span><span class="p">)</span>
     <span class="n">A_pinv</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
@@ -341,14 +338,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

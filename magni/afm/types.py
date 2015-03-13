@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -27,9 +27,11 @@ from __future__ import absolute_import
 from __future__ import division
 import types
 
+from magni.imaging.preprocessing import detilt as _detilt
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_levels as _levels
+from magni.utils.validation import validate_numeric as _numeric
 
 
 class Buffer():
@@ -59,6 +61,7 @@ class Buffer():
     The `__init__` function is implicitly called when loading, for example, the
     MI file provided with the package:
 
+    >>> import os, magni
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
     >>> if os.path.isfile(path):
@@ -79,53 +82,34 @@ class Buffer():
 
     >>> if os.path.isfile(path):
     ...     data = mi_buffer.get_data()
-    ...     print('Buffer, Type: {}, Shape: {}'.format(str(type(data))[-15:-2],
-    ...     data.shape))
+    ...     shape = tuple(int(value) for value in data.shape)
+    ...     print('Buffer, Type: {}, Shape: {}'
+    ...           .format(str(type(data))[-15:-2], shape))
     ... else:
     ...     print('Buffer, Type: numpy.ndarray, Shape: (256, 256)')
     Buffer, Type: numpy.ndarray, Shape: (256, 256)
 
     """
 
-    @_decorate_validation
-    def _validate_init(self, data, hdrs, width, height):
-        """
-        Validate the `__init__` function.
-
-        See Also
-        --------
-        Buffer.__init__ : The validated function.
-        magni.utils.validation.validate : Validation.
-        magni.utils.validation.validate_ndarray : Validation.
-
-        """
-
-        _validate_ndarray(data, 'data')
-        _validate(hdrs, 'hdrs', {'type_in': (list, tuple)})
-        _validate(width, 'width', {'type': int, 'min': 1})
-        _validate(height, 'height', {'dtype': int, 'min': 1})
-
     def __init__(self, data, hdrs, width, height):
-        self._validate_init(data, hdrs, width, height)
+        @_decorate_validation
+        def validate_input():
+            _levels('hdrs', (_generic(None, 'explicit collection'),
+                             _generic(None, 'explicit collection', len_=2)))
+
+            for i in range(len(hdrs)):
+                _generic(('hdrs', i, 0), 'string')
+
+            _numeric('width', 'integer', range_='[1;inf)')
+            _numeric('height', 'integer', range_='[1;inf)')
+            _numeric('data', ('integer', 'floating'), shape=(height * width,))
+
+        validate_input()
 
         self._headers = {key: val for key, val in hdrs if key in _image_keys}
         self._data = self.get_attr('bufferRange') * data
         self._data = self._data.reshape(height, width)
         self._data = self._data[::-1, :]
-
-    @_decorate_validation
-    def _validate_get_attr(self, key):
-        """
-        Validate the `get_attr` function.
-
-        See Also
-        --------
-        Buffer.get_attr : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        _validate(key, 'key', {'val_in': list(self._headers.keys())}, True)
 
     def get_attr(self, key=None):
         """
@@ -145,7 +129,12 @@ class Buffer():
 
         """
 
-        self._validate_get_attr(key)
+        @_decorate_validation
+        def validate_input():
+            _generic('key', 'string', value_in=tuple(self._headers.keys()),
+                     ignore_none=True)
+
+        validate_input()
 
         if key is None:
             value = self._headers.copy()
@@ -153,21 +142,6 @@ class Buffer():
             value = self._headers[key]
 
         return value
-
-    def _validate_get_data(self, intensity_func, intensity_args):
-        """
-        Validate the `get_data` function.
-
-        See Also
-        --------
-        Buffer.get_data : The validated function.
-        fat.utils.validation.validate : Validation.
-
-        """
-
-        _validate(intensity_func, 'intensity_func',
-                  {'type': types.FunctionType}, ignore_none=True)
-        _validate(intensity_args, 'intensity_args', {'type_in': (list, tuple)})
 
     def get_data(self, intensity_func=None, intensity_args=()):
         """
@@ -193,7 +167,12 @@ class Buffer():
 
         """
 
-        self._validate_get_data(intensity_func, intensity_args)
+        @_decorate_validation
+        def validate_input():
+            _generic('intensity_func', 'function', ignore_none=True)
+            _generic('intensity_args', 'explicit collection')
+
+        validate_input()
 
         data = self._data
 
@@ -226,6 +205,7 @@ class Image():
     The `__init__` function is implicitly called when loading, for example, the
     MI file provided with the package:
 
+    >>> import os, magni
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
     >>> if os.path.isfile(path):
@@ -256,24 +236,17 @@ class Image():
 
     """
 
-    @_decorate_validation
-    def _validate_init(self, data, hdrs):
-        """
-        Validate the `__init__` function.
-
-        See Also
-        --------
-        Image.__init__ : The validated function.
-        magni.utils.validation.validate : Validation.
-        magni.utils.validation.validate_ndarray : Validation.
-
-        """
-
-        _validate_ndarray(data, 'data')
-        _validate(hdrs, 'hdrs', {'type_in': (list, tuple)})
-
     def __init__(self, data, hdrs):
-        self._validate_init(data, hdrs)
+        @_decorate_validation
+        def validate_input():
+            _numeric('data', ('integer', 'floating'), shape=(-1,))
+            _levels('hdrs', (_generic(None, 'explicit collection'),
+                             _generic(None, 'explicit collection', len_=2)))
+
+            for i in range(len(hdrs)):
+                _generic(('hdrs', i, 0), 'string')
+
+        validate_input()
 
         end = [hdr[0] for hdr in hdrs].index(_image_keys[0])
         self._headers = {key: val for key, val in hdrs[:end] + [hdrs[-1]]
@@ -295,20 +268,6 @@ class Image():
             buf = data[i * size:(i + 1) * size]
             self._buffers.append(Buffer(buf, bufs[i], width, height))
 
-    @_decorate_validation
-    def _validate_get_attr(self, key):
-        """
-        Validate the `get_attr` function.
-
-        See Also
-        --------
-        Image.get_attr : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        _validate(key, 'key', {'val_in': list(self._headers.keys())}, True)
-
     def get_attr(self, key=None):
         """
         Get a copy of all header lines or a specific header line.
@@ -327,7 +286,12 @@ class Image():
 
         """
 
-        self._validate_get_attr(key)
+        @_decorate_validation
+        def validate_input():
+            _generic('key', 'string', value_in=tuple(self._headers.keys()),
+                     ignore_none=True)
+
+        validate_input()
 
         if key is None:
             value = self._headers.copy()
@@ -335,21 +299,6 @@ class Image():
             value = self._headers[key]
 
         return value
-
-    @_decorate_validation
-    def _validate_get_buffer(self, key):
-        """
-        Validate the `get_buffer` function.
-
-        See Also
-        --------
-        Image.get_buffer : The validated function.
-        magni.utils.validation.validate : Validation.
-
-        """
-
-        keys = [buffer.get_attr('bufferLabel') for buffer in self._buffers]
-        _validate(key, 'key', {'val_in': keys}, True)
 
     def get_buffer(self, key=None):
         """
@@ -369,7 +318,13 @@ class Image():
 
         """
 
-        self._validate_get_buffer(key)
+        @_decorate_validation
+        def validate_input():
+            keys = tuple(buffer_.get_attr('bufferLabel')
+                         for buffer_ in self._buffers)
+            _generic('key', 'string', value_in=keys, ignore_none=True)
+
+        validate_input()
 
         if key is None:
             buf = self._buffers[:]
@@ -442,6 +397,10 @@ _image_headers = (
     ('bufferLabel   ', 'First buffer label'),
     ('trace         ', 'First buffer trace (TRUE), retrace (FALSE)'),
     ('bufferUnit    ', 'First buffer unit'),
-    ('bufferRange   ', 'First buffer range (bufferUnit unit)'))
+    ('bufferRange   ', 'First buffer range (bufferUnit unit)'),
+    # the following headers are not part of the format specification
+    ('DisplayOffset ', 'First buffer display offset'),
+    ('DisplayRange  ', 'First buffer display range'),
+    ('filter        ', 'First buffer plane flattening order'))
 _image_headers = tuple((key.strip(), descr) for key, descr in _image_headers)
 _image_keys = [hdr[0] for hdr in _image_headers]

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.afm.types module &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.afm.types module &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="up" title="magni.afm package" href="magni.afm.html" />
     <link rel="next" title="magni.cs package" href="magni.cs.html" />
     <link rel="prev" title="magni.afm.reconstruction module" href="magni.afm.reconstruction.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.afm.reconstruction.html" title="magni.afm.reconstruction module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.afm.html" accesskey="U">magni.afm package</a> &raquo;</li> 
       </ul>
@@ -103,7 +103,8 @@ The height in pixels of the area covered by the buffer.</li>
 <p class="rubric">Examples</p>
 <p>The <a class="reference internal" href="#magni.afm.types.Buffer.__init__" title="magni.afm.types.Buffer.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a> function is implicitly called when loading, for example, the
 MI file provided with the package:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s">&#39;example.mi&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">mi_file</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">afm</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_mi_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -123,57 +124,18 @@ MI file) including the &#8216;bufferLabel&#8217; attribute:</p>
 buffer:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">data</span> <span class="o">=</span> <span class="n">mi_buffer</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Buffer, Type: {}, Shape: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">))[</span><span class="o">-</span><span class="mi">15</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Buffer, Type: {}, Shape: {}&#39;</span>
+<span class="gp">... </span>          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">))[</span><span class="o">-</span><span class="mi">15</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">shape</span><span class="p">))</span>
 <span class="gp">... </span><span class="k">else</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Buffer, Type: numpy.ndarray, Shape: (256, 256)&#39;</span><span class="p">)</span>
 <span class="go">Buffer, Type: numpy.ndarray, Shape: (256, 256)</span>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="magni.afm.types.Buffer._validate_init">
-<tt class="descname">_validate_init</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer._validate_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer._validate_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrap a validation function (see module Notes).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>tuple</em>) &#8211;
-The arguments passed to the decorated function.</li>
-<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
-The keyword arguments passed to the decorated function.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="magni.afm.types.Buffer.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>data</em>, <em>hdrs</em>, <em>width</em>, <em>height</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="magni.afm.types.Buffer._validate_get_attr">
-<tt class="descname">_validate_get_attr</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer._validate_get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer._validate_get_attr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrap a validation function (see module Notes).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>tuple</em>) &#8211;
-The arguments passed to the decorated function.</li>
-<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
-The keyword arguments passed to the decorated function.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
 
 <dl class="method">
 <dt id="magni.afm.types.Buffer.get_attr">
@@ -193,21 +155,6 @@ copy of the header lines.</td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="magni.afm.types.Buffer._validate_get_data">
-<tt class="descname">_validate_get_data</tt><big>(</big><em>intensity_func</em>, <em>intensity_args</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Buffer._validate_get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Buffer._validate_get_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate the <a class="reference internal" href="#magni.afm.types.Buffer.get_data" title="magni.afm.types.Buffer.get_data"><tt class="xref py py-obj docutils literal"><span class="pre">get_data</span></tt></a> function.</p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#magni.afm.types.Buffer.get_data" title="magni.afm.types.Buffer.get_data"><tt class="xref py py-meth docutils literal"><span class="pre">Buffer.get_data()</span></tt></a></dt>
-<dd>The validated function.</dd>
-<dt><tt class="xref py py-meth docutils literal"><span class="pre">fat.utils.validation.validate()</span></tt></dt>
-<dd>Validation.</dd>
-</dl>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -266,7 +213,8 @@ The image specific header lines.</li>
 <p class="rubric">Examples</p>
 <p>The <a class="reference internal" href="#magni.afm.types.Image.__init__" title="magni.afm.types.Image.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a> function is implicitly called when loading, for example, the
 MI file provided with the package:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s">&#39;example.mi&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">image</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">afm</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_mi_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -296,49 +244,9 @@ MI image file:</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="magni.afm.types.Image._validate_init">
-<tt class="descname">_validate_init</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image._validate_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image._validate_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrap a validation function (see module Notes).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>tuple</em>) &#8211;
-The arguments passed to the decorated function.</li>
-<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
-The keyword arguments passed to the decorated function.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="magni.afm.types.Image.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>data</em>, <em>hdrs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="magni.afm.types.Image._validate_get_attr">
-<tt class="descname">_validate_get_attr</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image._validate_get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image._validate_get_attr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrap a validation function (see module Notes).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>tuple</em>) &#8211;
-The arguments passed to the decorated function.</li>
-<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
-The keyword arguments passed to the decorated function.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
 
 <dl class="method">
 <dt id="magni.afm.types.Image.get_attr">
@@ -355,26 +263,6 @@ implies retrieving a copy of all header lines).</td>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>value</strong> (<em>dict or None</em>) &#8211;
 The value of the specified key, if key is not None. Otherwise, a
 copy of the header lines.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="magni.afm.types.Image._validate_get_buffer">
-<tt class="descname">_validate_get_buffer</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/afm/types.html#Image._validate_get_buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.types.Image._validate_get_buffer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrap a validation function (see module Notes).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>tuple</em>) &#8211;
-The arguments passed to the decorated function.</li>
-<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
-The keyword arguments passed to the decorated function.</li>
-</ul>
-</td>
 </tr>
 </tbody>
 </table>
@@ -454,15 +342,15 @@ dict with all the buffers.</td>
         <li class="right" >
           <a href="magni.afm.reconstruction.html" title="magni.afm.reconstruction module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.afm.html" >magni.afm package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -33,7 +33,7 @@ from __future__ import division
 
 import numpy as np
 
-from magni.cs.phase_transition import config as _config
+from magni.cs.phase_transition import config as _conf
 from magni.utils.multiprocessing import File as _File
 
 
@@ -64,8 +64,6 @@ def run(path, label):
 
     """
 
-    _conf = _config.get()
-
     with _File(path, 'a') as f:
         if not '/' + label + '/phase_transition' in f:
             points = len(_conf['rho']) * _conf['monte_carlo']
@@ -78,7 +76,7 @@ def run(path, label):
             dist = f.get_node('/' + label + '/dist')[:]
 
             for i in range(len(_conf['delta'])):
-                n = np.round(_conf['delta'][i] * _conf['n'])
+                n = np.round(_conf['delta'][i] * _conf['problem_size'])
 
                 for j in range(len(_conf['rho'])):
                     if n > 0:

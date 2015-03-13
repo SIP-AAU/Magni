@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.domains &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.imaging.domains &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.imaging.domains</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -66,7 +66,7 @@
 <span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="kn">import</span> <span class="n">Matrix</span> <span class="k">as</span> <span class="n">_Matrix</span>
 <span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="kn">import</span> <span class="n">MatrixCollection</span> <span class="k">as</span> <span class="n">_MatrixC</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="MultiDomainImage"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage">[docs]</a><span class="k">class</span> <span class="nc">MultiDomainImage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -97,6 +97,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    Define a measurement matrix which skips every other sample:</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np, magni</span>
 <span class="sd">    &gt;&gt;&gt; func = lambda vec: vec[::2]</span>
 <span class="sd">    &gt;&gt;&gt; func_T = lambda vec: np.float64([vec[0], 0, vec[1]]).reshape(3, 1)</span>
 <span class="sd">    &gt;&gt;&gt; Phi = magni.utils.matrices.Matrix(func, func_T, (), (2, 3))</span>
@@ -134,35 +135,14 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="MultiDomainImage._validate_init"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage._validate_init">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `__init__` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        MultiDomainImage.__init__ : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate_matrix : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="s">&#39;Phi&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="n">_Matrix</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="n">_MatrixC</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Phi must be a matrix.&#39;</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="s">&#39;Psi&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="n">_Matrix</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="n">_MatrixC</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Psi must be a matrix.&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">Psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Phi and Psi must have compatible shapes.&#39;</span><span class="p">)</span>
-</div>
 <div class="viewcode-block" id="MultiDomainImage.__init__"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_init</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">)</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;Phi&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;Psi&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_Phi</span> <span class="o">=</span> <span class="n">Phi</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Psi</span> <span class="o">=</span> <span class="n">Psi</span>
@@ -192,20 +172,6 @@
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coefficients</span>
 
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="MultiDomainImage._validate_coefficients"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage._validate_coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `coefficients.setter` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        MultiDomainImage.coefficients.setter : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate_ndarray : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
-</div>
     <span class="nd">@coefficients.setter</span>
 <div class="viewcode-block" id="MultiDomainImage.coefficients"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -218,7 +184,12 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_coefficients</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_measurements</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="bp">None</span>
@@ -246,20 +217,6 @@
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span>
 
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="MultiDomainImage._validate_image"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage._validate_image">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `image.setter` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        MultiDomainImage.image.setter : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate_ndarray : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
-</div>
     <span class="nd">@image.setter</span>
 <div class="viewcode-block" id="MultiDomainImage.image"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage.image">[docs]</a>    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -272,7 +229,12 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_image</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_measurements</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="n">value</span>
@@ -300,20 +262,6 @@
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_measurements</span>
 
-    <span class="nd">@_decorate_validation</span>
-<div class="viewcode-block" id="MultiDomainImage._validate_measurements"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage._validate_measurements">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the `measurements.setter` function.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        MultiDomainImage.measurements.setter : The validated function.</span>
-<span class="sd">        magni.utils.validation.validate_ndarray : Validation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
-</div>
     <span class="nd">@measurements.setter</span>
 <div class="viewcode-block" id="MultiDomainImage.measurements"><a class="viewcode-back" href="../../../magni.imaging.domains.html#magni.imaging.domains.MultiDomainImage.measurements">[docs]</a>    <span class="k">def</span> <span class="nf">measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -326,7 +274,12 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_measurements</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_measurements</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="bp">None</span>
@@ -361,14 +314,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

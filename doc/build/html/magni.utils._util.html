@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils._util module &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.utils._util module &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="up" title="magni.utils package" href="magni.utils.html" />
     <link rel="next" title="magni.utils.config module" href="magni.utils.config.html" />
-    <link rel="prev" title="magni.utils.multiprocessing.config module" href="magni.utils.multiprocessing.config.html" /> 
+    <link rel="prev" title="magni.utils.validation.types module" href="magni.utils.validation.types.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,9 +41,9 @@
           <a href="magni.utils.config.html" title="magni.utils.config module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="magni.utils.multiprocessing.config.html" title="magni.utils.multiprocessing.config module"
+          <a href="magni.utils.validation.types.html" title="magni.utils.validation.types module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.utils.html" accesskey="U">magni.utils package</a> &raquo;</li> 
       </ul>
@@ -87,7 +87,8 @@ The extension of the object which the input path points to (if any).</li>
 </table>
 <p class="rubric">Examples</p>
 <p>Concatenate a dummy path and split it using the present function:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils._util</span> <span class="kn">import</span> <span class="n">split_path</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils._util</span> <span class="kn">import</span> <span class="n">split_path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="s">&#39;folder&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s">&#39;file&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">extsep</span> <span class="o">+</span> <span class="s">&#39;extension&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parts</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">tuple</span><span class="p">((</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">7</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">:])))</span>
@@ -105,8 +106,8 @@ The extension of the object which the input path points to (if any).</li>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="magni.utils.multiprocessing.config.html"
-                        title="previous chapter">magni.utils.multiprocessing.config module</a></p>
+  <p class="topless"><a href="magni.utils.validation.types.html"
+                        title="previous chapter">magni.utils.validation.types module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.utils.config.html"
                         title="next chapter">magni.utils.config module</a></p>
@@ -137,17 +138,17 @@ The extension of the object which the input path points to (if any).</li>
           <a href="magni.utils.config.html" title="magni.utils.config module"
              >next</a> |</li>
         <li class="right" >
-          <a href="magni.utils.multiprocessing.config.html" title="magni.utils.multiprocessing.config module"
+          <a href="magni.utils.validation.types.html" title="magni.utils.validation.types module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.utils.html" >magni.utils package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -27,26 +27,7 @@ import scipy.fftpack
 from magni.imaging._util import mat2vec as _mat2vec
 from magni.imaging._util import vec2mat as _vec2mat
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_transform(x, mn_tuple):
-    """
-    Validatate a 2D transform.
-
-    See also
-    --------
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    m, n = mn_tuple
-
-    _validate(m, 'm', {'type': int, 'min': 1})
-    _validate(n, 'n', {'type': int, 'min': 1})
-    _validate_ndarray(x, 'x', {'shape': (m * n, 1)})
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def dct2(x, mn_tuple):
@@ -77,7 +58,12 @@ def dct2(x, mn_tuple):
     """
 
     m, n = mn_tuple
-    _validate_transform(x, (m, n))
+
+    @_decorate_validation
+    def validate_input():
+        _validate_transform(x, m, n)
+
+    validate_input()
 
     # 2D DCT using the seperability property of the 1D DCT.
     # http://stackoverflow.com/questions/14325795/scipys-fftpack-dct-and-idct
@@ -118,7 +104,12 @@ def idct2(x, mn_tuple):
     """
 
     m, n = mn_tuple
-    _validate_transform(x, (m, n))
+
+    @_decorate_validation
+    def validate_input():
+        _validate_transform(x, m, n)
+
+    validate_input()
 
     result = _vec2mat(x, (m, n))
     result = scipy.fftpack.idct(result, norm='ortho').T
@@ -154,7 +145,12 @@ def dft2(x, mn_tuple):
     """
 
     m, n = mn_tuple
-    _validate_transform(x, (m, n))
+
+    @_decorate_validation
+    def validate_input():
+        _validate_transform(x, m, n)
+
+    validate_input()
 
     return _mat2vec(np.fft.fft2(_vec2mat(x, (m, n))))
 
@@ -187,7 +183,12 @@ def idft2(x, mn_tuple):
     """
 
     m, n = mn_tuple
-    _validate_transform(x, (m, n))
+
+    @_decorate_validation
+    def validate_input():
+        _validate_transform(x, m, n)
+
+    validate_input()
 
     output = _mat2vec(np.fft.ifft2(_vec2mat(x, (m, n))))
 
@@ -195,3 +196,14 @@ def idft2(x, mn_tuple):
         output = output.real
 
     return output
+
+
+def _validate_transform(x, m, n):
+    """
+    Validatate a 2D transform.
+
+    """
+
+    _numeric('m', 'integer', range_='[1;inf)')
+    _numeric('n', 'integer', range_='[1;inf)')
+    _numeric('x', ('integer', 'floating', 'complex'), shape=(m * n, 1))

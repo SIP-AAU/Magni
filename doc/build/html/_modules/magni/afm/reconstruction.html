@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.afm.reconstruction &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.afm.reconstruction &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.afm.reconstruction</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -67,7 +67,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">magni.afm</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_config</span>
+<span class="kn">from</span> <span class="nn">magni.afm</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_conf</span>
 <span class="kn">from</span> <span class="nn">magni.cs.reconstruction</span> <span class="kn">import</span> <span class="n">iht</span> <span class="k">as</span> <span class="n">_iht</span>
 <span class="kn">from</span> <span class="nn">magni.cs.reconstruction</span> <span class="kn">import</span> <span class="n">sl0</span> <span class="k">as</span> <span class="n">_sl0</span>
 <span class="kn">from</span> <span class="nn">magni.imaging</span> <span class="kn">import</span> <span class="n">evaluation</span> <span class="k">as</span> <span class="n">_eval</span>
@@ -75,38 +75,7 @@
 <span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="kn">import</span> <span class="n">Matrix</span> <span class="k">as</span> <span class="n">_Matrix</span>
 <span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="kn">import</span> <span class="n">MatrixCollection</span> <span class="k">as</span> <span class="n">_MatrixC</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_ndarray</span> <span class="k">as</span> <span class="n">_validate_ndarray</span>
-
-
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_analyse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `analyse` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    analyse : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate_ndarray : Validation.</span>
-<span class="sd">    magni.utils.validation.validate_matrix : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="s">&#39;Phi&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="n">_Matrix</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="n">_MatrixC</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Phi must be a matrix.&#39;</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="s">&#39;Psi&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="n">_Matrix</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="n">_MatrixC</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Psi must be a matrix.&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">Psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Phi and Psi must have compatible shapes.&#39;</span><span class="p">)</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="analyse"><a class="viewcode-back" href="../../../magni.afm.reconstruction.html#magni.afm.reconstruction.analyse">[docs]</a><span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">):</span>
@@ -138,6 +107,7 @@
 <span class="sd">    dictionary are defined. First, the example MI file provided with the</span>
 <span class="sd">    package is loaded:</span>
 
+<span class="sd">    &gt;&gt;&gt; import os, numpy as np, magni</span>
 <span class="sd">    &gt;&gt;&gt; from magni.afm.reconstruction import analyse</span>
 <span class="sd">    &gt;&gt;&gt; path = magni.utils.split_path(magni.__path__[0])[0]</span>
 <span class="sd">    &gt;&gt;&gt; path = path + &#39;examples&#39; + os.sep + &#39;example.mi&#39;</span>
@@ -178,7 +148,15 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_analyse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;Phi&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;Psi&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="n">y</span> <span class="o">=</span> <span class="n">Phi</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">x_hat</span> <span class="o">=</span> <span class="n">reconstruct</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">)</span>
@@ -192,37 +170,6 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">mse</span><span class="p">,</span> <span class="n">psnr</span><span class="p">)</span>
 
 </div>
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_reconstruct</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `reconstruct` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    reconstruct : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate_ndarray : Validation.</span>
-<span class="sd">    magni.utils.validation.validate_matrix : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="s">&#39;Phi&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="n">_Matrix</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="n">_MatrixC</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Phi must be a matrix.&#39;</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="s">&#39;Psi&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="n">_Matrix</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Psi</span><span class="p">,</span> <span class="n">_MatrixC</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Psi must be a matrix.&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">Psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Phi and Psi must have compatible shapes.&#39;</span><span class="p">)</span>
-
-    <span class="n">_validate_ndarray</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)})</span>
-
-
 <div class="viewcode-block" id="reconstruct"><a class="viewcode-back" href="../../../magni.afm.reconstruction.html#magni.afm.reconstruction.reconstruct">[docs]</a><span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reconstruct an image from compressively sensed measurements.</span>
@@ -252,6 +199,7 @@
 <span class="sd">    dictionary are defined. First, the example MI file provided with the</span>
 <span class="sd">    package is loaded:</span>
 
+<span class="sd">    &gt;&gt;&gt; import os, numpy as np, magni</span>
 <span class="sd">    &gt;&gt;&gt; from magni.afm.reconstruction import reconstruct</span>
 <span class="sd">    &gt;&gt;&gt; path = magni.utils.split_path(magni.__path__[0])[0]</span>
 <span class="sd">    &gt;&gt;&gt; path = path + &#39;examples&#39; + os.sep + &#39;example.mi&#39;</span>
@@ -294,10 +242,18 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_reconstruct</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;Phi&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;Psi&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="n">A</span> <span class="o">=</span> <span class="n">_MatrixC</span><span class="p">((</span><span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">))</span>
-    <span class="n">algorithm</span> <span class="o">=</span> <span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;algorithm&#39;</span><span class="p">)</span>
+    <span class="n">algorithm</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;algorithm&#39;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s">&#39;iht&#39;</span><span class="p">:</span>
         <span class="n">algorithm</span> <span class="o">=</span> <span class="n">_iht</span><span class="o">.</span><span class="n">run</span>
@@ -338,14 +294,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

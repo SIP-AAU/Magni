@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -36,7 +36,7 @@ from __future__ import division
 import numpy as np
 import scipy
 
-from magni.cs.reconstruction.sl0 import config as _config
+from magni.cs.reconstruction.sl0 import config as _conf
 
 
 def run(y, A):
@@ -65,6 +65,7 @@ def run(y, A):
     --------
     For example, recovering a vector from random measurements
 
+    >>> import numpy as np
     >>> from magni.cs.reconstruction.sl0._modified import run
     >>> np.random.seed(seed=6021)
     >>> A = 1 / np.sqrt(80) * np.random.randn(80, 200)
@@ -115,7 +116,7 @@ def _calc_sigma_start(delta):
 
     """
 
-    return 1.0 / (2.75 * delta)
+    return 1.0 / (_conf['sigma_start_reciprocal'] * delta)
 
 
 def _run_feas(y, A):
@@ -139,18 +140,16 @@ def _run_feas(y, A):
 
     """
 
-    param = _config.get()
+    sigma_update = _conf['sigma_geometric']
+    sigma_min = _conf['sigma_stop_fixed']
 
-    sigma_update = param['sigma_update']
-    sigma_min = param['sigma_min']
+    L = _conf['L_geometric_start']
+    L_update = _conf['L_geometric_ratio']
 
-    L = param['L']
-    L_update = param['L_update']
+    mu_start = _conf['mu_step_start']
+    mu_end = _conf['mu_step_end']
 
-    mu_start = param['mu_start']
-    mu_end = param['mu_end']
-
-    epsilon = param['epsilon']
+    epsilon = _conf['epsilon']
 
     Q, R = scipy.linalg.qr(A.T)
     Q1 = Q[:, :A.shape[0]]
@@ -214,18 +213,16 @@ def _run_proj(y, A):
 
     """
 
-    param = _config.get()
+    sigma_update = _conf['sigma_geometric']
+    sigma_min = _conf['sigma_stop_fixed']
 
-    sigma_update = param['sigma_update']
-    sigma_min = param['sigma_min']
+    L = _conf['L_geometric_start']
+    L_update = _conf['L_geometric_ratio']
 
-    L = param['L']
-    L_update = param['L_update']
+    mu_start = _conf['mu_step_start']
+    mu_end = _conf['mu_step_end']
 
-    mu_start = param['mu_start']
-    mu_end = param['mu_end']
-
-    epsilon = param['epsilon']
+    epsilon = _conf['epsilon']
 
     Q, R = scipy.linalg.qr(A.T, mode='economic')
     A_pinv = Q.dot(scipy.linalg.inv(R.T))

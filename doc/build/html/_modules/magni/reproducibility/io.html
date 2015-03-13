@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility.io &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.reproducibility.io &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.reproducibility.io</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -82,22 +82,7 @@
 
 <span class="kn">from</span> <span class="nn">magni.reproducibility</span> <span class="kn">import</span> <span class="n">_annotation</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
-
-
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `annotate_database` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    annotate_database : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;class&#39;</span><span class="p">:</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">})</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
 
 
 <div class="viewcode-block" id="annotate_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.annotate_database">[docs]</a><span class="k">def</span> <span class="nf">annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
@@ -138,13 +123,18 @@
 <span class="sd">    --------</span>
 <span class="sd">    Annotate the database named &#39;db.hdf5&#39;:</span>
 
+<span class="sd">    &gt;&gt;&gt; import magni</span>
 <span class="sd">    &gt;&gt;&gt; from magni.reproducibility.io import annotate_database</span>
 <span class="sd">    &gt;&gt;&gt; with magni.utils.multiprocessing.File(&#39;db.hdf5&#39;, mode=&#39;a&#39;) as h5file:</span>
 <span class="sd">    ...     annotate_database(h5file)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="n">annotations</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;conda_info&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_annotation</span><span class="o">.</span><span class="n">get_conda_info</span><span class="p">()),</span>
                    <span class="s">&#39;git_revision&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_annotation</span><span class="o">.</span><span class="n">get_git_revision</span><span class="p">()),</span>
@@ -166,21 +156,6 @@
                                <span class="s">&#39;(re)annotating the database.&#39;</span><span class="p">)</span>
 
 </div>
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `read_annotations` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    read_annotations : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;class&#39;</span><span class="p">:</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">})</span>
-
-
 <div class="viewcode-block" id="read_annotations"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.read_annotations">[docs]</a><span class="k">def</span> <span class="nf">read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read the annotations to an HDF5 database.</span>
@@ -211,13 +186,18 @@
 <span class="sd">    --------</span>
 <span class="sd">    Read annotations from the database named &#39;db.hdf5&#39;:</span>
 
+<span class="sd">    &gt;&gt;&gt; import magni</span>
 <span class="sd">    &gt;&gt;&gt; from magni.reproducibility.io import read_annotations</span>
 <span class="sd">    &gt;&gt;&gt; with magni.utils.multiprocessing.File(&#39;db.hdf5&#39;, mode=&#39;r&#39;) as h5file:</span>
 <span class="sd">    ...    annotations = read_annotations(h5file)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">h5_annotations</span> <span class="o">=</span> <span class="n">h5file</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;annotations&#39;</span><span class="p">)</span>
@@ -239,21 +219,6 @@
     <span class="k">return</span> <span class="n">annotations</span>
 
 </div>
-<span class="nd">@_decorate_validation</span>
-<span class="k">def</span> <span class="nf">_validate_remove_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the `remove_annotations` function.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    remove_annotations : The validated function.</span>
-<span class="sd">    magni.utils.validation.validate : Validation.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_validate</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;class&#39;</span><span class="p">:</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">})</span>
-
-
 <div class="viewcode-block" id="remove_annotations"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.remove_annotations">[docs]</a><span class="k">def</span> <span class="nf">remove_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove the annotations from an HDF5 database.</span>
@@ -267,13 +232,18 @@
 <span class="sd">    --------</span>
 <span class="sd">    Remove annotations from the database named &#39;db.hdf5&#39;:</span>
 
+<span class="sd">    &gt;&gt;&gt; import magni</span>
 <span class="sd">    &gt;&gt;&gt; from magni.reproducibility.io import remove_annotations</span>
 <span class="sd">    &gt;&gt;&gt; with magni.utils.multiprocessing.File(&#39;db.hdf5&#39;, mode=&#39;a&#39;) as h5file:</span>
 <span class="sd">    ...    remove_annotations(h5file)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_validate_remove_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">h5file</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="s">&#39;annotations&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -310,14 +280,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.measurements module &mdash; Magni 1.1.0 documentation</title>
+    <title>magni.imaging.measurements module &mdash; Magni 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.imaging.preprocessing module" href="magni.imaging.preprocessing.html" />
     <link rel="prev" title="magni.imaging.evaluation module" href="magni.imaging.evaluation.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.imaging.evaluation.html" title="magni.imaging.evaluation module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -181,7 +181,8 @@ coordinates specified and one for the transposed operation. These functions
 are then wrapped by a matrix emulator which is returned.</p>
 <p class="rubric">Examples</p>
 <p>Create a dummy 5 by 5 pixel image and an example sampling pattern:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">mat2vec</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">uniform_line_sample_image</span><span class="p">(</span>
 <span class="gp">... </span>             <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
@@ -245,10 +246,11 @@ default value is None which implies, that the plot is not saved).</li>
 <em class="xref py py-obj">pyplot.plot</em>.</p>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">plot_pattern</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">plot_pattern</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;image&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plot_pattern</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 </pre></div>
@@ -286,7 +288,8 @@ default value is None which implies, that the plot is not saved).</li>
 <a class="reference internal" href="magni.imaging.visualisation.html#magni.imaging.visualisation.imshow" title="magni.imaging.visualisation.imshow"><tt class="xref py py-obj docutils literal"><span class="pre">magni.imaging.visualisation.imshow</span></tt></a>.</p>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">plot_pixel_mask</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">plot_pixel_mask</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
@@ -355,17 +358,17 @@ always included in the scan.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">random_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
 <span class="go">array([[ 0.5       ,  0.5       ],</span>
-<span class="go">       [ 5.04545455,  0.5       ],</span>
-<span class="go">       [ 9.5       ,  0.59090909],</span>
-<span class="go">       [ 5.65110302,  1.28746666],</span>
-<span class="go">       [ 1.10564847,  1.28746666],</span>
-<span class="go">       [ 0.5       ,  5.22727273],</span>
-<span class="go">       [ 3.29121172,  6.98151556],</span>
-<span class="go">       [ 7.83666626,  6.98151556],</span>
-<span class="go">       [ 7.23606783,  7.59970419],</span>
-<span class="go">       [ 2.69061328,  7.59970419],</span>
-<span class="go">       [ 0.95454545,  9.5       ],</span>
-<span class="go">       [ 5.5       ,  9.5       ]])</span>
+<span class="go">       [ 4.59090909,  0.5       ],</span>
+<span class="go">       [ 8.68181818,  0.5       ],</span>
+<span class="go">       [ 7.01473938,  1.28746666],</span>
+<span class="go">       [ 2.92383029,  1.28746666],</span>
+<span class="go">       [ 0.5       ,  2.95454545],</span>
+<span class="go">       [ 0.5       ,  7.04545455],</span>
+<span class="go">       [ 4.03665944,  7.59970419],</span>
+<span class="go">       [ 8.12756853,  7.59970419],</span>
+<span class="go">       [ 8.68181818,  9.5       ],</span>
+<span class="go">       [ 4.59090909,  9.5       ],</span>
+<span class="go">       [ 0.5       ,  9.5       ]])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -433,18 +436,18 @@ of lines.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">random_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
 <span class="go">array([[ 0.        ,  0.        ],</span>
-<span class="go">       [ 0.0000007 ,  0.        ],</span>
-<span class="go">       [ 0.0000014 ,  0.        ],</span>
-<span class="go">       [ 0.000002  ,  0.0000001 ],</span>
-<span class="go">       [ 0.00000137,  0.00000017],</span>
-<span class="go">       [ 0.00000067,  0.00000017],</span>
-<span class="go">       [ 0.        ,  0.0000002 ],</span>
-<span class="go">       [ 0.        ,  0.0000009 ],</span>
-<span class="go">       [ 0.00000002,  0.00000158],</span>
-<span class="go">       [ 0.00000072,  0.00000158],</span>
-<span class="go">       [ 0.00000142,  0.00000158],</span>
-<span class="go">       [ 0.000002  ,  0.0000017 ],</span>
-<span class="go">       [ 0.0000016 ,  0.000002  ]])</span>
+<span class="go">       [ 0.00000067,  0.        ],</span>
+<span class="go">       [ 0.00000133,  0.        ],</span>
+<span class="go">       [ 0.000002  ,  0.        ],</span>
+<span class="go">       [ 0.000002  ,  0.00000067],</span>
+<span class="go">       [ 0.000002  ,  0.00000133],</span>
+<span class="go">       [ 0.00000158,  0.00000158],</span>
+<span class="go">       [ 0.00000091,  0.00000158],</span>
+<span class="go">       [ 0.00000024,  0.00000158],</span>
+<span class="go">       [ 0.        ,  0.000002  ],</span>
+<span class="go">       [ 0.00000067,  0.000002  ],</span>
+<span class="go">       [ 0.00000133,  0.000002  ],</span>
+<span class="go">       [ 0.000002  ,  0.000002  ]])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -743,17 +746,17 @@ always included in the scan.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">uniform_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
 <span class="go">array([[ 0.5       ,  0.5       ],</span>
-<span class="go">       [ 5.04545455,  0.5       ],</span>
-<span class="go">       [ 9.5       ,  0.59090909],</span>
-<span class="go">       [ 7.11363636,  2.75      ],</span>
-<span class="go">       [ 2.56818182,  2.75      ],</span>
-<span class="go">       [ 0.72727273,  5.        ],</span>
-<span class="go">       [ 5.27272727,  5.        ],</span>
-<span class="go">       [ 9.5       ,  5.31818182],</span>
-<span class="go">       [ 6.88636364,  7.25      ],</span>
-<span class="go">       [ 2.34090909,  7.25      ],</span>
-<span class="go">       [ 0.95454545,  9.5       ],</span>
-<span class="go">       [ 5.5       ,  9.5       ]])</span>
+<span class="go">       [ 4.59090909,  0.5       ],</span>
+<span class="go">       [ 8.68181818,  0.5       ],</span>
+<span class="go">       [ 9.22727273,  3.5       ],</span>
+<span class="go">       [ 5.13636364,  3.5       ],</span>
+<span class="go">       [ 1.04545455,  3.5       ],</span>
+<span class="go">       [ 1.04545455,  6.5       ],</span>
+<span class="go">       [ 5.13636364,  6.5       ],</span>
+<span class="go">       [ 9.22727273,  6.5       ],</span>
+<span class="go">       [ 8.68181818,  9.5       ],</span>
+<span class="go">       [ 4.59090909,  9.5       ],</span>
+<span class="go">       [ 0.5       ,  9.5       ]])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -810,18 +813,18 @@ always included in the scan.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">uniform_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
 <span class="go">array([[ 0.        ,  0.        ],</span>
-<span class="go">       [ 0.0000007 ,  0.        ],</span>
-<span class="go">       [ 0.0000014 ,  0.        ],</span>
-<span class="go">       [ 0.000002  ,  0.0000001 ],</span>
-<span class="go">       [ 0.00000187,  0.00000067],</span>
-<span class="go">       [ 0.00000117,  0.00000067],</span>
-<span class="go">       [ 0.00000047,  0.00000067],</span>
-<span class="go">       [ 0.        ,  0.0000009 ],</span>
-<span class="go">       [ 0.00000027,  0.00000133],</span>
-<span class="go">       [ 0.00000097,  0.00000133],</span>
-<span class="go">       [ 0.00000167,  0.00000133],</span>
-<span class="go">       [ 0.000002  ,  0.0000017 ],</span>
-<span class="go">       [ 0.0000016 ,  0.000002  ]])</span>
+<span class="go">       [ 0.00000067,  0.        ],</span>
+<span class="go">       [ 0.00000133,  0.        ],</span>
+<span class="go">       [ 0.000002  ,  0.        ],</span>
+<span class="go">       [ 0.000002  ,  0.00000067],</span>
+<span class="go">       [ 0.00000167,  0.000001  ],</span>
+<span class="go">       [ 0.000001  ,  0.000001  ],</span>
+<span class="go">       [ 0.00000033,  0.000001  ],</span>
+<span class="go">       [ 0.        ,  0.00000133],</span>
+<span class="go">       [ 0.        ,  0.000002  ],</span>
+<span class="go">       [ 0.00000067,  0.000002  ],</span>
+<span class="go">       [ 0.00000133,  0.000002  ],</span>
+<span class="go">       [ 0.000002  ,  0.000002  ]])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -848,9 +851,10 @@ The <em class="xref py py-obj">l</em> &lt;= <em class="xref py py-obj">k</em> un
 </table>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">unique_pixels</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">unique_pixels</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.3</span><span class="p">,</span> <span class="mf">4.3</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">(</span><span class="n">unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
 <span class="go">array([[1, 1],</span>
 <span class="go">       [3, 4]])</span>
 </pre></div>
@@ -940,15 +944,15 @@ The w and l coordinates arranged into a N_samples-by-2 array.</p>
         <li class="right" >
           <a href="magni.imaging.evaluation.html" title="magni.imaging.evaluation module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.1.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
           <li><a href="magni.html" >magni package</a> &raquo;</li>
           <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Magni developers.
-      Last updated on Nov 25, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Last updated on Mar 13, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

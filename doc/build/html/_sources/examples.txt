@@ -26,25 +26,16 @@ An overview of the available examples is given in the below table:
 **IPython Notebook Name**      **Example illustrates**                                   **Magni functionality used**
 ===========================    ======================================================    =========================================
 afm-io                         * Reading data from a mi-file.                            * `magni.afm.io.read_mi_file`
-                               * Handling the resulting buffers and images.              * `magni.afm.types.Buffer`
-                                                                                         * `magni.afm.types.Image`
+                               * Handling the resulting buffers and images.
 
-afm-reconstruction             * Reconstructing compressively sampled AFM images.        * `magni.afm.reconstruction`
-                               * Simulating reconstruction of compressively sampled      * `magni.imaging.evaluation`
-                                 images from raster scanned images.
-                               * Calculating MSE and PSNR of reconstructed image.
-
+cs-phase_transition-config     * Using Magni configuration modules including setting     * `magni.cs.phase_transition.config`
+                                 and getting configuration values.                       * `magni.utils.config`
+								 
 cs-phase_transition            * Estimating phase transitions using simulations.         * `magni.cs.phase_transition._util.determine`
                                * Plotting phase transitions.                             * `magni.cs.phase_transition.io`
                                * Plotting phase transition probability colormaps.        * `magni.cs.phase_transition.plotting`
 
-cs-phase_transition-config     * Using Magni configuration modules including setting     * `magni.cs.phase_transition.config`
-                                 and getting configuration values.                       * `magni.utils.config`
-
 cs-reconstruction              * Reconstruction of compressively sampled 1D signals.     * `magni.cs.reconstruction`
-
-magni                          * The typical work flow in compressively sampling and      * `magni.afm`
-                                 reconstructing AFM images using Magni.
 
 imaging-dictionaries           * Handling compressed sensing dictionaries using          * `magni.imaging.dictionaries`
                                  Magni.
@@ -60,11 +51,16 @@ imaging-measurements           * Handling sampling/measurement patterns using Ma
 imaging-preprocessing          * Pre-processing an image prior to sampling               * `magni.imaging.preprocessing`
                                * De-tilting AFM images.
 
+magni                          * The typical work flow in compressively sampling and     * `magni.afm`
+                                 reconstructing AFM images using Magni.                  * `magni.imaging`
+								 
 reporducibility-io             * Annotating an HDF5 database to help in improving        * `magni.reproducibility.io`
                                  the reproducibility of the results it contains.
 
 util-matrices                  * Using the special Magni Matrix and MatrixCollection     * `magni.utils.matrices.Matrix`
                                  classes.                                                * `magni.utils.matrices.MatrixCollection`
+
+utils-multiprocessing          * Doing multiprocessing using Magni                       * `magni.utils.multiprocessing`
 
 utils-plotting                 * Using the predefined plotting options in Magni to       * `magni.utils.plotting`
                                  create clearer and more visually pleasing plots.

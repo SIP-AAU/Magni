@@ -12,6 +12,6 @@ Submodules
 .. toctree::
     :maxdepth: 1
 
+    magni.utils.multiprocessing._config
     magni.utils.multiprocessing._processing
     magni.utils.multiprocessing._util
-    magni.utils.multiprocessing.config

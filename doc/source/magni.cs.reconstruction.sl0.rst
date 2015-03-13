@@ -12,7 +12,7 @@ Submodules
 .. toctree::
     :maxdepth: 1
 
+    magni.cs.reconstruction.sl0._config
     magni.cs.reconstruction.sl0._modified
     magni.cs.reconstruction.sl0._original
     magni.cs.reconstruction.sl0._util
-    magni.cs.reconstruction.sl0.config

@@ -15,3 +15,10 @@ Subpackages
     magni.cs.reconstruction.iht
     magni.cs.reconstruction.sl0
 
+Submodules
+----------
+
+.. toctree::
+    :maxdepth: 1
+
+    magni.cs.reconstruction._config

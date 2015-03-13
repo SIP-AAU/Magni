@@ -18,7 +18,7 @@ Magni
    Signal and Information Processing
 
 :Version:
-    1.1.0
+    1.2.0
 
 
 Introduction
@@ -76,27 +76,11 @@ folder in your PYTHONPATH.
 
 Magni has been designed for use with Python 2 >= 2.7 or Python 3 >= 3.3.
 
-Required third party dependencies for Magni are:
-
-- PyTables (Tested on version >= 3.1)
-- Numpy (Tested on version >= 1.8)
-- Scipy (Tested on version >= 0.13)
-- Matplotlib (Tested on version >= 1.3)
-
-Optional third party dependencies for Magni are:
-
-- IPython (Tested on version >= 1.1) (For running the IPython notebook
-  examples)
-- Math Kernel Library (MKL) (Tested on version >= 11.1) (For accelerated vector
-  operations)
-- Sphinx (Tested on version >= 1.2) (For building the documentation from
-  source)
-- Napoleon (Tested on version >= 0.2.6) (For building the documentation from
-  source)
-
-You may use the 'dep_check.py' script found in the Magni folder under
-'/magni/tests/' to check for missing dependencies for Magni. Simply run the
-script to print a dependency report.
+The required thid party dependencies and optional third party dependencies for
+Magni are listed in the compiled documentation which can be found in the Magni
+folder under '/doc/build/html/index.html'. You may use the 'dep_check.py'
+script found in the Magni folder under '/magni/tests/' to check for missing
+dependencies for Magni. Simply run the script to print a dependency report.
 
 
 Documentation
@@ -113,6 +97,25 @@ documentation is also available as a PDF file in the Magni folder under
 the documentation is provided through PyPI and binstar.
 
 
+Tests
+-----
+
+A test suite consisting of unittests, doctests, IPython notebook examples, and
+several style checks is included in Magni. The tests are organised in python
+modules found in the Magni folder under '/magni/tests/'. These may be invoked
+using any test runner that supports the unittest.TestCase classes. The entire
+test suite may be run by executing the convenience script 'run_tests.py'.
+
+
+Examples
+--------
+
+A large number of examples showing the capabilities of Magni are included. Some
+of these examples are in the form of doctests whereas the more elaborated
+examples are in the form of IPython notebook examples which can be found in the
+Magni folder under '/examples/'.
+
+
 Citing Magni
 ------------
 
@@ -123,17 +126,5 @@ Magni: A Python Package for Compressive Sampling and Reconstruction of Atomic
 Force Microscopy Images. Journal of Open Research Software 2(1):e29,
 DOI: http://dx.doi.org/10.5334/jors.bk
 
-Please consider citing this paper if you publish any work in which you have used Magni.
-
-
-
-Tests
------
-
-The tests provided with Magni are in the form of doctests. These can be run by
-executing the following commands from the '/doc/' folder:
-
-.. code:: bash
-
-  $ make docapi
-  $ make doctest
+Please consider citing this paper if you publish any work in which you have
+used Magni.

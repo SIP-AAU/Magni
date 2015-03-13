@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -19,23 +19,7 @@ import numpy as np
 
 from magni.utils.multiprocessing import File as _File
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
-
-
-@_decorate_validation
-def _validate_load_phase_transition(path, label):
-    """
-    Validate the `load_phase_transition` function.
-
-    See Also
-    --------
-    load_phase_transition : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate(path, 'path', {'type': str})
-    _validate(label, 'label', {'type': str})
+from magni.utils.validation import validate_generic as _generic
 
 
 def load_phase_transition(path, label='default'):
@@ -71,7 +55,12 @@ def load_phase_transition(path, label='default'):
 
     """
 
-    _validate_load_phase_transition(path, label)
+    @_decorate_validation
+    def validate_input():
+        _generic('path', 'string')
+        _generic('label', 'string')
+
+    validate_input()
 
     with _File(path, 'r') as f:
         rho = f.get_node('/' + label + '/phase_transition')[:]

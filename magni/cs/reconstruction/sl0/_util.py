@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -11,27 +11,13 @@ subpackage.
 
 from __future__ import division
 
-from magni.cs.reconstruction.sl0 import config as _config
+import numpy as np
+
+from magni.cs.reconstruction.sl0 import config as _conf
 from magni.cs.reconstruction.sl0 import _modified
 from magni.cs.reconstruction.sl0 import _original
 from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate_ndarray as _validate_ndarray
-
-
-@_decorate_validation
-def _validate_run(y, A):
-    """
-    Validate the `run` function.
-
-    See Also
-    --------
-    run : The validated function.
-    magni.utils.validation.validate : Validation.
-
-    """
-
-    _validate_ndarray(A, 'A', {'dim': 2})
-    _validate_ndarray(y, 'y', {'shape': (A.shape[0], 1)})
+from magni.utils.validation import validate_numeric as _numeric
 
 
 def run(y, A):
@@ -40,7 +26,7 @@ def run(y, A):
 
     The available SL0 reconstruction algorithms are the original SL0 and the
     modified SL0. Which of the available SL0 reconstruction algorithms is used,
-    is specified as a configuration option.
+    is specified as configuration options.
 
     Parameters
     ----------
@@ -70,13 +56,26 @@ def run(y, A):
 
     """
 
-    _validate_run(y, A)
+    @_decorate_validation
+    def validate_input():
+        _numeric('y', ('integer', 'floating', 'complex'), shape=(-1, 1))
+        _numeric('A', ('integer', 'floating', 'complex'),
+                 shape=(y.shape[0], -1))
 
-    algorithm = _config.get('algorithm')
+    validate_input()
 
-    if algorithm == 'std':
+    if not isinstance(A, np.ndarray):
+        A = A.A
+
+    if _conf['L'] == _conf['mu'] == _conf['sigma_start'] == 'fixed':
         x = _original.run(y, A)
-    elif algorithm == 'mod':
+    elif (_conf['L'] == 'geometric' and _conf['mu'] == 'step' and
+          _conf['sigma_start'] == 'reciprocal'):
         x = _modified.run(y, A)
+    else:
+        raise NotImplementedError(
+            "Currently, only the following configuration combinations of (L, "
+            "mu, sigma_start) are implemented: ('fixed', 'fixed', 'fixed') "
+            "and ('geometric', 'step', 'reciprocal').")
 
     return x

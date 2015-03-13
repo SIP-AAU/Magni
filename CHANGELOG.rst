@@ -1,4 +1,79 @@
 ==================
+1.2.0 (2015-03-13)
+==================
+
+Version 1.2.0 is primarily a rewrite of the validation and configuration parts
+of the package combined with the addition of automated testing capabilities.
+Furthermore, this version includes minor improvements and bug fixes.
+
+
+Additions
+---------
+
+- Added automated testing capabilities.
+
+  * tests/run_tests.py runs all tests in the directory.
+  * tests/wrap_doctests.py and tests/ipynb_examples.py check that all doctests
+    and ipython notebook examples of the package produce the expected results.
+  * tests/style_checks.py checks the code of the importable package for various
+    errors using pyflakes, for PEP8 conformance, and for acceptable cyclomatic
+    complexity using radon.
+  * tests/build_docs.py checks that the documentation of the package can be
+	automatically generated using sphinx.
+  * tests/config.py, tests/imaging_evaluation.py, and tests/reproducibility.py
+	test specific parts of the package.
+
+
+Improvements
+------------
+
+- Rewritten validation functionality.
+
+  * magni.utils.validation.validate_generic has been added for validation of
+    generic (generally non-numeric) variables through an interface which is
+    less error-prone and has a higher abstraction level than validate.
+  * magni.utils.validation.validate_numeric has been added for validation of
+    numeric variables through an interface which is less error-prone and has a
+    higher abstraction level than validate and validate_ndarray.
+  * magni.utils.validation.validate_levels has been added for validation of
+	"nested" variables (sequences, sets, mappings, etc.) through an interface
+	which is less error-prone and has a higher abstraction level than validate.
+
+- Updated every validation call in the package to use the new validation
+  functionality resulting in improved validation.
+- Rewritten magni.utils.config.Configger to provide a subset of the interface
+  of a dict in addition to the get and set methods.
+- Updated every config module in the package to use the new Configger
+  functionality resulting in increased readability.
+- Changed some of the configuration parameter names which may cause the new
+  version of the package to be incompatible with code written for a previous
+  version (sorry, but this should not happen again).
+
+  * In cs.phase_transition.config: renamed 'n' to 'problem_size'.
+  * In cs.reconstruction.iht.config: renamed 'kappa' to 'kappa_fixed', and
+    'threshold_rho' to 'threshold_fixed'.
+  * In cs.reconstruction.sl0.config: replaced 'algorithm' by 'sigma_start',
+    'L', and 'mu'; replaced 'L' by 'L_geometric_start' and 'L_fixed'; and
+    renamed 'L_update' to 'L_geometric_ratio', 'mu' to 'mu_fixed', 'mu_end' to
+    'mu_step_end', 'mu_start' to 'mu_step_start', 'sigma_min' to
+    'sigma_stop_fixed', and 'sigma_update' to 'sigma_geometric'.
+
+- Changed doctests to import required modules to allow nosetests and similar
+  software to run the doctests of the package.
+- Added a configuration option in magni.utils.multiprocessing.config,
+  'silence_exceptions', to silence exceptions when using
+  magni.utils.multiprocessing.process.
+- Made minor improvements to selected parts of the package.
+
+
+Bug Fixes
+---------
+
+- Fixed a number of minor bugs.
+
+
+
+==================
 1.1.0 (2014-11-25)
 ==================
 

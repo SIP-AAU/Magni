@@ -2,12 +2,12 @@
 
 package:
   name: magni
-  version: '1.1.0'
+  version: '1.2.0'
 
 source:
-  fn: magni-1.1.0.tar.gz
-  url: https://pypi.python.org/packages/source/m/magni/magni-1.1.0.tar.gz
-  md5: 9ebe4593bde72632741635a5c92b77fd
+  fn: magni-1.2.0.tar.gz
+  url: https://pypi.python.org/packages/source/m/magni/magni-1.2.0.tar.gz
+  md5: ???
 
   patches:
     - setup_py_conda.patch
@@ -27,6 +27,9 @@ requirements:
     - matplotlib
 
 test:
+  requires:
+    - nose
+
   imports:
     - magni
 
