@@ -7,7 +7,7 @@ package:
 source:
   fn: magni-1.2.0.tar.gz
   url: https://pypi.python.org/packages/source/m/magni/magni-1.2.0.tar.gz
-  md5: ???
+  md5: 4c003efb1c0a1fd54ae7b97cb629c854
 
   patches:
     - setup_py_conda.patch
