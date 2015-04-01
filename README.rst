@@ -20,6 +20,9 @@ Magni
 :Version:
     1.2.0
 
+Test status:
+
+.. image:: https://travis-ci.org/SIP-AAU/Magni.svg?branch=master
 
 Introduction
 ------------
@@ -106,6 +109,9 @@ modules found in the Magni folder under '/magni/tests/'. These may be invoked
 using any test runner that supports the unittest.TestCase classes. The entire
 test suite may be run by executing the convenience script 'run_tests.py'.
 
+The code is this repository is continuously tested by `Travis CI <https://travis-ci.org/SIP-AAU/Magni>`_. Current test status:
+
+.. image:: https://travis-ci.org/SIP-AAU/Magni.svg?branch=master
 
 Examples
 --------
