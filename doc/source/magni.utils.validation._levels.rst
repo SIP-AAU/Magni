@@ -3,5 +3,6 @@ magni.utils.validation._levels module
 
 .. automodule:: magni.utils.validation._levels
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

@@ -55,8 +55,8 @@ configger = _Configger(
          _generic(None, 'explicit collection'),
          _numeric(None, 'floating', range_='[0;1]'))),
      'monte_carlo': _numeric(None, 'integer', range_='[1;inf)'),
+     'problem_size': _numeric(None, 'integer', range_='[1;inf)'),
      'rho': _levels(None, (
          _generic(None, 'explicit collection'),
          _numeric(None, 'floating', range_='[0;1]'))),
-     'problem_size': _numeric(None, 'integer', range_='[1;inf)'),
      'seed': _numeric(None, 'integer', range_='[0;inf)', ignore_none=True)})

@@ -3,5 +3,6 @@ magni.reproducibility.io module
 
 .. automodule:: magni.reproducibility.io
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

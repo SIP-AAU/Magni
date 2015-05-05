@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition._backup module &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.cs.phase_transition._backup module &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" />
     <link rel="next" title="magni.cs.phase_transition._config module" href="magni.cs.phase_transition._config.html" />
     <link rel="prev" title="magni.cs.phase_transition._analysis module" href="magni.cs.phase_transition._analysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +43,17 @@
         <li class="right" >
           <a href="magni.cs.phase_transition._analysis.html" title="magni.cs.phase_transition._analysis module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
-          <li><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.cs.phase_transition._backup">
 <span id="magni-cs-phase-transition-backup-module"></span><h1>magni.cs.phase_transition._backup module<a class="headerlink" href="#module-magni.cs.phase_transition._backup" title="Permalink to this headline">¶</a></h1>
@@ -75,7 +75,7 @@ the overhead low.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><tt class="xref py py-mod docutils literal"><span class="pre">magni.cs.phase_transition.config</span></tt></dt>
+<dt><code class="xref py py-mod docutils literal"><span class="pre">magni.cs.phase_transition.config</span></code></dt>
 <dd>Configuration options.</dd>
 </dl>
 </div>
@@ -86,7 +86,7 @@ this array, the data is guaranteed to have been stored, when the array is
 modified.</p>
 <dl class="function">
 <dt id="magni.cs.phase_transition._backup.create">
-<tt class="descclassname">magni.cs.phase_transition._backup.</tt><tt class="descname">create</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/_backup.html#create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._backup.create" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.cs.phase_transition._backup.</code><code class="descname">create</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_backup.html#create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._backup.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the HDF5 backup database with the required arrays.</p>
 <p>The required arrays are an array for the simulation results, an array for
 the simulation timings, and an array for tracking the status.</p>
@@ -102,7 +102,7 @@ The path of the HDF5 backup database.</td>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><tt class="xref py py-func docutils literal"><span class="pre">magni.cs.phase_transition.config()</span></tt></dt>
+<dt><code class="xref py py-func docutils literal"><span class="pre">magni.cs.phase_transition.config()</span></code></dt>
 <dd>Configuration options.</dd>
 </dl>
 </div>
@@ -110,7 +110,7 @@ The path of the HDF5 backup database.</td>
 
 <dl class="function">
 <dt id="magni.cs.phase_transition._backup.get">
-<tt class="descclassname">magni.cs.phase_transition._backup.</tt><tt class="descname">get</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/_backup.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._backup.get" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.cs.phase_transition._backup.</code><code class="descname">get</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_backup.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._backup.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return which of the results have been stored.</p>
 <p>The returned value is a copy of the boolean status array indicating which
 of the results have been stored.</p>
@@ -130,7 +130,7 @@ The boolean status array.</td>
 
 <dl class="function">
 <dt id="magni.cs.phase_transition._backup.set">
-<tt class="descclassname">magni.cs.phase_transition._backup.</tt><tt class="descname">set</tt><big>(</big><em>path</em>, <em>ij_tuple</em>, <em>stat_time</em>, <em>stat_dist</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/_backup.html#set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._backup.set" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.cs.phase_transition._backup.</code><code class="descname">set</code><span class="sig-paren">(</span><em>path</em>, <em>ij_tuple</em>, <em>stat_time</em>, <em>stat_dist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_backup.html#set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._backup.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store the simulation data of a specified point.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -163,7 +163,7 @@ The simulation timings of the specified point.</li>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -179,7 +179,7 @@ The simulation timings of the specified point.</li>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.cs.phase_transition._config.html"
                         title="next chapter">magni.cs.phase_transition._config module</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -196,7 +196,7 @@ The simulation timings of the specified point.</li>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -208,16 +208,16 @@ The simulation timings of the specified point.</li>
         <li class="right" >
           <a href="magni.cs.phase_transition._analysis.html" title="magni.cs.phase_transition._analysis module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
-          <li><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

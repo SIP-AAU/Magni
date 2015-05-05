@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.multiprocessing._processing module &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.utils.multiprocessing._processing module &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.utils.multiprocessing package" href="magni.utils.multiprocessing.html" />
     <link rel="next" title="magni.utils.multiprocessing._util module" href="magni.utils.multiprocessing._util.html" />
     <link rel="prev" title="magni.utils.multiprocessing._config module" href="magni.utils.multiprocessing._config.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +43,17 @@
         <li class="right" >
           <a href="magni.utils.multiprocessing._config.html" title="magni.utils.multiprocessing._config module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.utils.html" >magni.utils package</a> &raquo;</li>
-          <li><a href="magni.utils.multiprocessing.html" accesskey="U">magni.utils.multiprocessing package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="magni.utils.multiprocessing.html" accesskey="U">magni.utils.multiprocessing package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.utils.multiprocessing._processing">
 <span id="magni-utils-multiprocessing-processing-module"></span><h1>magni.utils.multiprocessing._processing module<a class="headerlink" href="#module-magni.utils.multiprocessing._processing" title="Permalink to this headline">¶</a></h1>
@@ -67,13 +67,13 @@
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils.multiprocessing.config</span></tt></dt>
+<dt><code class="xref py py-mod docutils literal"><span class="pre">magni.utils.multiprocessing.config</span></code></dt>
 <dd>Configuration options.</dd>
 </dl>
 </div>
 <dl class="function">
 <dt id="magni.utils.multiprocessing._processing.process">
-<tt class="descclassname">magni.utils.multiprocessing._processing.</tt><tt class="descname">process</tt><big>(</big><em>func</em>, <em>namespace={}</em>, <em>args_list=None</em>, <em>kwargs_list=None</em>, <em>maxtasks=None</em><big>)</big><a class="reference internal" href="_modules/magni/utils/multiprocessing/_processing.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.multiprocessing._processing.process" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.utils.multiprocessing._processing.</code><code class="descname">process</code><span class="sig-paren">(</span><em>func</em>, <em>namespace={}</em>, <em>args_list=None</em>, <em>kwargs_list=None</em>, <em>maxtasks=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/multiprocessing/_processing.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.multiprocessing._processing.process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map multiple function calls to multiple processors.</p>
 <p>For each entry in args_list and kwargs_list, a task is formed which is used
 for a function call of the type <em class="xref py py-obj">func(*args, **kwargs)</em>.</p>
@@ -110,7 +110,7 @@ A list with the results from the function calls.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><tt class="xref py py-func docutils literal"><span class="pre">magni.utils.multiprocessing.config()</span></tt></dt>
+<dt><code class="xref py py-func docutils literal"><span class="pre">magni.utils.multiprocessing.config()</span></code></dt>
 <dd>Configuration options.</dd>
 </dl>
 </div>
@@ -144,7 +144,7 @@ Otherwise, the map functionality of a multiprocessing worker pool is used.</p>
 
 <dl class="function">
 <dt id="magni.utils.multiprocessing._processing._process_init">
-<tt class="descclassname">magni.utils.multiprocessing._processing.</tt><tt class="descname">_process_init</tt><big>(</big><em>func</em>, <em>namespace</em><big>)</big><a class="reference internal" href="_modules/magni/utils/multiprocessing/_processing.html#_process_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.multiprocessing._processing._process_init" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.utils.multiprocessing._processing.</code><code class="descname">_process_init</code><span class="sig-paren">(</span><em>func</em>, <em>namespace</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/multiprocessing/_processing.html#_process_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.multiprocessing._processing._process_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialise the process by making global variables available to it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -164,7 +164,7 @@ A dict whose keys and values should be globally available in func.</li>
 
 <dl class="function">
 <dt id="magni.utils.multiprocessing._processing._process_worker">
-<tt class="descclassname">magni.utils.multiprocessing._processing.</tt><tt class="descname">_process_worker</tt><big>(</big><em>fak_tuple</em><big>)</big><a class="reference internal" href="_modules/magni/utils/multiprocessing/_processing.html#_process_worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.multiprocessing._processing._process_worker" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.utils.multiprocessing._processing.</code><code class="descname">_process_worker</code><span class="sig-paren">(</span><em>fak_tuple</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/multiprocessing/_processing.html#_process_worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.multiprocessing._processing._process_worker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpack and map a task to the function.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -201,7 +201,7 @@ checked for every call.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -217,7 +217,7 @@ checked for every call.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.utils.multiprocessing._util.html"
                         title="next chapter">magni.utils.multiprocessing._util module</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -234,7 +234,7 @@ checked for every call.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -246,16 +246,16 @@ checked for every call.</p>
         <li class="right" >
           <a href="magni.utils.multiprocessing._config.html" title="magni.utils.multiprocessing._config module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.utils.html" >magni.utils package</a> &raquo;</li>
-          <li><a href="magni.utils.multiprocessing.html" >magni.utils.multiprocessing package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="magni.utils.multiprocessing.html" >magni.utils.multiprocessing package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

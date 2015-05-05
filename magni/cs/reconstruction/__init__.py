@@ -12,12 +12,16 @@ interface of the given family of reconstruction algorithms.
 
 Routine listings
 ----------------
+it
+    Subpackage providing implementations of Iterative Thresholding (IT).
 iht
-    Subpackage providing an implementation of Iterative Hard Thresholding (IHT)
+    Subpackage providing implementations of Iterative Hard Thresholding (IHT).
+    (Deprecated)
 sl0
     Subpackage providing implementations of Smoothed l0 Norm (SL0).
 
 """
 
+from magni.cs.reconstruction import it
 from magni.cs.reconstruction import iht
 from magni.cs.reconstruction import sl0

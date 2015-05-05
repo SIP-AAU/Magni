@@ -3,7 +3,8 @@ magni.cs.reconstruction.iht package
 
 .. automodule:: magni.cs.reconstruction.iht
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
 
 Submodules
@@ -13,4 +14,3 @@ Submodules
     :maxdepth: 1
 
     magni.cs.reconstruction.iht._config
-    magni.cs.reconstruction.iht._original

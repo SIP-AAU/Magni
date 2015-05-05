@@ -16,6 +16,10 @@ generate_matrix(m, n)
 generate_vector(n, k)
     Generate a vector belonging to a specific problem suite.
 
+See also
+--------
+magni.cs.phase_transition._config: Configuration options.
+
 Notes
 -----
 The matrices and vectors generated in this module use the numpy.random
@@ -113,12 +117,12 @@ def generate_vector(n, k):
 
     """
 
-    x = np.zeros((n, 1))
+    alpha = np.zeros((n, 1))
     coefficients = _conf['coefficients']
 
     if coefficients == 'rademacher':
-        x[:k, 0] = np.random.randint(0, 2, k) * 2 - 1
+        alpha[:k, 0] = np.random.randint(0, 2, k) * 2 - 1
     elif coefficients == 'gaussian':
-        x[:k, 0] = np.random.randn(k)
+        alpha[:k, 0] = np.random.randn(k)
 
-    return x
+    return alpha

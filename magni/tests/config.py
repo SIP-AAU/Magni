@@ -37,6 +37,10 @@ class UpdateTest(unittest.TestCase):
         config = magni.cs.reconstruction.iht.config
         config.update(dict(config.items()))
 
+    def test_cs_reconstruction_it_config(self):
+        config = magni.cs.reconstruction.it.config
+        config.update(dict(config.items()))
+
     def test_cs_reconstruction_sl0_config(self):
         config = magni.cs.reconstruction.sl0.config
         config.update(dict(config.items()))

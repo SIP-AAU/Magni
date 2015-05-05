@@ -15,9 +15,9 @@ Notes
 This module instantiates the `Configger` class provided by
 `magni.utils.config`. The configuration options are the following:
 
-algorithm : {'iht', 'sl0'}
-    The compressed sensing reconstruction algorithm to use (the default is
-    'iht').
+algorithm : {'it', 'iht', 'sl0'}
+    The compressed sensing reconstruction algorithm subpackage to use (the
+    default is 'it').
 
 """
 
@@ -28,5 +28,5 @@ from magni.utils.validation import validate_generic as _generic
 
 
 configger = _Configger(
-    {'algorithm': 'iht'},
-    {'algorithm': _generic(None, 'string', value_in=('iht', 'sl0'))})
+    {'algorithm': 'it'},
+    {'algorithm': _generic(None, 'string', value_in=('iht', 'it', 'sl0'))})

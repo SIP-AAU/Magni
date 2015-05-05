@@ -1,31 +1,56 @@
-language: c
-# Python set-up disabled to trick Travis CI out of using its Python
-# virtualenv approach. We set everything up through miniconda due to
-# trouble setting pytables and numexpr up with Travis' native pip.
+# The Python settings below do not actually use Travis' Python set-up
+# but does use the corresponding environment variable to configure
+# Anaconda instead
+language: python
 
-#language: python
-
-#python:
-#  - "2.7"
-#  - "3.3"
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
 
 env:
-  - PYTHONPATH=$TRAVIS_BUILD_DIR/
+  global:
+    - PYTHONPATH=$TRAVIS_BUILD_DIR
+  matrix:
+    - MAGNI_CONDA=minimum
+    - MAGNI_CONDA=newest
 
 before_install:
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b
-  - export PATH=/home/travis/miniconda/bin:$PATH
+  - deactivate # Serves to turn off Travis' virtualenv as it seems to disturb IPython during testing
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH=$HOME/miniconda/bin:$PATH
   - conda update --yes conda
   # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
-  - sudo rm -rf /dev/shm
-  - sudo ln -s /run/shm /dev/shm
+#  - sudo rm -rf /dev/shm
+#  - sudo ln -s /run/shm /dev/shm
 
 # Install packages
 install:
-  - conda create -n travis_test --yes python=2.7 atlas numpy=1.8 "numexpr>=2.0.1" scipy=0.14 matplotlib=1.3 pytables=3.1 coverage=3.7 ipython=2.1 pyzmq nose=1.3 pep8=1.5 pillow=2.1.0 pyflakes=0.8 sphinx=1.2
-  - conda install -n travis_test --yes -c https://conda.binstar.org/chroxvi sphinxcontrib-napoleon=0.2.8 radon=1.2
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      if [[ "$MAGNI_CONDA" == "minimum" ]]; then
+        conda create -n travis_test --yes python=2.7 atlas numpy=1.8 "numexpr>=2.0.1" scipy=0.14 matplotlib=1.3 pytables=3.1 coverage=3.7 ipython=2.1 pyzmq nose=1.3 pep8=1.5 pillow=2.1.0 pyflakes=0.8 sphinx=1.3.1;
+      else
+        conda create -n travis_test --yes python=2.7 atlas numpy numexpr scipy matplotlib pytables coverage ipython jsonschema pyzmq nose pep8 pillow pyflakes sphinx;
+      fi;
+    elif [[ "$TRAVIS_PYTHON_VERSION" == "3.3" ]]; then
+      if [[ "$MAGNI_CONDA" == "minimum" ]]; then
+        conda create -n travis_test --yes python=3.3 atlas numpy=1.8 "numexpr>=2.0.1" scipy=0.14 matplotlib=1.3 pytables=3.1 coverage=3.7 ipython=2.1 pyzmq nose=1.3 pep8=1.5 pillow=2.1.0 pyflakes=0.8 sphinx=1.3.1;
+      else
+        conda create -n travis_test --yes python=3.3 atlas numpy numexpr scipy matplotlib pytables coverage ipython jsonschema pyzmq nose pep8 pillow pyflakes sphinx;
+      fi;
+    elif [[ "$TRAVIS_PYTHON_VERSION" == "3.4" ]]; then
+      if [[ "$MAGNI_CONDA" == "minimum" ]]; then
+        conda create -n travis_test --yes python=3.4 atlas numpy=1.8 "numexpr>=2.0.1" scipy=0.14 matplotlib=1.3 pytables=3.1 coverage=3.7 ipython=2.1 pyzmq nose=1.3 pep8=1.5 pillow=2.3.1 pyflakes=0.8 sphinx=1.3.1;
+      else
+        conda create -n travis_test --yes python=3.4 atlas numpy numexpr scipy matplotlib pytables coverage ipython jsonschema pyzmq nose pep8 pillow pyflakes sphinx;
+      fi;
+    fi
+  - conda install -n travis_test --yes -c https://conda.binstar.org/chroxvi radon=1.2
 
 before_script:
   - source activate travis_test

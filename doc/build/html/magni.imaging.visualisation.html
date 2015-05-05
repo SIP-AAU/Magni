@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation module &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.imaging.visualisation module &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="prev" title="magni.imaging.preprocessing module" href="magni.imaging.preprocessing.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,38 +43,46 @@
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.imaging.visualisation">
 <span id="magni-imaging-visualisation-module"></span><h1>magni.imaging.visualisation module<a class="headerlink" href="#module-magni.imaging.visualisation" title="Permalink to this headline">¶</a></h1>
 <p>Module providing functionality for visualising images.</p>
-<p>The module provides functionality for adjusting the intensity of an image.
-Furthermore, it provides a wrapper of the <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></tt> function
-that may exploit the provided functions for adjusting the image intensity.</p>
+<p>The module provides functionality for adjusting the intensity of an image. It
+provides a wrapper of the <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></code> function that may exploit
+the provided functions for adjusting the image intensity. Also it include a
+function may be used to display a set of related images using a common
+colormapping.</p>
 <div class="section" id="routine-listings">
 <h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
 <dt>imshow(X, ax=None, intensity_func=None, intensity_args=(), **kwargs)</dt>
 <dd>Function that may be used to display an image.</dd>
+<dt>imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,</dt>
+<dd>x_ticklabels=None, y_ticklabels=None, cbar_label=None,
+normalise=True, **kwargs)
+Function that may be used to display a set of related images.</dd>
+<dt>mask_img_from_coords(img, coords)</dt>
+<dd>Function for masking certain parts of an image based on coordinates.</dd>
 <dt>shift_mean(x_mod, x_org)</dt>
 <dd>Function for shifting mean intensity of an image based on another image.</dd>
-<dt>stretch_image(img, max_val)</dt>
+<dt>stretch_image(img, max_val, min_val=0)</dt>
 <dd>Function for stretching the intensity of an image.</dd>
 </dl>
 <dl class="function">
 <dt id="magni.imaging.visualisation.imshow">
-<tt class="descclassname">magni.imaging.visualisation.</tt><tt class="descname">imshow</tt><big>(</big><em>X</em>, <em>ax=None</em>, <em>intensity_func=None</em>, <em>intensity_args=()</em>, <em>show_axis='frame'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/visualisation.html#imshow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.imshow" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.imaging.visualisation.</code><code class="descname">imshow</code><span class="sig-paren">(</span><em>X</em>, <em>ax=None</em>, <em>intensity_func=None</em>, <em>intensity_args=()</em>, <em>show_axis='frame'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#imshow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.imshow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display an image.</p>
-<p>Wrap <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></tt> to display a possibly intensity manipulated
+<p>Wrap <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></code> to display a possibly intensity manipulated
 version of the image <em class="xref py py-obj">X</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -96,7 +104,7 @@ The arguments that are passed to the <em class="xref py py-obj">intensity_func</
 <li><strong>show_axis</strong> (<em>{&#8216;none&#8217;, &#8216;top&#8217;, &#8216;inherit&#8217;, &#8216;frame&#8217;}</em>) &#8211;
 How the x- and y-axis are display. If &#8216;none&#8217;, no axis are displayed. If
 &#8216;top&#8217;, the x-axis is displayed at the top of the image. If &#8216;inherit&#8217;,
-the axis display is inherited from <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></tt>. If
+the axis display is inherited from <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></code>. If
 &#8216;frame&#8217; only the frame is shown and not the ticks.</li>
 </ul>
 </td>
@@ -110,7 +118,7 @@ The AxesImage returned by matplotlibs imshow.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.imshow()</span></tt></dt>
+<dt><code class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.imshow()</span></code></dt>
 <dd>Matplotlib&#8217;s imshow function.</dd>
 </dl>
 </div>
@@ -126,8 +134,132 @@ The AxesImage returned by matplotlibs imshow.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="magni.imaging.visualisation.imsubplot">
+<code class="descclassname">magni.imaging.visualisation.</code><code class="descname">imsubplot</code><span class="sig-paren">(</span><em>imgs</em>, <em>rows</em>, <em>titles=None</em>, <em>x_labels=None</em>, <em>y_labels=None</em>, <em>x_ticklabels=None</em>, <em>y_ticklabels=None</em>, <em>cbar_label=None</em>, <em>normalise=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#imsubplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.imsubplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a set of related images as subplots in a figure.</p>
+<p>The images <em class="xref py py-obj">imgs</em> are shown in a figure with a subplot layout based on the
+number of <em class="xref py py-obj">rows</em>. The <em class="xref py py-obj">titles</em>, <em class="xref py py-obj">x_labels</em>, and <em class="xref py py-obj">y_labels</em> are shown in the
+subplots. If <em class="xref py py-obj">normalise</em> is True, all the images will share the same
+normalised colourbar/colormapping i.e. a particular colour will correspond
+to the same value across all images.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>imgs</strong> (<em>list or tuple</em>) &#8211;
+The images (as ndarrays) that is to be displayed.</li>
+<li><strong>rows</strong> (<em>int</em>) &#8211;
+The number of rows to use in the subplot layout.</li>
+<li><strong>titles</strong> (<em>list or tuple</em>) &#8211;
+The titles (as strings) to use for each of the subplots (the default is
+None, which implies that no titles are displayed).</li>
+<li><strong>x_labels</strong> (<em>list or tuple</em>) &#8211;
+The x_labels (as strings) to use for each of the subplots (the default
+is None, which implies that no x_labels are displayed).</li>
+<li><strong>y_labels</strong> (<em>list or tuple</em>) &#8211;
+The y_labels (as strings) to use for each of the subplots (the default
+is None, which implies that no y_labels are displayed).</li>
+<li><strong>x_ticklabels</strong> (<em>list or tuple</em>) &#8211;
+The x_ticklabels (as strings) to share across the subplots (the default
+is None, which implies that no x_ticklabels are displayed).</li>
+<li><strong>y_ticklabels</strong> (<em>list or tuple</em>) &#8211;
+The y_ticklabels (as strings) to share across the subplots (the default
+is None, which implies tht no y_ticklabels are displayed).</li>
+<li><strong>cbar_label</strong> (<em>str</em>) &#8211;
+The colorbar label to use with a normalised colormapping (the default
+is None, which implies that no colorbar label is displayed).</li>
+<li><strong>normalise</strong> (<em>bool</em>) &#8211;
+The flag that indicates whether to use a normalised colormapping.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) &#8211;
+The resulting figure instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.subplots()</span></code></dt>
+<dd>Underlying subplot function.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Additional kwargs given to the function will be passed to the underlying
+suplot instantiation function <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.subplots</span></code>.</p>
+<p>If <em class="xref py py-obj">normalise</em> is True, the common colorbar is shown below the subplots.</p>
+<p>The implementation of the normalisation feature is based on the Pylab
+example: <a class="reference external" href="http://matplotlib.org/examples/pylab_examples/multi_image.html">http://matplotlib.org/examples/pylab_examples/multi_image.html</a>.</p>
+<p class="rubric">Examples</p>
+<p>For example, show to images next to each other with a common colormapping:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">imsubplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">imsubplot</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">titles</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;arange&#39;</span><span class="p">,</span> <span class="s">&#39;ones&#39;</span><span class="p">],</span>
+<span class="gp">... </span><span class="n">x_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;x1&#39;</span><span class="p">,</span> <span class="s">&#39;x2&#39;</span><span class="p">],</span> <span class="n">y_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;y1&#39;</span><span class="p">,</span> <span class="s">&#39;y2&#39;</span><span class="p">],</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.imaging.visualisation.mask_img_from_coords">
+<code class="descclassname">magni.imaging.visualisation.</code><code class="descname">mask_img_from_coords</code><span class="sig-paren">(</span><em>img</em>, <em>coords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#mask_img_from_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.mask_img_from_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mask coordinates in an image.</p>
+<p>The coordinates <em class="xref py py-obj">coords</em> in the image <em class="xref py py-obj">img</em> are masked such that only the
+cooordinates are shown.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>ndarray</em>) &#8211;
+The image to mask.</li>
+<li><strong>coords</strong> (<em>ndarray</em>) &#8211;
+The coordinates arranged into a 2D array, such that each row is a
+coordinate pair (x, y).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>masked_img</strong> (<em>numpy.ma.MaskedArray</em>) &#8211;
+The masked image.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="magni.imaging.measurements.html#module-magni.imaging.measurements" title="magni.imaging.measurements"><code class="xref py py-func docutils literal"><span class="pre">magni.imaging.measurements()</span></code></a></dt>
+<dd>Further description of the coordinate format.</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<p>For example, display only center pixel in a 3-by-3 image</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">mask_img_from_coords</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask_img_from_coords</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
+<span class="go">masked_array(data =</span>
+<span class="go"> [[-- -- --]</span>
+<span class="go"> [-- 4 --]</span>
+<span class="go"> [-- -- --]],</span>
+<span class="go">             mask =</span>
+<span class="go"> [[ True  True  True]</span>
+<span class="go"> [ True False  True]</span>
+<span class="go"> [ True  True  True]],</span>
+<span class="go">       fill_value = 999999)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="magni.imaging.visualisation.shift_mean">
-<tt class="descclassname">magni.imaging.visualisation.</tt><tt class="descname">shift_mean</tt><big>(</big><em>x_mod</em>, <em>x_org</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/visualisation.html#shift_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.shift_mean" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.imaging.visualisation.</code><code class="descname">shift_mean</code><span class="sig-paren">(</span><em>x_mod</em>, <em>x_org</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#shift_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.shift_mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shift the mean value of <em class="xref py py-obj">x_mod</em> such that it equals the mean of <em class="xref py py-obj">x_org</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -170,8 +302,8 @@ A copy of <em class="xref py py-obj">x_mod</em> with the same mean value as <em 
 
 <dl class="function">
 <dt id="magni.imaging.visualisation.stretch_image">
-<tt class="descclassname">magni.imaging.visualisation.</tt><tt class="descname">stretch_image</tt><big>(</big><em>img</em>, <em>max_val</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/visualisation.html#stretch_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.stretch_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stretch image such that pixels values are in the range [0, <em class="xref py py-obj">max_val</em>].</p>
+<code class="descclassname">magni.imaging.visualisation.</code><code class="descname">stretch_image</code><span class="sig-paren">(</span><em>img</em>, <em>max_val</em>, <em>min_val=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#stretch_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.stretch_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stretch image such that pixels values are in [<em class="xref py py-obj">min_val</em>, <em class="xref py py-obj">max_val</em>].</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -181,6 +313,8 @@ A copy of <em class="xref py py-obj">x_mod</em> with the same mean value as <em 
 The (float) image that is to be stretched.</li>
 <li><strong>max_val</strong> (<em>int or float</em>) &#8211;
 The maximum value in the stretched image.</li>
+<li><strong>min_val</strong> (<em>int or float</em>) &#8211;
+The minimum value in the stretched image.</li>
 </ul>
 </td>
 </tr>
@@ -191,20 +325,61 @@ A stretched copy of the input image.</p>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>The pixel values in the input image are scaled to lie in the interval [0,
-<em class="xref py py-obj">max_val</em>] using a linear stretch.</p>
+<p>The pixel values in the input image are scaled to lie in the interval
+[<em class="xref py py-obj">min_val</em>, <em class="xref py py-obj">max_val</em>] using a linear stretch.</p>
 <p class="rubric">Examples</p>
-<p>For example,</p>
+<p>For example, stretch an image between 0 and 1</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">stretch_image</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
 <span class="go">array([[ 0.        ,  0.33333333],</span>
 <span class="go">       [ 0.66666667,  1.        ]])</span>
 </pre></div>
 </div>
+<p>or stretch the image between -1 and 1</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
+<span class="go">array([[-1.        , -0.33333333],</span>
+<span class="go">       [ 0.33333333,  1.        ]])</span>
+</pre></div>
+</div>
+<p>or re-stretch the strecthed image between -3.0 and -1.5</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">stretched_img</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
+<span class="go">array([[-3. , -2.5],</span>
+<span class="go">       [-2. , -1.5]])</span>
+</pre></div>
+</div>
+<p>or re-stretch that image between 1.25 and 8.00</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">stretched_img</span><span class="p">,</span> <span class="mf">8.00</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">1.25</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
+<span class="go">array([[ 1.25,  3.5 ],</span>
+<span class="go">       [ 5.75,  8.  ]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="magni.imaging.visualisation._ImageColourTracker">
+<em class="property">class </em><code class="descclassname">magni.imaging.visualisation.</code><code class="descname">_ImageColourTracker</code><span class="sig-paren">(</span><em>tracker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#_ImageColourTracker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation._ImageColourTracker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Track a common &#8216;clim&#8217; in a set of matplotlib image subplots.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tracker</strong> (<em>matplotlib.image.AxesImage</em>) &#8211;
+The image instance that must track a given &#8216;clim&#8217;.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="magni.imaging.visualisation._ImageColourTracker.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>tracked</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#_ImageColourTracker.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation._ImageColourTracker.__call__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -214,7 +389,7 @@ A stretched copy of the input image.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -230,7 +405,7 @@ A stretched copy of the input image.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.reproducibility.html"
                         title="next chapter">magni.reproducibility package</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -247,7 +422,7 @@ A stretched copy of the input image.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -259,15 +434,15 @@ A stretched copy of the input image.</p>
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

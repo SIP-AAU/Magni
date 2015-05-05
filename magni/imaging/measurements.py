@@ -27,9 +27,9 @@ random_line_sample_image(h, w, scan_length, num_points, discrete=None,
 random_line_sample_surface(l, w, speed, sample_rate, time, discrete=None,
     seed=None)
     Function for random line sampling a surface.
-spiral_sample_image(h, w, scan_length, num_points)
+spiral_sample_image(h, w, scan_length, num_points, rect_area=False)
     Function for spiral sampling an image.
-spiral_sample_surface(l, w, speed, sample_rate, time)
+spiral_sample_surface(l, w, speed, sample_rate, time, rect_area=False)
     Function for spiral sampling a surface.
 square_spiral_sample_image(h, w, scan_length, num_points)
     Function for square spiral sampling an image.
@@ -165,13 +165,13 @@ def construct_measurement_matrix(coords, h, w):
 
     @_decorate_validation
     def validate_input():
-        _numeric('coords', 'floating', shape=(-1, 2))
+        _numeric('coords', ('integer', 'floating'), shape=(-1, 2))
         _numeric('h', 'integer', range_='[1;inf)')
         _numeric('w', 'integer', range_='[1;inf)')
-        _numeric('coords[:, 0]', 'floating', range_='[0;{}]'.format(w),
-                 shape=(-1,), var=coords[:, 0])
-        _numeric('coords[:, 1]', 'floating', range_='[0;{}]'.format(h),
-                 shape=(-1,), var=coords[:, 1])
+        _numeric('coords[:, 0]', ('integer', 'floating'),
+                 range_='[0;{}]'.format(w), shape=(-1,), var=coords[:, 0])
+        _numeric('coords[:, 1]', ('integer', 'floating'),
+                 range_='[0;{}]'.format(h), shape=(-1,), var=coords[:, 1])
 
     validate_input()
 
@@ -626,7 +626,7 @@ def random_line_sample_surface(l, w, speed, sample_rate, time, discrete=None,
     return coords
 
 
-def spiral_sample_image(h, w, scan_length, num_points):
+def spiral_sample_image(h, w, scan_length, num_points, rect_area=False):
     """
     Sample an image using an archimedean spiral pattern.
 
@@ -645,6 +645,10 @@ def spiral_sample_image(h, w, scan_length, num_points):
         The length of the path to scan in units of pixels.
     num_points : int
         The number of samples to take on the scanned path.
+    rect_area : bool
+        A flag indicating whether or not the full rectangular area is sampled
+        (the default value is False which implies that the "corners" of the
+        rectangular area are not sampled).
 
     Returns
     -------
@@ -658,6 +662,12 @@ def spiral_sample_image(h, w, scan_length, num_points):
     measured along the x-axis whereas the height `h` is measured along the
     y-axis. The width must equal the height for an archimedian spiral to make
     sense.
+
+    If the `rect_area` flag is True, then it is assumed that the sampling
+    continues outside of the rectangular area specified by `h` and `w` such
+    that the "corners" of the rectangular area are also sampled. The sample
+    points outside of the rectangular area are discarded and, hence, not
+    returned.
 
     Examples
     --------
@@ -698,17 +708,19 @@ def spiral_sample_image(h, w, scan_length, num_points):
                  range_='[{};inf)'.format(_min_scan_length))
         _numeric('num_points', 'integer',
                  range_='[{};inf)'.format(_min_num_points))
+        _numeric('rect_area', 'boolean')
 
     validate_input()
 
     coords = spiral_sample_surface(float(h - 1), float(w - 1),
-                                   scan_length, float(num_points), 1.0)
+                                   scan_length, float(num_points), 1.0,
+                                   rect_area)
     coords = coords + 0.5
 
     return coords
 
 
-def spiral_sample_surface(l, w, speed, sample_rate, time):
+def spiral_sample_surface(l, w, speed, sample_rate, time, rect_area=False):
     """
     Sample a surface area using an archimedean spiral pattern.
 
@@ -728,6 +740,10 @@ def spiral_sample_surface(l, w, speed, sample_rate, time):
         The sample rate in units of Hertz.
     time : float
         The scan time in units of seconds.
+    rect_area : bool
+        A flag indicating whether or not the full rectangular area is sampled
+        (the default value is False which implies that the "corners" of the
+        rectangular area are not sampled).
 
     Returns
     -------
@@ -741,6 +757,12 @@ def spiral_sample_surface(l, w, speed, sample_rate, time):
     measured along the x-axis whereas the length `l` is measured along the
     y-axis. The width must equal the length for an archimedian sprial to make
     sense.
+
+    If the `rect_area` flag is True, then it is assumed that the sampling
+    continues outside of the rectangular area specified by `l` and `w` such
+    that the "corners" of the rectangular area are also sampled. The sample
+    points outside of the rectangular area are discarded and, hence, not
+    returned.
 
     Examples
     --------
@@ -782,11 +804,17 @@ def spiral_sample_surface(l, w, speed, sample_rate, time):
         _numeric('sample_rate', 'floating',
                  range_='[{};inf)'.format(_min_sample_rate))
         _numeric('time', 'floating', range_='[{};inf)'.format(_min_time))
+        _numeric('rect_area', 'boolean')
 
     validate_input()
 
     sample_period = 1 / sample_rate
     r_end = np.min([l, w]) / 2
+
+    if rect_area:
+        # Sample the "corners" of a rectangular area
+        r_end *= np.sqrt(2)
+
     pitch = np.pi * r_end ** 2 / (speed * time)
 
     # Starting at t=0 yields a divide-by-zero problem. Therefore we start the
@@ -808,6 +836,13 @@ def spiral_sample_surface(l, w, speed, sample_rate, time):
     else:
         coords[:, 1] = coords[:, 1] * l / w
     """
+
+    if rect_area:
+        # We assume the tip follows the spiral outside of the rectangular area
+        # These coordinates should not be included in the sampled area
+        within_rect_area = np.where(
+            np.all(np.abs(coords) <= (w / 2, l / 2), axis=1))
+        coords = coords[within_rect_area]
 
     coords = coords + np.array([w / 2, l / 2])
 
@@ -1237,7 +1272,8 @@ def unique_pixels(coords):
 
     @_decorate_validation
     def validate_input():
-        _numeric('coords', 'floating', range_='[0;inf)', shape=(-1, 2))
+        _numeric('coords', ('integer', 'floating'), range_='[0;inf)',
+                 shape=(-1, 2))
 
     validate_input()
 

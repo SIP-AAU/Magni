@@ -21,6 +21,7 @@ import numpy as np
 
 from magni.afm import config as _conf
 from magni.cs.reconstruction import iht as _iht
+from magni.cs.reconstruction import it as _it
 from magni.cs.reconstruction import sl0 as _sl0
 from magni.imaging import evaluation as _eval
 from magni.imaging import visualisation as _visualisation
@@ -66,7 +67,7 @@ def analyse(x, Phi, Psi):
     >>> if os.path.isfile(path):
     ...     mi_file = magni.afm.io.read_mi_file(path)
     ...     mi_buffer = mi_file.get_buffer('Topography')[0]
-    ...     mi_data = mi_buffer.get_data()
+    ...     mi_data = mi_buffer.data
     ...     x = magni.imaging.mat2vec(mi_data)
 
     Next, a measurement matrix is defined. This matrix is equal to the matrix
@@ -158,7 +159,7 @@ def reconstruct(y, Phi, Psi):
     >>> if os.path.isfile(path):
     ...     mi_file = magni.afm.io.read_mi_file(path)
     ...     mi_buffer = mi_file.get_buffer('Topography')[0]
-    ...     mi_data = mi_buffer.get_data()
+    ...     mi_data = mi_buffer.data
     ...     x = magni.imaging.mat2vec(mi_data)
 
     Next, a measurement matrix is defined. This matrix is equal to the matrix
@@ -209,10 +210,13 @@ def reconstruct(y, Phi, Psi):
 
     if algorithm == 'iht':
         algorithm = _iht.run
+    elif algorithm == 'it':
+        algorithm = _it.run
     elif algorithm == 'sl0':
         A = A.A
         algorithm = _sl0.run
 
     alpha = algorithm(y, A)
     x = Psi.dot(alpha)
+
     return x

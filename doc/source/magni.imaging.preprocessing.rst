@@ -3,5 +3,6 @@ magni.imaging.preprocessing module
 
 .. automodule:: magni.imaging.preprocessing
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

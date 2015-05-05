@@ -5,7 +5,7 @@ at https://bitbucket.org/birkenfeld/sphinx/
 
 It is subject to the following LICENSE:
 
-Copyright (c) 2014, Christian Schou Oxvig & Patrick Steffen Pedersen
+Copyright (c) 2014-1015, Christian Schou Oxvig & Patrick Steffen Pedersen
 Copyright (c) 2007-2013 by the Sphinx team (see AUTHORS file).
 All rights reserved.
 
@@ -107,7 +107,11 @@ def create_package_file(root, master_package, subroot, py_files, opts, subs):
 if __name__ == '__main__':
     """Monkey patch the sphinx.apidoc module."""
 
+    import sphinx.apidoc
     from sphinx.apidoc import main
+
+    sphinx.apidoc.OPTIONS = ['members', 'private-members', 'special-members',
+                             'show-inheritance']
 
     main.__globals__['create_package_file'] = create_package_file
     INITPY = main.__globals__['INITPY']

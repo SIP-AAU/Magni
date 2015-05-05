@@ -3,8 +3,17 @@ magni.imaging package
 
 .. automodule:: magni.imaging
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+    :maxdepth: 1
+
+    magni.imaging.dictionaries
 
 Submodules
 ----------
@@ -12,9 +21,7 @@ Submodules
 .. toctree::
     :maxdepth: 1
 
-    magni.imaging._fastops
     magni.imaging._util
-    magni.imaging.dictionaries
     magni.imaging.domains
     magni.imaging.evaluation
     magni.imaging.measurements

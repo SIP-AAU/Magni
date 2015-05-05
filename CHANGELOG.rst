@@ -1,4 +1,69 @@
 ==================
+1.3.0 (2015-05-05)
+==================
+
+Version 1.3.0 is primarily an extension of the afm package, a generalisation
+and restructuring of the cs.reconstruction package, and an extension of the
+imaging package. Furthermore, this version includes minor improvements and
+minor bug fixes.
+
+
+Additions
+---------
+
+- Added functionality to the imaging package.
+
+  * A number of functions have been added: double_mirror, get_inscribed_masks,
+	visualisation.imsubplot, and visualisation.mask_img_from_coords.
+  * imaging.dictionaries is now a package rather than a module. In addition to
+	the existing functionality, the package has an added analysis module for
+	analysing dictionaries.
+
+- Added the utils.types module which currently provides the following
+  general-purpose classes: ClassProperty and ReadOnlyDict.
+- Added functionality to chase data for reproducibility purposes. A number of
+  functions have been added to the reproducibility.io module: chase_database,
+  create_database, read_chases, and remove_chases.
+- Added tests of the cs.phase_transition package and of the cs.reconstruction
+  package.
+- Sphinx >= 1.3 is now required to build the documentation.
+
+
+Improvements
+------------
+
+- Added functionality for reading and representing all known .mi files.
+
+  * afm.io and afm.types are now packages rather than modules.
+  * afm.io.read_mi_file supports all known .mi files.
+  * afm.types contains the following classes (of which some are rewrites of
+	previous classes): BaseClass, File, FileCollection, image.Buffer,
+	image.Image, spectroscopy.Buffer, spectroscopy.Chunk, spectroscopy.Grid,
+	spectroscopy.Point, and spectroscopy.Spectroscopy.
+
+- Added functionality for customising the compressive sensing reconstruction
+  algorithms of the cs.reconstruction package.
+
+  * cs.reconstruction.it has been added for general iterative thresholding
+	compressive sensing reconstruction functionality. Besides from being able
+	to act as standard iterative hard thresholding and iterative soft
+	thresholding, the threshold operator, the intial point and the step size
+	can be configured.
+  * cs.reconstruction.sl0 has been modified for general smoothed l0 compressive
+	sensing reconstruction functionality. Besides from being able to act as
+	original smoothed l0 and modified smoothed l0, the sigma, L, and mu
+	parameters can be configured.
+
+
+Bug Fixes
+---------
+
+- Fixed a number of minor bugs.
+- Various documentation clean-ups.
+
+
+
+==================
 1.2.0 (2015-03-13)
 ==================
 

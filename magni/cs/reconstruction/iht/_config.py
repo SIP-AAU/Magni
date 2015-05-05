@@ -9,7 +9,7 @@ subpackage.
 
 See also
 --------
-magni.utils.config.Configger : The Configger class used
+magni.cs.reconstruction._config.Configger : The Configger class used
 
 Notes
 -----
@@ -20,9 +20,9 @@ iterations : int
     The maximum number of iterations to do (the default is 300).
 kappa_fixed : float
     The relaxation parameter used in the algorithm (the default is 0.65).
-precision_float : dtype
+precision_float : {np.float, np.float16, np.float32, np.float64, np.float128}
     The floating point precision used for the computations (the default is
-    float64).
+    np.float64).
 threshold : {'far', 'oracle'}
     The method for selecting the threshold value.
 threshold_fixed : float

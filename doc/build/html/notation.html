@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>A Note on Notation &mdash; Magni 1.2.0 documentation</title>
+    <title>A Note on Notation &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="next" title="Examples" href="examples.html" />
     <link rel="prev" title="Magni Documentation" href="index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -42,21 +42,21 @@
         <li class="right" >
           <a href="index.html" title="Magni Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="a-note-on-notation">
 <span id="file-notation"></span><h1>A Note on Notation<a class="headerlink" href="#a-note-on-notation" title="Permalink to this headline">¶</a></h1>
-<p>A much as possible, a consistent notation is used in the <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> package. This implies that variable names are shared between functions that are related. Furthermore a consistent coordinate system is used for the description of related surfaces.</p>
+<p>A much as possible, a consistent notation is used in the <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> package. This implies that variable names are shared between functions that are related. Furthermore a consistent coordinate system is used for the description of related surfaces.</p>
 <div class="section" id="the-compressed-sensing-reconstruction-problem">
 <h2>The Compressed Sensing Reconstruction Problem<a class="headerlink" href="#the-compressed-sensing-reconstruction-problem" title="Permalink to this headline">¶</a></h2>
-<p>In the <a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><tt class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></tt></a> subpackage, a consistent naming scheme is used for variables, i.e., vectors and matrices. This section gives an overview of the chosen notation. For the purpose of illustration, consider the Basis Pursuit CS reconstruction problem <a class="footnote-reference" href="#id2" id="id1">[1]</a>:</p>
+<p>In the <a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><code class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></code></a> subpackage, a consistent naming scheme is used for variables, i.e., vectors and matrices. This section gives an overview of the chosen notation. For the purpose of illustration, consider the Basis Pursuit CS reconstruction problem <a class="footnote-reference" href="#id2" id="id1">[1]</a>:</p>
 <div class="math">
 \[\begin{split}&amp;\text{minimize}\qquad    ||\alpha||_1 \\
 &amp;\text{subject to}\qquad  \mathbf{y} = \mathbf{A}\mathbf{\alpha}\end{split}\]</div>
@@ -73,7 +73,7 @@
 <p>Here the vector <span class="math">\(\mathbf{x} \in \mathbb{C}^{p}\)</span> represents the signal of interrest. That is, it is the signal that is assumed to have a sparse representation in the dictionary <span class="math">\(\mathbf{\Psi}\)</span>. The sparsity of the coefficient vector <span class="math">\(\mathbf{\alpha}\)</span>, that is the size of the support set, is denoted <span class="math">\(k=|\text{supp}(\mathbf{\alpha})|\)</span>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Even though the above example involves complex vectors and matrices, the algorithms provided in <a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><tt class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></tt></a> may be restricted to inputs and outputs that are real.</p>
+<p class="last">Even though the above example involves complex vectors and matrices, the algorithms provided in <a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><code class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></code></a> may be restricted to inputs and outputs that are real.</p>
 </div>
 <p class="rubric">References</p>
 <table class="docutils footnote" frame="void" id="id2" rules="none">
@@ -88,7 +88,7 @@
 </div>
 <div class="section" id="handling-images-as-matrices-and-vectors">
 <h2>Handling Images as Matrices and Vectors<a class="headerlink" href="#handling-images-as-matrices-and-vectors" title="Permalink to this headline">¶</a></h2>
-<p>In parts of <a class="reference internal" href="magni.imaging.html#module-magni.imaging" title="magni.imaging"><tt class="xref py py-mod docutils literal"><span class="pre">magni.imaging</span></tt></a>, an image is considered a matrix <span class="math">\(\mathbf{M} \in \mathbb{R}^{h \times w}\)</span>. That is, the image height is <span class="math">\(h\)</span> whereas the width is <span class="math">\(w\)</span>. In the <a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><tt class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></tt></a> subpackage, the image must be represented as a vector. This is done by stacking the columns of <span class="math">\(\mathbf{M}\)</span> to form the vector <span class="math">\(\mathbf{x}\)</span>. Thus, the dimension of the image vector representation is <span class="math">\(n = h \cdot w\)</span>. The <a class="reference internal" href="magni.imaging._util.html#magni.imaging._util.vec2mat" title="magni.imaging._util.vec2mat"><tt class="xref py py-func docutils literal"><span class="pre">magni.imaging._util.vec2mat()</span></tt></a> (available as <tt class="xref py py-func docutils literal"><span class="pre">magni.imaging.vec2mat()</span></tt>) and <a class="reference internal" href="magni.imaging._util.html#magni.imaging._util.mat2vec" title="magni.imaging._util.mat2vec"><tt class="xref py py-func docutils literal"><span class="pre">magni.imaging._util.mat2vec()</span></tt></a> (available as <tt class="xref py py-func docutils literal"><span class="pre">magni.imaging.mat2vec()</span></tt>) may be use to convert between the matrix and vector notations.</p>
+<p>In parts of <a class="reference internal" href="magni.imaging.html#module-magni.imaging" title="magni.imaging"><code class="xref py py-mod docutils literal"><span class="pre">magni.imaging</span></code></a>, an image is considered a matrix <span class="math">\(\mathbf{M} \in \mathbb{R}^{h \times w}\)</span>. That is, the image height is <span class="math">\(h\)</span> whereas the width is <span class="math">\(w\)</span>. In the <a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><code class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></code></a> subpackage, the image must be represented as a vector. This is done by stacking the columns of <span class="math">\(\mathbf{M}\)</span> to form the vector <span class="math">\(\mathbf{x}\)</span>. Thus, the dimension of the image vector representation is <span class="math">\(n = h \cdot w\)</span>. The <a class="reference internal" href="magni.imaging._util.html#magni.imaging._util.vec2mat" title="magni.imaging._util.vec2mat"><code class="xref py py-func docutils literal"><span class="pre">magni.imaging._util.vec2mat()</span></code></a> (available as <code class="xref py py-func docutils literal"><span class="pre">magni.imaging.vec2mat()</span></code>) and <a class="reference internal" href="magni.imaging._util.html#magni.imaging._util.mat2vec" title="magni.imaging._util.mat2vec"><code class="xref py py-func docutils literal"><span class="pre">magni.imaging._util.mat2vec()</span></code></a> (available as <code class="xref py py-func docutils literal"><span class="pre">magni.imaging.mat2vec()</span></code>) may be use to convert between the matrix and vector notations.</p>
 <p>When the matrix representation is used, the following coordinate system is used for its visual representation:</p>
 <div class="line-block">
 <div class="line"></div>
@@ -116,7 +116,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -133,7 +133,7 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="examples.html"
                         title="next chapter">Examples</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -150,7 +150,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -162,13 +162,13 @@
         <li class="right" >
           <a href="index.html" title="Magni Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

@@ -3,5 +3,6 @@ magni.imaging._util module
 
 .. automodule:: magni.imaging._util
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

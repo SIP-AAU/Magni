@@ -13,7 +13,7 @@ run(algorithm, path, label)
 
 See Also
 --------
-magni.cs.phase_transition.config : Configuration options.
+magni.cs.phase_transition._config : Configuration options.
 
 Notes
 -----
@@ -135,15 +135,15 @@ def _simulate(algorithm, ij_tuple, seeds, path):
         for l in range(_conf['monte_carlo']):
             np.random.seed(seeds[l])
             A = _data.generate_matrix(m, n)
-            x = _data.generate_vector(n, k)
-            y = A.dot(x)
+            alpha = _data.generate_vector(n, k)
+            y = A.dot(alpha)
 
             start = time.time()
-            x_hat = algorithm(y, A)
+            alpha_hat = algorithm(y, A)
             end = time.time()
-            x_res = x_hat - x
 
             stat_time[l] = end - start
-            stat_dist[l] = (np.linalg.norm(x_res) / np.linalg.norm(x))**2
+            stat_dist[l] = (np.linalg.norm(alpha_hat - alpha) /
+                            np.linalg.norm(alpha))**2
 
     _backup.set(path, (i, j), stat_time, stat_dist)

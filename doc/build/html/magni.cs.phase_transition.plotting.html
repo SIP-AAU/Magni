@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition.plotting module &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.cs.phase_transition.plotting module &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" />
     <link rel="next" title="magni.cs.reconstruction package" href="magni.cs.reconstruction.html" />
     <link rel="prev" title="magni.cs.phase_transition.io module" href="magni.cs.phase_transition.io.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,21 +43,21 @@
         <li class="right" >
           <a href="magni.cs.phase_transition.io.html" title="magni.cs.phase_transition.io module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
-          <li><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.cs.phase_transition.plotting">
 <span id="magni-cs-phase-transition-plotting-module"></span><h1>magni.cs.phase_transition.plotting module<a class="headerlink" href="#module-magni.cs.phase_transition.plotting" title="Permalink to this headline">¶</a></h1>
-<p>Module providing plotting for the <a class="reference internal" href="magni.cs.phase_transition.html#module-magni.cs.phase_transition" title="magni.cs.phase_transition"><tt class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition</span></tt></a> subpackage.</p>
+<p>Module providing plotting for the <a class="reference internal" href="magni.cs.phase_transition.html#module-magni.cs.phase_transition" title="magni.cs.phase_transition"><code class="xref py py-obj docutils literal"><span class="pre">magni.cs.phase_transition</span></code></a> subpackage.</p>
 <div class="section" id="routine-listings">
 <h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
@@ -70,7 +70,7 @@
 </dl>
 <dl class="function">
 <dt id="magni.cs.phase_transition.plotting.plot_phase_transitions">
-<tt class="descclassname">magni.cs.phase_transition.plotting.</tt><tt class="descname">plot_phase_transitions</tt><big>(</big><em>curves</em>, <em>plot_l1=True</em>, <em>output_path=None</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#plot_phase_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting.plot_phase_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.cs.phase_transition.plotting.</code><code class="descname">plot_phase_transitions</code><span class="sig-paren">(</span><em>curves</em>, <em>plot_l1=True</em>, <em>output_path=None</em>, <em>legend_loc='upper left'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#plot_phase_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting.plot_phase_transitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot of a set of phase transition boundary curves.</p>
 <p>The set of phase transition boundary curves are plotted an saved under the
 <em class="xref py py-obj">output_path</em>, if specified. The <em class="xref py py-obj">curves</em> must be a list of dictionaries
@@ -90,14 +90,18 @@ Whether or not to plot the theoretical <span class="math">\(\ell_1\)</span> curv
 default is True).</li>
 <li><strong>output_path</strong> (<em>str, optional</em>) &#8211;
 Path (including file type extension) under which the plot is saved (the
-default value is None which implies, that the plot is not saved).</li>
+default value is None, which implies that the plot is not saved).</li>
+<li><strong>legend_loc</strong> (<em>str</em>) &#8211;
+Location of legend as a <code class="xref py py-obj docutils literal"><span class="pre">matplotlib</span></code> legend location string (the
+default is &#8216;upper left&#8217;, which implies that the legend is placed in the
+upper left corner of the plot.)</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>The plotting is done using <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib</span></tt>, which implies that an open figure
+<p>The plotting is done using <code class="xref py py-obj docutils literal"><span class="pre">matplotlib</span></code>, which implies that an open figure
 containing the plot will result from using this function.</p>
 <p>Tabulated values of the theoretical <span class="math">\(\ell_1\)</span> phase transition
 boundary is available at
@@ -117,7 +121,7 @@ boundary is available at
 
 <dl class="function">
 <dt id="magni.cs.phase_transition.plotting.plot_phase_transition_colormap">
-<tt class="descclassname">magni.cs.phase_transition.plotting.</tt><tt class="descname">plot_phase_transition_colormap</tt><big>(</big><em>dist</em>, <em>delta</em>, <em>rho</em>, <em>plot_l1=True</em>, <em>output_path=None</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#plot_phase_transition_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting.plot_phase_transition_colormap" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.cs.phase_transition.plotting.</code><code class="descname">plot_phase_transition_colormap</code><span class="sig-paren">(</span><em>dist</em>, <em>delta</em>, <em>rho</em>, <em>plot_l1=True</em>, <em>output_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#plot_phase_transition_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting.plot_phase_transition_colormap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a colormap of the phase space reconstruction probabilities.</p>
 <p>The <em class="xref py py-obj">delta</em> and <em class="xref py py-obj">rho</em> values span a 2D grid in the phase space.
 Reconstruction probabilities are then calculated from the <em class="xref py py-obj">dist</em> 3D array
@@ -152,12 +156,12 @@ default value is None which implies, that the plot is not saved).</li>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="magni.cs.phase_transition.io.html#magni.cs.phase_transition.io.load_phase_transition" title="magni.cs.phase_transition.io.load_phase_transition"><tt class="xref py py-func docutils literal"><span class="pre">magni.cs.phase_transition.io.load_phase_transition()</span></tt></a></dt>
+<dt><a class="reference internal" href="magni.cs.phase_transition.io.html#magni.cs.phase_transition.io.load_phase_transition" title="magni.cs.phase_transition.io.load_phase_transition"><code class="xref py py-func docutils literal"><span class="pre">magni.cs.phase_transition.io.load_phase_transition()</span></code></a></dt>
 <dd>Loading phase transitions from an HDF database.</dd>
 </dl>
 </div>
 <p class="rubric">Notes</p>
-<p>The plotting is done using <tt class="xref py py-obj docutils literal"><span class="pre">matplotlib</span></tt>, which implies that an open figure
+<p>The plotting is done using <code class="xref py py-obj docutils literal"><span class="pre">matplotlib</span></code>, which implies that an open figure
 containing the plot will result from using this function.</p>
 <p>The values in <em class="xref py py-obj">delta</em> and <em class="xref py py-obj">rho</em> are assumed to be equally spaced.</p>
 <p>Due to the <em>centering</em> of the color coded rectangles, they are not
@@ -184,7 +188,7 @@ boundary is available at
 
 <dl class="function">
 <dt id="magni.cs.phase_transition.plotting._plot_theoretical_l1">
-<tt class="descclassname">magni.cs.phase_transition.plotting.</tt><tt class="descname">_plot_theoretical_l1</tt><big>(</big><em>axes</em><big>)</big><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#_plot_theoretical_l1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting._plot_theoretical_l1" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.cs.phase_transition.plotting.</code><code class="descname">_plot_theoretical_l1</code><span class="sig-paren">(</span><em>axes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/plotting.html#_plot_theoretical_l1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition.plotting._plot_theoretical_l1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the theoretical l1 phase transition on the <em class="xref py py-obj">axes</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -209,7 +213,7 @@ tabulated values of available at
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -225,7 +229,7 @@ tabulated values of available at
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.cs.reconstruction.html"
                         title="next chapter">magni.cs.reconstruction package</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -242,7 +246,7 @@ tabulated values of available at
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -254,16 +258,16 @@ tabulated values of available at
         <li class="right" >
           <a href="magni.cs.phase_transition.io.html" title="magni.cs.phase_transition.io module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
-          <li><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

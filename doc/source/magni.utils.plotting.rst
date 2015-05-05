@@ -3,5 +3,6 @@ magni.utils.plotting module
 
 .. automodule:: magni.utils.plotting
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

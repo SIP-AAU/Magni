@@ -18,17 +18,20 @@ plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
 """
 
 from __future__ import division
+from itertools import cycle
 
 import numpy as np
 import matplotlib.pyplot as plt
 
+from magni.utils.plotting import linestyles as _linestyles
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_levels as _levels
 from magni.utils.validation import validate_numeric as _numeric
 
 
-def plot_phase_transitions(curves, plot_l1=True, output_path=None):
+def plot_phase_transitions(curves, plot_l1=True, output_path=None,
+                           legend_loc='upper left'):
     r"""
     Plot of a set of phase transition boundary curves.
 
@@ -48,7 +51,11 @@ def plot_phase_transitions(curves, plot_l1=True, output_path=None):
         default is True).
     output_path : str, optional
         Path (including file type extension) under which the plot is saved (the
-        default value is None which implies, that the plot is not saved).
+        default value is None, which implies that the plot is not saved).
+    legend_loc : str
+        Location of legend as a `matplotlib` legend location string (the
+        default is 'upper left', which implies that the legend is placed in the
+        upper left corner of the plot.)
 
     Notes
     -----
@@ -88,18 +95,23 @@ def plot_phase_transitions(curves, plot_l1=True, output_path=None):
 
         _numeric('plot_l1', 'boolean')
         _generic('output_path', 'string', ignore_none=True)
+        _generic('legend_loc', 'string')
 
     validate_input()
 
     fig, axes = plt.subplots(1, 1)
-
+    colors = plt.rcParams['axes.color_cycle']
+    style_cycle = cycle([{'color': color, 'ls': linestyle}
+                         for linestyle in _linestyles for color in colors])
     for curve in curves:
-        axes.plot(curve['delta'], curve['rho'], label=curve['label'])
+        axes.plot(curve['delta'], curve['rho'], label=curve['label'],
+                  **next(style_cycle))
 
     if plot_l1:
         _plot_theoretical_l1(axes)
 
-    axes.legend(loc='upper left')
+    leg = axes.legend(loc=legend_loc)
+    leg.get_frame().set_facecolor('1.0')
     axes.set_xlabel(r'$\delta = m/n$')
     axes.set_ylabel(r'$\rho = k/m$')
 
@@ -208,7 +220,8 @@ def plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
     if plot_l1:
         _plot_theoretical_l1(axes)
 
-    axes.legend(loc='upper left')
+    leg = axes.legend(loc='upper left')
+    leg.get_frame().set_facecolor('1.0')
     axes.set_xticks(np.arange(11) / 10)
     axes.set_yticks(np.arange(11) / 10)
     axes.set_xlabel(r'$\delta = m/n$')

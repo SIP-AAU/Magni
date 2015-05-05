@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Magni Documentation &mdash; Magni 1.2.0 documentation</title>
+    <title>Magni Documentation &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="#" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="#" />
     <link rel="next" title="A Note on Notation" href="notation.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -38,32 +38,32 @@
         <li class="right" >
           <a href="notation.html" title="A Note on Notation"
              accesskey="N">next</a> |</li>
-        <li><a href="#">Magni 1.2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Magni 1.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="magni-documentation">
 <h1>Magni Documentation<a class="headerlink" href="#magni-documentation" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> is a Python package developed by Christian Schou Oxvig and Patrick Steffen Pedersen in collaboration with Jan Østergaard, Thomas Arildsen, Tobias L. Jensen, and Torben Larsen. The work was supported by 1) the Danish Council for Independent Research | Technology and Production Sciences - via grant DFF-1335-00278 for the project <a class="reference external" href="http://sip-aau.github.io/FastAFM/">Enabling Fast Image Acquisition for Atomic Force Microscopy using Compressed Sensing</a> and 2) the Danish e-Infrastructure Cooperation - via a grant for a high performance computing system for the project &#8220;High Performance Computing SMP Server for Signal Processing&#8221;.</p>
-<p>This page gives an <a class="reference internal" href="#sec-introduction"><em>Introduction</em></a> to the package, briefly describes <a class="reference internal" href="#sec-how-to-read-the-documentation"><em>How to Read the Documentation</em></a>, and explains how to actually use <a class="reference internal" href="#sec-the-package"><em>The Package</em></a>.</p>
+<p><a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> is a Python package developed by Christian Schou Oxvig and Patrick Steffen Pedersen in collaboration with Jan Østergaard, Thomas Arildsen, Tobias L. Jensen, and Torben Larsen. The work was supported by 1) the Danish Council for Independent Research | Technology and Production Sciences - via grant DFF-1335-00278 for the project <a class="reference external" href="http://sip-aau.github.io/FastAFM/">Enabling Fast Image Acquisition for Atomic Force Microscopy using Compressed Sensing</a> and 2) the Danish e-Infrastructure Cooperation - via a grant for a high performance computing system for the project &#8220;High Performance Computing SMP Server for Signal Processing&#8221;.</p>
+<p>This page gives an <a class="reference internal" href="#sec-introduction"><span>Introduction</span></a> to the package, briefly describes <a class="reference internal" href="#sec-how-to-read-the-documentation"><span>How to Read the Documentation</span></a>, and explains how to actually use <a class="reference internal" href="#sec-the-package"><span>The Package</span></a>.</p>
 <div class="section" id="introduction">
 <span id="sec-introduction"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> <a class="footnote-reference" href="#magni" id="id1">[4]</a> is a <a class="reference external" href="https://www.python.org">Python</a> package which provides functionality for increasing the speed of image acquisition using <a class="reference external" href="https://en.wikipedia.org/wiki/Atomic_force_microscopy">Atomic Force Microscopy (AFM)</a> (see e.g. <a class="footnote-reference" href="#id5" id="id2">[1]</a> for an introduction).
-The image acquisition algorithms of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> are based on the <a class="reference external" href="https://en.wikipedia.org/wiki/Compressed_sensing">Compressed Sensing</a> (CS) signal acquisition paradigm (see e.g. <a class="footnote-reference" href="#id6" id="id3">[2]</a> or <a class="footnote-reference" href="#id7" id="id4">[3]</a> for an introduction) and include both sensing and reconstruction.
-The sensing part of the acquisition generates sensed data from regular images possibly acquired using AFM. This is done by AFM hardware simulation. The reconstruction part of the acquisition reconstructs images from sensed data. This is done by CS reconstruction using well-known CS reconstruction algorithms modified for the purpose. The Python implementation of the above functionality uses the standard library, a number of third-party libraries, and additional utility functionality designed and implemented specifically for <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>. The functionality provided by <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> can thus be divided into five groups:</p>
+<p><a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> <a class="footnote-reference" href="#magni" id="id1">[4]</a> is a <a class="reference external" href="https://www.python.org">Python</a> package which provides functionality for increasing the speed of image acquisition using <a class="reference external" href="https://en.wikipedia.org/wiki/Atomic_force_microscopy">Atomic Force Microscopy (AFM)</a> (see e.g. <a class="footnote-reference" href="#id5" id="id2">[1]</a> for an introduction).
+The image acquisition algorithms of <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> are based on the <a class="reference external" href="https://en.wikipedia.org/wiki/Compressed_sensing">Compressed Sensing</a> (CS) signal acquisition paradigm (see e.g. <a class="footnote-reference" href="#id6" id="id3">[2]</a> or <a class="footnote-reference" href="#id7" id="id4">[3]</a> for an introduction) and include both sensing and reconstruction.
+The sensing part of the acquisition generates sensed data from regular images possibly acquired using AFM. This is done by AFM hardware simulation. The reconstruction part of the acquisition reconstructs images from sensed data. This is done by CS reconstruction using well-known CS reconstruction algorithms modified for the purpose. The Python implementation of the above functionality uses the standard library, a number of third-party libraries, and additional utility functionality designed and implemented specifically for <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a>. The functionality provided by <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> can thus be divided into five groups:</p>
 <ul class="simple">
-<li><strong>Atomic Force Microscopy</strong> (<a class="reference internal" href="magni.afm.html#module-magni.afm" title="magni.afm"><tt class="xref py py-mod docutils literal"><span class="pre">magni.afm</span></tt></a>): AFM specific functionality including AFM image acquisition, AFM hardware simulation, and AFM data file handling.</li>
-<li><strong>Compressed Sensing</strong> (<a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><tt class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></tt></a>): General CS functionality including signal reconstruction and phase transition determination.</li>
-<li><strong>Imaging</strong> (<a class="reference internal" href="magni.imaging.html#module-magni.imaging" title="magni.imaging"><tt class="xref py py-mod docutils literal"><span class="pre">magni.imaging</span></tt></a>): General imaging functionality including measurement matrix and dictionary construction in addition to visualisation and evaluation.</li>
-<li><strong>Reproducibility</strong> (<a class="reference internal" href="magni.reproducibility.html#module-magni.reproducibility" title="magni.reproducibility"><tt class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility</span></tt></a>): Tools that may aid in increasing the reproducibility of result obtained using <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>.</li>
-<li><strong>Utilities</strong> (<a class="reference internal" href="magni.utils.html#module-magni.utils" title="magni.utils"><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils</span></tt></a>): General Python utilities including multiprocessing, tracing, and validation.</li>
+<li><strong>Atomic Force Microscopy</strong> (<a class="reference internal" href="magni.afm.html#module-magni.afm" title="magni.afm"><code class="xref py py-mod docutils literal"><span class="pre">magni.afm</span></code></a>): AFM specific functionality including AFM image acquisition, AFM hardware simulation, and AFM data file handling.</li>
+<li><strong>Compressed Sensing</strong> (<a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><code class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></code></a>): General CS functionality including signal reconstruction and phase transition determination.</li>
+<li><strong>Imaging</strong> (<a class="reference internal" href="magni.imaging.html#module-magni.imaging" title="magni.imaging"><code class="xref py py-mod docutils literal"><span class="pre">magni.imaging</span></code></a>): General imaging functionality including measurement matrix and dictionary construction in addition to visualisation and evaluation.</li>
+<li><strong>Reproducibility</strong> (<a class="reference internal" href="magni.reproducibility.html#module-magni.reproducibility" title="magni.reproducibility"><code class="xref py py-mod docutils literal"><span class="pre">magni.reproducibility</span></code></a>): Tools that may aid in increasing the reproducibility of result obtained using <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a>.</li>
+<li><strong>Utilities</strong> (<a class="reference internal" href="magni.utils.html#module-magni.utils" title="magni.utils"><code class="xref py py-mod docutils literal"><span class="pre">magni.utils</span></code></a>): General Python utilities including multiprocessing, tracing, and validation.</li>
 </ul>
-<p>See <a class="reference internal" href="#sec-other-resources"><em>Other Resources</em></a> as well as <a class="reference internal" href="#sec-notation"><em>Notation</em></a> for further documentation related to the project and the <a class="reference internal" href="#sec-tests"><em>Tests</em></a> and <a class="reference internal" href="#sec-examples"><em>Examples</em></a> to draw inspiration from.</p>
+<p>See <a class="reference internal" href="#sec-other-resources"><span>Other Resources</span></a> as well as <a class="reference internal" href="#sec-notation"><span>Notation</span></a> for further documentation related to the project and the <a class="reference internal" href="#sec-tests"><span>Tests</span></a> and <a class="reference internal" href="#sec-examples"><span>Examples</span></a> to draw inspiration from.</p>
 <p class="rubric">References</p>
 <table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -93,10 +93,10 @@ The sensing part of the acquisition generates sensed data from regular images po
 </div>
 <div class="section" id="how-to-read-the-documentation">
 <span id="sec-how-to-read-the-documentation"></span><h2>How to Read the Documentation<a class="headerlink" href="#how-to-read-the-documentation" title="Permalink to this headline">¶</a></h2>
-<p>The included subpackages, modules, classes and functions are documented through Python docstrings using the same format as the third-party library, numpy, i.e. using the <a class="reference external" href="https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt">numpydoc standard</a>. A description of any entity can thus be found in the source code of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> in the docstring of that entity. For readability, the documentation has been compiled using <a class="reference external" href="http://sphinx-doc.org/"><tt class="docutils literal"><span class="pre">Sphinx</span></tt></a> to produce this HTML page which can be found in the magni folder under &#8216;/doc/build/html/index.html&#8217;. The entire documentation is also available as a PDF file in the magni folder under &#8216;/doc/build/pdf/index.pdf&#8217;.</p>
+<p>The included subpackages, modules, classes and functions are documented through Python docstrings using the same format as the third-party library, numpy, i.e. using the <a class="reference external" href="https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt">numpydoc standard</a>. A description of any entity can thus be found in the source code of <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> in the docstring of that entity. For readability, the documentation has been compiled using <a class="reference external" href="http://sphinx-doc.org/"><code class="docutils literal"><span class="pre">Sphinx</span></code></a> to produce this HTML page which can be found in the magni folder under &#8216;/doc/build/html/index.html&#8217;. The entire documentation is also available as a PDF file in the magni folder under &#8216;/doc/build/pdf/index.pdf&#8217;.</p>
 <div class="section" id="building-the-documentation">
 <span id="sec-building-the-documentation"></span><h3>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h3>
-<p>The HTML documentation may be built from source using the supplied Makefile in the magni folder under &#8216;/doc/&#8217;. Make sure the required <a class="reference internal" href="#sec-dependencies"><em>Dependencies</em></a> for building the documentation are installed. The build process consists of running three commands:</p>
+<p>The HTML documentation may be built from source using the supplied Makefile in the magni folder under &#8216;/doc/&#8217;. Make sure the required <a class="reference internal" href="#sec-dependencies"><span>Dependencies</span></a> for building the documentation are installed. The build process consists of running three commands:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ make sourceclean
 $ make docapi
 $ make html
@@ -106,13 +106,13 @@ $ make html
 <p class="first admonition-title">Note</p>
 <p class="last">In the <em>make docapi</em> command it is assumed that the python interpreter is available on the PATH under the name <em>python</em>. If the python interpreter is available under another name, the PYTHONINT variable may be set, e.g. &#8220;make PYTHONINT=python2 docapi&#8221; if the python interpreter is named python2.</p>
 </div>
-<p>Run <tt class="code docutils literal"><span class="pre">make</span> <span class="pre">clean</span></tt> to remove all builds created by <a class="reference external" href="http://sphinx-doc.org/"><tt class="docutils literal"><span class="pre">Sphinx</span></tt></a> under &#8216;/doc/build&#8217;.</p>
+<p>Run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">clean</span></code> to remove all builds created by <a class="reference external" href="http://sphinx-doc.org/"><code class="docutils literal"><span class="pre">Sphinx</span></code></a> under &#8216;/doc/build&#8217;.</p>
 </div>
 </div>
 <div class="section" id="the-package">
 <span id="sec-the-package"></span><h2>The Package<a class="headerlink" href="#the-package" title="Permalink to this headline">¶</a></h2>
-<p>The source code of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> is released under the <a class="reference external" href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a> license, see the <a class="reference internal" href="#sec-license"><em>License</em></a> section. To install <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>, follow the instructions given under <a class="reference internal" href="#sec-installation"><em>Download and Installation</em></a>.</p>
-<p><a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> has been tested with <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Anaconda</a> (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of <a class="reference internal" href="#sec-dependencies"><em>Dependencies</em></a> for <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>.</p>
+<p>The source code of <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> is released under the <a class="reference external" href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a> license, see the <a class="reference internal" href="#sec-license"><span>License</span></a> section. To install <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a>, follow the instructions given under <a class="reference internal" href="#sec-installation"><span>Download and Installation</span></a>.</p>
+<p><a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> has been tested with <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Anaconda</a> (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of <a class="reference internal" href="#sec-dependencies"><span>Dependencies</span></a> for <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a>.</p>
 <div class="section" id="license">
 <span id="sec-license"></span><h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
 <p>Magni is licensed under the OSI-approved BSD 2-Clause License. See
@@ -150,39 +150,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 </div>
 <div class="section" id="download-and-installation">
 <span id="sec-installation"></span><h3>Download and Installation<a class="headerlink" href="#download-and-installation" title="Permalink to this headline">¶</a></h3>
-<p>All official releases of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> are available for download at <a class="reference external" href="http://dx.doi.org/10.5278/VBN/MISC/Magni">doi:10.5278/VBN/MISC/Magni</a>. The source code is hosted on GitHub at <a class="reference external" href="https://github.com/SIP-AAU/Magni">https://github.com/SIP-AAU/Magni</a>.</p>
+<p>All official releases of <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> are available for download at <a class="reference external" href="http://dx.doi.org/10.5278/VBN/MISC/Magni">doi:10.5278/VBN/MISC/Magni</a>. The source code is hosted on GitHub at <a class="reference external" href="https://github.com/SIP-AAU/Magni">https://github.com/SIP-AAU/Magni</a>.</p>
 <p>To use Magni, extract the downloaded archive and include the extracted magni folder in your <a class="reference external" href="https://docs.python.org/2/tutorial/modules.html#the-module-search-path">PYTHONPATH</a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> package (excluding examples and documentation) is also available on an &#8220;as is&#8221; basis in source form at <a class="reference external" href="https://pypi.python.org/pypi/magni">PyPi</a> and as a <a class="reference external" href="http://conda.pydata.org/docs/index.html">conda</a> package at <a class="reference external" href="http://binstar.org/chroxvi/magni">Binstar</a>.</p>
+<p class="last">The <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> package (excluding examples and documentation) is also available on an &#8220;as is&#8221; basis in source form at <a class="reference external" href="https://pypi.python.org/pypi/magni">PyPi</a> and as a <a class="reference external" href="http://conda.pydata.org/docs/index.html">conda</a> package at <a class="reference external" href="http://binstar.org/chroxvi/magni">Binstar</a>.</p>
 </div>
 </div>
 <div class="section" id="dependencies">
 <span id="sec-dependencies"></span><h3>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> has been designed for use with <a class="reference external" href="https://www.python.org/"><tt class="docutils literal"><span class="pre">Python</span> <span class="pre">2</span></tt></a> &gt;= 2.7 or <a class="reference external" href="https://www.python.org/"><tt class="docutils literal"><span class="pre">Python</span> <span class="pre">3</span></tt></a> &gt;= 3.3</p>
-<p><strong>Required</strong> third party dependencies for <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> are:</p>
+<p><a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> has been designed for use with <a class="reference external" href="https://www.python.org/"><code class="docutils literal"><span class="pre">Python</span> <span class="pre">2</span></code></a> &gt;= 2.7 or <a class="reference external" href="https://www.python.org/"><code class="docutils literal"><span class="pre">Python</span> <span class="pre">3</span></code></a> &gt;= 3.3</p>
+<p><strong>Required</strong> third party dependencies for <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> are:</p>
 <ul class="simple">
-<li><a class="reference external" href="http://matplotlib.org"><tt class="docutils literal"><span class="pre">Matplotlib</span></tt></a> (Tested on version &gt;= 1.3)</li>
-<li><a class="reference external" href="http://www.numpy.org/"><tt class="docutils literal"><span class="pre">Numpy</span></tt></a> (Tested on version &gt;= 1.8)</li>
-<li><a class="reference external" href="http://www.pytables.org/moin"><tt class="docutils literal"><span class="pre">PyTables</span></tt></a>  (Tested on version &gt;= 3.1)</li>
-<li><a class="reference external" href="http://scipy.org/scipylib/index.html"><tt class="docutils literal"><span class="pre">Scipy</span></tt></a> (Tested on version &gt;= 0.14)</li>
+<li><a class="reference external" href="http://matplotlib.org"><code class="docutils literal"><span class="pre">Matplotlib</span></code></a> (Tested on version &gt;= 1.3)</li>
+<li><a class="reference external" href="http://www.numpy.org/"><code class="docutils literal"><span class="pre">Numpy</span></code></a> (Tested on version &gt;= 1.8)</li>
+<li><a class="reference external" href="http://www.pytables.org/"><code class="docutils literal"><span class="pre">PyTables</span></code></a>  (Tested on version &gt;= 3.1)</li>
+<li><a class="reference external" href="http://scipy.org/scipylib/index.html"><code class="docutils literal"><span class="pre">Scipy</span></code></a> (Tested on version &gt;= 0.14)</li>
 </ul>
-<p><strong>Optional</strong> third party dependencies for <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> are:</p>
+<p><strong>Optional</strong> third party dependencies for <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> are:</p>
 <ul class="simple">
-<li><a class="reference external" href="http://nedbatchelder.com/code/coverage/"><tt class="docutils literal"><span class="pre">Coverage</span></tt></a> (Tested on version &gt;= 3.7) (For running the test suite script)</li>
-<li><a class="reference external" href="http://ipython.org/"><tt class="docutils literal"><span class="pre">IPython</span></tt></a> (Tested on version &gt;= 2.1) (For running the IPython notebook examples)</li>
-<li><a class="reference external" href="https://software.intel.com/en-us/intel-mkl"><tt class="docutils literal"><span class="pre">Math</span> <span class="pre">Kernel</span> <span class="pre">Library</span> <span class="pre">(MKL)</span></tt></a> (Tested on version &gt;= 11.1) (For accelerated vector operations)</li>
-<li><a class="reference external" href="http://sphinxcontrib-napoleon.readthedocs.org/en/latest/"><tt class="docutils literal"><span class="pre">Napoleon</span></tt></a> (Tested on version &gt;= 0.2.8) (For building the documentation from source)</li>
-<li><a class="reference external" href="https://nose.readthedocs.org/en/latest/"><tt class="docutils literal"><span class="pre">Nose</span></tt></a> (Tested on version &gt;= 1.3) (For running unittests and doctests)</li>
-<li><a class="reference external" href="http://pep8.readthedocs.org/en/latest/"><tt class="docutils literal"><span class="pre">PEP8</span></tt></a> (Tested on version &gt;= 1.5) (For running style check tests)</li>
-<li><a class="reference external" href="http://www.pythonware.com/products/pil/"><tt class="docutils literal"><span class="pre">PIL</span> <span class="pre">(or</span> <span class="pre">Pillow)</span></tt></a> (Tested on version &gt;= 1.1.7) (For running the IPython notebook examples as tests)</li>
-<li><a class="reference external" href="https://launchpad.net/pyflakes"><tt class="docutils literal"><span class="pre">Pyflakes</span></tt></a> (Tested on version &gt;= 0.8) (For running style check tests)</li>
-<li><a class="reference external" href="https://radon.readthedocs.org/en/latest/"><tt class="docutils literal"><span class="pre">Radon</span></tt></a> (Tested on version &gt;= 1.2) (For running style check tests)</li>
-<li><a class="reference external" href="http://sphinx-doc.org/"><tt class="docutils literal"><span class="pre">Sphinx</span></tt></a> (Tested on version &gt;= 1.2) (For building the documentation from source)</li>
+<li><a class="reference external" href="http://berkeleyanalytics.com/bottleneck/"><code class="docutils literal"><span class="pre">Bottleneck</span></code></a> (Tested on version &gt;=1.0.0) (For speed-up of some algorithms)</li>
+<li><a class="reference external" href="http://nedbatchelder.com/code/coverage/"><code class="docutils literal"><span class="pre">Coverage</span></code></a> (Tested on version &gt;= 3.7) (For running the test suite script)</li>
+<li><a class="reference external" href="http://ipython.org/"><code class="docutils literal"><span class="pre">IPython</span></code></a> (Tested on version &gt;= 2.1) (For running the IPython notebook examples)</li>
+<li><a class="reference external" href="https://software.intel.com/en-us/intel-mkl"><code class="docutils literal"><span class="pre">Math</span> <span class="pre">Kernel</span> <span class="pre">Library</span> <span class="pre">(MKL)</span></code></a> (Tested on version &gt;= 11.1) (For accelerated vector operations)</li>
+<li><a class="reference external" href="https://nose.readthedocs.org/en/latest/"><code class="docutils literal"><span class="pre">Nose</span></code></a> (Tested on version &gt;= 1.3) (For running unittests and doctests)</li>
+<li><a class="reference external" href="http://pep8.readthedocs.org/en/latest/"><code class="docutils literal"><span class="pre">PEP8</span></code></a> (Tested on version &gt;= 1.5) (For running style check tests)</li>
+<li><a class="reference external" href="http://www.pythonware.com/products/pil/"><code class="docutils literal"><span class="pre">PIL</span> <span class="pre">(or</span> <span class="pre">Pillow)</span></code></a> (Tested on version &gt;= 1.1.7) (For running the IPython notebook examples as tests)</li>
+<li><a class="reference external" href="https://launchpad.net/pyflakes"><code class="docutils literal"><span class="pre">Pyflakes</span></code></a> (Tested on version &gt;= 0.8) (For running style check tests)</li>
+<li><a class="reference external" href="https://radon.readthedocs.org/en/latest/"><code class="docutils literal"><span class="pre">Radon</span></code></a> (Tested on version &gt;= 1.2) (For running style check tests)</li>
+<li><a class="reference external" href="http://sphinx-doc.org/"><code class="docutils literal"><span class="pre">Sphinx</span></code></a> (Tested on version &gt;= 1.3.1) (For building the documentation from source)</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">When using the <a class="reference internal" href="magni.utils.multiprocessing.html#module-magni.utils.multiprocessing" title="magni.utils.multiprocessing"><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils.multiprocessing</span></tt></a> subpackage, it is generally a good idea to restrict acceleration libraries like MKL or OpenBLAS to use a single thread. If MKL is installed, this is done automatically at runtime in the <a class="reference internal" href="magni.utils.multiprocessing.html#module-magni.utils.multiprocessing" title="magni.utils.multiprocessing"><tt class="xref py py-mod docutils literal"><span class="pre">magni.utils.multiprocessing</span></tt></a> subpackage. If other libraries than MKL are used, the user has to manually set an appropriate evironmental variable, e.g. OMP_NUM_THREADS.</p>
+<p class="last">When using the <a class="reference internal" href="magni.utils.multiprocessing.html#module-magni.utils.multiprocessing" title="magni.utils.multiprocessing"><code class="xref py py-mod docutils literal"><span class="pre">magni.utils.multiprocessing</span></code></a> subpackage, it is generally a good idea to restrict acceleration libraries like MKL or OpenBLAS to use a single thread. If MKL is installed, this is done automatically at runtime in the <a class="reference internal" href="magni.utils.multiprocessing.html#module-magni.utils.multiprocessing" title="magni.utils.multiprocessing"><code class="xref py py-mod docutils literal"><span class="pre">magni.utils.multiprocessing</span></code></a> subpackage. If other libraries than MKL are used, the user has to manually set an appropriate evironmental variable, e.g. OMP_NUM_THREADS.</p>
 </div>
 <p>You may use the <em>dep_check.py</em> script found in the Magni folder under &#8216;/magni/tests/&#8217; to check for missing dependencies for Magni. Simply run the script to print a dependency report, e.g.:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ python dep_check.py
@@ -192,17 +192,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 </div>
 <div class="section" id="tests">
 <span id="sec-tests"></span><h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
-<p>A test suite consisting of unittests, doctests, the IPython notebook examples, and several style checks is included in <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>. The tests are organized in python modules found in the Magni folder under &#8216;/magni/tests/&#8217;. Each module features one or more <tt class="xref py py-mod docutils literal"><span class="pre">unittest.TestCase</span></tt> classes containing the tests. Thus, the tests may be invoked using any test runner that supports the <tt class="xref py py-mod docutils literal"><span class="pre">unittest.TestCase</span></tt>. E.g. running the wrapper for the doctests using <a class="reference external" href="https://nose.readthedocs.org/en/latest/"><tt class="docutils literal"><span class="pre">Nose</span></tt></a> is done by issuing:</p>
+<p>A test suite consisting of unittests, doctests, the IPython notebook examples, and several style checks is included in <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a>. The tests are organized in python modules found in the Magni folder under &#8216;/magni/tests/&#8217;. Each module features one or more <code class="xref py py-mod docutils literal"><span class="pre">unittest.TestCase</span></code> classes containing the tests. Thus, the tests may be invoked using any test runner that supports the <code class="xref py py-mod docutils literal"><span class="pre">unittest.TestCase</span></code>. E.g. running the wrapper for the doctests using <a class="reference external" href="https://nose.readthedocs.org/en/latest/"><code class="docutils literal"><span class="pre">Nose</span></code></a> is done by issuing:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ nosetests magni/tests/wrap_doctests.py
 </pre></div>
 </div>
-<p>The entire test suite may be run by executing the convenience script <tt class="code docutils literal"><span class="pre">run_tests.py</span></tt>:</p>
+<p>The entire test suite may be run by executing the convenience script <code class="code docutils literal"><span class="pre">run_tests.py</span></code>:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ magni/tests/run_tests.py
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This convenience script assumes that <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> is available on the PYTHONPATH as explained under <a class="reference internal" href="#sec-installation"><em>Download and Installation</em></a>.</p>
+<p class="last">This convenience script assumes that <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> is available on the PYTHONPATH as explained under <a class="reference internal" href="#sec-installation"><span>Download and Installation</span></a>.</p>
 </div>
 </div>
 <div class="section" id="bug-reports">
@@ -224,19 +224,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 </div>
 <div class="section" id="notation">
 <span id="sec-notation"></span><h1>Notation<a class="headerlink" href="#notation" title="Permalink to this headline">¶</a></h1>
-<p>To the extent possible, a consistent notation has been used in the documentation and implementation of algorithms that are part of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a>. All the details are described in <a class="reference internal" href="notation.html#file-notation"><em>A Note on Notation</em></a>.</p>
+<p>To the extent possible, a consistent notation has been used in the documentation and implementation of algorithms that are part of <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a>. All the details are described in <a class="reference internal" href="notation.html#file-notation"><span>A Note on Notation</span></a>.</p>
 <div class="toctree-wrapper compound">
 </div>
 </div>
 <div class="section" id="examples">
 <span id="sec-examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> package includes a large number of examples showing its capabilities. See the dedicated <a class="reference internal" href="examples.html#file-examples"><em>Examples</em></a> page for all the details.</p>
+<p>The <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> package includes a large number of examples showing its capabilities. See the dedicated <a class="reference internal" href="examples.html#file-examples"><span>Examples</span></a> page for all the details.</p>
 <div class="toctree-wrapper compound">
 </div>
 </div>
 <div class="section" id="api-overview">
 <h1>API Overview<a class="headerlink" href="#api-overview" title="Permalink to this headline">¶</a></h1>
-<p>An overview of the high level <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-mod docutils literal"><span class="pre">magni</span></tt></a> API is given below:</p>
+<p>An overview of the high level <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> API is given below:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="magni.html">magni package</a><ul>
@@ -244,11 +244,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 <li class="toctree-l2"><a class="reference internal" href="magni.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="magni.afm.html">magni.afm package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="magni.afm.html#routine-listings">Routine listings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="magni.afm.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="magni.afm.io.html">magni.afm.io package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="magni.afm.types.html">magni.afm.types package</a></li>
+</ul>
+</li>
 <li class="toctree-l4"><a class="reference internal" href="magni.afm.html#submodules">Submodules</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="magni.afm._config.html">magni.afm._config module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="magni.afm.io.html">magni.afm.io module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="magni.afm.reconstruction.html">magni.afm.reconstruction module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="magni.afm.types.html">magni.afm.types module</a></li>
 </ul>
 </li>
 </ul>
@@ -264,10 +267,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="magni.imaging.html">magni.imaging package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="magni.imaging.html#routine-listings">Routine listings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="magni.imaging.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="magni.imaging.dictionaries.html">magni.imaging.dictionaries package</a></li>
+</ul>
+</li>
 <li class="toctree-l4"><a class="reference internal" href="magni.imaging.html#submodules">Submodules</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="magni.imaging._fastops.html">magni.imaging._fastops module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="magni.imaging._util.html">magni.imaging._util module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="magni.imaging.dictionaries.html">magni.imaging.dictionaries module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="magni.imaging.domains.html">magni.imaging.domains module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="magni.imaging.evaluation.html">magni.imaging.evaluation module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="magni.imaging.measurements.html">magni.imaging.measurements module</a></li>
@@ -281,6 +286,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 <li class="toctree-l4"><a class="reference internal" href="magni.reproducibility.html#routine-listings">Routine listings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="magni.reproducibility.html#submodules">Submodules</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="magni.reproducibility._annotation.html">magni.reproducibility._annotation module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="magni.reproducibility._chase.html">magni.reproducibility._chase module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="magni.reproducibility.io.html">magni.reproducibility.io module</a></li>
 </ul>
 </li>
@@ -298,6 +304,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 <li class="toctree-l5"><a class="reference internal" href="magni.utils.config.html">magni.utils.config module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="magni.utils.matrices.html">magni.utils.matrices module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="magni.utils.plotting.html">magni.utils.plotting module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="magni.utils.types.html">magni.utils.types module</a></li>
 </ul>
 </li>
 </ul>
@@ -314,7 +321,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
@@ -343,7 +350,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="notation.html"
                         title="next chapter">A Note on Notation</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -360,7 +367,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -369,13 +376,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
         <li class="right" >
           <a href="notation.html" title="A Note on Notation"
              >next</a> |</li>
-        <li><a href="#">Magni 1.2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Magni 1.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

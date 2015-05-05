@@ -18,6 +18,8 @@ plotting
     Module providing utilities for control of plotting using `matplotlib`.
 validation
     Subpackage providing validation capability.
+types
+    Module providing custom data types.
 split_path(path)
     Split a path into folder path, file name, and file extension.
 
@@ -35,4 +37,5 @@ from magni.utils import config
 from magni.utils import matrices
 from magni.utils import multiprocessing
 from magni.utils import plotting
+from magni.utils import types
 from magni.utils._util import split_path

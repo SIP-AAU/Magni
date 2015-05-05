@@ -31,13 +31,13 @@ pac_names = {'python': 'Python',
              'mkl': 'MKL',
              'sphinx': 'Sphinx',
              'IPython': 'IPython',
-             'sphinxcontrib.napoleon': 'Napoleon',
              'pyflakes': 'Pyflakes',
              'pep8': 'PEP8',
              'radon': 'Radon',
              'nose': 'Nose',
              'coverage': 'Coverage',
-             'PIL': 'PIL'}
+             'PIL': 'PIL',
+             'bottleneck': 'Bottleneck'}
 
 
 # Minimum version requirements
@@ -50,16 +50,17 @@ deps = {'numpy': '1.8',
         'matplotlib': '1.3'}
 
 opt_deps = {'mkl': '11.1',
-            'sphinx': '1.2',
+            'sphinx': '1.3.1',
             'IPython': '2.1',
             'pyflakes': '0.8',
             'pep8': '1.5',
             'radon': '1.2',
             'nose': '1.3',
             'coverage': '3.7',
-            'PIL': '1.1.7'}
+            'PIL': '1.1.7',
+            'bottleneck': '1.0.0'}
 
-ver_broken_opt_deps = {'sphinxcontrib.napoleon': '0.2.8'}
+ver_broken_opt_deps = {}
 
 status = {}
 
@@ -111,9 +112,15 @@ for pac in all_deps:
 
 
 # Version broken optional dependencies:
-for brok in ver_broken_opt_deps:
+for brok, brok_ver in ver_broken_opt_deps.items():
     try:
         b = importlib.import_module(brok)
+        if StrictVersion(b.__version__) < StrictVersion(brok_ver):
+            status[brok] = ('WARN: Tested on version >= ' + brok_ver +
+                            '; Installed version is ' + b.__version__)
+        else:
+            status[brok] = 'OK: Installed version is ' + b.__version__
+    except AttributeError:
         status[brok] = ('WARN: Unknown version. Please ensure version >= ' +
                         ver_broken_opt_deps[brok])
     except ImportError:

@@ -3,5 +3,6 @@ magni.cs.phase_transition._backup module
 
 .. automodule:: magni.cs.phase_transition._backup
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

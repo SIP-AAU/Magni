@@ -9,7 +9,7 @@ subpackage.
 
 See also
 --------
-magni.utils.config.Configger : The Configger class used
+magni.cs.reconstruction._config.Configger : The Configger class used
 
 Notes
 -----
@@ -34,15 +34,18 @@ mu : {'step', 'fixed'}
     iteration.
 mu_fixed : float
     The value used for mu if using the 'fixed' method (the default is 1.0).
-mu_step_start : float
-    The value used for mu for the first iterations if using the 'step' method
-    (the default is 0.001).
 mu_step_end : float
     The value used for mu for the last iterations if using the 'step' method
     (the default is 1.5).
-precision_float : dtype
+mu_step_iteration : int
+    The iteration where the value used for mu changes if using the 'step'
+    method
+mu_step_start : float
+    The value used for mu for the first iterations if using the 'step' method
+    (the default is 0.001).
+precision_float : {np.float, np.float16, np.float32, np.float64, np.float128}
     The floating point precision used for the computations (the default is
-    float64).
+    np.float64).
 sigma_geometric : float
     The common ratio used for the sigma update (the default is 0.7).
 sigma_start : {'reciprocal', 'fixed'}
@@ -77,8 +80,9 @@ configger = _Configger(
      'L_geometric_start': 2.0,
      'mu': 'step',
      'mu_fixed': 1.0,
-     'mu_step_start': 0.001,
      'mu_step_end': 1.5,
+     'mu_step_iteration': 4,
+     'mu_step_start': 0.001,
      'precision_float': np.float64,
      'sigma_geometric': 0.7,
      'sigma_start': 'reciprocal',
@@ -92,8 +96,9 @@ configger = _Configger(
      'L_geometric_start': _numeric(None, 'floating', range_='[1;inf)'),
      'mu': _generic(None, 'string', value_in=('fixed', 'step')),
      'mu_fixed': _numeric(None, 'floating', range_='(0;inf)'),
-     'mu_step_start': _numeric(None, 'floating', range_='(0;inf)'),
      'mu_step_end': _numeric(None, 'floating', range_='(0;inf)'),
+     'mu_step_iteration': _numeric(None, 'integer', range_='(0;inf)'),
+     'mu_step_start': _numeric(None, 'floating', range_='(0;inf)'),
      'precision_float': _generic(None, type, value_in=(
          np.float,
          getattr(np, 'float16', np.float_),

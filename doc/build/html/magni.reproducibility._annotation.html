@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility._annotation module &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.reproducibility._annotation module &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,36 +23,36 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.reproducibility package" href="magni.reproducibility.html" />
-    <link rel="next" title="magni.reproducibility.io module" href="magni.reproducibility.io.html" />
+    <link rel="next" title="magni.reproducibility._chase module" href="magni.reproducibility._chase.html" />
     <link rel="prev" title="magni.reproducibility package" href="magni.reproducibility.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="magni.reproducibility.io.html" title="magni.reproducibility.io module"
+          <a href="magni.reproducibility._chase.html" title="magni.reproducibility._chase module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="magni.reproducibility.html" title="magni.reproducibility package"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.reproducibility.html" accesskey="U">magni.reproducibility package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" accesskey="U">magni.reproducibility package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.reproducibility._annotation">
 <span id="magni-reproducibility-annotation-module"></span><h1>magni.reproducibility._annotation module<a class="headerlink" href="#module-magni.reproducibility._annotation" title="Permalink to this headline">¶</a></h1>
@@ -65,7 +65,7 @@
 <dt>get_datetime()</dt>
 <dd>Function that returns information about the current date and time.</dd>
 <dt>get_git_revision()</dt>
-<dd>Function that returns information about the <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-obj docutils literal"><span class="pre">magni</span></tt></a> git revision.</dd>
+<dd>Function that returns information about the <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-obj docutils literal"><span class="pre">magni</span></code></a> git revision.</dd>
 <dt>get_magni_config()</dt>
 <dd>Function that returns information about the current configuration of Magni.</dd>
 <dt>get_magni_info()</dt>
@@ -77,7 +77,7 @@
 <p>The return annotations are any nested level of dicts of dicts of strings.</p>
 <dl class="function">
 <dt id="magni.reproducibility._annotation.get_conda_info">
-<tt class="descclassname">magni.reproducibility._annotation.</tt><tt class="descname">get_conda_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_conda_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_conda_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.reproducibility._annotation.</code><code class="descname">get_conda_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_conda_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_conda_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionary contianing information from Conda.</p>
 <p>Conda is the package manager for the <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Continuum Anaconda</a> scientific Python
 distribution. This function will return various information about the
@@ -120,7 +120,7 @@ have either of the following values:</p>
 
 <dl class="function">
 <dt id="magni.reproducibility._annotation.get_datetime">
-<tt class="descclassname">magni.reproducibility._annotation.</tt><tt class="descname">get_datetime</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.reproducibility._annotation.</code><code class="descname">get_datetime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionary holding the current date and time.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -149,7 +149,7 @@ It has one of the follwing values:</p>
 
 <dl class="function">
 <dt id="magni.reproducibility._annotation.get_git_revision">
-<tt class="descclassname">magni.reproducibility._annotation.</tt><tt class="descname">get_git_revision</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_git_revision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_git_revision" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.reproducibility._annotation.</code><code class="descname">get_git_revision</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_git_revision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_git_revision" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionary containing information about the current git revision.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -175,13 +175,13 @@ following keys:</p>
 <li>returncode (returncode from failing git command)</li>
 <li>output (output from failing git command)</li>
 </ul>
-<p>The &#8220;git describe&#8221; commands are run in the directory in which <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-obj docutils literal"><span class="pre">magni</span></tt></a> is
+<p>The &#8220;git describe&#8221; commands are run in the directory in which <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-obj docutils literal"><span class="pre">magni</span></code></a> is
 loaded from.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="magni.reproducibility._annotation.get_magni_config">
-<tt class="descclassname">magni.reproducibility._annotation.</tt><tt class="descname">get_magni_config</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_magni_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_magni_config" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.reproducibility._annotation.</code><code class="descname">get_magni_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_magni_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_magni_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionary holding the current configuration of Magni.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -206,7 +206,7 @@ following values:</p>
 
 <dl class="function">
 <dt id="magni.reproducibility._annotation.get_magni_info">
-<tt class="descclassname">magni.reproducibility._annotation.</tt><tt class="descname">get_magni_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_magni_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_magni_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.reproducibility._annotation.</code><code class="descname">get_magni_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_magni_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_magni_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string representation of the output of help(magni).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -226,7 +226,7 @@ Information about magni.</td>
 
 <dl class="function">
 <dt id="magni.reproducibility._annotation.get_platform_info">
-<tt class="descclassname">magni.reproducibility._annotation.</tt><tt class="descname">get_platform_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_platform_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_platform_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.reproducibility._annotation.</code><code class="descname">get_platform_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/_annotation.html#get_platform_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility._annotation.get_platform_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionary containing information about the system platform.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -240,7 +240,7 @@ Various information about the system platform.</td>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><tt class="xref py py-func docutils literal"><span class="pre">platform()</span></tt></dt>
+<dt><code class="xref py py-func docutils literal"><span class="pre">platform()</span></code></dt>
 <dd>The Python module used to query information about the system.</dd>
 </dl>
 </div>
@@ -260,7 +260,7 @@ Various information about the system platform.</td>
 <li>status</li>
 </ul>
 <p>The linux/mac_os/win32 entries are &#8220;empty&#8221; if they are not applicable.</p>
-<p>If the processor information returned by <tt class="xref py py-obj docutils literal"><span class="pre">platform</span></tt> is &#8220;empty&#8221;, a query of
+<p>If the processor information returned by <code class="xref py py-obj docutils literal"><span class="pre">platform</span></code> is &#8220;empty&#8221;, a query of
 <em class="xref py py-obj">lscpu</em> is attempted in order to provide the necessary information.</p>
 <p>The status entry informs about the success of the queries. It has one of
 the follwing values:</p>
@@ -278,7 +278,7 @@ the follwing values:</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -292,9 +292,9 @@ the follwing values:</p>
   <p class="topless"><a href="magni.reproducibility.html"
                         title="previous chapter">magni.reproducibility package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="magni.reproducibility.io.html"
-                        title="next chapter">magni.reproducibility.io module</a></p>
-<div id="searchbox" style="display: none">
+  <p class="topless"><a href="magni.reproducibility._chase.html"
+                        title="next chapter">magni.reproducibility._chase module</a></p>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -311,27 +311,27 @@ the follwing values:</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="magni.reproducibility.io.html" title="magni.reproducibility.io module"
+          <a href="magni.reproducibility._chase.html" title="magni.reproducibility._chase module"
              >next</a> |</li>
         <li class="right" >
           <a href="magni.reproducibility.html" title="magni.reproducibility package"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.reproducibility.html" >magni.reproducibility package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" >magni.reproducibility package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

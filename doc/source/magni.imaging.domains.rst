@@ -3,5 +3,6 @@ magni.imaging.domains module
 
 .. automodule:: magni.imaging.domains
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

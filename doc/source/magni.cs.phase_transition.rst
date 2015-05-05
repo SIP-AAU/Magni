@@ -3,7 +3,8 @@ magni.cs.phase_transition package
 
 .. automodule:: magni.cs.phase_transition
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
 
 Submodules

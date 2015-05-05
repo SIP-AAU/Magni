@@ -3,5 +3,6 @@ magni.imaging.evaluation module
 
 .. automodule:: magni.imaging.evaluation
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

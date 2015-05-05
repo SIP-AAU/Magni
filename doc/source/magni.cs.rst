@@ -3,7 +3,8 @@ magni.cs package
 
 .. automodule:: magni.cs
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
 
 Subpackages

@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility.io &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.reproducibility.io &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,27 +23,27 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for magni.reproducibility.io</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -59,10 +59,18 @@
 <span class="sd">----------------</span>
 <span class="sd">annotate_database(h5file)</span>
 <span class="sd">    Function for annotating an existing HDF5 database.</span>
+<span class="sd">chase_database(h5file)</span>
+<span class="sd">    Function for chasing an existing HDF5 database.</span>
+<span class="sd">create_database(h5file)</span>
+<span class="sd">    Function for creating a new annotated and chased HDF5 database.</span>
 <span class="sd">read_annotations(h5file)</span>
-<span class="sd">    Function for reading annotations in an HDF5 database.</span>
+<span class="sd">    Function for reading annotations in a HDF5 database.</span>
+<span class="sd">read_chases(h5file)</span>
+<span class="sd">    Function for reading chases in a HDF5 database.</span>
 <span class="sd">remove_annotations(h5file)</span>
-<span class="sd">    Function for removing annotations in an HDF5 database.</span>
+<span class="sd">    Function for removing annotations in a HDF5 database.</span>
+<span class="sd">remove_chases(h5file)</span>
+<span class="sd">    Function for removing chases in a HDF5 database.</span>
 
 <span class="sd">See Also</span>
 <span class="sd">--------</span>
@@ -72,22 +80,30 @@
 <span class="sd">magni.reproducibility._annotation.get_datetime : Date and time annotation</span>
 <span class="sd">magni.reproducibility._annotation.get_magni_config : Magni config annotation</span>
 <span class="sd">magni.reproducibility._annotation.get_magni_info : Magni info annotation</span>
+<span class="sd">magni.reproducibility._chase.get_main_file_name : Magni main file name chase</span>
+<span class="sd">magni.reproducibility._chase.get_main_file_source : Magni source code chase</span>
+<span class="sd">magni.reproducibility._chase.get_main_source : Magni main source code chase</span>
+<span class="sd">magni.reproducibility._chase.get_stack_trace : Magni stack trace chase</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">tables</span>
 
 <span class="kn">from</span> <span class="nn">magni.reproducibility</span> <span class="kn">import</span> <span class="n">_annotation</span>
+<span class="kn">from</span> <span class="nn">magni.reproducibility</span> <span class="kn">import</span> <span class="n">_chase</span>
+<span class="kn">from</span> <span class="nn">magni.utils.multiprocessing</span> <span class="kn">import</span> <span class="n">File</span> <span class="k">as</span> <span class="n">_File</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="annotate_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.annotate_database">[docs]</a><span class="k">def</span> <span class="nf">annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Annotate an HDF5 database with information about Magni and the platform.</span>
+<span class="sd">    Annotate a HDF5 database with information about Magni and the platform.</span>
 
 <span class="sd">    The annotation consists of a group in the root of the `h5file` having nodes</span>
 <span class="sd">    that each provide information about Magni or the platform on which this</span>
@@ -156,14 +172,122 @@
                                <span class="s">&#39;(re)annotating the database.&#39;</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="read_annotations"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.read_annotations">[docs]</a><span class="k">def</span> <span class="nf">read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
+<div class="viewcode-block" id="chase_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.chase_database">[docs]</a><span class="k">def</span> <span class="nf">chase_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Read the annotations to an HDF5 database.</span>
+<span class="sd">    Chase a HDF5 database to track information about the stack and source code.</span>
+
+<span class="sd">    The chase consist of a group in the root of the `h5file` having nodes that</span>
+<span class="sd">    each profide information about the program execution that led to this chase</span>
+<span class="sd">    of the database.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    h5file : tables.file.File</span>
-<span class="sd">        The handle to the HDF5 database from which the annotations is read.</span>
+<span class="sd">        The handle to the HDF5 database that should be chased.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.reproducibility._chase.get_main_file_name : Name of main file</span>
+<span class="sd">    magni.reproducibility._chase.get_main_file_source : Main file source code</span>
+<span class="sd">    magni.reproducibility._chase.get_main_source : Source code around main</span>
+<span class="sd">    magni.reproducibility._chase.get_stack_trace : Complete stack trace</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The chase include the following information:</span>
+
+<span class="sd">    * main_file_name - Name of the main file/script that called this function</span>
+<span class="sd">    * main_file_source - Full source code of the main file/script</span>
+<span class="sd">    * main_source - Extract of main file source code that called this function</span>
+<span class="sd">    * stack_trace - Complete stack trace up until the call to this function</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Chase the database named &#39;db.hdf5&#39;:</span>
+
+<span class="sd">    &gt;&gt;&gt; import magni</span>
+<span class="sd">    &gt;&gt;&gt; from magni.reproducibility.io import chase_database</span>
+<span class="sd">    &gt;&gt;&gt; with magni.utils.multiprocessing.File(&#39;db.hdf5&#39;, mode=&#39;a&#39;) as h5file:</span>
+<span class="sd">    ...     chase_database(h5file)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="n">chases</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;main_file_name&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_chase</span><span class="o">.</span><span class="n">get_main_file_name</span><span class="p">()),</span>
+              <span class="s">&#39;main_file_source&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_chase</span><span class="o">.</span><span class="n">get_main_file_source</span><span class="p">()),</span>
+              <span class="s">&#39;main_source&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_chase</span><span class="o">.</span><span class="n">get_main_source</span><span class="p">()),</span>
+              <span class="s">&#39;stack_trace&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_chase</span><span class="o">.</span><span class="n">get_stack_trace</span><span class="p">())}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">chase_group</span> <span class="o">=</span> <span class="n">h5file</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="s">&#39;chases&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">chase</span> <span class="ow">in</span> <span class="n">chases</span><span class="p">:</span>
+            <span class="n">h5file</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">chase_group</span><span class="p">,</span> <span class="n">chase</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">chases</span><span class="p">[</span><span class="n">chase</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NodeError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">tables</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s">&#39;The database has already been chased. &#39;</span> <span class="o">+</span>
+                               <span class="s">&#39;Remove the existing chase prior to &#39;</span> <span class="o">+</span>
+                               <span class="s">&#39;(re)chasing the database.&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="create_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.create_database">[docs]</a><span class="k">def</span> <span class="nf">create_database</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new HDF database that is annotated and chased.</span>
+
+<span class="sd">    A new HDF database is created and it is annotated using</span>
+<span class="sd">    `magni.reproducibility.io.annotate_database` and chased using</span>
+<span class="sd">    `magni.reproducibility.io.annotate_database`. If the `overwrite` flag is</span>
+<span class="sd">    true and existing database at `path` is overwritten.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str</span>
+<span class="sd">        The path to the HDF file that is to be created.</span>
+<span class="sd">    overwrite : bool</span>
+<span class="sd">        The flag that indicates if an existing database should be overwritten.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.reproducibility.io.annotate_database : Database annotation</span>
+<span class="sd">    magni.reproducibility.io.chase_database : Database chase</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Create a new database named &#39;new_db.hdf5&#39;:</span>
+
+<span class="sd">    &gt;&gt;&gt; from magni.reproducibility.io import create_database</span>
+<span class="sd">    &gt;&gt;&gt; create_database(&#39;new_db.hdf5&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;path&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;overwrite&#39;</span><span class="p">,</span> <span class="s">&#39;boolean&#39;</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exist</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;{!r} already exists in filesystem.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+    <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
+        <span class="n">annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+        <span class="n">chase_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="read_annotations"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.read_annotations">[docs]</a><span class="k">def</span> <span class="nf">read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read the annotations to a HDF5 database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h5file : tables.file.File</span>
+<span class="sd">        The handle to the HDF5 database from which the annotations are read.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -219,14 +343,75 @@
     <span class="k">return</span> <span class="n">annotations</span>
 
 </div>
-<div class="viewcode-block" id="remove_annotations"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.remove_annotations">[docs]</a><span class="k">def</span> <span class="nf">remove_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
+<div class="viewcode-block" id="read_chases"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.read_chases">[docs]</a><span class="k">def</span> <span class="nf">read_chases</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Remove the annotations from an HDF5 database.</span>
+<span class="sd">    Read the chases to a HDF5 database.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    h5file : tables.file.File</span>
-<span class="sd">        The handle to the HDF5 database from which the annotations is removed.</span>
+<span class="sd">        The handle to the HDF5 database from which the chases are read.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    chasess : dict</span>
+<span class="sd">        The chases read from the HDF5 database.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the chases to the HDF5 database does not conform to the Magni chases</span>
+<span class="sd">        standard.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The returned dict holds a key for each chase in the database. The value</span>
+<span class="sd">    corresponding to a given key is a string. See</span>
+<span class="sd">    `magni.reproducibility.chase_database` for examples of such chases.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Read chases from the database named &#39;db.hdf5&#39;:</span>
+
+<span class="sd">    &gt;&gt;&gt; import magni</span>
+<span class="sd">    &gt;&gt;&gt; from magni.reproducibility.io import read_chases</span>
+<span class="sd">    &gt;&gt;&gt; with magni.utils.multiprocessing.File(&#39;db.hdf5&#39;, mode=&#39;r&#39;) as h5file:</span>
+<span class="sd">    ...    chases = read_chases(h5file)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">h5_chases</span> <span class="o">=</span> <span class="n">h5file</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;chases&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NoSuchNodeError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">tables</span><span class="o">.</span><span class="n">NoSuchNodeError</span><span class="p">(</span><span class="s">&#39;The database has not been chased.&#39;</span><span class="p">)</span>
+
+    <span class="n">h5_chase_dict</span> <span class="o">=</span> <span class="n">h5_chases</span><span class="o">.</span><span class="n">_v_leaves</span>
+    <span class="n">chases</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">chase</span> <span class="ow">in</span> <span class="n">h5_chase_dict</span><span class="p">:</span>
+            <span class="n">chases</span><span class="p">[</span><span class="n">chase</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">h5_chase_dict</span><span class="p">[</span><span class="n">chase</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Unable to read the {!r} chase &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chase</span><span class="p">)</span> <span class="o">+</span>
+                         <span class="s">&#39;It seems that the chase does not conform to the &#39;</span> <span class="o">+</span>
+                         <span class="s">&#39;Magni chase standard ({!r}).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">chases</span>
+
+</div>
+<div class="viewcode-block" id="remove_annotations"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.remove_annotations">[docs]</a><span class="k">def</span> <span class="nf">remove_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove the annotations from a HDF5 database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h5file : tables.file.File</span>
+<span class="sd">        The handle to the HDF5 database from which the annotations are removed.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -249,15 +434,48 @@
         <span class="n">h5file</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="s">&#39;annotations&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NoSuchNodeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="remove_chases"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.remove_chases">[docs]</a><span class="k">def</span> <span class="nf">remove_chases</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove the chases from a HDF5 database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h5file : tables.file.File</span>
+<span class="sd">        The handle to the HDF5 database from which the chases are removed.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Remove chases from the database named &#39;db.hdf5&#39;:</span>
+
+<span class="sd">    &gt;&gt;&gt; import magni</span>
+<span class="sd">    &gt;&gt;&gt; from magni.reproducibility.io import remove_chases</span>
+<span class="sd">    &gt;&gt;&gt; with magni.utils.multiprocessing.File(&#39;db.hdf5&#39;, mode=&#39;a&#39;) as h5file:</span>
+<span class="sd">    ...    remove_chases(h5file)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">h5file</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="s">&#39;chases&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NoSuchNodeError</span><span class="p">:</span>
         <span class="k">pass</span></div>
 </pre></div>
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -274,20 +492,20 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../../index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

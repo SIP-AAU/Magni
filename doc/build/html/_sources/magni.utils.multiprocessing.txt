@@ -3,7 +3,8 @@ magni.utils.multiprocessing package
 
 .. automodule:: magni.utils.multiprocessing
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
 
 Submodules

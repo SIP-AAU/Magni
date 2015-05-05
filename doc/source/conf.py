@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2015, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -30,33 +30,25 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
-    from unittest.mock import MagicMock
+    autodoc_mock_modules = ['scipy', 'scipy.fftpack', 'scipy.stats', 'tables',
+                            'matplotlib', 'matplotlib.pyplot']
 
-    class Mock(MagicMock):
-        @classmethod
-        def __getattr__(cls, name):
-            return Mock()
+    html_style = 'classic.css'  # Use classic Sphinx Theme
 
-    MOCK_MODULES = ['scipy', 'scipy.fftpack', 'scipy.stats', 'tables',
-                    'matplotlib', 'matplotlib.pyplot']
-    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-
-    html_style = 'default.css'  # Use default Sphinx Theme
-
-    latex_documents = (None, None)  # Disable PDF generation (hack)
+    latex_documents = [None, None]  # Disable PDF generation (hack)
     epub_cover = (None, None)  # Disable epub generation (hack)
 
 
 # -- General configuration -----------------------------------------------------
 
 # Minimal Sphinx version needed to build the documentation.
-needs_sphinx = '1.2'
+needs_sphinx = '1.3'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.mathjax',
               'sphinx.ext.viewcode', 'sphinx.ext.extlinks',
-              'sphinxcontrib.napoleon']
+              'sphinx.ext.napoleon']
 
 if tags.has('no_viewcode_ext'):
     extensions.remove('sphinx.ext.viewcode')
@@ -75,7 +67,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Magni'
-copyright = u'2014, Magni developers'
+copyright = u'2014-2015, Magni developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -127,7 +119,7 @@ modindex_common_prefix = ['magni.']
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'classic'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -234,7 +226,8 @@ autodoc_default_flags = ['members', 'private-members', 'special-members',
 
 def skip_special_members(app, what, name, obj, skip, options):
     """Skip some special members in the documentation."""
-    skip_modules = ['__module__', '__doc__', '__dict__', '__weakref__']
+    skip_modules = ['__module__', '__doc__', '__dict__', '__weakref__',
+                    '__init__', '_params']
 
     if name in skip_modules:
         return True
@@ -263,7 +256,7 @@ napoleon_include_special_with_doc = False
 napoleon_use_admonition_for_examples = False
 napoleon_use_admonition_for_notes = False
 napoleon_use_admonition_for_references = False
-napoleon_use_ivar = True
+napoleon_use_ivar = False
 napoleon_use_param = False
 napoleon_use_rtype = False
 

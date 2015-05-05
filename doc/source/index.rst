@@ -109,16 +109,16 @@ Dependencies
 
 **Optional** third party dependencies for :py:mod:`magni` are:
 
+- |bottleneck|_ (Tested on version >=1.0.0) (For speed-up of some algorithms)
 - |coverage|_ (Tested on version >= 3.7) (For running the test suite script)
 - |ipython|_ (Tested on version >= 2.1) (For running the IPython notebook examples)
 - |mkl|_ (Tested on version >= 11.1) (For accelerated vector operations)
-- |napoleon|_ (Tested on version >= 0.2.8) (For building the documentation from source)
 - |nose|_ (Tested on version >= 1.3) (For running unittests and doctests)
 - |pep8|_ (Tested on version >= 1.5) (For running style check tests)
 - |pil|_ (Tested on version >= 1.1.7) (For running the IPython notebook examples as tests)
 - |pyflakes|_ (Tested on version >= 0.8) (For running style check tests)
 - |radon|_ (Tested on version >= 1.2) (For running style check tests)
-- |sphinx|_ (Tested on version >= 1.2) (For building the documentation from source)
+- |sphinx|_ (Tested on version >= 1.3.1) (For building the documentation from source)
 
 
 .. note:: 
@@ -130,7 +130,7 @@ Dependencies
 .. |python3| replace:: ``Python 3``
 .. _Python3: https://www.python.org/
 .. |pytables| replace:: ``PyTables``
-.. _pytables: http://www.pytables.org/moin
+.. _pytables: http://www.pytables.org/
 .. |numpy| replace:: ``Numpy``
 .. _numpy: http://www.numpy.org/
 .. |scipy| replace:: ``Scipy``
@@ -143,8 +143,6 @@ Dependencies
 .. _mkl: https://software.intel.com/en-us/intel-mkl
 .. |sphinx| replace:: ``Sphinx``
 .. _sphinx: http://sphinx-doc.org/
-.. |napoleon| replace:: ``Napoleon``
-.. _napoleon: http://sphinxcontrib-napoleon.readthedocs.org/en/latest/
 .. |nose| replace:: ``Nose``
 .. _nose: https://nose.readthedocs.org/en/latest/
 .. |pep8| replace:: ``PEP8``
@@ -157,6 +155,8 @@ Dependencies
 .. _coverage: http://nedbatchelder.com/code/coverage/
 .. |pil| replace:: ``PIL (or Pillow)``
 .. _pil: http://www.pythonware.com/products/pil/
+.. |bottleneck| replace:: ``Bottleneck``
+.. _bottleneck: http://berkeleyanalytics.com/bottleneck/
 
 You may use the *dep_check.py* script found in the Magni folder under '/magni/tests/' to check for missing dependencies for Magni. Simply run the script to print a dependency report, e.g.:
 

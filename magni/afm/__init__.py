@@ -14,11 +14,11 @@ Routine listings
 config
     Configger providing configuration options for this subpackage.
 io
-    Module providing input/output functionality for MI files.
+    Subpackage providing input/output functionality for .mi files.
 reconstruction
     Module providing reconstruction and analysis of reconstructed images.
 types
-    Module providing data container classes for MI files.
+    Subpackage providing data container classes for .mi files.
 
 """
 

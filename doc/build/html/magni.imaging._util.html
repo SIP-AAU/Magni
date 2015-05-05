@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging._util module &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.imaging._util module &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,43 +23,229 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
-    <link rel="next" title="magni.imaging.dictionaries module" href="magni.imaging.dictionaries.html" />
-    <link rel="prev" title="magni.imaging._fastops module" href="magni.imaging._fastops.html" /> 
+    <link rel="next" title="magni.imaging.domains module" href="magni.imaging.domains.html" />
+    <link rel="prev" title="magni.imaging.dictionaries.utils module" href="magni.imaging.dictionaries.utils.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="magni.imaging.dictionaries.html" title="magni.imaging.dictionaries module"
+          <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="magni.imaging._fastops.html" title="magni.imaging._fastops module"
+          <a href="magni.imaging.dictionaries.utils.html" title="magni.imaging.dictionaries.utils module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.imaging._util">
 <span id="magni-imaging-util-module"></span><h1>magni.imaging._util module<a class="headerlink" href="#module-magni.imaging._util" title="Permalink to this headline">¶</a></h1>
 <p>Module providing the public functions of the magni.imaging subpackage.</p>
 <dl class="function">
+<dt id="magni.imaging._util.double_mirror">
+<code class="descclassname">magni.imaging._util.</code><code class="descname">double_mirror</code><span class="sig-paren">(</span><em>img</em>, <em>fftstyle=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/_util.html#double_mirror"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging._util.double_mirror" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mirror image in both the vertical and horisontal axes.</p>
+<p>The image is mirrored around its upper left corner first in the horizontal
+axis and then in the vertical axis such that an image of four times the
+size of the original is returned. If <em class="xref py py-obj">fftstyle</em> is True, the image is
+constructed such it would represent a fftshifted version of the mirrored
+<em class="xref py py-obj">img</em> such that entry (0, 0) is the DC component.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>ndarray</em>) &#8211;
+The image to mirror.</li>
+<li><strong>fftstyle</strong> (<em>bool</em>) &#8211;
+The flag that indicates if the fftstyle mirrored image is returned.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>mirrored_img</strong> (<em>ndarray</em>) &#8211;
+The mirrored image.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>For example, mirror a very simple 2-by-3 pixel image.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging._util</span> <span class="kn">import</span> <span class="n">double_mirror</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span>
+<span class="go">array([[0, 1, 2],</span>
+<span class="go">       [3, 4, 5]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">double_mirror</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="go">array([[5, 4, 3, 3, 4, 5],</span>
+<span class="go">       [2, 1, 0, 0, 1, 2],</span>
+<span class="go">       [2, 1, 0, 0, 1, 2],</span>
+<span class="go">       [5, 4, 3, 3, 4, 5]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">double_mirror</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">fftstyle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">array([[0, 0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 5, 4, 3, 4, 5],</span>
+<span class="go">       [0, 2, 1, 0, 1, 2],</span>
+<span class="go">       [0, 5, 4, 3, 4, 5]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.imaging._util.get_inscribed_masks">
+<code class="descclassname">magni.imaging._util.</code><code class="descname">get_inscribed_masks</code><span class="sig-paren">(</span><em>img</em>, <em>as_vec=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/_util.html#get_inscribed_masks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging._util.get_inscribed_masks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a set of inscribed masks covering the image.</p>
+<p>Two masks are returned. One is the disc with radius equal to that of the
+inscribed circle for <em class="xref py py-obj">img</em>. The other is the inscribed square of the first
+mask. If <em class="xref py py-obj">as_vec</em> is True, the <em class="xref py py-obj">img</em> must be a vector representation of the
+(matrix) image. In this case, the masks are also returned in vector
+representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>ndarray</em>) &#8211;
+The square image of even height/width which the masks should cover.</li>
+<li><strong>as_vec</strong> (<em>bool</em>) &#8211;
+The indicator of whether or not to treat <em class="xref py py-obj">img</em> as a vector instead of
+an image (the default is False, which implies that <em class="xref py py-obj">img</em> is treated as
+a matrix.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>cicle_mask</strong> (<em>ndarray</em>) &#8211;
+The inscribed cicle mask.</li>
+<li><strong>square_mask</strong> (<em>ndarray</em>) &#8211;
+The inscribed square mask.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>For example, get the inscribed masks of an 8-by-8 image:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging._util</span> <span class="kn">import</span> <span class="n">get_inscribed_masks</span><span class="p">,</span> <span class="n">mat2vec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">circle_mask</span><span class="p">,</span> <span class="n">square_mask</span> <span class="o">=</span> <span class="n">get_inscribed_masks</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np_printoptions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">get_printoptions</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;bool&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">circle_mask</span>
+<span class="go">array([[0, 1, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">       [1, 1, 1, 1, 1, 1, 1, 1],</span>
+<span class="go">       [1, 1, 1, 1, 1, 1, 1, 1],</span>
+<span class="go">       [1, 1, 1, 1, 1, 1, 1, 1],</span>
+<span class="go">       [1, 1, 1, 1, 1, 1, 1, 1],</span>
+<span class="go">       [1, 1, 1, 1, 1, 1, 1, 1],</span>
+<span class="go">       [1, 1, 1, 1, 1, 1, 1, 1],</span>
+<span class="go">       [0, 1, 1, 1, 1, 1, 1, 0]], dtype=bool)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">square_mask</span>
+<span class="go">array([[0, 0, 0, 0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 1, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">       [0, 1, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">       [0, 1, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">       [0, 1, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">       [0, 1, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">       [0, 1, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0, 0, 0, 0]], dtype=bool)</span>
+</pre></div>
+</div>
+<p>Or get the same masks based on a vector:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">img_vec</span> <span class="o">=</span> <span class="n">mat2vec</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c_vec_mask</span><span class="p">,</span> <span class="n">s_vec_mask</span> <span class="o">=</span> <span class="n">get_inscribed_masks</span><span class="p">(</span><span class="n">img_vec</span><span class="p">,</span> <span class="n">as_vec</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c_vec_mask</span>
+<span class="go">array([[0],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [0],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [0],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [1],</span>
+<span class="go">       [0]], dtype=bool)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="o">**</span><span class="n">np_printoptions</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="magni.imaging._util.mat2vec">
-<tt class="descclassname">magni.imaging._util.</tt><tt class="descname">mat2vec</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/_util.html#mat2vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging._util.mat2vec" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.imaging._util.</code><code class="descname">mat2vec</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/_util.html#mat2vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging._util.mat2vec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reshape <em class="xref py py-obj">x</em> from matrix to vector by stacking columns.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -76,7 +262,7 @@ Column vector formed by stacking the columns of the matrix <em class="xref py py
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#magni.imaging._util.vec2mat" title="magni.imaging._util.vec2mat"><tt class="xref py py-func docutils literal"><span class="pre">vec2mat()</span></tt></a></dt>
+<dt><a class="reference internal" href="#magni.imaging._util.vec2mat" title="magni.imaging._util.vec2mat"><code class="xref py py-func docutils literal"><span class="pre">vec2mat()</span></code></a></dt>
 <dd>The inverse operation</dd>
 </dl>
 </div>
@@ -101,7 +287,7 @@ Column vector formed by stacking the columns of the matrix <em class="xref py py
 
 <dl class="function">
 <dt id="magni.imaging._util.vec2mat">
-<tt class="descclassname">magni.imaging._util.</tt><tt class="descname">vec2mat</tt><big>(</big><em>x</em>, <em>mn_tuple</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/_util.html#vec2mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging._util.vec2mat" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.imaging._util.</code><code class="descname">vec2mat</code><span class="sig-paren">(</span><em>x</em>, <em>mn_tuple</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/_util.html#vec2mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging._util.vec2mat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reshape <em class="xref py py-obj">x</em> from column vector to matrix.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -129,7 +315,7 @@ Matrix formed by taking <em class="xref py py-obj">n</em> columns of lenght <em 
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#magni.imaging._util.mat2vec" title="magni.imaging._util.mat2vec"><tt class="xref py py-func docutils literal"><span class="pre">mat2vec()</span></tt></a></dt>
+<dt><a class="reference internal" href="#magni.imaging._util.mat2vec" title="magni.imaging._util.mat2vec"><code class="xref py py-func docutils literal"><span class="pre">mat2vec()</span></code></a></dt>
 <dd>The inverse operation</dd>
 </dl>
 </div>
@@ -158,15 +344,15 @@ Matrix formed by taking <em class="xref py py-obj">n</em> columns of lenght <em 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="magni.imaging._fastops.html"
-                        title="previous chapter">magni.imaging._fastops module</a></p>
+  <p class="topless"><a href="magni.imaging.dictionaries.utils.html"
+                        title="previous chapter">magni.imaging.dictionaries.utils module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="magni.imaging.dictionaries.html"
-                        title="next chapter">magni.imaging.dictionaries module</a></p>
-<div id="searchbox" style="display: none">
+  <p class="topless"><a href="magni.imaging.domains.html"
+                        title="next chapter">magni.imaging.domains module</a></p>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -183,27 +369,27 @@ Matrix formed by taking <em class="xref py py-obj">n</em> columns of lenght <em 
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="magni.imaging.dictionaries.html" title="magni.imaging.dictionaries module"
+          <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
              >next</a> |</li>
         <li class="right" >
-          <a href="magni.imaging._fastops.html" title="magni.imaging._fastops module"
+          <a href="magni.imaging.dictionaries.utils.html" title="magni.imaging.dictionaries.utils module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

@@ -3,5 +3,6 @@ magni.utils.matrices module
 
 .. automodule:: magni.utils.matrices
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

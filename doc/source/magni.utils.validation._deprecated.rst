@@ -3,5 +3,6 @@ magni.utils.validation._deprecated module
 
 .. automodule:: magni.utils.validation._deprecated
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

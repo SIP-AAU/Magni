@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.evaluation module &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.imaging.evaluation module &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.imaging.measurements module" href="magni.imaging.measurements.html" />
     <link rel="prev" title="magni.imaging.domains module" href="magni.imaging.domains.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,16 +43,16 @@
         <li class="right" >
           <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.imaging.evaluation">
 <span id="magni-imaging-evaluation-module"></span><h1>magni.imaging.evaluation module<a class="headerlink" href="#module-magni.imaging.evaluation" title="Permalink to this headline">¶</a></h1>
@@ -69,7 +69,7 @@
 </dl>
 <dl class="function">
 <dt id="magni.imaging.evaluation.calculate_mse">
-<tt class="descclassname">magni.imaging.evaluation.</tt><tt class="descname">calculate_mse</tt><big>(</big><em>x_org</em>, <em>x_recons</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/evaluation.html#calculate_mse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.evaluation.calculate_mse" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.imaging.evaluation.</code><code class="descname">calculate_mse</code><span class="sig-paren">(</span><em>x_org</em>, <em>x_recons</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/evaluation.html#calculate_mse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.evaluation.calculate_mse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate Mean Squared Error (MSE) between <em class="xref py py-obj">x_recons</em> and <em class="xref py py-obj">x_org</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -108,7 +108,7 @@ Mean Squared Error (MSE).</p>
 
 <dl class="function">
 <dt id="magni.imaging.evaluation.calculate_psnr">
-<tt class="descclassname">magni.imaging.evaluation.</tt><tt class="descname">calculate_psnr</tt><big>(</big><em>x_org</em>, <em>x_recons</em>, <em>peak</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/evaluation.html#calculate_psnr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.evaluation.calculate_psnr" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.imaging.evaluation.</code><code class="descname">calculate_psnr</code><span class="sig-paren">(</span><em>x_org</em>, <em>x_recons</em>, <em>peak</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/evaluation.html#calculate_psnr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.evaluation.calculate_psnr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate Peak Signal to Noise Ratio (PSNR) between <em class="xref py py-obj">x_recons</em> and <em class="xref py py-obj">x_org</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -137,7 +137,7 @@ Peak Signal to Noise Ratio (PSNR) in dB.</p>
 x_{recons})^2}\right)\]</div>
 <p>where <em class="xref py py-obj">N</em> is the number of entries in <em class="xref py py-obj">x_org</em>.</p>
 <p>If <span class="math">\(|x_{org} - x_{recons}| &lt;= (10^{-8} + 1^{-5} * |x_{recons}|)\)</span>
-then <tt class="xref py py-obj docutils literal"><span class="pre">np.inf</span></tt> is returned.</p>
+then <code class="xref py py-obj docutils literal"><span class="pre">np.inf</span></code> is returned.</p>
 <p class="rubric">Examples</p>
 <p>For example,</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -153,7 +153,7 @@ then <tt class="xref py py-obj docutils literal"><span class="pre">np.inf</span>
 
 <dl class="function">
 <dt id="magni.imaging.evaluation.calculate_retained_energy">
-<tt class="descclassname">magni.imaging.evaluation.</tt><tt class="descname">calculate_retained_energy</tt><big>(</big><em>x_org</em>, <em>x_recons</em><big>)</big><a class="reference internal" href="_modules/magni/imaging/evaluation.html#calculate_retained_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.evaluation.calculate_retained_energy" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.imaging.evaluation.</code><code class="descname">calculate_retained_energy</code><span class="sig-paren">(</span><em>x_org</em>, <em>x_recons</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/evaluation.html#calculate_retained_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.evaluation.calculate_retained_energy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate percentage of energy retained in reconstruction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -196,7 +196,7 @@ Percentage of retained energy in reconstruction.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -212,7 +212,7 @@ Percentage of retained energy in reconstruction.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.imaging.measurements.html"
                         title="next chapter">magni.imaging.measurements module</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -229,7 +229,7 @@ Percentage of retained energy in reconstruction.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -241,15 +241,15 @@ Percentage of retained energy in reconstruction.</p>
         <li class="right" >
           <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

@@ -3,7 +3,8 @@ magni.reproducibility package
 
 .. automodule:: magni.reproducibility
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
 
 Submodules
@@ -13,4 +14,5 @@ Submodules
     :maxdepth: 1
 
     magni.reproducibility._annotation
+    magni.reproducibility._chase
     magni.reproducibility.io

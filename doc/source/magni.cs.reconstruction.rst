@@ -3,7 +3,8 @@ magni.cs.reconstruction package
 
 .. automodule:: magni.cs.reconstruction
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
 
 Subpackages
@@ -13,6 +14,7 @@ Subpackages
     :maxdepth: 1
 
     magni.cs.reconstruction.iht
+    magni.cs.reconstruction.it
     magni.cs.reconstruction.sl0
 
 Submodules

@@ -3,5 +3,6 @@ magni.utils.multiprocessing._config module
 
 .. automodule:: magni.utils.multiprocessing._config
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

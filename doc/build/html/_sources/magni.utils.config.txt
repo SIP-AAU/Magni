@@ -3,5 +3,6 @@ magni.utils.config module
 
 .. automodule:: magni.utils.config
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

@@ -3,5 +3,6 @@ magni.afm.reconstruction module
 
 .. automodule:: magni.afm.reconstruction
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:

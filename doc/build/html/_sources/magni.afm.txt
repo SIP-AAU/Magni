@@ -3,8 +3,18 @@ magni.afm package
 
 .. automodule:: magni.afm
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+    :maxdepth: 1
+
+    magni.afm.io
+    magni.afm.types
 
 Submodules
 ----------
@@ -13,6 +23,4 @@ Submodules
     :maxdepth: 1
 
     magni.afm._config
-    magni.afm.io
     magni.afm.reconstruction
-    magni.afm.types

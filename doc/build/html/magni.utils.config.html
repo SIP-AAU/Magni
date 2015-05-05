@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.config module &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.utils.config module &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.utils package" href="magni.utils.html" />
     <link rel="next" title="magni.utils.matrices module" href="magni.utils.matrices.html" />
     <link rel="prev" title="magni.utils._util module" href="magni.utils._util.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,16 +43,16 @@
         <li class="right" >
           <a href="magni.utils._util.html" title="magni.utils._util module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.utils.html" accesskey="U">magni.utils package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.utils.html" accesskey="U">magni.utils package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.utils.config">
 <span id="magni-utils-config-module"></span><h1>magni.utils.config module<a class="headerlink" href="#module-magni.utils.config" title="Permalink to this headline">¶</a></h1>
@@ -65,11 +65,11 @@
 </dl>
 <p class="rubric">Notes</p>
 <p>This module does not itself contain any configuration options and thus has no
-access to any configuration options unlike the other config modules of <a class="reference internal" href="magni.html#module-magni" title="magni"><tt class="xref py py-obj docutils literal"><span class="pre">magni</span></tt></a>.</p>
+access to any configuration options unlike the other config modules of <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-obj docutils literal"><span class="pre">magni</span></code></a>.</p>
 <dl class="class">
 <dt id="magni.utils.config.Configger">
-<em class="property">class </em><tt class="descclassname">magni.utils.config.</tt><tt class="descname">Configger</tt><big>(</big><em>params</em>, <em>valids</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<em class="property">class </em><code class="descclassname">magni.utils.config.</code><code class="descname">Configger</code><span class="sig-paren">(</span><em>params</em>, <em>valids</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Provide functionality to access a set of configuration options.</p>
 <p>The set of configuration options, their default values, and their
 validation schemes are specified upon initialisation.</p>
@@ -90,7 +90,7 @@ The validation schemes of the configuration options.</li>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="magni.utils.validation.html#module-magni.utils.validation" title="magni.utils.validation"><tt class="xref py py-class docutils literal"><span class="pre">magni.utils.validation</span></tt></a></dt>
+<dt><a class="reference internal" href="magni.utils.validation.html#module-magni.utils.validation" title="magni.utils.validation"><code class="xref py py-class docutils literal"><span class="pre">magni.utils.validation</span></code></a></dt>
 <dd>Validation.</dd>
 </dl>
 </div>
@@ -157,17 +157,12 @@ which can only assume string values.</p>
 </div>
 <dl class="attribute">
 <dt id="magni.utils.config.Configger._funcs">
-<tt class="descname">_funcs</tt><em class="property"> = {'generic': &lt;function validate_generic at 0x7fb31cc346e0&gt;, 'levels': &lt;function validate_levels at 0x7fb31cc34cf8&gt;, 'numeric': &lt;function validate_numeric at 0x7fb31cc34a28&gt;}</em><a class="headerlink" href="#magni.utils.config.Configger._funcs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="magni.utils.config.Configger.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>params</em>, <em>valids</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_funcs</code><em class="property"> = {'generic': &lt;function validate_generic at 0x7efd473936e0&gt;, 'levels': &lt;function validate_levels at 0x7efd47393ed8&gt;, 'numeric': &lt;function validate_numeric at 0x7efd47393c08&gt;}</em><a class="headerlink" href="#magni.utils.config.Configger._funcs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.__getitem__">
-<tt class="descname">__getitem__</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.__getitem__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getitem__</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value of a configuration parameter.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -185,7 +180,7 @@ The value of the parameter.</td>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.__len__">
-<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.__len__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.__len__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the number of configuration parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -200,7 +195,7 @@ The number of parameters.</td>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.__setitem__">
-<tt class="descname">__setitem__</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.__setitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.__setitem__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setitem__</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.__setitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.__setitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of a configuration parameter.</p>
 <p>The value is validated according to the validation scheme of that
 parameter.</p>
@@ -222,18 +217,18 @@ The new value of the parameter.</li>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.get">
-<tt class="descname">get</tt><big>(</big><em>key=None</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.get" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deprecated method.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#magni.utils.config.Configger.__getitem__" title="magni.utils.config.Configger.__getitem__"><tt class="xref py py-meth docutils literal"><span class="pre">Configger.__getitem__()</span></tt></a></dt>
+<dt><a class="reference internal" href="#magni.utils.config.Configger.__getitem__" title="magni.utils.config.Configger.__getitem__"><code class="xref py py-meth docutils literal"><span class="pre">Configger.__getitem__()</span></code></a></dt>
 <dd>Replacing method.</dd>
-<dt><a class="reference internal" href="#magni.utils.config.Configger.items" title="magni.utils.config.Configger.items"><tt class="xref py py-meth docutils literal"><span class="pre">Configger.items()</span></tt></a></dt>
+<dt><a class="reference internal" href="#magni.utils.config.Configger.items" title="magni.utils.config.Configger.items"><code class="xref py py-meth docutils literal"><span class="pre">Configger.items()</span></code></a></dt>
 <dd>Replacing method.</dd>
-<dt><a class="reference internal" href="#magni.utils.config.Configger.keys" title="magni.utils.config.Configger.keys"><tt class="xref py py-meth docutils literal"><span class="pre">Configger.keys()</span></tt></a></dt>
+<dt><a class="reference internal" href="#magni.utils.config.Configger.keys" title="magni.utils.config.Configger.keys"><code class="xref py py-meth docutils literal"><span class="pre">Configger.keys()</span></code></a></dt>
 <dd>Replacing method.</dd>
-<dt><a class="reference internal" href="#magni.utils.config.Configger.values" title="magni.utils.config.Configger.values"><tt class="xref py py-meth docutils literal"><span class="pre">Configger.values()</span></tt></a></dt>
+<dt><a class="reference internal" href="#magni.utils.config.Configger.values" title="magni.utils.config.Configger.values"><code class="xref py py-meth docutils literal"><span class="pre">Configger.values()</span></code></a></dt>
 <dd>Replacing method.</dd>
 </dl>
 </div>
@@ -241,7 +236,7 @@ The new value of the parameter.</li>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.items">
-<tt class="descname">items</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.items" title="Permalink to this definition">¶</a></dt>
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the configuration parameters as key, value pairs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -256,7 +251,7 @@ The list of parameters.</td>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.keys">
-<tt class="descname">keys</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.keys" title="Permalink to this definition">¶</a></dt>
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the configuration parameter keys.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -271,18 +266,18 @@ The keys.</td>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.reset">
-<tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.reset" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the parameter values to the default values.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.set">
-<tt class="descname">set</tt><big>(</big><em>dictionary={}</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.set" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set</code><span class="sig-paren">(</span><em>dictionary={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deprecated method.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#magni.utils.config.Configger.__setitem__" title="magni.utils.config.Configger.__setitem__"><tt class="xref py py-meth docutils literal"><span class="pre">Configger.__setitem__()</span></tt></a></dt>
+<dt><a class="reference internal" href="#magni.utils.config.Configger.__setitem__" title="magni.utils.config.Configger.__setitem__"><code class="xref py py-meth docutils literal"><span class="pre">Configger.__setitem__()</span></code></a></dt>
 <dd>Replacing function.</dd>
 </dl>
 </div>
@@ -290,7 +285,7 @@ The keys.</td>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.update">
-<tt class="descname">update</tt><big>(</big><em>params={}</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><em>params={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the value of one or more configuration parameters.</p>
 <p>Each value is validated according to the validation scheme of that
 parameter.</p>
@@ -313,7 +308,7 @@ Keyword arguments being the key and values to update.</li>
 
 <dl class="method">
 <dt id="magni.utils.config.Configger.values">
-<tt class="descname">values</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/magni/utils/config.html#Configger.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.values" title="Permalink to this definition">¶</a></dt>
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/config.html#Configger.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.config.Configger.values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the configuration parameter values.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -335,7 +330,7 @@ The values.</td>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -351,7 +346,7 @@ The values.</td>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.utils.matrices.html"
                         title="next chapter">magni.utils.matrices module</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -368,7 +363,7 @@ The values.</td>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -380,15 +375,15 @@ The values.</td>
         <li class="right" >
           <a href="magni.utils._util.html" title="magni.utils._util module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.utils.html" >magni.utils package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

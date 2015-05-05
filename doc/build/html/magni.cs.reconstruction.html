@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.reconstruction package &mdash; Magni 1.2.0 documentation</title>
+    <title>magni.cs.reconstruction package &mdash; Magni 1.3.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.2.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
     <link rel="up" title="magni.cs package" href="magni.cs.html" />
     <link rel="next" title="magni.cs.reconstruction.iht package" href="magni.cs.reconstruction.iht.html" />
     <link rel="prev" title="magni.cs.phase_transition.plotting module" href="magni.cs.phase_transition.plotting.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,16 +43,16 @@
         <li class="right" >
           <a href="magni.cs.phase_transition.plotting.html" title="magni.cs.phase_transition.plotting module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.cs.html" accesskey="U">magni.cs package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.cs.html" accesskey="U">magni.cs package</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-magni.cs.reconstruction">
 <span id="magni-cs-reconstruction-package"></span><h1>magni.cs.reconstruction package<a class="headerlink" href="#module-magni.cs.reconstruction" title="Permalink to this headline">¶</a></h1>
@@ -63,8 +63,11 @@ interface of the given family of reconstruction algorithms.</p>
 <div class="section" id="routine-listings">
 <h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
+<dt>it</dt>
+<dd>Subpackage providing implementations of Iterative Thresholding (IT).</dd>
 <dt>iht</dt>
-<dd>Subpackage providing an implementation of Iterative Hard Thresholding (IHT)</dd>
+<dd>Subpackage providing implementations of Iterative Hard Thresholding (IHT).
+(Deprecated)</dd>
 <dt>sl0</dt>
 <dd>Subpackage providing implementations of Smoothed l0 Norm (SL0).</dd>
 </dl>
@@ -74,6 +77,7 @@ interface of the given family of reconstruction algorithms.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="magni.cs.reconstruction.iht.html">magni.cs.reconstruction.iht package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.cs.reconstruction.it.html">magni.cs.reconstruction.it package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="magni.cs.reconstruction.sl0.html">magni.cs.reconstruction.sl0 package</a></li>
 </ul>
 </div>
@@ -92,7 +96,7 @@ interface of the given family of reconstruction algorithms.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -110,7 +114,7 @@ interface of the given family of reconstruction algorithms.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.cs.reconstruction.iht.html"
                         title="next chapter">magni.cs.reconstruction.iht package</a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -127,7 +131,7 @@ interface of the given family of reconstruction algorithms.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -139,15 +143,15 @@ interface of the given family of reconstruction algorithms.</p>
         <li class="right" >
           <a href="magni.cs.phase_transition.plotting.html" title="magni.cs.phase_transition.plotting module"
              >previous</a> |</li>
-        <li><a href="index.html">Magni 1.2.0 documentation</a> &raquo;</li>
-          <li><a href="magni.html" >magni package</a> &raquo;</li>
-          <li><a href="magni.cs.html" >magni.cs package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Magni developers.
-      Last updated on Mar 13, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014-2015, Magni developers.
+      Last updated on May 05, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

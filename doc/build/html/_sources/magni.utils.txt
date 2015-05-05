@@ -3,7 +3,8 @@ magni.utils package
 
 .. automodule:: magni.utils
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
 
 Subpackages
@@ -25,3 +26,4 @@ Submodules
     magni.utils.config
     magni.utils.matrices
     magni.utils.plotting
+    magni.utils.types

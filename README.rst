@@ -18,23 +18,23 @@ Magni
    Signal and Information Processing
 
 :Version:
-    1.2.0
+   1.3.0
 
-Test status:
+:Travis CI test status:
+   .. image:: https://travis-ci.org/SIP-AAU/Magni.svg?branch=master
+       :target: https://travis-ci.org/SIP-AAU/Magni
 
-.. image:: https://travis-ci.org/SIP-AAU/Magni.svg?branch=master
-    :target: https://travis-ci.org/SIP-AAU/Magni
 
 Introduction
 ------------
 
 Magni is a Python package which provides functionality for increasing the speed
-of image acquisition using Atomic Force Microscopy (AFM).  The image
+of image acquisition using Atomic Force Microscopy (AFM). The image
 acquisition algorithms of Magni are based on the Compressed Sensing (CS) signal
-acquisition paradigm and include both sensing and reconstruction.  The sensing
+acquisition paradigm and include both sensing and reconstruction. The sensing
 part of the acquisition generates sensed data from regular images possibly
 acquired using AFM. This is done by AFM hardware simulation. The reconstruction
-part of the acquisition reconstructs images from sensed data.  This is done by
+part of the acquisition reconstructs images from sensed data. This is done by
 CS reconstruction using well-known CS reconstruction algorithms modified for
 the purpose. The Python implementation of the above functionality uses the
 standard library, a number of third-party libraries, and additional utility
@@ -108,12 +108,8 @@ A test suite consisting of unittests, doctests, IPython notebook examples, and
 several style checks is included in Magni. The tests are organised in python
 modules found in the Magni folder under '/magni/tests/'. These may be invoked
 using any test runner that supports the unittest.TestCase classes. The entire
-test suite may be run by executing the convenience script 'run_tests.py'.
+test suite may be run by executing the convenience script 'run_tests.py'. The code is this repository is continuously tested by `Travis CI <https://travis-ci.org/SIP-AAU/Magni>`_.
 
-The code is this repository is continuously tested by `Travis CI <https://travis-ci.org>`_. Current test status:
-
-.. image:: https://travis-ci.org/SIP-AAU/Magni.svg?branch=master
-    :target: https://travis-ci.org/SIP-AAU/Magni
 
 Examples
 --------

@@ -4,7 +4,7 @@
     All rights reserved.
     See LICENSE.rst for further information.
 
-Subpackage providing implementations of Smoothed l0 Norm SL0).
+Subpackage providing implementations of Smoothed l0 Norm (SL0).
 
 The implementations provided are the original SL0 reconstruction algorithm and
 a modified SL0 reconstruction algorithm. The algorithm used depends on the
@@ -20,21 +20,14 @@ run(y, A)
 
 Notes
 -----
-See `_util` for documentation of `run`.
+See `_algorithm` for documentation of `run`.
 
-The original SL0 reconstruction algorithm by Mohimani et. al is described in
-[1]_ whereas the constraint elimiation intepretation of the original SL0
-algorithm by Cui et. al. is described in [2]_. The modified SL0 reconstruction
-algorithm by Oxvig et. al. is described in [3]_. Specifically, the provided
-sequential implementations are:
-
-| std : The standard SL0 algorithm
-|     For delta < 0.55: Standard projection algorithm by Mohimani et. al.
-|     For delta >= 0.55: Standard constraint elimination algorithm by Cui et.
-      al.
-| mod : The modified SL0 algorithm (the default)
-|     For delta < 0.55: Modified projection algorithm
-|     For delta >= 0.55: Modified constraint elimination algorithm
+Implementations of the original SL0 reconstruction algorithm [1]_ and a
+modified Sl0 reconstruction algorithm [3]_ are available. It is also possible
+to configure the subpackage to provide customised versions of the SL0
+reconstruction algorithm. The projection algorithm [1]_ is used for small delta
+(< 0.55) whereas the contraint elimination algorithm [2]_ is used for large
+delta (>= 0.55) which merely affects the computation time.
 
 References
 ----------
@@ -54,4 +47,4 @@ References
 """
 
 from magni.cs.reconstruction.sl0._config import configger as config
-from magni.cs.reconstruction.sl0._util import run
+from magni.cs.reconstruction.sl0._algorithm import run

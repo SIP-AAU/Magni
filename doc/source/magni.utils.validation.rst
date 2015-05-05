@@ -3,7 +3,8 @@ magni.utils.validation package
 
 .. automodule:: magni.utils.validation
     :members:
-    :undoc-members:
+    :private-members:
+    :special-members:
     :show-inheritance:
 
 Submodules

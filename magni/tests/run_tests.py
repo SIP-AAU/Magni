@@ -39,8 +39,6 @@ except KeyError:
     import matplotlib as mpl
     mpl.use('Agg')
 
-import magni
-
 
 def run_tests(test_modules, args, nose_argv):
     """
@@ -113,7 +111,9 @@ if __name__ == '__main__':
 
     # Identify modules containing tests
     excludes = ['run_tests.py', 'dep_check.py', '__init__.py'] + args.skip
-    path, name, ext = magni.utils.split_path(__file__)
+    real_path = os.path.realpath(str(__file__))
+    path_pos = str.rfind(real_path, os.path.sep) + 1
+    path, name = real_path[:path_pos], real_path[path_pos:]
     test_modules = sorted([module for module in os.listdir(path)
                            if module[-3:] == '.py' and module not in excludes])
 

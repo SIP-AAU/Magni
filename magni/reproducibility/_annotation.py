@@ -198,14 +198,24 @@ def get_git_revision():
             'status': 'Succeeded'}
 
     except subprocess.CalledProcessError as e:
+        try:
+            e_output = e.output.decode()
+        except AttributeError:
+            e_output = e.output
+
         git_revision = {'status': 'Failed: CallProcessError',
                         'returncode': e.returncode,
-                        'output': e.output}
+                        'output': e_output}
 
     except OSError as e:
+        try:
+            e_strerror = e.strerror.decode()
+        except AttributeError:
+            e_strerror = e.strerror
+
         git_revision = {'status': 'Failed: OSError',
                         'errno': e.errno,
-                        'strrror': e.strerror}
+                        'strrror': e_strerror}
 
     os.chdir(cur_dir)
 

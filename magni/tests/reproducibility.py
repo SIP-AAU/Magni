@@ -11,15 +11,17 @@ Module providing unittests for `magni.reproducibility`.
 Each annotation is a dict which must have specific keys. It is tested that
 these keys are as expected.
 
+Each chase is a string. It is tested that this string has certain properties.
+
 """
 
 from __future__ import division
+import inspect
+import os
 import subprocess
 import unittest
 
-import numpy as np
-
-from magni.reproducibility import _annotation
+from magni.reproducibility import _annotation, _chase
 
 
 class TestAnnotations(unittest.TestCase):
@@ -40,6 +42,7 @@ class TestAnnotations(unittest.TestCase):
         self.ref_magni_config_keys = ['magni.afm.config',
                                       'magni.cs.phase_transition.config',
                                       'magni.cs.reconstruction.iht.config',
+                                      'magni.cs.reconstruction.it.config',
                                       'magni.cs.reconstruction.sl0.config',
                                       'magni.utils.multiprocessing.config',
                                       'status']
@@ -106,3 +109,45 @@ class TestAnnotations(unittest.TestCase):
 
         self.assertFalse('failed' in platform_info['status'])
         self.assertListEqual(self.ref_platform_info_keys, platform_info_keys)
+
+
+class TestChases(unittest.TestCase):
+    """
+    Test of chases.
+
+    """
+
+    def setUp(self):
+        self.cur_dir = os.getcwd()
+        try:
+            # chdir in run_tests.py workaround
+            os.chdir(inspect.stack()[-2][0].f_locals['cur_dir'])
+        except KeyError:
+            pass
+
+    def tearDown(self):
+        os.chdir(self.cur_dir)
+
+    def test_get_main_file_name(self):
+        main_file_name = _chase.get_main_file_name()
+        self.assertIsInstance(main_file_name, str)
+        self.assertNotEqual(main_file_name, '')
+        self.assertNotIn('Failed', main_file_name)
+
+    def test_get_main_file_source(self):
+        main_file_source = _chase.get_main_file_source()
+        self.assertIsInstance(main_file_source, str)
+        self.assertNotEqual(main_file_source, '')
+        self.assertNotIn('Failed', main_file_source)
+
+    def test_get_main_source(self):
+        main_source = _chase.get_main_source()
+        self.assertIsInstance(main_source, str)
+        self.assertNotEqual(main_source, '')
+        self.assertNotIn('Failed', main_source)
+
+    def test_get_stack_trace(self):
+        stack_trace = _chase.get_stack_trace()
+        self.assertIsInstance(stack_trace, str)
+        self.assertNotEqual(stack_trace, '')
+        self.assertNotIn('Failed', stack_trace)
