@@ -37,9 +37,9 @@ if on_rtd:
         def __getattr__(cls, name):
             return Mock()
 
-    MOCK_MODULES = ['scipy', 'scipy.fftpack', 'scipy.stats', 'tables',
-                    'matplotlib', 'matplotlib.pyplot', 'mpl_toolkits',
-                    'mpl_toolkits.axes_grid1']
+    MOCK_MODULES = ['scipy', 'scipy.fftpack', 'scipy.stats', 'scipy.linalg',
+                    'tables', 'matplotlib', 'matplotlib.pyplot',
+                    'mpl_toolkits', 'mpl_toolkits.axes_grid1']
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
     html_style = 'classic.css'  # Use classic Sphinx Theme
