@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
-    autodoc_mock_modules = ['scipy', 'scipy.fftpack', 'scipy.stats', 'tables',
+    autodoc_mock_imports = ['scipy', 'scipy.fftpack', 'scipy.stats', 'tables',
                             'matplotlib', 'matplotlib.pyplot']
 
     html_style = 'classic.css'  # Use classic Sphinx Theme
