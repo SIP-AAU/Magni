@@ -2,12 +2,12 @@
 
 package:
   name: magni
-  version: '1.2.0'
+  version: '1.3.0'
 
 source:
-  fn: magni-1.2.0.tar.gz
-  url: https://pypi.python.org/packages/source/m/magni/magni-1.2.0.tar.gz
-  md5: 4c003efb1c0a1fd54ae7b97cb629c854
+  fn: magni-1.3.0.tar.gz
+  url: https://pypi.python.org/packages/source/m/magni/magni-1.3.0.tar.gz
+  md5: e53a6007ffbc60866f2ddb2bbf2051fa
 
   patches:
     - setup_py_conda.patch
