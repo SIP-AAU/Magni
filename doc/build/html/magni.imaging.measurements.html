@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.measurements module &mdash; Magni 1.3.0 documentation</title>
+    <title>magni.imaging.measurements package &mdash; Magni 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.3.0',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.4.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
-    <link rel="next" title="magni.imaging.preprocessing module" href="magni.imaging.preprocessing.html" />
-    <link rel="prev" title="magni.imaging.evaluation module" href="magni.imaging.evaluation.html" /> 
+    <link rel="next" title="magni.imaging.measurements._lissajous module" href="magni.imaging.measurements._lissajous.html" />
+    <link rel="prev" title="magni.imaging.dictionaries.utils module" href="magni.imaging.dictionaries.utils.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -38,12 +38,12 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
+          <a href="magni.imaging.measurements._lissajous.html" title="magni.imaging.measurements._lissajous module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="magni.imaging.evaluation.html" title="magni.imaging.evaluation module"
+          <a href="magni.imaging.dictionaries.utils.html" title="magni.imaging.dictionaries.utils module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -55,12 +55,13 @@
           <div class="body" role="main">
             
   <div class="section" id="module-magni.imaging.measurements">
-<span id="magni-imaging-measurements-module"></span><h1>magni.imaging.measurements module<a class="headerlink" href="#module-magni.imaging.measurements" title="Permalink to this headline">¶</a></h1>
-<p>Module providing functions for constructing scan patterns for measurements.</p>
-<p>This module provides several pairs of scan pattern functions. The first
+<span id="magni-imaging-measurements-package"></span><h1>magni.imaging.measurements package<a class="headerlink" href="#module-magni.imaging.measurements" title="Permalink to this headline">¶</a></h1>
+<p>Subpackage providing functionality for constructing and visualising scan
+patterns for measurements.</p>
+<p>This subpackage provides several pairs of scan pattern functions. The first
 function, named *_sample_surface, is used for sampling a given surface. The
 second function, named *_sample_image, is a wrapper that provides a
-pixel-oriented interface to the first function. In a addition to these pairs of
+pixel-oriented interface to the first function. In addition to these pairs of
 scan pattern functions, the module provides auxillary functions that may be
 used to visualise the scan patterns.</p>
 <div class="section" id="routine-listings">
@@ -68,6 +69,14 @@ used to visualise the scan patterns.</p>
 <dl class="docutils">
 <dt>construct_measurement_matrix(coords, h, w)</dt>
 <dd>Function for constructing a measurement matrix.</dd>
+<dt>construct_pixel_mask(h, w, pixels)</dt>
+<dd>Construct a binary pixel mask.</dd>
+<dt>lissajous_sample_image(h, w, scan_length, num_points, f_y=1., f_x=1.,</dt>
+<dd>theta_y=0., theta_x=np.pi / 2)
+Function for lissajous sampling an image.</dd>
+<dt>lissajous_sample_surface(l, w, speed, sample_rate, time, f_y=1., f_x=1.,</dt>
+<dd>theta_y=0., theta_x=np.pi / 2, speed_mode=0)
+Function for lissajous sampling a surface.</dd>
 <dt>plot_pattern(l, w, coords, mode, output_path=None)</dt>
 <dd>Function for visualising a scan pattern.</dd>
 <dt>plot_pixel_mask(h, w, pixels, output_path=None)</dt>
@@ -90,8 +99,18 @@ Function for random line sampling a surface.</dd>
 <dd>Function for uniform line sampling an image.</dd>
 <dt>uniform_line_sample_surface(l, w, speed, sample_rate, time)</dt>
 <dd>Function for uniform line sampling a surface.</dd>
+<dt>uniform_rotated_line_sample_image(h, w, scan_length, num_points, angle=0.,</dt>
+<dd>follow_edge=True)
+Function for uniform rotated line sampling an image.</dd>
+<dt>uniform_rotated_line_sample_surface(l, w, speed, sample_rate, time, angle=0.,</dt>
+<dd>follow_edge=True)
+Function for uniform rotated line sampling a surface.</dd>
 <dt>unique_pixels(coords)</dt>
 <dd>Function for determining unique pixels from a set of coordinates.</dd>
+<dt>zigzag_sample_image(h, w, scan_length, num_points, angle=np.pi / 20)</dt>
+<dd>Function for zigzag sampling an image.</dd>
+<dt>zigzag_sample_surface(l, w, speed, sample_rate, time, angle=np.pi / 20)</dt>
+<dd>Function for zigzag sampling a surface.</dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>In principle, most of the scan pattern related parameters need only be
@@ -124,10 +143,11 @@ positive. However, it is assumed that the following requirements are fulfilled:<
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<p>Sample a surface using a spiral pattern:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">spiral_sample_surface</span>
+<p>Sample a surface using a lissajous pattern:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">lissajous_sample_surface</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="mf">13.0</span><span class="p">;</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">13.0</span><span class="p">;</span> <span class="n">speed</span> <span class="o">=</span> <span class="mf">4.0</span><span class="p">;</span> <span class="n">time</span> <span class="o">=</span> <span class="mf">27.0</span><span class="p">;</span> <span class="n">sample_rate</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">lissajous_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span>
+<span class="gp">... </span>                                  <span class="n">speed_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Display the resulting pattern:</p>
@@ -135,10 +155,10 @@ positive. However, it is assumed that the following requirements are fulfilled:<
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plot_pattern</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="s">&#39;surface&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Sample a 128x128 pixel image using random lines and a fixed seed:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">random_line_sample_image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span> <span class="n">scan_length</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">;</span> <span class="n">num_points</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span> <span class="n">seed</span><span class="o">=</span><span class="mi">6021</span><span class="p">;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">random_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+<p>Sample a 128x128 pixel image using a spiral pattern:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">spiral_sample_image</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span> <span class="n">scan_length</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">;</span> <span class="n">num_points</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Display the resulting pattern:</p>
@@ -151,765 +171,23 @@ positive. However, it is assumed that the following requirements are fulfilled:<
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plot_pixel_mask</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">unique_pixels</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="function">
-<dt id="magni.imaging.measurements.construct_measurement_matrix">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">construct_measurement_matrix</code><span class="sig-paren">(</span><em>coords</em>, <em>h</em>, <em>w</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#construct_measurement_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.construct_measurement_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a measurement matrix extracting the specified measurements.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The <em class="xref py py-obj">k</em> floating point coordinates arranged into a 2D array where each
-row is a coordinate pair (x, y), such that <em class="xref py py-obj">coords</em> has size <em class="xref py py-obj">k</em> x 2.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>Phi</strong> (<em>magni.utils.matrices.Matrix</em>) &#8211;
-The constructed measurement matrix.</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="magni.utils.matrices.html#magni.utils.matrices.Matrix" title="magni.utils.matrices.Matrix"><code class="xref py py-func docutils literal"><span class="pre">magni.utils.matrices.Matrix()</span></code></a></dt>
-<dd>The matrix emulator class.</dd>
-</dl>
 </div>
-<p class="rubric">Notes</p>
-<p>The function construct two functions: one for extracting pixels at the
-coordinates specified and one for the transposed operation. These functions
-are then wrapped by a matrix emulator which is returned.</p>
-<p class="rubric">Examples</p>
-<p>Create a dummy 5 by 5 pixel image and an example sampling pattern:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">magni</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">mat2vec</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">uniform_line_sample_image</span><span class="p">(</span>
-<span class="gp">... </span>             <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Sample the image in the ordinary way:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">unique</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">samples_normal</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">unique</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">unique</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">samples_normal</span> <span class="o">=</span> <span class="n">samples_normal</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">unique</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Sample the image using the present function:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">construct_measurement_matrix</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">matrix</span> <span class="o">=</span> <span class="n">construct_measurement_matrix</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">samples_matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Check that the two ways produce the same result:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">samples_matrix</span><span class="p">,</span> <span class="n">samples_normal</span><span class="p">)</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.plot_pattern">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">plot_pattern</code><span class="sig-paren">(</span><em>l</em>, <em>w</em>, <em>coords</em>, <em>mode</em>, <em>output_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#plot_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.plot_pattern" title="Permalink to this definition">¶</a></dt>
-<dd><p>Display a plot that shows the pattern given by a set of coordinates.</p>
-<p>The pattern given by the <em class="xref py py-obj">coords</em> is displayed on an <em class="xref py py-obj">w</em> x <em class="xref py py-obj">l</em> area. If
-<em class="xref py py-obj">mode</em> is &#8216;surface&#8217;, <em class="xref py py-obj">l</em> and <em class="xref py py-obj">w</em> are regarded as measured in meters. If
-<em class="xref py py-obj">mode</em> is &#8216;image&#8217;, <em class="xref py py-obj">l</em> and <em class="xref py py-obj">w</em> are regarded as measured in pixels. The
-<em class="xref py py-obj">coords</em> are marked by filled circles and connected by straight dashed
-lines.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>l</strong> (<em>float or int</em>) &#8211;
-The length/height of the area. If <em class="xref py py-obj">mode</em> is &#8216;surface&#8217;, it must be a
-float. If <em class="xref py py-obj">mode</em> is &#8216;image&#8217;, it must be an integer.</li>
-<li><strong>w</strong> (<em>float or int</em>) &#8211;
-The width of the area. If <em class="xref py py-obj">mode</em> is &#8216;surface&#8217;, it must be a
-float. If <em class="xref py py-obj">mode</em> is &#8216;image&#8217;, it must be an integer.</li>
-<li><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The 2D array of pixels that make up the mask. Each row is a coordinate
-pair (x, y).</li>
-<li><strong>mode</strong> (<em>{&#8216;surface&#8217;, &#8216;image&#8217;}</em>) &#8211;
-The display mode that dertermines the axis labeling and the type of <em class="xref py py-obj">l</em>
-and <em class="xref py py-obj">w</em>.</li>
-<li><strong>output_path</strong> (<em>str, optional</em>) &#8211;
-Path (including file type extension) under which the plot is saved (the
-default value is None which implies, that the plot is not saved).</li>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._lissajous.html">magni.imaging.measurements._lissajous module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._matrices.html">magni.imaging.measurements._matrices module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._random_line.html">magni.imaging.measurements._random_line module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._spiral.html">magni.imaging.measurements._spiral module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._square_spiral.html">magni.imaging.measurements._square_spiral module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._uniform_line.html">magni.imaging.measurements._uniform_line module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._uniform_rotated_line.html">magni.imaging.measurements._uniform_rotated_line module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._util.html">magni.imaging.measurements._util module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._visualisation.html">magni.imaging.measurements._visualisation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magni.imaging.measurements._zigzag.html">magni.imaging.measurements._zigzag module</a></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The resulting plot is displayed in a figure using <code class="xref py py-obj docutils literal"><span class="pre">matplotlib</span></code>&#8216;s
-<em class="xref py py-obj">pyplot.plot</em>.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">plot_pattern</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;image&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_pattern</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-</pre></div>
 </div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.plot_pixel_mask">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">plot_pixel_mask</code><span class="sig-paren">(</span><em>h</em>, <em>w</em>, <em>pixels</em>, <em>output_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#plot_pixel_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.plot_pixel_mask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Display a binary image that shows the given pixel mask.</p>
-<p>A black image with <em class="xref py py-obj">w</em> x <em class="xref py py-obj">h</em> pixels is created and the <em class="xref py py-obj">pixels</em> are marked
-with white.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>h</strong> (<em>int</em>) &#8211;
-The height of the image in pixels.</li>
-<li><strong>w</strong> (<em>int</em>) &#8211;
-The width of the image in pixels.</li>
-<li><strong>pixels</strong> (<em>ndarray</em>) &#8211;
-The 2D array of pixels that make up the mask. Each row is a coordinate
-pair (x, y), such that <em class="xref py py-obj">coords</em> has size len(<em class="xref py py-obj">pixels</em>) x 2.</li>
-<li><strong>output_path</strong> (<em>str, optional</em>) &#8211;
-Path (including file type extension) under which the plot is saved (the
-default value is None which implies, that the plot is not saved).</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The resulting image is displayed in a figure using
-<a class="reference internal" href="magni.imaging.visualisation.html#magni.imaging.visualisation.imshow" title="magni.imaging.visualisation.imshow"><code class="xref py py-obj docutils literal"><span class="pre">magni.imaging.visualisation.imshow</span></code></a>.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">plot_pixel_mask</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_pixel_mask</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pixels</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.random_line_sample_image">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">random_line_sample_image</code><span class="sig-paren">(</span><em>h</em>, <em>w</em>, <em>scan_length</em>, <em>num_points</em>, <em>discrete=None</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#random_line_sample_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.random_line_sample_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample an image using a set of random straight lines.</p>
-<p>The coordinates (in units of pixels) resulting from sampling an image of
-size <em class="xref py py-obj">h</em> times <em class="xref py py-obj">w</em> using a pattern based on a set of random straight lines
-are determined. The <em class="xref py py-obj">scan_length</em> determines the length of the path scanned
-whereas <em class="xref py py-obj">num_points</em> indicates the number of samples taken on that path. If
-<em class="xref py py-obj">discrete</em> is set, it specifies the finite number of equally spaced lines
-from which the scan lines are be chosen at random. For reproducible
-results, the <em class="xref py py-obj">seed</em> may be used to specify a fixed seed of the random
-number generator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>h</strong> (<em>int</em>) &#8211;
-The height of the area to scan in units of pixels.</li>
-<li><strong>w</strong> (<em>int</em>) &#8211;
-The width of the area to scan in units of pixels.</li>
-<li><strong>scan_length</strong> (<em>float</em>) &#8211;
-The length of the path to scan in units of pixels.</li>
-<li><strong>num_points</strong> (<em>int</em>) &#8211;
-The number of samples to take on the scanned path.</li>
-<li><strong>discrete</strong> (<em>int or None, optional</em>) &#8211;
-The number of equally spaced lines from which the scan lines are chosen
-(the default is None, which implies that no discritisation is used).</li>
-<li><strong>seed</strong> (<em>int or None, optional</em>) &#8211;
-The seed used for the random number generator (the defaul is None,
-which implies that the random number generator is not seeded).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates of the samples arranged into a 2D array, such that each
-row is a coordinate pair (x, y).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The orientation of the coordinate system is such that the width <em class="xref py py-obj">w</em> is
-measured along the x-axis whereas the height <em class="xref py py-obj">h</em> is measured along the
-y-axis.</p>
-<p>Each of the scanned lines span the entire width of the image with the
-exception of the last line that may only be partially scanned if the
-<em class="xref py py-obj">scan_length</em> implies this. The top and bottom lines of the image are
-always included in the scan.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">random_line_sample_image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scan_length</span> <span class="o">=</span> <span class="mf">50.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">num_points</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">seed</span> <span class="o">=</span> <span class="mi">6021</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">random_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-<span class="go">array([[ 0.5       ,  0.5       ],</span>
-<span class="go">       [ 4.59090909,  0.5       ],</span>
-<span class="go">       [ 8.68181818,  0.5       ],</span>
-<span class="go">       [ 7.01473938,  1.28746666],</span>
-<span class="go">       [ 2.92383029,  1.28746666],</span>
-<span class="go">       [ 0.5       ,  2.95454545],</span>
-<span class="go">       [ 0.5       ,  7.04545455],</span>
-<span class="go">       [ 4.03665944,  7.59970419],</span>
-<span class="go">       [ 8.12756853,  7.59970419],</span>
-<span class="go">       [ 8.68181818,  9.5       ],</span>
-<span class="go">       [ 4.59090909,  9.5       ],</span>
-<span class="go">       [ 0.5       ,  9.5       ]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.random_line_sample_surface">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">random_line_sample_surface</code><span class="sig-paren">(</span><em>l</em>, <em>w</em>, <em>speed</em>, <em>sample_rate</em>, <em>time</em>, <em>discrete=None</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#random_line_sample_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.random_line_sample_surface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample a surface area using a set of random straight lines.</p>
-<p>The coordinates (in units of meters) resulting from sampling an image of
-size <em class="xref py py-obj">l</em> times <em class="xref py py-obj">w</em> using a pattern based on a set of random straight lines
-are determined.  The scanned path is determined from the probe <em class="xref py py-obj">speed</em> and
-the scan <code class="xref py py-obj docutils literal"><span class="pre">time</span></code>. If <em class="xref py py-obj">discrete</em> is set, it specifies the finite number of
-equally spaced lines from which the scan lines are be chosen at random.
-For reproducible results, the <em class="xref py py-obj">seed</em> may be used to specify a fixed seed of
-the random number generator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>l</strong> (<em>float</em>) &#8211;
-The length of the area to scan in units of meters.</li>
-<li><strong>w</strong> (<em>float</em>) &#8211;
-The width of the area to scan in units of meters.</li>
-<li><strong>speed</strong> (<em>float</em>) &#8211;
-The probe speed in units of meters/second.</li>
-<li><strong>sample_rate</strong> (<em>float</em>) &#8211;
-The sample rate in units of Hertz.</li>
-<li><strong>time</strong> (<em>float</em>) &#8211;
-The scan time in units of seconds.</li>
-<li><strong>discrete</strong> (<em>int or None, optional</em>) &#8211;
-The number of equally spaced lines from which the scan lines are chosen
-(the default is None, which implies that no discritisation is used).</li>
-<li><strong>seed</strong> (<em>int or None, optional</em>) &#8211;
-The seed used for the random number generator (the defaul is None,
-which implies that the random number generator is not seeded).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates of the samples arranged into a 2D array, such that each
-row is a coordinate pair (x, y).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The orientation of the coordinate system is such that the width <em class="xref py py-obj">w</em> is
-measured along the x-axis whereas the length <em class="xref py py-obj">l</em> is measured along the
-y-axis.</p>
-<p>Each of the scanned lines span the entire width of the image with the
-exception of the last line that may only be partially scanned if the
-<em class="xref py py-obj">speed</em> and <code class="xref py py-obj docutils literal"><span class="pre">time</span></code> implies this. The top and bottom lines of the image are
-always included in the scan and are not included in the <em class="xref py py-obj">discrete</em> number
-of lines.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">random_line_sample_surface</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="mf">2e-6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mf">2e-6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">speed</span> <span class="o">=</span> <span class="mf">7e-7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sample_rate</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="mf">12.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">seed</span> <span class="o">=</span> <span class="mi">6021</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">random_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-<span class="go">array([[ 0.        ,  0.        ],</span>
-<span class="go">       [ 0.00000067,  0.        ],</span>
-<span class="go">       [ 0.00000133,  0.        ],</span>
-<span class="go">       [ 0.000002  ,  0.        ],</span>
-<span class="go">       [ 0.000002  ,  0.00000067],</span>
-<span class="go">       [ 0.000002  ,  0.00000133],</span>
-<span class="go">       [ 0.00000158,  0.00000158],</span>
-<span class="go">       [ 0.00000091,  0.00000158],</span>
-<span class="go">       [ 0.00000024,  0.00000158],</span>
-<span class="go">       [ 0.        ,  0.000002  ],</span>
-<span class="go">       [ 0.00000067,  0.000002  ],</span>
-<span class="go">       [ 0.00000133,  0.000002  ],</span>
-<span class="go">       [ 0.000002  ,  0.000002  ]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.spiral_sample_image">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">spiral_sample_image</code><span class="sig-paren">(</span><em>h</em>, <em>w</em>, <em>scan_length</em>, <em>num_points</em>, <em>rect_area=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#spiral_sample_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.spiral_sample_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample an image using an archimedean spiral pattern.</p>
-<p>The coordinates (in units of pixels) resulting from sampling an image of
-size <em class="xref py py-obj">h</em> times <em class="xref py py-obj">w</em> using an archimedean spiral pattern are determined. The
-<em class="xref py py-obj">scan_length</em> determines the length of the path scanned whereas
-<em class="xref py py-obj">num_points</em> indicates the number of samples taken on that path.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>h</strong> (<em>int</em>) &#8211;
-The height of the area to scan in units of pixels.</li>
-<li><strong>w</strong> (<em>int</em>) &#8211;
-The width of the area to scan in units of pixels.</li>
-<li><strong>scan_length</strong> (<em>float</em>) &#8211;
-The length of the path to scan in units of pixels.</li>
-<li><strong>num_points</strong> (<em>int</em>) &#8211;
-The number of samples to take on the scanned path.</li>
-<li><strong>rect_area</strong> (<em>bool</em>) &#8211;
-A flag indicating whether or not the full rectangular area is sampled
-(the default value is False which implies that the &#8220;corners&#8221; of the
-rectangular area are not sampled).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates of the samples arranged into a 2D array, such that each
-row is a coordinate pair (x, y).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The orientation of the coordinate system is such that the width <em class="xref py py-obj">w</em> is
-measured along the x-axis whereas the height <em class="xref py py-obj">h</em> is measured along the
-y-axis. The width must equal the height for an archimedian spiral to make
-sense.</p>
-<p>If the <em class="xref py py-obj">rect_area</em> flag is True, then it is assumed that the sampling
-continues outside of the rectangular area specified by <em class="xref py py-obj">h</em> and <em class="xref py py-obj">w</em> such
-that the &#8220;corners&#8221; of the rectangular area are also sampled. The sample
-points outside of the rectangular area are discarded and, hence, not
-returned.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">spiral_sample_image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scan_length</span> <span class="o">=</span> <span class="mf">50.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">num_points</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
-<span class="go">array([[ 6.28776846,  5.17074073],</span>
-<span class="go">       [ 3.13304898,  5.24133767],</span>
-<span class="go">       [ 6.07293751,  2.93873701],</span>
-<span class="go">       [ 6.99638041,  6.80851189],</span>
-<span class="go">       [ 2.89868434,  7.16724999],</span>
-<span class="go">       [ 2.35773914,  3.00320067],</span>
-<span class="go">       [ 6.41495385,  1.71018152],</span>
-<span class="go">       [ 8.82168896,  5.27557847],</span>
-<span class="go">       [ 6.34932919,  8.83624957],</span>
-<span class="go">       [ 2.04885699,  8.11199373],</span>
-<span class="go">       [ 0.6196052 ,  3.96939755]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.spiral_sample_surface">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">spiral_sample_surface</code><span class="sig-paren">(</span><em>l</em>, <em>w</em>, <em>speed</em>, <em>sample_rate</em>, <em>time</em>, <em>rect_area=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#spiral_sample_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.spiral_sample_surface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample a surface area using an archimedean spiral pattern.</p>
-<p>The coordinates (in units of meters) resulting from sampling an area of
-size <em class="xref py py-obj">l</em> times <em class="xref py py-obj">w</em> using an archimedean spiral pattern are determined. The
-scanned path is determined from the probe <em class="xref py py-obj">speed</em> and the scan <code class="xref py py-obj docutils literal"><span class="pre">time</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>l</strong> (<em>float</em>) &#8211;
-The length of the area to scan in units of meters.</li>
-<li><strong>w</strong> (<em>float</em>) &#8211;
-The width of the area to scan in units of meters.</li>
-<li><strong>speed</strong> (<em>float</em>) &#8211;
-The probe speed in units of meters/second.</li>
-<li><strong>sample_rate</strong> (<em>float</em>) &#8211;
-The sample rate in units of Hertz.</li>
-<li><strong>time</strong> (<em>float</em>) &#8211;
-The scan time in units of seconds.</li>
-<li><strong>rect_area</strong> (<em>bool</em>) &#8211;
-A flag indicating whether or not the full rectangular area is sampled
-(the default value is False which implies that the &#8220;corners&#8221; of the
-rectangular area are not sampled).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates of the samples arranged into a 2D array, such that each
-row is a coordinate pair (x, y).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The orientation of the coordinate system is such that the width <em class="xref py py-obj">w</em> is
-measured along the x-axis whereas the length <em class="xref py py-obj">l</em> is measured along the
-y-axis. The width must equal the length for an archimedian sprial to make
-sense.</p>
-<p>If the <em class="xref py py-obj">rect_area</em> flag is True, then it is assumed that the sampling
-continues outside of the rectangular area specified by <em class="xref py py-obj">l</em> and <em class="xref py py-obj">w</em> such
-that the &#8220;corners&#8221; of the rectangular area are also sampled. The sample
-points outside of the rectangular area are discarded and, hence, not
-returned.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">spiral_sample_surface</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="mf">1e-6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mf">1e-6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">speed</span> <span class="o">=</span> <span class="mf">7e-7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sample_rate</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="mf">12.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
-<span class="go">array([[ 0.00000036,  0.00000046],</span>
-<span class="go">       [ 0.00000052,  0.00000071],</span>
-<span class="go">       [ 0.00000052,  0.00000024],</span>
-<span class="go">       [ 0.00000059,  0.00000079],</span>
-<span class="go">       [ 0.00000021,  0.00000033],</span>
-<span class="go">       [ 0.00000084,  0.00000036],</span>
-<span class="go">       [ 0.00000049,  0.0000009 ],</span>
-<span class="go">       [ 0.0000001 ,  0.00000036],</span>
-<span class="go">       [ 0.00000072,  0.00000011],</span>
-<span class="go">       [ 0.00000089,  0.00000077],</span>
-<span class="go">       [ 0.00000021,  0.00000091]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.square_spiral_sample_image">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">square_spiral_sample_image</code><span class="sig-paren">(</span><em>h</em>, <em>w</em>, <em>scan_length</em>, <em>num_points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#square_spiral_sample_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.square_spiral_sample_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample an image using a square spiral pattern.</p>
-<p>The coordinates (in units of pixels) resulting from sampling an image of
-size <em class="xref py py-obj">h</em> times <em class="xref py py-obj">w</em> using a square spiral pattern are determined. The
-<em class="xref py py-obj">scan_length</em> determines the length of the path scanned whereas
-<em class="xref py py-obj">num_points</em> indicates the number of samples taken on that path.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>h</strong> (<em>int</em>) &#8211;
-The height of the area to scan in units of pixels.</li>
-<li><strong>w</strong> (<em>int</em>) &#8211;
-The width of the area to scan in units of pixels.</li>
-<li><strong>scan_length</strong> (<em>float</em>) &#8211;
-The length of the path to scan in units of pixels.</li>
-<li><strong>num_points</strong> (<em>int</em>) &#8211;
-The number of samples to take on the scanned path.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates of the samples arranged into a 2D array, such that each
-row is a coordinate pair (x, y).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The orientation of the coordinate system is such that the width <em class="xref py py-obj">w</em> is
-measured along the x-axis whereas the height <em class="xref py py-obj">h</em> is measured along the
-y-axis.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">square_spiral_sample_image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scan_length</span> <span class="o">=</span> <span class="mf">50.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">num_points</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">square_spiral_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
-<span class="go">array([[ 5.        ,  5.        ],</span>
-<span class="go">       [ 6.28571429,  5.97619048],</span>
-<span class="go">       [ 4.38095238,  3.71428571],</span>
-<span class="go">       [ 2.42857143,  5.92857143],</span>
-<span class="go">       [ 4.95238095,  7.57142857],</span>
-<span class="go">       [ 7.57142857,  6.02380952],</span>
-<span class="go">       [ 7.        ,  2.42857143],</span>
-<span class="go">       [ 2.83333333,  2.42857143],</span>
-<span class="go">       [ 1.14285714,  4.9047619 ],</span>
-<span class="go">       [ 1.35714286,  8.85714286],</span>
-<span class="go">       [ 5.52380952,  8.85714286],</span>
-<span class="go">       [ 8.85714286,  8.02380952]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.square_spiral_sample_surface">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">square_spiral_sample_surface</code><span class="sig-paren">(</span><em>l</em>, <em>w</em>, <em>speed</em>, <em>sample_rate</em>, <em>time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#square_spiral_sample_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.square_spiral_sample_surface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample a surface area using a square spiral pattern.</p>
-<p>The coordinates (in units of meters) resulting from sampling an area of
-size <em class="xref py py-obj">l</em> times <em class="xref py py-obj">w</em> using a square spiral pattern are determined. The
-scanned path is determined from the probe <em class="xref py py-obj">speed</em> and the scan <code class="xref py py-obj docutils literal"><span class="pre">time</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>l</strong> (<em>float</em>) &#8211;
-The length of the area to scan in units of meters.</li>
-<li><strong>w</strong> (<em>float</em>) &#8211;
-The width of the area to scan in units of meters.</li>
-<li><strong>speed</strong> (<em>float</em>) &#8211;
-The probe speed in units of meters/second.</li>
-<li><strong>sample_rate</strong> (<em>float</em>) &#8211;
-The sample rate in units of Hertz.</li>
-<li><strong>time</strong> (<em>float</em>) &#8211;
-The scan time in units of seconds.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates of the samples arranged into a 2D array, such that each
-row is a coordinate pair (x, y).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The orientation of the coordinate system is such that the width <em class="xref py py-obj">w</em> is
-measured along the x-axis whereas the length <em class="xref py py-obj">l</em> is measured along the
-y-axis.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">square_spiral_sample_surface</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="mf">1e-6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mf">1e-6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">speed</span> <span class="o">=</span> <span class="mf">7e-7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sample_rate</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="mf">12.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">square_spiral_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
-<span class="go">array([[ 0.0000005,  0.0000005],</span>
-<span class="go">       [ 0.0000004,  0.0000004],</span>
-<span class="go">       [ 0.0000006,  0.0000007],</span>
-<span class="go">       [ 0.0000005,  0.0000003],</span>
-<span class="go">       [ 0.0000002,  0.0000007],</span>
-<span class="go">       [ 0.0000008,  0.0000007],</span>
-<span class="go">       [ 0.0000006,  0.0000002],</span>
-<span class="go">       [ 0.0000001,  0.0000004],</span>
-<span class="go">       [ 0.0000003,  0.0000009],</span>
-<span class="go">       [ 0.0000009,  0.0000008],</span>
-<span class="go">       [ 0.0000009,  0.0000001],</span>
-<span class="go">       [ 0.0000002,  0.0000001]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.uniform_line_sample_image">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">uniform_line_sample_image</code><span class="sig-paren">(</span><em>h</em>, <em>w</em>, <em>scan_length</em>, <em>num_points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#uniform_line_sample_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.uniform_line_sample_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample an image using a set of uniformly distributed straight lines.</p>
-<p>The coordinates (in units of pixels) resulting from sampling an image of
-size <em class="xref py py-obj">h</em> times <em class="xref py py-obj">w</em> using a pattern based on a set of uniformly distributed
-straight lines are determined. The <em class="xref py py-obj">scan_length</em> determines the length of
-the path scanned whereas <em class="xref py py-obj">num_points</em> indicates the number of samples taken
-on that path.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>h</strong> (<em>int</em>) &#8211;
-The height of the area to scan in units of pixels.</li>
-<li><strong>w</strong> (<em>int</em>) &#8211;
-The width of the area to scan in units of pixels.</li>
-<li><strong>scan_length</strong> (<em>float</em>) &#8211;
-The length of the path to scan in units of pixels.</li>
-<li><strong>num_points</strong> (<em>int</em>) &#8211;
-The number of samples to take on the scanned path.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates of the samples arranged into a 2D array, such that each
-row is a coordinate pair (x, y).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The orientation of the coordinate system is such that the width <em class="xref py py-obj">w</em> is
-measured along the x-axis whereas the height <em class="xref py py-obj">h</em> is measured along the
-y-axis.</p>
-<p>Each of the scanned lines span the entire width of the image with the
-exception of the last line that may only be partially scanned if the
-<em class="xref py py-obj">scan_length</em> implies this. The top and bottom lines of the image are
-always included in the scan.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">uniform_line_sample_image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scan_length</span> <span class="o">=</span> <span class="mf">50.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">num_points</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">uniform_line_sample_image</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">scan_length</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
-<span class="go">array([[ 0.5       ,  0.5       ],</span>
-<span class="go">       [ 4.59090909,  0.5       ],</span>
-<span class="go">       [ 8.68181818,  0.5       ],</span>
-<span class="go">       [ 9.22727273,  3.5       ],</span>
-<span class="go">       [ 5.13636364,  3.5       ],</span>
-<span class="go">       [ 1.04545455,  3.5       ],</span>
-<span class="go">       [ 1.04545455,  6.5       ],</span>
-<span class="go">       [ 5.13636364,  6.5       ],</span>
-<span class="go">       [ 9.22727273,  6.5       ],</span>
-<span class="go">       [ 8.68181818,  9.5       ],</span>
-<span class="go">       [ 4.59090909,  9.5       ],</span>
-<span class="go">       [ 0.5       ,  9.5       ]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.uniform_line_sample_surface">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">uniform_line_sample_surface</code><span class="sig-paren">(</span><em>l</em>, <em>w</em>, <em>speed</em>, <em>sample_rate</em>, <em>time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#uniform_line_sample_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.uniform_line_sample_surface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample aa surface area using a set of uniformly distributed straight lines.</p>
-<p>The coordinates (in units of meters) resulting from sampling an area of
-size <em class="xref py py-obj">l</em> times <em class="xref py py-obj">w</em> using a pattern based on a set of uniformly distributed
-straight lines are determined.  The scanned path is determined from the
-probe <em class="xref py py-obj">speed</em> and the scan <code class="xref py py-obj docutils literal"><span class="pre">time</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>l</strong> (<em>float</em>) &#8211;
-The length of the area to scan in units of meters.</li>
-<li><strong>w</strong> (<em>float</em>) &#8211;
-The width of the area to scan in units of meters.</li>
-<li><strong>speed</strong> (<em>float</em>) &#8211;
-The probe speed in units of meters/second.</li>
-<li><strong>sample_rate</strong> (<em>float</em>) &#8211;
-The sample rate in units of Hertz.</li>
-<li><strong>time</strong> (<em>float</em>) &#8211;
-The scan time in units of seconds.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates of the samples arranged into a 2D array, such that each
-row is a coordinate pair (x, y).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The orientation of the coordinate system is such that the width <em class="xref py py-obj">w</em> is
-measured along the x-axis whereas the height <em class="xref py py-obj">l</em> is measured along the
-y-axis.</p>
-<p>Each of the scanned lines span the entire width of the image with the
-exception of the last line that may only be partially scanned if the
-<em class="xref py py-obj">scan_length</em> implies this. The top and bottom lines of the image are
-always included in the scan.</p>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">uniform_line_sample_surface</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="mf">2e-6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mf">2e-6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">speed</span> <span class="o">=</span> <span class="mf">7e-7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sample_rate</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="mf">12.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">uniform_line_sample_surface</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
-<span class="go">array([[ 0.        ,  0.        ],</span>
-<span class="go">       [ 0.00000067,  0.        ],</span>
-<span class="go">       [ 0.00000133,  0.        ],</span>
-<span class="go">       [ 0.000002  ,  0.        ],</span>
-<span class="go">       [ 0.000002  ,  0.00000067],</span>
-<span class="go">       [ 0.00000167,  0.000001  ],</span>
-<span class="go">       [ 0.000001  ,  0.000001  ],</span>
-<span class="go">       [ 0.00000033,  0.000001  ],</span>
-<span class="go">       [ 0.        ,  0.00000133],</span>
-<span class="go">       [ 0.        ,  0.000002  ],</span>
-<span class="go">       [ 0.00000067,  0.000002  ],</span>
-<span class="go">       [ 0.00000133,  0.000002  ],</span>
-<span class="go">       [ 0.000002  ,  0.000002  ]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements.unique_pixels">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">unique_pixels</code><span class="sig-paren">(</span><em>coords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#unique_pixels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements.unique_pixels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Identify unique pixels from a set of coordinates.</p>
-<p>The floating point <em class="xref py py-obj">coords</em> are reduced to a unique set of integer pixels
-by flooring the floating point values.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The <em class="xref py py-obj">k</em> floating point coordinates arranged into a 2D array where each
-row is a coordinate pair (x, y), such that <em class="xref py py-obj">coords</em> has size <em class="xref py py-obj">k</em> x 2.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>unique_pixels</strong> (<em>ndarray</em>) &#8211;
-The <em class="xref py py-obj">l</em> &lt;= <em class="xref py py-obj">k</em> unique (integer) pixels, such that <a class="reference internal" href="#magni.imaging.measurements.unique_pixels" title="magni.imaging.measurements.unique_pixels"><code class="xref py py-obj docutils literal"><span class="pre">unique_pixels</span></code></a> is a
-2D array and has size <em class="xref py py-obj">l</em> x 2.</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Examples</p>
-<p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.measurements</span> <span class="kn">import</span> <span class="n">unique_pixels</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.3</span><span class="p">,</span> <span class="mf">4.3</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">(</span><span class="n">unique_pixels</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
-<span class="go">array([[1, 1],</span>
-<span class="go">       [3, 4]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="magni.imaging.measurements._get_line_scan_coords">
-<code class="descclassname">magni.imaging.measurements.</code><code class="descname">_get_line_scan_coords</code><span class="sig-paren">(</span><em>lines</em>, <em>samples</em>, <em>sample_dist</em>, <em>l</em>, <em>w</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/measurements.html#_get_line_scan_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.measurements._get_line_scan_coords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the coordinates of the sampled lines in a line scanning.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>lines</strong> (<em>ndarray</em>) &#8211;
-The position (vertical distance from top of scan area) of the lines to
-scan.</li>
-<li><strong>samples</strong> (<em>int</em>) &#8211;
-The number of samples on the scan path.</li>
-<li><strong>sample_dist</strong> (<em>float</em>) &#8211;
-The distance (path length) between samples.</li>
-<li><strong>l</strong> (<em>float</em>) &#8211;
-The length of the area to scan in units of meters.</li>
-<li><strong>w</strong> (<em>float</em>) &#8211;
-The width of the area to scan in units of meters.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The w and l coordinates arranged into a N_samples-by-2 array.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 </div>
 
@@ -921,18 +199,19 @@ The w and l coordinates arranged into a N_samples-by-2 array.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">magni.imaging.measurements module</a><ul>
+<li><a class="reference internal" href="#">magni.imaging.measurements package</a><ul>
 <li><a class="reference internal" href="#routine-listings">Routine listings</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="magni.imaging.evaluation.html"
-                        title="previous chapter">magni.imaging.evaluation module</a></p>
+  <p class="topless"><a href="magni.imaging.dictionaries.utils.html"
+                        title="previous chapter">magni.imaging.dictionaries.utils module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="magni.imaging.preprocessing.html"
-                        title="next chapter">magni.imaging.preprocessing module</a></p>
+  <p class="topless"><a href="magni.imaging.measurements._lissajous.html"
+                        title="next chapter">magni.imaging.measurements._lissajous module</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -957,19 +236,19 @@ The w and l coordinates arranged into a N_samples-by-2 array.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
+          <a href="magni.imaging.measurements._lissajous.html" title="magni.imaging.measurements._lissajous module"
              >next</a> |</li>
         <li class="right" >
-          <a href="magni.imaging.evaluation.html" title="magni.imaging.evaluation module"
+          <a href="magni.imaging.dictionaries.utils.html" title="magni.imaging.dictionaries.utils module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2015, Magni developers.
-      Last updated on May 05, 2015.
+        &copy; Copyright 2014-2016, Magni developers.
+      Last updated on Jan 29, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

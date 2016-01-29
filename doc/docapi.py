@@ -5,7 +5,7 @@ at https://bitbucket.org/birkenfeld/sphinx/
 
 It is subject to the following LICENSE:
 
-Copyright (c) 2014-1015, Christian Schou Oxvig & Patrick Steffen Pedersen
+Copyright (c) 2014-1016, Christian Schou Oxvig & Patrick Steffen Pedersen
 Copyright (c) 2007-2013 by the Sphinx team (see AUTHORS file).
 All rights reserved.
 

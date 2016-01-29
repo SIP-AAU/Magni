@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation module &mdash; Magni 1.3.0 documentation</title>
+    <title>magni.imaging.visualisation module &mdash; Magni 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.3.0',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.4.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="prev" title="magni.imaging.preprocessing module" href="magni.imaging.preprocessing.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -69,7 +69,7 @@ colormapping.</p>
 <dd>Function that may be used to display an image.</dd>
 <dt>imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,</dt>
 <dd>x_ticklabels=None, y_ticklabels=None, cbar_label=None,
-normalise=True, **kwargs)
+normalise=True, fixed_clim=None, **kwargs)
 Function that may be used to display a set of related images.</dd>
 <dt>mask_img_from_coords(img, coords)</dt>
 <dd>Function for masking certain parts of an image based on coordinates.</dd>
@@ -135,13 +135,13 @@ The AxesImage returned by matplotlibs imshow.</p>
 
 <dl class="function">
 <dt id="magni.imaging.visualisation.imsubplot">
-<code class="descclassname">magni.imaging.visualisation.</code><code class="descname">imsubplot</code><span class="sig-paren">(</span><em>imgs</em>, <em>rows</em>, <em>titles=None</em>, <em>x_labels=None</em>, <em>y_labels=None</em>, <em>x_ticklabels=None</em>, <em>y_ticklabels=None</em>, <em>cbar_label=None</em>, <em>normalise=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#imsubplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.imsubplot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.imaging.visualisation.</code><code class="descname">imsubplot</code><span class="sig-paren">(</span><em>imgs</em>, <em>rows</em>, <em>titles=None</em>, <em>x_labels=None</em>, <em>y_labels=None</em>, <em>x_ticklabels=None</em>, <em>y_ticklabels=None</em>, <em>cbar_label=None</em>, <em>normalise=True</em>, <em>fixed_clim=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#imsubplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation.imsubplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display a set of related images as subplots in a figure.</p>
 <p>The images <em class="xref py py-obj">imgs</em> are shown in a figure with a subplot layout based on the
-number of <em class="xref py py-obj">rows</em>. The <em class="xref py py-obj">titles</em>, <em class="xref py py-obj">x_labels</em>, and <em class="xref py py-obj">y_labels</em> are shown in the
-subplots. If <em class="xref py py-obj">normalise</em> is True, all the images will share the same
-normalised colourbar/colormapping i.e. a particular colour will correspond
-to the same value across all images.</p>
+number of <em class="xref py py-obj">rows</em>. The <em class="xref py py-obj">titles</em>, <em class="xref py py-obj">x_labels</em>, <em class="xref py py-obj">y_labels</em>, <em class="xref py py-obj">x_ticklabels</em>,
+and <em class="xref py py-obj">y_ticklabels</em> are shown in the subplots. If <em class="xref py py-obj">normalise</em> is True, all
+the images will share the same normalised colorbar/colormapping i.e. a
+particular colour will correspond to the same value across all images.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -161,14 +161,19 @@ is None, which implies that no x_labels are displayed).</li>
 The y_labels (as strings) to use for each of the subplots (the default
 is None, which implies that no y_labels are displayed).</li>
 <li><strong>x_ticklabels</strong> (<em>list or tuple</em>) &#8211;
-The x_ticklabels (as strings) to share across the subplots (the default
-is None, which implies that no x_ticklabels are displayed).</li>
+The x_ticklabels (as strings or lists of strings) to use for the
+subplots (the default is None, which implies that no x_ticklabels are
+displayed).</li>
 <li><strong>y_ticklabels</strong> (<em>list or tuple</em>) &#8211;
-The y_ticklabels (as strings) to share across the subplots (the default
-is None, which implies tht no y_ticklabels are displayed).</li>
+The y_ticklabels (as strings or lists of strings) to use for the
+subplots (the default is None, which implies that no y_ticklabels are
+displayed).</li>
 <li><strong>cbar_label</strong> (<em>str</em>) &#8211;
 The colorbar label to use with a normalised colormapping (the default
 is None, which implies that no colorbar label is displayed).</li>
+<li><strong>fixed_clim</strong> (<em>list or tuple</em>) &#8211;
+The colorbar limits as a (min, max) sequence (the default is None,
+which implies that the colorbar limits are inferred from the data).</li>
 <li><strong>normalise</strong> (<em>bool</em>) &#8211;
 The flag that indicates whether to use a normalised colormapping.</li>
 </ul>
@@ -188,19 +193,38 @@ The resulting figure instance.</p>
 </dl>
 </div>
 <p class="rubric">Notes</p>
+<p>The <em class="xref py py-obj">x_ticklabels</em> and <em class="xref py py-obj">y_ticklabels</em> may be either a collection of strings
+or a collections of collections of strings depending on wherther the labels
+should be shared across all subplots or different labels are to be used for
+each subplot.</p>
 <p>Additional kwargs given to the function will be passed to the underlying
 suplot instantiation function <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.subplots</span></code>.</p>
 <p>If <em class="xref py py-obj">normalise</em> is True, the common colorbar is shown below the subplots.</p>
 <p>The implementation of the normalisation feature is based on the Pylab
 example: <a class="reference external" href="http://matplotlib.org/examples/pylab_examples/multi_image.html">http://matplotlib.org/examples/pylab_examples/multi_image.html</a>.</p>
 <p class="rubric">Examples</p>
-<p>For example, show to images next to each other with a common colormapping:</p>
+<p>For example, show two images next to each other with a common colormapping:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">imsubplot</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">imsubplot</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">titles</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;arange&#39;</span><span class="p">,</span> <span class="s">&#39;ones&#39;</span><span class="p">],</span>
-<span class="gp">... </span><span class="n">x_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;x1&#39;</span><span class="p">,</span> <span class="s">&#39;x2&#39;</span><span class="p">],</span> <span class="n">y_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;y1&#39;</span><span class="p">,</span> <span class="s">&#39;y2&#39;</span><span class="p">],</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">... </span><span class="n">x_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;x1&#39;</span><span class="p">,</span> <span class="s">&#39;x2&#39;</span><span class="p">],</span> <span class="n">y_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;y1&#39;</span><span class="p">,</span> <span class="s">&#39;y2&#39;</span><span class="p">],</span> <span class="n">cbar_label</span><span class="o">=</span><span class="s">&#39;Example&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or show the same images with shared ticklabels and fixed colorbar limits:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">common_x_ticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">common_y_ticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">imsubplot</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_ticklabels</span><span class="o">=</span><span class="n">common_x_ticklabels</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">y_ticklabels</span><span class="o">=</span><span class="n">common_y_ticklabels</span><span class="p">,</span> <span class="n">fixed_clim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or show the same images with different colormappings and ticklabels:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x_ticklabels</span> <span class="o">=</span> <span class="p">[[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;aa&#39;</span><span class="p">,</span> <span class="s">&#39;bb&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_ticklabels</span> <span class="o">=</span> <span class="p">[[</span><span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;cc&#39;</span><span class="p">,</span> <span class="s">&#39;dd&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">imsubplot</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_ticklabels</span><span class="o">=</span><span class="n">x_ticklabels</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">y_ticklabels</span><span class="o">=</span><span class="n">y_ticklabels</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -362,6 +386,39 @@ A stretched copy of the input image.</p>
 </div>
 </dd></dl>
 
+<dl class="function">
+<dt id="magni.imaging.visualisation._handle_ticklabels">
+<code class="descclassname">magni.imaging.visualisation.</code><code class="descname">_handle_ticklabels</code><span class="sig-paren">(</span><em>ax</em>, <em>k</em>, <em>x_ticklabels</em>, <em>y_ticklabels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#_handle_ticklabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation._handle_ticklabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle and format ticks and ticklabels for use in imsubplot.</p>
+<p>The <a class="reference internal" href="#magni.imaging.visualisation.imsubplot" title="magni.imaging.visualisation.imsubplot"><code class="xref py py-obj docutils literal"><span class="pre">imsubplot</span></code></a> function creates a figure showing an abitrary number of
+subplots. The <a class="reference internal" href="#magni.imaging.visualisation.imsubplot" title="magni.imaging.visualisation.imsubplot"><code class="xref py py-obj docutils literal"><span class="pre">imsubplot</span></code></a> function allows for custom ticklabels along the
+x- and y-axes. This function handles the formatting of the ticklabels for a
+given subplot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> (<em>matplotlib.axes.Axes</em>) &#8211;
+The matplotlib axes (subplot) to format ticklabels for.</li>
+<li><strong>k</strong> (<em>int</em>) &#8211;
+The axes index, i.e. the subplot number out of the total number of
+subplots.</li>
+<li><strong>x_ticklabels</strong> (<em>list or tuple</em>) &#8211;
+The x_ticklabels (as strings or lists of strings) to use for the
+subplots (the default is None, which implies that no x_ticklabels are
+displayed).</li>
+<li><strong>y_ticklabels</strong> (<em>list or tuple</em>) &#8211;
+The y_ticklabels (as strings or lists of strings) to use for the
+subplots (the default is None, which implies that no y_ticklabels are
+displayed).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="class">
 <dt id="magni.imaging.visualisation._ImageColourTracker">
 <em class="property">class </em><code class="descclassname">magni.imaging.visualisation.</code><code class="descname">_ImageColourTracker</code><span class="sig-paren">(</span><em>tracker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#_ImageColourTracker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation._ImageColourTracker" title="Permalink to this definition">¶</a></dt>
@@ -434,14 +491,14 @@ The image instance that must track a given &#8216;clim&#8217;.</td>
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2015, Magni developers.
-      Last updated on May 05, 2015.
+        &copy; Copyright 2014-2016, Magni developers.
+      Last updated on Jan 29, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

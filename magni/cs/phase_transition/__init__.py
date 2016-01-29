@@ -1,10 +1,10 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
-Subpackage providing phase transition determination.
+Subpackage providing phase transition determination functionality.
 
 Routine listings
 ----------------

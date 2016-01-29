@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -70,8 +70,6 @@ You look surprised to see me, Mr. Anderson.
 """
 
 from magni.utils.validation import types
-from magni.utils.validation._deprecated import validate
-from magni.utils.validation._deprecated import validate_ndarray
 from magni.utils.validation._generic import validate_generic
 from magni.utils.validation._numeric import validate_numeric
 from magni.utils.validation._levels import validate_levels

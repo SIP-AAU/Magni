@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility.io module &mdash; Magni 1.3.0 documentation</title>
+    <title>magni.reproducibility.io module &mdash; Magni 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.3.0',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.3.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.4.0 documentation" href="index.html" />
     <link rel="up" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="next" title="magni.utils package" href="magni.utils.html" />
-    <link rel="prev" title="magni.reproducibility._chase module" href="magni.reproducibility._chase.html" /> 
+    <link rel="prev" title="magni.reproducibility.data module" href="magni.reproducibility.data.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -41,9 +41,9 @@
           <a href="magni.utils.html" title="magni.utils package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="magni.reproducibility._chase.html" title="magni.reproducibility._chase module"
+          <a href="magni.reproducibility.data.html" title="magni.reproducibility.data module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" accesskey="U">magni.reproducibility package</a> &raquo;</li> 
       </ul>
@@ -68,13 +68,15 @@ reproducible research.</p>
 <dt>create_database(h5file)</dt>
 <dd>Function for creating a new annotated and chased HDF5 database.</dd>
 <dt>read_annotations(h5file)</dt>
-<dd>Function for reading annotations in a HDF5 database.</dd>
+<dd>Function for reading annotations in an HDF5 database.</dd>
 <dt>read_chases(h5file)</dt>
-<dd>Function for reading chases in a HDF5 database.</dd>
+<dd>Function for reading chases in an HDF5 database.</dd>
 <dt>remove_annotations(h5file)</dt>
-<dd>Function for removing annotations in a HDF5 database.</dd>
+<dd>Function for removing annotations in an HDF5 database.</dd>
 <dt>remove_chases(h5file)</dt>
-<dd>Function for removing chases in a HDF5 database.</dd>
+<dd>Function for removing chases in an HDF5 database.</dd>
+<dt>write_custom_annotation(h5file, annotation_name, annotation_value)</dt>
+<dd>Write a custom annotation to an HDF5 database.</dd>
 </dl>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -104,7 +106,7 @@ reproducible research.</p>
 <dl class="function">
 <dt id="magni.reproducibility.io.annotate_database">
 <code class="descclassname">magni.reproducibility.io.</code><code class="descname">annotate_database</code><span class="sig-paren">(</span><em>h5file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#annotate_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.annotate_database" title="Permalink to this definition">¶</a></dt>
-<dd><p>Annotate a HDF5 database with information about Magni and the platform.</p>
+<dd><p>Annotate an HDF5 database with information about Magni and the platform.</p>
 <p>The annotation consists of a group in the root of the <em class="xref py py-obj">h5file</em> having nodes
 that each provide information about Magni or the platform on which this
 function is run.</p>
@@ -157,7 +159,7 @@ The handle to the HDF5 database that should be annotated.</td>
 <dl class="function">
 <dt id="magni.reproducibility.io.chase_database">
 <code class="descclassname">magni.reproducibility.io.</code><code class="descname">chase_database</code><span class="sig-paren">(</span><em>h5file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#chase_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.chase_database" title="Permalink to this definition">¶</a></dt>
-<dd><p>Chase a HDF5 database to track information about the stack and source code.</p>
+<dd><p>Chase an HDF5 database to track information about stack and source code.</p>
 <p>The chase consist of a group in the root of the <em class="xref py py-obj">h5file</em> having nodes that
 each profide information about the program execution that led to this chase
 of the database.</p>
@@ -243,7 +245,7 @@ The flag that indicates if an existing database should be overwritten.</li>
 <dl class="function">
 <dt id="magni.reproducibility.io.read_annotations">
 <code class="descclassname">magni.reproducibility.io.</code><code class="descname">read_annotations</code><span class="sig-paren">(</span><em>h5file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#read_annotations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.read_annotations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the annotations to a HDF5 database.</p>
+<dd><p>Read the annotations to an HDF5 database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -277,7 +279,7 @@ value corresponding to a given key is in itself a dict. See
 <dl class="function">
 <dt id="magni.reproducibility.io.read_chases">
 <code class="descclassname">magni.reproducibility.io.</code><code class="descname">read_chases</code><span class="sig-paren">(</span><em>h5file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#read_chases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.read_chases" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the chases to a HDF5 database.</p>
+<dd><p>Read the chases to an HDF5 database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -311,7 +313,7 @@ corresponding to a given key is a string. See
 <dl class="function">
 <dt id="magni.reproducibility.io.remove_annotations">
 <code class="descclassname">magni.reproducibility.io.</code><code class="descname">remove_annotations</code><span class="sig-paren">(</span><em>h5file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#remove_annotations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.remove_annotations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove the annotations from a HDF5 database.</p>
+<dd><p>Remove the annotations from an HDF5 database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -334,7 +336,7 @@ The handle to the HDF5 database from which the annotations are removed.</td>
 <dl class="function">
 <dt id="magni.reproducibility.io.remove_chases">
 <code class="descclassname">magni.reproducibility.io.</code><code class="descname">remove_chases</code><span class="sig-paren">(</span><em>h5file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#remove_chases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.remove_chases" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove the chases from a HDF5 database.</p>
+<dd><p>Remove the chases from an HDF5 database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -350,6 +352,45 @@ The handle to the HDF5 database from which the chases are removed.</td>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">remove_chases</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">&#39;db.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="n">remove_chases</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.reproducibility.io.write_custom_annotation">
+<code class="descclassname">magni.reproducibility.io.</code><code class="descname">write_custom_annotation</code><span class="sig-paren">(</span><em>h5file</em>, <em>annotation_name</em>, <em>annotation_value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#write_custom_annotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.write_custom_annotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a custom annotation to an HDF5 database.</p>
+<p>The annotation is written to the <em class="xref py py-obj">h5file</em> under the <em class="xref py py-obj">annotation_name</em> such
+that it holds the <em class="xref py py-obj">annotation_value</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>h5file</strong> (<em>tables.file.File</em>) &#8211;
+The handle to the HDF5 database to which the annotation is written.</li>
+<li><strong>annotation_name</strong> (<em>str</em>) &#8211;
+The name of the annotation to write.</li>
+<li><strong>annotation_value</strong> (<em>a JSON serialisable object</em>) &#8211;
+The annotation value to write.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The <em class="xref py py-obj">annotation_value</em> must be a JSON seriablisable object.</p>
+<p class="rubric">Examples</p>
+<p>Write a custom annotation to an HDF5 database.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.reproducibility.io</span> <span class="kn">import</span> <span class="n">write_custom_annotation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">annotation_name</span> <span class="o">=</span> <span class="s">&#39;custom_annotation&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">annotation_value</span> <span class="o">=</span> <span class="s">&#39;the value&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">&#39;db.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">write_custom_annotation</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="n">annotation_name</span><span class="p">,</span> <span class="n">annotation_value</span><span class="p">)</span>
+<span class="gp">... </span>   <span class="n">annotations</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">reproducibility</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">annotations</span><span class="p">[</span><span class="s">&#39;custom_annotation&#39;</span><span class="p">])</span>
+<span class="go">&#39;the value&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -372,8 +413,8 @@ The handle to the HDF5 database from which the chases are removed.</td>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="magni.reproducibility._chase.html"
-                        title="previous chapter">magni.reproducibility._chase module</a></p>
+  <p class="topless"><a href="magni.reproducibility.data.html"
+                        title="previous chapter">magni.reproducibility.data module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.utils.html"
                         title="next chapter">magni.utils package</a></p>
@@ -404,16 +445,16 @@ The handle to the HDF5 database from which the chases are removed.</td>
           <a href="magni.utils.html" title="magni.utils package"
              >next</a> |</li>
         <li class="right" >
-          <a href="magni.reproducibility._chase.html" title="magni.reproducibility._chase module"
+          <a href="magni.reproducibility.data.html" title="magni.reproducibility.data module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" >magni.reproducibility package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2015, Magni developers.
-      Last updated on May 05, 2015.
+        &copy; Copyright 2014-2016, Magni developers.
+      Last updated on Jan 29, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

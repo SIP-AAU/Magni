@@ -1,5 +1,5 @@
 """..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -16,8 +16,10 @@ from __future__ import division, print_function
 import base64
 import contextlib
 from datetime import datetime
+from distutils.version import StrictVersion
 import os
 import shutil
+import subprocess
 import unittest
 import types
 import warnings
@@ -30,28 +32,61 @@ try:
 except ImportError:
     from io import BytesIO  # Python 3
 
-from IPython.kernel import KernelManager
-
 import numpy as np
 import scipy.misc
 
 import magni
 
-with warnings.catch_warnings():
-    warnings.simplefilter('error')
-    try:
-        # IPython 2.x
-        from IPython.nbformat.current import reads, NotebookNode
+# The great "support IPython 2, 3, 4" strat begins
+try:
+    import jupyter
+except ImportError:
+    jupyter_era = False
+else:
+    jupyter_era = True
 
-        def mod_reads(file_):
-            return reads(file_, 'json')
+if jupyter_era:
+    # Jupyter / IPython 4.x
+    from jupyter_client import KernelManager
+    from nbformat import reads, NotebookNode
 
-    except UserWarning:
-        # IPython 3.x
-        from IPython.nbformat import reads, NotebookNode
+    def mod_reads(file_):
+        return reads(file_, 3)  # Read notebooks as v3
 
-        def mod_reads(file_):
-            return reads(file_, 3)  # Read notebooks as v3
+else:
+    from IPython.kernel import KernelManager
+    with warnings.catch_warnings():
+        warnings.simplefilter('error')
+        try:
+            # IPython 2.x
+            from IPython.nbformat.current import reads, NotebookNode
+
+            def mod_reads(file_):
+                return reads(file_, 'json')
+
+        except UserWarning:
+            # IPython 3.x
+            from IPython.nbformat import reads, NotebookNode
+
+            def mod_reads(file_):
+                return reads(file_, 3)  # Read notebooks as v3
+
+# End of the great "support IPython 2, 3, 4" strat
+
+# Test for freetype library version
+try:
+    if StrictVersion(
+            subprocess.check_output(
+                ['freetype-config', '--ftversion']).decode().strip()
+            ) <= StrictVersion('2.5.2'):
+        _skip_display_data_tests = False
+    else:
+        _skip_display_data_tests = True
+except OSError:
+    _skip_display_data_tests = True
+
+if _skip_display_data_tests:
+    warnings.warn('Skipping display data ipynb tests.', RuntimeWarning)
 
 
 class _Meta(type):
@@ -249,6 +284,10 @@ def _compare_cell_output(test_result, reference):
     """
 
     skip_compare = ['traceback', 'latex', 'prompt_number']
+
+    if _skip_display_data_tests:
+        # Skip graphics comparison
+        skip_compare.append('png')
 
     if test_result['output_type'] == 'display_data':
         # Prevent comparison of matplotlib figure instance memory addresses
@@ -466,7 +505,7 @@ def _execute_cell(cell, shell, iopub, timeout=300):
             break
 
         msg_type = msg['msg_type']
-        if msg_type in ('status', 'pyin', 'execute_input'):
+        if msg_type in ('status', 'pyin', 'execute_input', 'execute_result'):
             continue
 
         content = msg['content']

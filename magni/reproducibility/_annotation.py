@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -9,11 +9,13 @@ Module providing functions that may be used to annotate data.
 Routine Listings
 ----------------
 get_conda_info()
-    Function that returns information about a Continnum Anaconda install.
+    Function that returns information about an Anaconda install.
 get_datetime()
     Function that returns information about the current date and time.
-get_git_revision()
-    Function that returns information about the `magni` git revision.
+get_git_revision(git_root_dir=None)
+    Function that returns information about the current git revision.
+get_file_hashes(path, blocksize=2**30)
+    Function that returns the md5 and sha256 checksums of a file.
 get_magni_config()
     Function that returns information about the current configuration of Magni.
 get_magni_info()
@@ -23,12 +25,13 @@ get_platform_info()
 
 Notes
 -----
-The return annotations are any nested level of dicts of dicts of strings.
+The returned annotations are any nested level of dicts of dicts of strings.
 
 """
 
 from __future__ import division
 import datetime
+import hashlib
 import json
 import os
 import pkgutil
@@ -37,17 +40,24 @@ import pydoc
 import re
 import subprocess
 
-import magni
+import magni as _magni
+from magni.utils.validation import decorate_validation as _decorate_validation
+from magni.utils.validation import validate_generic as _generic
+from magni.utils.validation import validate_numeric as _numeric
+
+__all__ = ['get_conda_info', 'get_datetime', 'get_git_revision',
+           'get_file_hashes', 'get_magni_config', 'get_magni_info',
+           'get_platform_info']
 
 
 def get_conda_info():
     """
     Return a dictionary contianing information from Conda.
 
-    Conda is the package manager for the `Continuum Anaconda
-    <https://store.continuum.io/cshop/anaconda/>`_ scientific Python
-    distribution. This function will return various information about the
-    Anaconda installation on the system by quering the Conda package database.
+    `Conda <http://conda.pydata.org/>`_ is the package manager for the Anaconda
+    scientific Python distribution. This function will return various
+    information about the Anaconda installation on the system by quering the
+    Conda package database.
 
     Returns
     -------
@@ -156,9 +166,16 @@ def get_datetime():
     return date_time
 
 
-def get_git_revision():
+def get_git_revision(git_root_dir=None):
     """
     Return a dictionary containing information about the current git revision.
+
+    Parameters
+    ----------
+    git_root_dir : str
+        The path to the git root directory to get git revision for (the default
+        is None, which implies that the git revision of the `magni` directory
+        is returned).
 
     Returns
     -------
@@ -173,6 +190,7 @@ def get_git_revision():
     * status (with value 'Succeeded')
     * tag (output of "git describe")
     * branch (output of "git describe --all")
+    * remote (output of "git remote -v")
 
     If the git revision extract failed, the returned dictionary has the
     following keys:
@@ -181,19 +199,37 @@ def get_git_revision():
     * returncode (returncode from failing git command)
     * output (output from failing git command)
 
-    The "git describe" commands are run in the directory in which `magni` is
-    loaded from.
+    The "git" commands are run in the git root directory.
 
     """
 
+    @_decorate_validation
+    def validate_input():
+        _generic('git_root_dir', 'string', ignore_none=True)
+
+    validate_input()
+
     cur_dir = os.getcwd()
-    os.chdir(os.path.split(magni.__path__[0])[0])
+    if git_root_dir is not None:
+        try:
+            os.chdir(git_root_dir)
+        except (IOError, OSError):
+            raise OSError(
+                'The git_root_dir directory "{!r}".format(git_root_dir)' +
+                'does not exist')
+    else:
+        os.chdir(os.path.split(_magni.__path__[0])[0])
 
     try:
-        git_revision = {'tag': str(subprocess.check_output(
-            ['git', 'describe'], stderr=subprocess.STDOUT)[:-1].decode()),
+        git_revision = {
+            'tag': str(subprocess.check_output(
+                ['git', 'describe'],
+                stderr=subprocess.STDOUT)[:-1].decode()),
             'branch': str(subprocess.check_output(
                 ['git', 'describe', '--all'],
+                stderr=subprocess.STDOUT)[:-1].decode()),
+            'remote': str(subprocess.check_output(
+                ['git', 'remote', '-v'],
                 stderr=subprocess.STDOUT)[:-1].decode()),
             'status': 'Succeeded'}
 
@@ -222,6 +258,47 @@ def get_git_revision():
     return git_revision
 
 
+def get_file_hashes(path, blocksize=2**30):
+    """
+    Return a dictionary with md5 and sha256 checksums of a file.
+
+    Parameters
+    ----------
+    path : str
+        The path to the file to checksum.
+    blocksize : int
+        The chunksize (in bytes) to read from the file one at a time.
+
+    Returns
+    -------
+    file_hashes : dict
+        The dictionary holding the md5 and sha256 hexdigests of the file.
+
+    """
+
+    @_decorate_validation
+    def validate_input():
+        _generic('path', 'string')
+        _numeric('blocksize', 'integer', range_='[1;inf)')
+
+    validate_input()
+
+    md5sum = hashlib.md5()
+    sha256sum = hashlib.sha256()
+
+    with open(path, mode='rb') as f_handle:
+        buf = f_handle.read(blocksize)
+        while buf != ''.encode():
+            md5sum.update(buf)
+            sha256sum.update(buf)
+            buf = f_handle.read(blocksize)
+
+    file_hashes = {'md5sum': md5sum.hexdigest(),
+                   'sha256sum': sha256sum.hexdigest()}
+
+    return file_hashes
+
+
 def get_magni_config():
     """
     Return a dictionary holding the current configuration of Magni.
@@ -244,15 +321,15 @@ def get_magni_config():
 
     """
 
-    packages = pkgutil.walk_packages(path=magni.__path__,
-                                     prefix=magni.__name__ + '.')
+    packages = pkgutil.walk_packages(path=_magni.__path__,
+                                     prefix=_magni.__name__ + '.')
 
     magni_config = dict()
     try:
         for importer, modname, ispkg in packages:
             if modname[-8:] == '._config':
                 try:
-                    settings = dict(eval(modname).configger.items())
+                    settings = dict(eval('_' + modname).configger.items())
                 except AttributeError:
                     # Skip base Configgers, e.g. cs.reconcstruction.config
                     pass
@@ -288,7 +365,7 @@ def get_magni_info():
 
     """
 
-    magni_info = pydoc.render_doc(magni)
+    magni_info = pydoc.render_doc(_magni)
     magni_info, subs = re.subn(r'\x08([A-Z]|[a-z]|_)?', '', magni_info)
 
     return {'help_magni': magni_info}

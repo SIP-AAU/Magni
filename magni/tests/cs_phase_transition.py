@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -9,7 +9,7 @@ Module providing unittests for `magni.cs.phase_transition`.
 Routine listings
 ----------------
 TestDataGenerateVector(unittest.TestCase)
-    Tests of the _data.generate_vector function
+    Tests of the _data.generate_vector function.
 TestDataGenerateMatrix(unittest.TestCase)
     Tests of the _data.generate_matrix function.
 class TestSimulationSimulate(unittest.TestCase)

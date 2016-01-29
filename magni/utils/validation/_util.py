@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -116,6 +116,15 @@ def disable_validation():
     ... else:
     ...     print('No exception occured')
     No exception occured
+
+    Although strongly discouraged, validation can be re-enabled after being
+    disabled in the following way:
+
+    >>> import magni.utils.validation._util
+    >>> magni.utils.validation._util._disabled = False
+
+    As this interface is not public it may be subject to changes in future
+    releases without further notice.
 
     """
 

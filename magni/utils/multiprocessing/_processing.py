@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -146,9 +146,9 @@ def process(func, namespace={}, args_list=None, kwargs_list=None,
         _process_init(func, namespace)
         results = list(map(_process_worker, tasks))
     else:
-        if os.name == 'nt' and sys.version_info.major == 2:
+        if os.name == 'nt':
             raise NotImplementedError('This function is not available under '
-                                      'Windows with Python 2.')
+                                      'Windows.')
 
         try:
             num_threads = _get_num_threads()

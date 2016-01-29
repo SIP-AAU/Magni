@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -18,7 +18,7 @@ imshow(X, ax=None, intensity_func=None, intensity_args=(), \*\*kwargs)
     Function that may be used to display an image.
 imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,
     x_ticklabels=None, y_ticklabels=None, cbar_label=None,
-    normalise=True, \*\*kwargs)
+    normalise=True, fixed_clim=None, \*\*kwargs)
     Function that may be used to display a set of related images.
 mask_img_from_coords(img, coords)
     Function for masking certain parts of an image based on coordinates.
@@ -138,15 +138,15 @@ def imshow(X, ax=None, intensity_func=None, intensity_args=(),
 
 def imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,
               x_ticklabels=None, y_ticklabels=None, cbar_label=None,
-              normalise=True, **kwargs):
+              normalise=True, fixed_clim=None, **kwargs):
     """
     Display a set of related images as subplots in a figure.
 
     The images `imgs` are shown in a figure with a subplot layout based on the
-    number of `rows`. The `titles`, `x_labels`, and `y_labels` are shown in the
-    subplots. If `normalise` is True, all the images will share the same
-    normalised colourbar/colormapping i.e. a particular colour will correspond
-    to the same value across all images.
+    number of `rows`. The `titles`, `x_labels`, `y_labels`, `x_ticklabels`,
+    and `y_ticklabels` are shown in the subplots. If `normalise` is True, all
+    the images will share the same normalised colorbar/colormapping i.e. a
+    particular colour will correspond to the same value across all images.
 
     Parameters
     ----------
@@ -164,14 +164,19 @@ def imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,
         The y_labels (as strings) to use for each of the subplots (the default
         is None, which implies that no y_labels are displayed).
     x_ticklabels : list or tuple
-        The x_ticklabels (as strings) to share across the subplots (the default
-        is None, which implies that no x_ticklabels are displayed).
+        The x_ticklabels (as strings or lists of strings) to use for the
+        subplots (the default is None, which implies that no x_ticklabels are
+        displayed).
     y_ticklabels : list or tuple
-        The y_ticklabels (as strings) to share across the subplots (the default
-        is None, which implies tht no y_ticklabels are displayed).
+        The y_ticklabels (as strings or lists of strings) to use for the
+        subplots (the default is None, which implies that no y_ticklabels are
+        displayed).
     cbar_label : str
         The colorbar label to use with a normalised colormapping (the default
         is None, which implies that no colorbar label is displayed).
+    fixed_clim : list or tuple
+        The colorbar limits as a (min, max) sequence (the default is None,
+        which implies that the colorbar limits are inferred from the data).
     normalise : bool
         The flag that indicates whether to use a normalised colormapping.
 
@@ -186,6 +191,11 @@ def imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,
 
     Notes
     -----
+    The `x_ticklabels` and `y_ticklabels` may be either a collection of strings
+    or a collections of collections of strings depending on wherther the labels
+    should be shared across all subplots or different labels are to be used for
+    each subplot.
+
     Additional kwargs given to the function will be passed to the underlying
     suplot instantiation function `matplotlib.pyplot.subplots`.
 
@@ -196,14 +206,29 @@ def imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,
 
     Examples
     --------
-    For example, show to images next to each other with a common colormapping:
+    For example, show two images next to each other with a common colormapping:
 
     >>> import numpy as np
     >>> from magni.imaging.visualisation import imsubplot
     >>> img1 = np.arange(4).reshape(2, 2)
     >>> img2 = np.ones((4, 4))
     >>> fig = imsubplot([img1, img2], 1, titles=['arange', 'ones'],
-    ... x_labels=['x1', 'x2'], y_labels=['y1', 'y2'], normalise=True)
+    ... x_labels=['x1', 'x2'], y_labels=['y1', 'y2'], cbar_label='Example',
+    ... normalise=True)
+
+    or show the same images with shared ticklabels and fixed colorbar limits:
+
+    >>> common_x_ticklabels = ['a', 'b']
+    >>> common_y_ticklabels = ['c', 'd']
+    >>> fig = imsubplot([img1, img2], 1, x_ticklabels=common_x_ticklabels,
+    ... y_ticklabels=common_y_ticklabels, fixed_clim=(0, 2), normalise=True)
+
+    or show the same images with different colormappings and ticklabels:
+
+    >>> x_ticklabels = [['a', 'b'], ['aa', 'bb']]
+    >>> y_ticklabels = [['c', 'd'], ['cc', 'dd']]
+    >>> fig = imsubplot([img1, img2], 1, x_ticklabels=x_ticklabels,
+    ... y_ticklabels=y_ticklabels, normalise=False)
 
     """
 
@@ -224,11 +249,18 @@ def imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,
                              _generic(None, 'string')))
         _levels('x_ticklabels', (_generic(None, 'explicit collection',
                                           ignore_none=True),
+                                 _generic(None,
+                                          ('explicit collection', 'string')),
                                  _generic(None, 'string')))
         _levels('y_ticklabels', (_generic(None, 'explicit collection',
                                           ignore_none=True),
+                                 _generic(None,
+                                          ('explicit collection', 'string')),
                                  _generic(None, 'string')))
         _generic('cbar_label', 'string', ignore_none=True)
+        _levels('fixed_clim', (_generic(None, 'explicit collection', len_=2,
+                                        ignore_none=True),
+                               _numeric(None, ('integer', 'floating'))))
         _numeric('normalise', 'boolean')
 
     validate_input()
@@ -241,38 +273,43 @@ def imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,
     vmax = -1e40
     ims = []
     for k, img in enumerate(imgs):
+            # Show image
             ims.append(imshow(img, ax=axs[k]))
 
+            # Handle titles, labels, etc.
             fig_strings = (titles, x_labels, y_labels)
             handles = (axs[k].set_title, axs[k].set_xlabel, axs[k].set_ylabel)
             for fig_string, handle in zip(fig_strings, handles):
                 if fig_string is not None:
                     handle(fig_string[k])
 
-            if x_ticklabels is not None:
-                axs[k].set_xticks(range(len(x_ticklabels)))
-                axs[k].set_xticklabels(x_ticklabels, rotation=90)
+            _handle_ticklabels(axs[k], k, x_ticklabels, y_ticklabels)
 
-            if y_ticklabels is not None:
-                axs[k].set_yticks(range(len(y_ticklabels)))
-                axs[k].set_yticklabels(y_ticklabels)
-
+            # Track minimum and maximum data values
             vmin = min(vmin, np.amin(img))  # Find common minimum
             vmax = max(vmax, np.amax(img))  # Find common maximum
 
     if normalise:
         # Connect a Tracker to each image in order to update colormap limits
+        # This way all images share common colormap limits
         common_norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
         ims[0].set_norm(common_norm)
         for k in range(1, len(ims)):
             ims[k].set_norm(common_norm)
             ims[0].callbacksSM.connect('changed', _ImageColourTracker(ims[k]))
 
+        # Add common colorbar
         plt.subplots_adjust(bottom=0.2)
         c_bar_ax = fig.add_axes([0.2, 0.08, 0.6, 0.04])
         c_bar = fig.colorbar(ims[0], c_bar_ax, orientation='horizontal')
         c_bar.solids.set_edgecolor("face")
+
+        if fixed_clim is not None:
+            # Force colorbar limits
+            c_bar.set_clim(fixed_clim)
+
         if cbar_label is not None:
+            # Set colorbar label
             c_bar.set_label(cbar_label)
 
     return fig
@@ -327,9 +364,9 @@ def mask_img_from_coords(img, coords):
     @_decorate_validation
     def validate_input():
         _numeric('img', ('integer', 'floating', 'complex'), shape=(-1, -1))
-        _numeric('coord', 'integer', shape=(-1, 2), range_='(0;inf)')
+        _numeric('coords', 'integer', shape=(-1, 2), range_='[0;inf)')
 
-        validate_input()
+    validate_input()
 
     mask = np.ones_like(img, dtype=np.bool_)
     mask[coords[:, 1], coords[:, 0]] = False
@@ -465,6 +502,62 @@ def stretch_image(img, max_val, min_val=0):
     b = -a * min_ + min_val
 
     return a * img + b
+
+
+def _handle_ticklabels(ax, k, x_ticklabels, y_ticklabels):
+    """
+    Handle and format ticks and ticklabels for use in imsubplot.
+
+    The `imsubplot` function creates a figure showing an abitrary number of
+    subplots. The `imsubplot` function allows for custom ticklabels along the
+    x- and y-axes. This function handles the formatting of the ticklabels for a
+    given subplot.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        The matplotlib axes (subplot) to format ticklabels for.
+    k : int
+        The axes index, i.e. the subplot number out of the total number of
+        subplots.
+    x_ticklabels : list or tuple
+        The x_ticklabels (as strings or lists of strings) to use for the
+        subplots (the default is None, which implies that no x_ticklabels are
+        displayed).
+    y_ticklabels : list or tuple
+        The y_ticklabels (as strings or lists of strings) to use for the
+        subplots (the default is None, which implies that no y_ticklabels are
+        displayed).
+
+    """
+
+    if x_ticklabels is not None:
+        if isinstance(x_ticklabels[0], (list, tuple)):
+            x_t = range(len(x_ticklabels[k]))
+            x_tl = x_ticklabels[k]
+        else:
+            # Backwards compatibility
+            # Allow for sharing a single set of x_ticklabels across all images.
+            x_t = range(len(x_ticklabels))
+            x_tl = x_ticklabels
+
+        # Set xticks and xticklabels
+        ax.set_xticks(x_t)
+        ax.set_xticklabels(x_tl, rotation=90)
+
+    if y_ticklabels is not None:
+        if isinstance(y_ticklabels[0], (list, tuple)):
+            y_t = range(len(y_ticklabels[k]))
+            y_tl = y_ticklabels[k]
+        else:
+            # Backwards compatibility
+            # Allow for sharing a single set of y_ticklabels across all images.
+            y_t = range(len(y_ticklabels))
+            y_tl = y_ticklabels
+
+        # Set yticks and yticklabels
+        ax.set_yticks(y_t)
+        ax.set_yticklabels(y_tl)
 
 
 class _ImageColourTracker():

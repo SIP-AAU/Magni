@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -43,6 +43,9 @@ pac_names = {'python': 'Python',
 # Minimum version requirements
 python2_min_ver = '2.7'
 python3_min_ver = '3.3'
+python3_first_break_ver = '3.5'  # First version following minimum version for
+# which some third party dependency requires a newer version than specified
+# below.
 
 deps = {'numpy': '1.8',
         'scipy': '0.14',
@@ -82,6 +85,11 @@ elif py_ver[0] == '3':
                             py_ver)
     else:
         status['python'] = 'OK: Python 3 at version ' + py_ver
+        if StrictVersion(py_ver) >= StrictVersion(python3_first_break_ver):
+            status['python'] = (
+                'WARN: Python 3 at version ' + py_ver +
+                ' (this version may require newer versions of some of the ' +
+                'third party libraries)')
 
 else:
     status['python'] = 'FAIL: Python version is ' + py_ver + '... What???'

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -67,23 +67,29 @@ class MultiDomainImage(object):
     >>> domains = MultiDomainImage(Phi, Psi)
 
     An image can the be supplied in any domain and likewise retrieved in any
-    domain. For example, the image:
+    domain. For example, setting the measurements and getting the coefficients:
 
-    >>> domains.image = np.ones(3).reshape(3, 1)
-
-    Can be retrieved both as measurements:
-
+    >>> domains.measurements = np.ones(2).reshape(-1, 1)
     >>> np.set_printoptions(suppress=True)
-    >>> domains.measurements
-    array([[ 1.],
-           [ 1.]])
+    >>> print(domains.coefficients)
+    [[ 0.70710678]
+     [-0.70710678]
+     [ 1.        ]]
 
-    And as coefficients:
+    Or setting the coefficients and getting the image:
 
-    >>> domains.coefficients
-    array([[ 1.41421356],
-           [ 0.        ],
-           [ 1.        ]])
+    >>> domains.coefficients = np.ones(3).reshape(-1, 1)
+    >>> print(domains.image)
+    [[ 0.        ]
+     [ 1.41421356]
+     [ 1.        ]]
+
+    Or setting the image and getting the measurements:
+
+    >>> domains.image = np.ones(3).reshape(-1, 1)
+    >>> print(domains.measurements)
+    [[ 1.]
+     [ 1.]]
 
     """
 
@@ -98,6 +104,7 @@ class MultiDomainImage(object):
 
         self._Phi = Phi
         self._Psi = Psi
+        self._has_data = False
         self._measurements = None
         self._image = None
         self._coefficients = None
@@ -114,8 +121,7 @@ class MultiDomainImage(object):
 
         """
 
-        if (self._measurements is not None or self._image is not None or
-                self._coefficients is not None):
+        if self._has_data:
             if self._coefficients is None:
                 if self._image is None:
                     self._image = self._Phi.T.dot(self._measurements)
@@ -143,6 +149,7 @@ class MultiDomainImage(object):
 
         validate_input()
 
+        self._has_data = True
         self._measurements = None
         self._image = None
         self._coefficients = value
@@ -159,8 +166,7 @@ class MultiDomainImage(object):
 
         """
 
-        if (self._measurements is not None or self._image is not None or
-                self._coefficients is not None):
+        if self._has_data:
             if self._image is None:
                 if self._measurements is not None:
                     self._image = self._Phi.T.dot(self._measurements)
@@ -188,6 +194,7 @@ class MultiDomainImage(object):
 
         validate_input()
 
+        self._has_data = True
         self._measurements = None
         self._image = value
         self._coefficients = None
@@ -204,8 +211,7 @@ class MultiDomainImage(object):
 
         """
 
-        if (self._measurements is not None or self._image is not None or
-                self._coefficients is not None):
+        if self._has_data:
             if self._measurements is None:
                 if self._image is None:
                     self._image = self._Psi.dot(self._coefficients)
@@ -233,6 +239,7 @@ class MultiDomainImage(object):
 
         validate_input()
 
+        self._has_data = True
         self._measurements = value
         self._image = None
         self._coefficients = None

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -8,9 +8,9 @@ Module providing fast linear operations wrapped in matrix emulators.
 
 Routine listings
 ----------------
-get_DCT(shape)
+get_DCT(shape, overcomplete_shape=None)
     Get the DCT fast operation dictionary for the given image shape.
-get_DFT(shape)
+get_DFT(shape, overcomplete_shape=None)
     Get the DFT fast operation dictionary for the given image shape.
 
 See Also
@@ -22,6 +22,9 @@ magni.utils.matrices : Matrix emulators.
 
 
 from __future__ import division
+from distutils.version import StrictVersion as _StrictVersion
+
+from scipy import __version__ as _scipy_version
 
 from magni.imaging.dictionaries import _fastops
 from magni.utils.matrices import Matrix as _Matrix
@@ -31,14 +34,18 @@ from magni.utils.validation import validate_levels as _levels
 from magni.utils.validation import validate_numeric as _numeric
 
 
-def get_DCT(shape):
+def get_DCT(shape, overcomplete_shape=None):
     """
     Get the DCT fast operation dictionary for the given image shape.
 
     Parameters
     ----------
     shape : list or tuple
-        The shape of the image which the dictionary is the DCT dictionary.
+        The shape of the image for which the dictionary is the DCT dictionary.
+    overcomplete_shape : list or tuple, optional
+        The shape of the (overcomplete) frequency domain for the DCT
+        dictionary. The entries must be greater than or equal to the
+        corresponding entries in `shape`.
 
     Returns
     -------
@@ -72,27 +79,66 @@ def get_DCT(shape):
     >>> np.allclose(dct_matrix, dct_normal)
     True
 
+    Compute the overcomplete transform (and back again) and check that the
+    resulting image is identical to the original. Notice how this example first
+    ensures that the necessary version of SciPy is available:
+
+    >>> from distutils.version import StrictVersion
+    >>> from scipy import __version__ as _scipy_version
+    >>> if StrictVersion(_scipy_version) >= StrictVersion('0.16.0'):
+    ...     matrix = get_DCT(img.shape, img.shape)
+    ...     dct_matrix = matrix.T.dot(vec)
+    ...     vec_roundtrip = matrix.dot(dct_matrix)
+    ...     np.allclose(vec, vec_roundtrip)
+    ... else:
+    ...     True
+    True
+
     """
 
     @_decorate_validation
     def validate_input():
-        _levels('shape', (_generic(None, 'explicit collection', len_=2),
-                          _numeric(None, 'integer', range_='[1;inf)')))
+        _levels('shape', (
+            _generic(None, 'explicit collection', len_=2),
+            _numeric(None, 'integer', range_='[1;inf)')))
+
+        if overcomplete_shape is not None:
+            _generic('overcomplete_shape', 'explicit collection', len_=2),
+            _numeric(('overcomplete_shape', 0),
+                     'integer', range_='[{};inf)'.format(shape[0]))
+            _numeric(('overcomplete_shape', 1),
+                     'integer', range_='[{};inf)'.format(shape[1]))
 
     validate_input()
 
     entries = shape[0] * shape[1]
-    return _Matrix(_fastops.idct2, _fastops.dct2, (shape,), (entries, entries))
+
+    if overcomplete_shape is None:
+        args = (shape,)
+        shape = (entries, entries)
+    else:
+        if _StrictVersion(_scipy_version) < _StrictVersion('0.16.0'):
+            raise NotImplementedError(
+                'Over-complete DCT requires SciPy >= 0.16.0')
+
+        args = (shape, overcomplete_shape)
+        shape = (entries, overcomplete_shape[0] * overcomplete_shape[1])
+
+    return _Matrix(_fastops.idct2, _fastops.dct2, args, shape)
 
 
-def get_DFT(shape):
+def get_DFT(shape, overcomplete_shape=None):
     """
     Get the DFT fast operation dictionary for the given image shape.
 
     Parameters
     ----------
     shape : list or tuple
-        The shape of the image which the dictionary is the DFT dictionary.
+        The shape of the image for which the dictionary is the DFT dictionary.
+    overcomplete_shape : list or tuple, optional
+        The shape of the (overcomplete) frequency domain for the DFT
+        dictionary. The entries must be greater than or equal to the
+        corresponding entries in `shape`.
 
     Returns
     -------
@@ -126,14 +172,42 @@ def get_DFT(shape):
     >>> np.allclose(dft_matrix, dft_normal)
     True
 
+    Compute the overcomplete transform (and back again):
+
+    >>> matrix = get_DFT(img.shape, img.shape)
+    >>> dft_matrix = matrix.T.dot(vec)
+    >>> vec_roundtrip = matrix.dot(dft_matrix)
+
+    Check that the twice transformed image is identical to the
+    original:
+
+    >>> np.allclose(vec, vec_roundtrip)
+    True
+
     """
 
     @_decorate_validation
     def validate_input():
-        _levels('shape', (_generic(None, 'explicit collection', len_=2),
-                          _numeric(None, 'integer', range_='[1;inf)')))
+        _levels('shape', (
+            _generic(None, 'explicit collection', len_=2),
+            _numeric(None, 'integer', range_='[1;inf)')))
+
+        if overcomplete_shape is not None:
+            _generic('overcomplete_shape', 'explicit collection', len_=2),
+            _numeric(('overcomplete_shape', 0),
+                     'integer', range_='[{};inf)'.format(shape[0]))
+            _numeric(('overcomplete_shape', 1),
+                     'integer', range_='[{};inf)'.format(shape[1]))
 
     validate_input()
 
     entries = shape[0] * shape[1]
-    return _Matrix(_fastops.idft2, _fastops.dft2, (shape,), (entries, entries))
+
+    if overcomplete_shape is None:
+        args = (shape,)
+        shape = (entries, entries)
+    else:
+        args = (shape, overcomplete_shape)
+        shape = (entries, overcomplete_shape[0] * overcomplete_shape[1])
+
+    return _Matrix(_fastops.idft2, _fastops.dft2, args, shape)

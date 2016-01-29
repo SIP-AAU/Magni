@@ -18,7 +18,7 @@ Magni
    Signal and Information Processing
 
 :Version:
-   1.3.0
+   1.4.0
 
 :Travis CI test status:
    .. image:: https://travis-ci.org/SIP-AAU/Magni.svg?branch=master
@@ -69,7 +69,7 @@ and documentation) are made available through PyPI and binstar. Both of these
 are considered unofficial channels and provided solely for your convenience.
 
 - Using PyPI located at 'https://pypi.python.org/pypi/magni/'.
-- Using binstar located at 'https://binstar.org/chroxvi/magni'.
+- Using Anaconda.org located at 'https://anaconda.org/chroxvi/magni/'.
 
 
 Installation
@@ -98,7 +98,7 @@ documentation has been compiled using Sphinx to produce an HTML page which can
 be found in the Magni folder under '/doc/build/html/index.html'. The entire
 documentation is also available as a PDF file in the Magni folder under
 'doc/pdf/index.pdf'. Note, that neither the HTML version nor the PDF version of
-the documentation is provided through PyPI and binstar.
+the documentation is provided through PyPI and Anaconda.org.
 
 
 Tests
@@ -108,7 +108,9 @@ A test suite consisting of unittests, doctests, IPython notebook examples, and
 several style checks is included in Magni. The tests are organised in python
 modules found in the Magni folder under '/magni/tests/'. These may be invoked
 using any test runner that supports the unittest.TestCase classes. The entire
-test suite may be run by executing the convenience script 'run_tests.py'. The code is this repository is continuously tested by `Travis CI <https://travis-ci.org/SIP-AAU/Magni>`_.
+test suite may be run by executing the convenience script 'run_tests.py'. The
+code is this repository is continuously tested by `Travis CI
+<https://travis-ci.org/SIP-AAU/Magni>`_.
 
 
 Examples

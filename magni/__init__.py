@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -31,4 +31,4 @@ from magni import imaging
 from magni import reproducibility
 from magni import utils
 
-__version__ = '1.3.0'
+__version__ = '1.4.0'

@@ -1,7 +1,7 @@
-magni.utils.validation._deprecated module
+magni.imaging.measurements._spiral module
 =========================================
 
-.. automodule:: magni.utils.validation._deprecated
+.. automodule:: magni.imaging.measurements._spiral
     :members:
     :private-members:
     :special-members:

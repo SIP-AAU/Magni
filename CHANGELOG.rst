@@ -1,4 +1,81 @@
 ==================
+1.4.0 (2016-01-29)
+==================
+
+Version 1.4.0 is primarily an addition of the cs.indicators package, an
+extension of the imaging.dictionaries package, an extension of the
+imaging.measurements package, and an extension of the reproducibility package.
+Furthermore, unittests have been added, examples have been updated and added,
+and this version includes minor improvements and minor bug fixes.
+
+
+Additions
+---------
+
+- Added the cs.indicators module which currently provides functions to
+  calculate the values of the performance indicators; coherence, mutual
+  coherence, and relative energy in relation to measurement matrices and
+  dictionary matrices.
+- Added functionality to the imaging.measurements package.
+
+  * imaging.measurements is now a package rather than a module.
+  * A number of functions have been added: construct_pixel_mask,
+	lissajous_sample_image, lissajous_sample_surface,
+	uniform_rotated_line_sample_image, uniform_rotated_line_sample_surface,
+	zigzag_sample_image, and zigzag_sample_surface.
+
+- Added functionality to the reproducibility package:
+
+  * Added the reproducibility.data module which currently provides access to
+	the following already existing functions: get_conda_info, get_datetime,
+	get_git_revision, get_magni_config, get_magni_info, get_main_file_name,
+	get_main_file_source, get_main_source, get_platform_info, get_stack_trace.
+  * Added a function to reproducibility.data: get_file_hashes.
+  * Added a function to reproducibility.io: write_custom_annotation.
+
+- Added unittests for the cs.indicators module, the imaging.dictionaries
+  package, and the utils.plotting module.
+- Added an iPython Notebook example of the usage of the reproducibility.data
+  module.
+
+
+Improvements
+------------
+
+- Improved the dictionary matrix generating functions of the
+  imaging.dictionaries package to accept overcomplete DCT and DFT matrices.
+- Rewritten the following functions of the imaging.measurements package for
+  readability and reduced computation time: random_line_sample_image,
+  random_line_sample_surface, uniform_line_sample_image, and
+  uniform_line_sample_surface.
+- Improved the imsubplot function of the imaging.visualisation module to accept
+  more versatile x_ticklabels and y_ticklabels as well as to accept a
+  fixed_clim.
+- Improved the get_git_revision function of the reproducibility.data module to
+  allow for other git root directories and to include git remote -v
+  information.
+- Updated tests.ipynb_examples to support Jupyter in addition to iPython 2 and
+  iPython 3.
+- Updated the following examples to reflect the current state of the package:
+  imaging-dictionaries, imaging-measurements, magni, and reproducibility-io.
+
+
+Bug Fixes
+---------
+
+- Fixed a few bugs in magni.utils.validation.validate_numeric.
+
+  * The exception for non-numeric variables is now raised by the module with a
+	sensical message rather than as a side-effect.
+  * The function call now accepts precisions which exist only for some of the
+	specified types.
+
+- Fixed a number of minor bugs.
+- Various documentation clean-ups.
+
+
+
+==================
 1.3.0 (2015-05-05)
 ==================
 

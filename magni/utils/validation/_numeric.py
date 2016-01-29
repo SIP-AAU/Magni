@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -15,6 +15,7 @@ validate_numeric(name, type, range_='[-inf;inf]', shape=(), precision=None,
 """
 
 from __future__ import division
+from numbers import Number as _Number
 
 import numpy as np
 
@@ -49,6 +50,10 @@ _types = {
         32: getattr(np, 'complex64', np.complex_),
         64: getattr(np, 'complex128', np.complex_),
         128: getattr(np, 'complex256', np.complex_)}}
+
+_precisions = set(precision
+                  for type_ in _types.values()
+                  for precision in type_.keys())
 
 
 def validate_numeric(name, type_, range_='[-inf;inf]', shape=(),
@@ -134,7 +139,7 @@ def validate_numeric(name, type_, range_='[-inf;inf]', shape=(),
     the given axis may have any length.
 
     `precision` is either an integer treated as a list with one value or a
-    set-like object containing at least one integer. Each value refers to an
+    list or tuple containing at least one integer. Each value refers to an
     accepted number of bits used to store each value of the variable.
 
     `var` can be used to pass the value of the variable to be validated. This
@@ -168,6 +173,10 @@ def validate_numeric(name, type_, range_='[-inf;inf]', shape=(),
         else:
             _report(ValueError, 'must not be {!r}.', None, var_name=name)
 
+    if not isinstance(var, (_Number, np.generic, np.ndarray, _MatrixBase)):
+        _report(TypeError, '>>{}<<, {!r}, must be numeric.', (name, var),
+                prepend='The value(s) of ')
+
     dtype, bounds, dshape = _examine_var(name, var)
 
     if isinstance(type_, str) or not hasattr(type_, '__iter__'):
@@ -196,23 +205,22 @@ def _check_precision(name, dtype, types_, precision):
 
     """
 
-    if not isinstance(precision, str) and hasattr(precision, '__iter__'):
+    if isinstance(precision, (list, tuple)):
         precisions = precision
     else:
         precisions = (precision,)
 
+    for precision in precisions:
+        if precision not in _precisions:
+            _report(ValueError, 'must be in {!r}.', _precisions,
+                    var_name='precision', var_value=precisions,
+                    prepend='Invalid validation call: ')
+
     if None not in precisions:
-        dtypes = []
-
-        for type_ in types_:
-            for precison in precisions:
-                if precision not in _types[type_]:
-                    _report(ValueError, 'must be in {!r}.',
-                            _types[type_].keys(), var_name='precision',
-                            var_value=precisions,
-                            prepend='Invalid validation call: ')
-
-                dtypes.append(_types[type_][precision])
+        dtypes = [_types[type_][precision_]
+                  for type_ in types_
+                  for precision_ in precisions
+                  if precision_ in _types[type_]]
 
         if not isinstance(dtype(), tuple(dtypes)):
             _report(TypeError, '>>{}.dtype<<, {!r}, must be in {!r}.',

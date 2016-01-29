@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -19,8 +19,10 @@ plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
 
 from __future__ import division
 from itertools import cycle
+from distutils.version import StrictVersion as _StrictVersion
 
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from magni.utils.plotting import linestyles as _linestyles
@@ -28,6 +30,12 @@ from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_levels as _levels
 from magni.utils.validation import validate_numeric as _numeric
+
+if _StrictVersion(mpl.__version__) >= _StrictVersion('1.5.0'):
+    import cycler
+    _mpl_prop_era = True
+else:
+    _mpl_prop_era = False
 
 
 def plot_phase_transitions(curves, plot_l1=True, output_path=None,
@@ -100,12 +108,16 @@ def plot_phase_transitions(curves, plot_l1=True, output_path=None,
     validate_input()
 
     fig, axes = plt.subplots(1, 1)
-    colors = plt.rcParams['axes.color_cycle']
-    style_cycle = cycle([{'color': color, 'ls': linestyle}
-                         for linestyle in _linestyles for color in colors])
-    for curve in curves:
-        axes.plot(curve['delta'], curve['rho'], label=curve['label'],
-                  **next(style_cycle))
+    if not _mpl_prop_era:
+        colors = plt.rcParams['axes.color_cycle']
+        style_cycle = cycle([{'color': color, 'ls': linestyle}
+                             for linestyle in _linestyles for color in colors])
+        for curve in curves:
+            axes.plot(curve['delta'], curve['rho'], label=curve['label'],
+                      **next(style_cycle))
+    else:
+        for curve in curves:
+            axes.plot(curve['delta'], curve['rho'], label=curve['label'])
 
     if plot_l1:
         _plot_theoretical_l1(axes)

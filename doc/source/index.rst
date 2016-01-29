@@ -68,7 +68,7 @@ The Package
 
 The source code of :py:mod:`magni` is released under the `BSD 2-Clause <http://opensource.org/licenses/BSD-2-Clause>`_ license, see the :ref:`sec_license` section. To install :py:mod:`magni`, follow the instructions given under :ref:`sec_installation`.
 
-:py:mod:`magni` has been tested with `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of :ref:`sec_dependencies` for :py:mod:`magni`.
+:py:mod:`magni` has been tested with `Anaconda <https://www.continuum.io/downloads/>`_ (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of :ref:`sec_dependencies` for :py:mod:`magni`.
 
 
 .. _sec_license:
@@ -90,7 +90,7 @@ To use Magni, extract the downloaded archive and include the extracted magni fol
 
 .. note::
 
-   The :py:mod:`magni` package (excluding examples and documentation) is also available on an "as is" basis in source form at `PyPi <https://pypi.python.org/pypi/magni>`_ and as a `conda <http://conda.pydata.org/docs/index.html>`_ package at `Binstar <http://binstar.org/chroxvi/magni>`_.
+   The :py:mod:`magni` package (excluding examples and documentation) is also available on an "as is" basis in source form at `PyPi <https://pypi.python.org/pypi/magni>`_ and as a `conda <http://conda.pydata.org/docs/index.html>`_ package at `Anaconda.org <https://anaconda.org/Chroxvi/>`_.
 
 .. _sec_dependencies:
 
@@ -98,6 +98,10 @@ Dependencies
 ============
 
 :py:mod:`magni` has been designed for use with |python2|_ >= 2.7 or |python3|_ >= 3.3
+
+.. note::
+
+   The below listed dependency version requirements are the absolute minimum tested versions. Some of these libraries may not work with newer versions of Python unless a newer version of those libraries are used.
 
 **Required** third party dependencies for :py:mod:`magni` are:
 
@@ -111,7 +115,7 @@ Dependencies
 
 - |bottleneck|_ (Tested on version >=1.0.0) (For speed-up of some algorithms)
 - |coverage|_ (Tested on version >= 3.7) (For running the test suite script)
-- |ipython|_ (Tested on version >= 2.1) (For running the IPython notebook examples)
+- |ipython|_ (Tested on version >= 2.1) or |jupyter|_ [4]_ (Tested on version >= 1.0) (For running the IPython notebook examples)
 - |mkl|_ (Tested on version >= 11.1) (For accelerated vector operations)
 - |nose|_ (Tested on version >= 1.3) (For running unittests and doctests)
 - |pep8|_ (Tested on version >= 1.5) (For running style check tests)
@@ -119,6 +123,8 @@ Dependencies
 - |pyflakes|_ (Tested on version >= 0.8) (For running style check tests)
 - |radon|_ (Tested on version >= 1.2) (For running style check tests)
 - |sphinx|_ (Tested on version >= 1.3.1) (For building the documentation from source)
+
+.. [4] The |ipython|_ project has evolved into |jupyter|_. When using Jupyter make sure to install the "full" Jupyter metapackage which includes all Jupyter and IPython components.
 
 
 .. note:: 
@@ -139,6 +145,8 @@ Dependencies
 .. _matplotlib: http://matplotlib.org
 .. |ipython| replace:: ``IPython``
 .. _ipython: http://ipython.org/
+.. |jupyter| replace:: ``Jupyter``
+.. _jupyter: http://jupyter.org/
 .. |mkl| replace:: ``Math Kernel Library (MKL)``
 .. _mkl: https://software.intel.com/en-us/intel-mkl
 .. |sphinx| replace:: ``Sphinx``
@@ -152,7 +160,7 @@ Dependencies
 .. |radon| replace:: ``Radon``
 .. _radon: https://radon.readthedocs.org/en/latest/
 .. |coverage| replace:: ``Coverage``
-.. _coverage: http://nedbatchelder.com/code/coverage/
+.. _coverage: http://coverage.readthedocs.org/en/latest/
 .. |pil| replace:: ``PIL (or Pillow)``
 .. _pil: http://www.pythonware.com/products/pil/
 .. |bottleneck| replace:: ``Bottleneck``
@@ -202,6 +210,8 @@ Other Resources
 ---------------
 
 Papers published in relation to the `Enabling Fast Image Acquisition for Atomic Force Microscopy using Compressed Sensing <http://sip-aau.github.io/FastAFM/>`_ project:
+
+- \T. Arildsen, C. S. Oxvig, P. S. Pedersen, J. Østergaard, and T. Larsen, "Reconstruction Algorithms in Undersampled AFM Imaging", *IEEE Journal of Selected Topics in Signal Processing*, vol. 10, no. 1, pp. 31-46, Feb. 2016, :doi:`10.1109/JSTSP.2015.2500363`.
 
 - \C. S. Oxvig, P. S. Pedersen, T. Arildsen, J. Østergaard, and T. Larsen, "Magni: A Python Package for Compressive Sampling and Reconstruction of Atomic Force Microscopy Images", *Journal of Open Research Software*, vol. 2, no. 1, p. e29, Oct. 2014, :doi:`10.5334/jors.bk`.
 

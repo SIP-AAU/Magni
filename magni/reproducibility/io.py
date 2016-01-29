@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -16,13 +16,15 @@ chase_database(h5file)
 create_database(h5file)
     Function for creating a new annotated and chased HDF5 database.
 read_annotations(h5file)
-    Function for reading annotations in a HDF5 database.
+    Function for reading annotations in an HDF5 database.
 read_chases(h5file)
-    Function for reading chases in a HDF5 database.
+    Function for reading chases in an HDF5 database.
 remove_annotations(h5file)
-    Function for removing annotations in a HDF5 database.
+    Function for removing annotations in an HDF5 database.
 remove_chases(h5file)
-    Function for removing chases in a HDF5 database.
+    Function for removing chases in an HDF5 database.
+write_custom_annotation(h5file, annotation_name, annotation_value)
+    Write a custom annotation to an HDF5 database.
 
 See Also
 --------
@@ -55,7 +57,7 @@ from magni.utils.validation import validate_numeric as _numeric
 
 def annotate_database(h5file):
     """
-    Annotate a HDF5 database with information about Magni and the platform.
+    Annotate an HDF5 database with information about Magni and the platform.
 
     The annotation consists of a group in the root of the `h5file` having nodes
     that each provide information about Magni or the platform on which this
@@ -126,7 +128,7 @@ def annotate_database(h5file):
 
 def chase_database(h5file):
     """
-    Chase a HDF5 database to track information about the stack and source code.
+    Chase an HDF5 database to track information about stack and source code.
 
     The chase consist of a group in the root of the `h5file` having nodes that
     each profide information about the program execution that led to this chase
@@ -234,7 +236,7 @@ def create_database(path, overwrite=True):
 
 def read_annotations(h5file):
     """
-    Read the annotations to a HDF5 database.
+    Read the annotations to an HDF5 database.
 
     Parameters
     ----------
@@ -297,7 +299,7 @@ def read_annotations(h5file):
 
 def read_chases(h5file):
     """
-    Read the chases to a HDF5 database.
+    Read the chases to an HDF5 database.
 
     Parameters
     ----------
@@ -358,7 +360,7 @@ def read_chases(h5file):
 
 def remove_annotations(h5file):
     """
-    Remove the annotations from a HDF5 database.
+    Remove the annotations from an HDF5 database.
 
     Parameters
     ----------
@@ -391,7 +393,7 @@ def remove_annotations(h5file):
 
 def remove_chases(h5file):
     """
-    Remove the chases from a HDF5 database.
+    Remove the chases from an HDF5 database.
 
     Parameters
     ----------
@@ -420,3 +422,63 @@ def remove_chases(h5file):
         h5file.flush()
     except tables.NoSuchNodeError:
         pass
+
+
+def write_custom_annotation(h5file, annotation_name, annotation_value):
+    """
+    Write a custom annotation to an HDF5 database.
+
+    The annotation is written to the `h5file` under the `annotation_name` such
+    that it holds the `annotation_value`.
+
+    Parameters
+    ----------
+    h5file : tables.file.File
+        The handle to the HDF5 database to which the annotation is written.
+    annotation_name : str
+        The name of the annotation to write.
+    annotation_value : a JSON serialisable object
+        The annotation value to write.
+
+    Notes
+    -----
+    The `annotation_value` must be a JSON seriablisable object.
+
+    Examples
+    --------
+    Write a custom annotation to an HDF5 database.
+
+    >>> import magni
+    >>> from magni.reproducibility.io import write_custom_annotation
+    >>> annotation_name = 'custom_annotation'
+    >>> annotation_value = 'the value'
+    >>> with magni.utils.multiprocessing.File('db.hdf5', mode='a') as h5file:
+    ...    write_custom_annotation(h5file, annotation_name, annotation_value)
+    ...    annotations = magni.reproducibility.io.read_annotations(h5file)
+    >>> str(annotations['custom_annotation'])
+    'the value'
+
+    """
+
+    @_decorate_validation
+    def validate_input():
+        _generic('h5file', tables.file.File)
+        _generic('annotation_name', 'string')
+
+    validate_input()
+
+    try:
+        ann_val = json.dumps(annotation_value)
+    except TypeError:
+        raise TypeError('The annotation value does not have a valid JSON ' +
+                        'representation. It may not be used as an annotation.')
+
+    try:
+        h5file.create_array('/annotations', annotation_name,
+                            obj=ann_val.encode(), createparents=True)
+        h5file.flush()
+    except tables.NodeError:
+        raise tables.NodeError(
+            'The annotation "{!r}" already exists '.format(annotation_name) +
+            'in the database. Remove the old annotation before placing a ' +
+            'new one.')

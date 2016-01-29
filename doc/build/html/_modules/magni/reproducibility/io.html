@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility.io &mdash; Magni 1.3.0 documentation</title>
+    <title>magni.reproducibility.io &mdash; Magni 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.0',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.3.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.4.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.reproducibility.io</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -64,13 +64,15 @@
 <span class="sd">create_database(h5file)</span>
 <span class="sd">    Function for creating a new annotated and chased HDF5 database.</span>
 <span class="sd">read_annotations(h5file)</span>
-<span class="sd">    Function for reading annotations in a HDF5 database.</span>
+<span class="sd">    Function for reading annotations in an HDF5 database.</span>
 <span class="sd">read_chases(h5file)</span>
-<span class="sd">    Function for reading chases in a HDF5 database.</span>
+<span class="sd">    Function for reading chases in an HDF5 database.</span>
 <span class="sd">remove_annotations(h5file)</span>
-<span class="sd">    Function for removing annotations in a HDF5 database.</span>
+<span class="sd">    Function for removing annotations in an HDF5 database.</span>
 <span class="sd">remove_chases(h5file)</span>
-<span class="sd">    Function for removing chases in a HDF5 database.</span>
+<span class="sd">    Function for removing chases in an HDF5 database.</span>
+<span class="sd">write_custom_annotation(h5file, annotation_name, annotation_value)</span>
+<span class="sd">    Write a custom annotation to an HDF5 database.</span>
 
 <span class="sd">See Also</span>
 <span class="sd">--------</span>
@@ -103,7 +105,7 @@
 
 <div class="viewcode-block" id="annotate_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.annotate_database">[docs]</a><span class="k">def</span> <span class="nf">annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Annotate a HDF5 database with information about Magni and the platform.</span>
+<span class="sd">    Annotate an HDF5 database with information about Magni and the platform.</span>
 
 <span class="sd">    The annotation consists of a group in the root of the `h5file` having nodes</span>
 <span class="sd">    that each provide information about Magni or the platform on which this</span>
@@ -174,7 +176,7 @@
 </div>
 <div class="viewcode-block" id="chase_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.chase_database">[docs]</a><span class="k">def</span> <span class="nf">chase_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Chase a HDF5 database to track information about the stack and source code.</span>
+<span class="sd">    Chase an HDF5 database to track information about stack and source code.</span>
 
 <span class="sd">    The chase consist of a group in the root of the `h5file` having nodes that</span>
 <span class="sd">    each profide information about the program execution that led to this chase</span>
@@ -282,7 +284,7 @@
 </div>
 <div class="viewcode-block" id="read_annotations"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.read_annotations">[docs]</a><span class="k">def</span> <span class="nf">read_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Read the annotations to a HDF5 database.</span>
+<span class="sd">    Read the annotations to an HDF5 database.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -345,7 +347,7 @@
 </div>
 <div class="viewcode-block" id="read_chases"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.read_chases">[docs]</a><span class="k">def</span> <span class="nf">read_chases</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Read the chases to a HDF5 database.</span>
+<span class="sd">    Read the chases to an HDF5 database.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -406,7 +408,7 @@
 </div>
 <div class="viewcode-block" id="remove_annotations"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.remove_annotations">[docs]</a><span class="k">def</span> <span class="nf">remove_annotations</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Remove the annotations from a HDF5 database.</span>
+<span class="sd">    Remove the annotations from an HDF5 database.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -439,7 +441,7 @@
 </div>
 <div class="viewcode-block" id="remove_chases"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.remove_chases">[docs]</a><span class="k">def</span> <span class="nf">remove_chases</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Remove the chases from a HDF5 database.</span>
+<span class="sd">    Remove the chases from an HDF5 database.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -467,7 +469,67 @@
         <span class="n">h5file</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="s">&#39;chases&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NoSuchNodeError</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+        <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="write_custom_annotation"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.write_custom_annotation">[docs]</a><span class="k">def</span> <span class="nf">write_custom_annotation</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="n">annotation_name</span><span class="p">,</span> <span class="n">annotation_value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write a custom annotation to an HDF5 database.</span>
+
+<span class="sd">    The annotation is written to the `h5file` under the `annotation_name` such</span>
+<span class="sd">    that it holds the `annotation_value`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h5file : tables.file.File</span>
+<span class="sd">        The handle to the HDF5 database to which the annotation is written.</span>
+<span class="sd">    annotation_name : str</span>
+<span class="sd">        The name of the annotation to write.</span>
+<span class="sd">    annotation_value : a JSON serialisable object</span>
+<span class="sd">        The annotation value to write.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The `annotation_value` must be a JSON seriablisable object.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Write a custom annotation to an HDF5 database.</span>
+
+<span class="sd">    &gt;&gt;&gt; import magni</span>
+<span class="sd">    &gt;&gt;&gt; from magni.reproducibility.io import write_custom_annotation</span>
+<span class="sd">    &gt;&gt;&gt; annotation_name = &#39;custom_annotation&#39;</span>
+<span class="sd">    &gt;&gt;&gt; annotation_value = &#39;the value&#39;</span>
+<span class="sd">    &gt;&gt;&gt; with magni.utils.multiprocessing.File(&#39;db.hdf5&#39;, mode=&#39;a&#39;) as h5file:</span>
+<span class="sd">    ...    write_custom_annotation(h5file, annotation_name, annotation_value)</span>
+<span class="sd">    ...    annotations = magni.reproducibility.io.read_annotations(h5file)</span>
+<span class="sd">    &gt;&gt;&gt; str(annotations[&#39;custom_annotation&#39;])</span>
+<span class="sd">    &#39;the value&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;h5file&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;annotation_name&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ann_val</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">annotation_value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;The annotation value does not have a valid JSON &#39;</span> <span class="o">+</span>
+                        <span class="s">&#39;representation. It may not be used as an annotation.&#39;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">h5file</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s">&#39;/annotations&#39;</span><span class="p">,</span> <span class="n">annotation_name</span><span class="p">,</span>
+                            <span class="n">obj</span><span class="o">=</span><span class="n">ann_val</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">createparents</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NodeError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">tables</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span>
+            <span class="s">&#39;The annotation &quot;{!r}&quot; already exists &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotation_name</span><span class="p">)</span> <span class="o">+</span>
+            <span class="s">&#39;in the database. Remove the old annotation before placing a &#39;</span> <span class="o">+</span>
+            <span class="s">&#39;new one.&#39;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -498,13 +560,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2015, Magni developers.
-      Last updated on May 05, 2015.
+        &copy; Copyright 2014-2016, Magni developers.
+      Last updated on Jan 29, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

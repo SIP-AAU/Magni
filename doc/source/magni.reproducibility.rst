@@ -15,4 +15,5 @@ Submodules
 
     magni.reproducibility._annotation
     magni.reproducibility._chase
+    magni.reproducibility.data
     magni.reproducibility.io

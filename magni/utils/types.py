@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -17,9 +17,6 @@ ReadOnlyDict(collections.OrderedDict)
 
 from __future__ import division
 from collections import OrderedDict as _OrderedDict
-
-from magni.utils.validation import decorate_validation as _decorate_validation
-from magni.utils.validation import validate as _validate
 
 
 class ClassProperty(property):

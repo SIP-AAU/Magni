@@ -13,7 +13,6 @@ Submodules
 .. toctree::
     :maxdepth: 1
 
-    magni.utils.validation._deprecated
     magni.utils.validation._generic
     magni.utils.validation._levels
     magni.utils.validation._numeric

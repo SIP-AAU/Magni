@@ -16,3 +16,10 @@ Subpackages
     magni.cs.phase_transition
     magni.cs.reconstruction
 
+Submodules
+----------
+
+.. toctree::
+    :maxdepth: 1
+
+    magni.cs.indicators

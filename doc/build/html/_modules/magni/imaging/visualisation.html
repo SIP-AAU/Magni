@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation &mdash; Magni 1.3.0 documentation</title>
+    <title>magni.imaging.visualisation &mdash; Magni 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.0',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.3.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.4.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.imaging.visualisation</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -66,7 +66,7 @@
 <span class="sd">    Function that may be used to display an image.</span>
 <span class="sd">imsubplot(imgs, rows, titles=None, x_labels=None, y_labels=None,</span>
 <span class="sd">    x_ticklabels=None, y_ticklabels=None, cbar_label=None,</span>
-<span class="sd">    normalise=True, \*\*kwargs)</span>
+<span class="sd">    normalise=True, fixed_clim=None, \*\*kwargs)</span>
 <span class="sd">    Function that may be used to display a set of related images.</span>
 <span class="sd">mask_img_from_coords(img, coords)</span>
 <span class="sd">    Function for masking certain parts of an image based on coordinates.</span>
@@ -186,15 +186,15 @@
 </div>
 <div class="viewcode-block" id="imsubplot"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.imsubplot">[docs]</a><span class="k">def</span> <span class="nf">imsubplot</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">titles</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">x_labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y_labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
               <span class="n">x_ticklabels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y_ticklabels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-              <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+              <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">fixed_clim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Display a set of related images as subplots in a figure.</span>
 
 <span class="sd">    The images `imgs` are shown in a figure with a subplot layout based on the</span>
-<span class="sd">    number of `rows`. The `titles`, `x_labels`, and `y_labels` are shown in the</span>
-<span class="sd">    subplots. If `normalise` is True, all the images will share the same</span>
-<span class="sd">    normalised colourbar/colormapping i.e. a particular colour will correspond</span>
-<span class="sd">    to the same value across all images.</span>
+<span class="sd">    number of `rows`. The `titles`, `x_labels`, `y_labels`, `x_ticklabels`,</span>
+<span class="sd">    and `y_ticklabels` are shown in the subplots. If `normalise` is True, all</span>
+<span class="sd">    the images will share the same normalised colorbar/colormapping i.e. a</span>
+<span class="sd">    particular colour will correspond to the same value across all images.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -212,14 +212,19 @@
 <span class="sd">        The y_labels (as strings) to use for each of the subplots (the default</span>
 <span class="sd">        is None, which implies that no y_labels are displayed).</span>
 <span class="sd">    x_ticklabels : list or tuple</span>
-<span class="sd">        The x_ticklabels (as strings) to share across the subplots (the default</span>
-<span class="sd">        is None, which implies that no x_ticklabels are displayed).</span>
+<span class="sd">        The x_ticklabels (as strings or lists of strings) to use for the</span>
+<span class="sd">        subplots (the default is None, which implies that no x_ticklabels are</span>
+<span class="sd">        displayed).</span>
 <span class="sd">    y_ticklabels : list or tuple</span>
-<span class="sd">        The y_ticklabels (as strings) to share across the subplots (the default</span>
-<span class="sd">        is None, which implies tht no y_ticklabels are displayed).</span>
+<span class="sd">        The y_ticklabels (as strings or lists of strings) to use for the</span>
+<span class="sd">        subplots (the default is None, which implies that no y_ticklabels are</span>
+<span class="sd">        displayed).</span>
 <span class="sd">    cbar_label : str</span>
 <span class="sd">        The colorbar label to use with a normalised colormapping (the default</span>
 <span class="sd">        is None, which implies that no colorbar label is displayed).</span>
+<span class="sd">    fixed_clim : list or tuple</span>
+<span class="sd">        The colorbar limits as a (min, max) sequence (the default is None,</span>
+<span class="sd">        which implies that the colorbar limits are inferred from the data).</span>
 <span class="sd">    normalise : bool</span>
 <span class="sd">        The flag that indicates whether to use a normalised colormapping.</span>
 
@@ -234,6 +239,11 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
+<span class="sd">    The `x_ticklabels` and `y_ticklabels` may be either a collection of strings</span>
+<span class="sd">    or a collections of collections of strings depending on wherther the labels</span>
+<span class="sd">    should be shared across all subplots or different labels are to be used for</span>
+<span class="sd">    each subplot.</span>
+
 <span class="sd">    Additional kwargs given to the function will be passed to the underlying</span>
 <span class="sd">    suplot instantiation function `matplotlib.pyplot.subplots`.</span>
 
@@ -244,14 +254,29 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    For example, show to images next to each other with a common colormapping:</span>
+<span class="sd">    For example, show two images next to each other with a common colormapping:</span>
 
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.imaging.visualisation import imsubplot</span>
 <span class="sd">    &gt;&gt;&gt; img1 = np.arange(4).reshape(2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; img2 = np.ones((4, 4))</span>
 <span class="sd">    &gt;&gt;&gt; fig = imsubplot([img1, img2], 1, titles=[&#39;arange&#39;, &#39;ones&#39;],</span>
-<span class="sd">    ... x_labels=[&#39;x1&#39;, &#39;x2&#39;], y_labels=[&#39;y1&#39;, &#39;y2&#39;], normalise=True)</span>
+<span class="sd">    ... x_labels=[&#39;x1&#39;, &#39;x2&#39;], y_labels=[&#39;y1&#39;, &#39;y2&#39;], cbar_label=&#39;Example&#39;,</span>
+<span class="sd">    ... normalise=True)</span>
+
+<span class="sd">    or show the same images with shared ticklabels and fixed colorbar limits:</span>
+
+<span class="sd">    &gt;&gt;&gt; common_x_ticklabels = [&#39;a&#39;, &#39;b&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; common_y_ticklabels = [&#39;c&#39;, &#39;d&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; fig = imsubplot([img1, img2], 1, x_ticklabels=common_x_ticklabels,</span>
+<span class="sd">    ... y_ticklabels=common_y_ticklabels, fixed_clim=(0, 2), normalise=True)</span>
+
+<span class="sd">    or show the same images with different colormappings and ticklabels:</span>
+
+<span class="sd">    &gt;&gt;&gt; x_ticklabels = [[&#39;a&#39;, &#39;b&#39;], [&#39;aa&#39;, &#39;bb&#39;]]</span>
+<span class="sd">    &gt;&gt;&gt; y_ticklabels = [[&#39;c&#39;, &#39;d&#39;], [&#39;cc&#39;, &#39;dd&#39;]]</span>
+<span class="sd">    &gt;&gt;&gt; fig = imsubplot([img1, img2], 1, x_ticklabels=x_ticklabels,</span>
+<span class="sd">    ... y_ticklabels=y_ticklabels, normalise=False)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -272,11 +297,18 @@
                              <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)))</span>
         <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;x_ticklabels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span>
                                           <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+                                 <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span>
+                                          <span class="p">(</span><span class="s">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)),</span>
                                  <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)))</span>
         <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;y_ticklabels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span>
                                           <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+                                 <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span>
+                                          <span class="p">(</span><span class="s">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)),</span>
                                  <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)))</span>
         <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;cbar_label&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;fixed_clim&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+                               <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">))))</span>
         <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;normalise&#39;</span><span class="p">,</span> <span class="s">&#39;boolean&#39;</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
@@ -289,38 +321,43 @@
     <span class="n">vmax</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e40</span>
     <span class="n">ims</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">img</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">imgs</span><span class="p">):</span>
+            <span class="c"># Show image</span>
             <span class="n">ims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
 
+            <span class="c"># Handle titles, labels, etc.</span>
             <span class="n">fig_strings</span> <span class="o">=</span> <span class="p">(</span><span class="n">titles</span><span class="p">,</span> <span class="n">x_labels</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">)</span>
             <span class="n">handles</span> <span class="o">=</span> <span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">,</span> <span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">,</span> <span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">fig_string</span><span class="p">,</span> <span class="n">handle</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fig_strings</span><span class="p">,</span> <span class="n">handles</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">fig_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="n">handle</span><span class="p">(</span><span class="n">fig_string</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
 
-            <span class="k">if</span> <span class="n">x_ticklabels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_ticklabels</span><span class="p">)))</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">x_ticklabels</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+            <span class="n">_handle_ticklabels</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">k</span><span class="p">,</span> <span class="n">x_ticklabels</span><span class="p">,</span> <span class="n">y_ticklabels</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">y_ticklabels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_ticklabels</span><span class="p">)))</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">y_ticklabels</span><span class="p">)</span>
-
+            <span class="c"># Track minimum and maximum data values</span>
             <span class="n">vmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>  <span class="c"># Find common minimum</span>
             <span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>  <span class="c"># Find common maximum</span>
 
     <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
         <span class="c"># Connect a Tracker to each image in order to update colormap limits</span>
+        <span class="c"># This way all images share common colormap limits</span>
         <span class="n">common_norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
         <span class="n">ims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_norm</span><span class="p">(</span><span class="n">common_norm</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ims</span><span class="p">)):</span>
             <span class="n">ims</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_norm</span><span class="p">(</span><span class="n">common_norm</span><span class="p">)</span>
             <span class="n">ims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">callbacksSM</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#39;changed&#39;</span><span class="p">,</span> <span class="n">_ImageColourTracker</span><span class="p">(</span><span class="n">ims</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
 
+        <span class="c"># Add common colorbar</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
         <span class="n">c_bar_ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
         <span class="n">c_bar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c_bar_ax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s">&#39;horizontal&#39;</span><span class="p">)</span>
         <span class="n">c_bar</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s">&quot;face&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fixed_clim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Force colorbar limits</span>
+            <span class="n">c_bar</span><span class="o">.</span><span class="n">set_clim</span><span class="p">(</span><span class="n">fixed_clim</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Set colorbar label</span>
             <span class="n">c_bar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">cbar_label</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">fig</span>
@@ -375,9 +412,9 @@
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
         <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;img&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;coord&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">range_</span><span class="o">=</span><span class="s">&#39;(0;inf)&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;coords&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">range_</span><span class="o">=</span><span class="s">&#39;[0;inf)&#39;</span><span class="p">)</span>
 
-        <span class="n">validate_input</span><span class="p">()</span>
+    <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span>
     <span class="n">mask</span><span class="p">[</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">False</span>
@@ -515,6 +552,62 @@
     <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">img</span> <span class="o">+</span> <span class="n">b</span>
 
 </div>
+<div class="viewcode-block" id="_handle_ticklabels"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation._handle_ticklabels">[docs]</a><span class="k">def</span> <span class="nf">_handle_ticklabels</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">x_ticklabels</span><span class="p">,</span> <span class="n">y_ticklabels</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handle and format ticks and ticklabels for use in imsubplot.</span>
+
+<span class="sd">    The `imsubplot` function creates a figure showing an abitrary number of</span>
+<span class="sd">    subplots. The `imsubplot` function allows for custom ticklabels along the</span>
+<span class="sd">    x- and y-axes. This function handles the formatting of the ticklabels for a</span>
+<span class="sd">    given subplot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : matplotlib.axes.Axes</span>
+<span class="sd">        The matplotlib axes (subplot) to format ticklabels for.</span>
+<span class="sd">    k : int</span>
+<span class="sd">        The axes index, i.e. the subplot number out of the total number of</span>
+<span class="sd">        subplots.</span>
+<span class="sd">    x_ticklabels : list or tuple</span>
+<span class="sd">        The x_ticklabels (as strings or lists of strings) to use for the</span>
+<span class="sd">        subplots (the default is None, which implies that no x_ticklabels are</span>
+<span class="sd">        displayed).</span>
+<span class="sd">    y_ticklabels : list or tuple</span>
+<span class="sd">        The y_ticklabels (as strings or lists of strings) to use for the</span>
+<span class="sd">        subplots (the default is None, which implies that no y_ticklabels are</span>
+<span class="sd">        displayed).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">x_ticklabels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_ticklabels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">x_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_ticklabels</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+            <span class="n">x_tl</span> <span class="o">=</span> <span class="n">x_ticklabels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Backwards compatibility</span>
+            <span class="c"># Allow for sharing a single set of x_ticklabels across all images.</span>
+            <span class="n">x_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_ticklabels</span><span class="p">))</span>
+            <span class="n">x_tl</span> <span class="o">=</span> <span class="n">x_ticklabels</span>
+
+        <span class="c"># Set xticks and xticklabels</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x_t</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">x_tl</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">y_ticklabels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_ticklabels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">y_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_ticklabels</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+            <span class="n">y_tl</span> <span class="o">=</span> <span class="n">y_ticklabels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Backwards compatibility</span>
+            <span class="c"># Allow for sharing a single set of y_ticklabels across all images.</span>
+            <span class="n">y_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_ticklabels</span><span class="p">))</span>
+            <span class="n">y_tl</span> <span class="o">=</span> <span class="n">y_ticklabels</span>
+
+        <span class="c"># Set yticks and yticklabels</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">y_t</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">y_tl</span><span class="p">)</span>
+
+</div>
 <div class="viewcode-block" id="_ImageColourTracker"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation._ImageColourTracker">[docs]</a><span class="k">class</span> <span class="nc">_ImageColourTracker</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Track a common &#39;clim&#39; in a set of matplotlib image subplots.</span>
@@ -561,13 +654,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2015, Magni developers.
-      Last updated on May 05, 2015.
+        &copy; Copyright 2014-2016, Magni developers.
+      Last updated on Jan 29, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

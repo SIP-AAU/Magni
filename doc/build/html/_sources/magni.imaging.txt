@@ -14,6 +14,7 @@ Subpackages
     :maxdepth: 1
 
     magni.imaging.dictionaries
+    magni.imaging.measurements
 
 Submodules
 ----------
@@ -24,6 +25,5 @@ Submodules
     magni.imaging._util
     magni.imaging.domains
     magni.imaging.evaluation
-    magni.imaging.measurements
     magni.imaging.preprocessing
     magni.imaging.visualisation

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -76,7 +76,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Magni'
-copyright = u'2014-2015, Magni developers'
+copyright = u'2014-2016, Magni developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

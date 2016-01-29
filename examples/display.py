@@ -1,9 +1,10 @@
 import numpy as np
-np.set_printoptions(linewidth=120)
 
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_levels as _levels
+
+np.set_printoptions(linewidth=120)
 
 
 def print_table(columns, headers=None, bars='|'):

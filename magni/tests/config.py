@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -8,7 +8,7 @@ Module providing unittests of the config modules.
 
 Routine listings
 ----------------
-UpdateTest(unittest.TestCase):
+UpdateTest(unittest.TestCase)
     Test if each config module can be updated with its defaults.
 
 """

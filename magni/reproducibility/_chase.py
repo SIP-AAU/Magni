@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -9,13 +9,13 @@ Module providing functions that may be used to chase data.
 Routine listings
 ----------------
 get_main_file_name()
-    Function that returns the name of the main file/script
+    Function that returns the name of the main file/script.
 get_main_file_source()
-    Function that returns the source code of the main file/script
-get_main_source_code()
-    Function that returns the 'local' source code of the main file/script
+    Function that returns the source code of the main file/script.
+get_main_source()
+    Function that returns the 'local' source code of the main file/script.
 get_stack_trace()
-    Function that returns the complete stack trace
+    Function that returns the complete stack trace.
 
 """
 
@@ -29,6 +29,9 @@ try:
     from StringIO import StringIO  # Python 2 byte str (Python 2 only)
 except ImportError:
     from io import StringIO  # Python 3 unicode str (both Py2 and Py3)
+
+__all__ = ['get_main_file_name', 'get_main_file_source',
+           'get_main_source', 'get_stack_trace']
 
 
 def get_main_file_name():

@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2015, Magni developers.
+    Copyright (c) 2014-2016, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -16,7 +16,7 @@ setup_matplotlib(settings={}, cmap=None)
     Function that set the Magni default `matplotlib` configuration.
 colour_collections : dict
     Collections of colours that may be used in e.g., a `matplotlib`
-    color_cycle.
+    color_cycle / prop_cycle.
 seq_cmaps : list
     Names of `matplotlib.cm` colormaps optimized for sequential data.
 div_cmaps : list
@@ -41,6 +41,8 @@ Get the normalised 'Blue' colour brew from the psp colour map:
 """
 
 from __future__ import division
+from distutils.version import StrictVersion as _StrictVersion
+import warnings
 
 import numpy as np
 import matplotlib as mpl
@@ -50,6 +52,12 @@ from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_levels as _levels
 from magni.utils.validation import validate_numeric as _numeric
+
+if _StrictVersion(mpl.__version__) >= _StrictVersion('1.5.0'):
+    import cycler
+    _mpl_prop_era = True
+else:
+    _mpl_prop_era = False
 
 
 class _ColourCollection(object):
@@ -188,9 +196,10 @@ def setup_matplotlib(settings={}, cmap=None):
     settings : dict, optional
        A dictionary of custom matplotlibrc settings. See examples for details
        about the structure of the dictionary.
-    cmap : str or matplotlib.colors.Colormap, optional
+    cmap : str or tuple, optional
        Colormap to be used by matplotlib (the default is None, which implices
-       that the 'coolwarm' colormap is used).
+       that the 'coolwarm' colormap is used). If a tuple is supplied it must
+       be a ('colormap_name', matplotlib.colors.Colormap()) tuple.
 
     Raises
     ------
@@ -211,7 +220,10 @@ def setup_matplotlib(settings={}, cmap=None):
     def validate_input():
         _levels('settings', (_generic(None, 'mapping'),
                              _generic(None, 'mapping')))
-        _generic('cmap', 'string', ignore_none=True)
+        _generic('cmap', ('string', tuple), ignore_none=True)
+        if isinstance(cmap, tuple):
+            _generic(('cmap', 0), 'string')
+            _generic(('cmap', 1), mpl.colors.Colormap)
 
     validate_input()
 
@@ -226,10 +238,13 @@ def setup_matplotlib(settings={}, cmap=None):
     for name, setting in _settings.items():
         try:
             mpl.rc(name, **setting)
-        except AttributeError:
-            raise UserWarning('Setting {!r} ignored.'.format(name))
+        except (AttributeError, KeyError):
+            warnings.warn('Setting {!r} ignored.'.format(name), UserWarning)
 
     if cmap is not None:
+        if isinstance(cmap, tuple):
+            mpl.cm.register_cmap(name=cmap[0], cmap=cmap[1])
+            cmap = cmap[0]
         plt.set_cmap(cmap)
     elif _cmap is not None:
         plt.set_cmap(_cmap)
@@ -237,16 +252,25 @@ def setup_matplotlib(settings={}, cmap=None):
     _settings = {}
     _cmap = None
 
+if _mpl_prop_era:
+    # Matplotlib >= 1.5.0
+    _style_cycle = cycler.cycler('linestyle', linestyles)
+    _color_cycle = cycler.cycler('color', colour_collections['cb4']['PuOr'])
+    _prop_settings = {'axes': {'prop_cycle': _style_cycle * _color_cycle}}
 
-_settings = {'text': {'usetex': False},
-             'font': {'size': 12},
-             'mathtext': {'fontset': 'cm'},
-             'pdf': {'fonttype': 42},
-             'ps': {'fonttype': 42},
-             'legend': {'fontsize': 11},
-             'axes': {'color_cycle': colour_collections['cb4']['PuOr']},
-             'lines': {'linewidth': 2},
-             'figure': {'figsize': (8.0, 8.0 / ((1 + np.sqrt(5)) / 2)),
-                        'dpi': 600},
-             'image': {'interpolation': 'none'}}
+else:
+    _prop_settings = {
+        'axes': {'color_cycle': colour_collections['cb4']['PuOr']}}
+
+_settings = dict({'text': {'usetex': False},
+                  'font': {'size': 12},
+                  'mathtext': {'fontset': 'cm'},
+                  'pdf': {'fonttype': 42},
+                  'ps': {'fonttype': 42},
+                  'legend': {'fontsize': 11},
+                  'lines': {'linewidth': 2},
+                  'figure': {
+                      'figsize': (8.0, float(8.0 / ((1 + np.sqrt(5)) / 2))),
+                      'dpi': 600},
+                  'image': {'interpolation': 'none'}}, **_prop_settings)
 _cmap = 'coolwarm'

@@ -53,6 +53,9 @@ imaging-preprocessing          * Pre-processing an image prior to sampling      
 
 magni                          * The typical work flow in compressively sampling and     * `magni.afm`
                                  reconstructing AFM images using Magni.                  * `magni.imaging`
+
+reporducibility-data           * Obtaining various platform and runtime data for         * `magni.reproducibility.data`
+                                 annotations and chases.
 								 
 reporducibility-io             * Annotating an HDF5 database to help in improving        * `magni.reproducibility.io`
                                  the reproducibility of the results it contains.
@@ -60,13 +63,13 @@ reporducibility-io             * Annotating an HDF5 database to help in improvin
 util-matrices                  * Using the special Magni Matrix and MatrixCollection     * `magni.utils.matrices.Matrix`
                                  classes.                                                * `magni.utils.matrices.MatrixCollection`
 
-utils-multiprocessing          * Doing multiprocessing using Magni                       * `magni.utils.multiprocessing`
+utils-multiprocessing          * Doing multiprocessing using Magni.                      * `magni.utils.multiprocessing`
 
 utils-plotting                 * Using the predefined plotting options in Magni to       * `magni.utils.plotting`
                                  create clearer and more visually pleasing plots.
 
-utils-validation               * Validation of function parameters                       * `magni.utils.validation`
+utils-validation               * Validation of function parameters.                      * `magni.utils.validation`
                                * Disabling input validation to reduce computation
-                                 overhead
+                                 overhead.
 ===========================    ======================================================    =========================================
 

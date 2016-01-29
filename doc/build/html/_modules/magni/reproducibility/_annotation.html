@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility._annotation &mdash; Magni 1.3.0 documentation</title>
+    <title>magni.reproducibility._annotation &mdash; Magni 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.0',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.3.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.4.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,7 +48,7 @@
   <h1>Source code for magni.reproducibility._annotation</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014-2015, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -57,11 +57,13 @@
 <span class="sd">Routine Listings</span>
 <span class="sd">----------------</span>
 <span class="sd">get_conda_info()</span>
-<span class="sd">    Function that returns information about a Continnum Anaconda install.</span>
+<span class="sd">    Function that returns information about an Anaconda install.</span>
 <span class="sd">get_datetime()</span>
 <span class="sd">    Function that returns information about the current date and time.</span>
-<span class="sd">get_git_revision()</span>
-<span class="sd">    Function that returns information about the `magni` git revision.</span>
+<span class="sd">get_git_revision(git_root_dir=None)</span>
+<span class="sd">    Function that returns information about the current git revision.</span>
+<span class="sd">get_file_hashes(path, blocksize=2**30)</span>
+<span class="sd">    Function that returns the md5 and sha256 checksums of a file.</span>
 <span class="sd">get_magni_config()</span>
 <span class="sd">    Function that returns information about the current configuration of Magni.</span>
 <span class="sd">get_magni_info()</span>
@@ -71,12 +73,13 @@
 
 <span class="sd">Notes</span>
 <span class="sd">-----</span>
-<span class="sd">The return annotations are any nested level of dicts of dicts of strings.</span>
+<span class="sd">The returned annotations are any nested level of dicts of dicts of strings.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pkgutil</span>
@@ -85,17 +88,24 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 
-<span class="kn">import</span> <span class="nn">magni</span>
+<span class="kn">import</span> <span class="nn">magni</span> <span class="kn">as</span> <span class="nn">_magni</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;get_conda_info&#39;</span><span class="p">,</span> <span class="s">&#39;get_datetime&#39;</span><span class="p">,</span> <span class="s">&#39;get_git_revision&#39;</span><span class="p">,</span>
+           <span class="s">&#39;get_file_hashes&#39;</span><span class="p">,</span> <span class="s">&#39;get_magni_config&#39;</span><span class="p">,</span> <span class="s">&#39;get_magni_info&#39;</span><span class="p">,</span>
+           <span class="s">&#39;get_platform_info&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="get_conda_info"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_conda_info">[docs]</a><span class="k">def</span> <span class="nf">get_conda_info</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a dictionary contianing information from Conda.</span>
 
-<span class="sd">    Conda is the package manager for the `Continuum Anaconda</span>
-<span class="sd">    &lt;https://store.continuum.io/cshop/anaconda/&gt;`_ scientific Python</span>
-<span class="sd">    distribution. This function will return various information about the</span>
-<span class="sd">    Anaconda installation on the system by quering the Conda package database.</span>
+<span class="sd">    `Conda &lt;http://conda.pydata.org/&gt;`_ is the package manager for the Anaconda</span>
+<span class="sd">    scientific Python distribution. This function will return various</span>
+<span class="sd">    information about the Anaconda installation on the system by quering the</span>
+<span class="sd">    Conda package database.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -204,9 +214,16 @@
     <span class="k">return</span> <span class="n">date_time</span>
 
 </div>
-<div class="viewcode-block" id="get_git_revision"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_git_revision">[docs]</a><span class="k">def</span> <span class="nf">get_git_revision</span><span class="p">():</span>
+<div class="viewcode-block" id="get_git_revision"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_git_revision">[docs]</a><span class="k">def</span> <span class="nf">get_git_revision</span><span class="p">(</span><span class="n">git_root_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a dictionary containing information about the current git revision.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    git_root_dir : str</span>
+<span class="sd">        The path to the git root directory to get git revision for (the default</span>
+<span class="sd">        is None, which implies that the git revision of the `magni` directory</span>
+<span class="sd">        is returned).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -221,6 +238,7 @@
 <span class="sd">    * status (with value &#39;Succeeded&#39;)</span>
 <span class="sd">    * tag (output of &quot;git describe&quot;)</span>
 <span class="sd">    * branch (output of &quot;git describe --all&quot;)</span>
+<span class="sd">    * remote (output of &quot;git remote -v&quot;)</span>
 
 <span class="sd">    If the git revision extract failed, the returned dictionary has the</span>
 <span class="sd">    following keys:</span>
@@ -229,19 +247,37 @@
 <span class="sd">    * returncode (returncode from failing git command)</span>
 <span class="sd">    * output (output from failing git command)</span>
 
-<span class="sd">    The &quot;git describe&quot; commands are run in the directory in which `magni` is</span>
-<span class="sd">    loaded from.</span>
+<span class="sd">    The &quot;git&quot; commands are run in the git root directory.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;git_root_dir&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
     <span class="n">cur_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">git_root_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_root_dir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span>
+                <span class="s">&#39;The git_root_dir directory &quot;{!r}&quot;.format(git_root_dir)&#39;</span> <span class="o">+</span>
+                <span class="s">&#39;does not exist&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;tag&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-            <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;describe&#39;</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
+        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;tag&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+                <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;describe&#39;</span><span class="p">],</span>
+                <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
             <span class="s">&#39;branch&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
                 <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;describe&#39;</span><span class="p">,</span> <span class="s">&#39;--all&#39;</span><span class="p">],</span>
+                <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
+            <span class="s">&#39;remote&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+                <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;remote&#39;</span><span class="p">,</span> <span class="s">&#39;-v&#39;</span><span class="p">],</span>
                 <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
             <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Succeeded&#39;</span><span class="p">}</span>
 
@@ -270,6 +306,47 @@
     <span class="k">return</span> <span class="n">git_revision</span>
 
 </div>
+<div class="viewcode-block" id="get_file_hashes"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_file_hashes">[docs]</a><span class="k">def</span> <span class="nf">get_file_hashes</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dictionary with md5 and sha256 checksums of a file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str</span>
+<span class="sd">        The path to the file to checksum.</span>
+<span class="sd">    blocksize : int</span>
+<span class="sd">        The chunksize (in bytes) to read from the file one at a time.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    file_hashes : dict</span>
+<span class="sd">        The dictionary holding the md5 and sha256 hexdigests of the file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;path&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;blocksize&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s">&#39;[1;inf)&#39;</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="n">md5sum</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="n">sha256sum</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_handle</span><span class="p">:</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">f_handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">buf</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="n">md5sum</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+            <span class="n">sha256sum</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="n">f_handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+
+    <span class="n">file_hashes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;md5sum&#39;</span><span class="p">:</span> <span class="n">md5sum</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span>
+                   <span class="s">&#39;sha256sum&#39;</span><span class="p">:</span> <span class="n">sha256sum</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()}</span>
+
+    <span class="k">return</span> <span class="n">file_hashes</span>
+
+</div>
 <div class="viewcode-block" id="get_magni_config"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_config">[docs]</a><span class="k">def</span> <span class="nf">get_magni_config</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a dictionary holding the current configuration of Magni.</span>
@@ -292,15 +369,15 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">packages</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>
-                                     <span class="n">prefix</span><span class="o">=</span><span class="n">magni</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">packages</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">_magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>
+                                     <span class="n">prefix</span><span class="o">=</span><span class="n">_magni</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
 
     <span class="n">magni_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">ispkg</span> <span class="ow">in</span> <span class="n">packages</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">modname</span><span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">:]</span> <span class="o">==</span> <span class="s">&#39;._config&#39;</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">configger</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                    <span class="n">settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="s">&#39;_&#39;</span> <span class="o">+</span> <span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">configger</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="c"># Skip base Configgers, e.g. cs.reconcstruction.config</span>
                     <span class="k">pass</span>
@@ -336,7 +413,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">magni_info</span> <span class="o">=</span> <span class="n">pydoc</span><span class="o">.</span><span class="n">render_doc</span><span class="p">(</span><span class="n">magni</span><span class="p">)</span>
+    <span class="n">magni_info</span> <span class="o">=</span> <span class="n">pydoc</span><span class="o">.</span><span class="n">render_doc</span><span class="p">(</span><span class="n">_magni</span><span class="p">)</span>
     <span class="n">magni_info</span><span class="p">,</span> <span class="n">subs</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">subn</span><span class="p">(</span><span class="s">r&#39;\x08([A-Z]|[a-z]|_)?&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">magni_info</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;help_magni&#39;</span><span class="p">:</span> <span class="n">magni_info</span><span class="p">}</span>
@@ -438,13 +515,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2015, Magni developers.
-      Last updated on May 05, 2015.
+        &copy; Copyright 2014-2016, Magni developers.
+      Last updated on Jan 29, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
