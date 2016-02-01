@@ -30,17 +30,6 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
-    from unittest.mock import MagicMock
-
-    class Mock(MagicMock):
-        @classmethod
-        def __getattr__(cls, name):
-            return Mock()
-
-    MOCK_MODULES = ['scipy', 'scipy.fftpack', 'scipy.stats', 'scipy.linalg',
-                    'tables', 'matplotlib', 'matplotlib.pyplot',
-                    'mpl_toolkits', 'mpl_toolkits.axes_grid1']
-    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
     html_style = 'classic.css'  # Use classic Sphinx Theme
 
