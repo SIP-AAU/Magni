@@ -2,12 +2,12 @@
 
 package:
   name: magni
-  version: '1.4.0'
+  version: '1.5.0'
 
 source:
-  fn: magni-1.4.0.tar.gz
-  url: https://pypi.python.org/packages/source/m/magni/magni-1.4.0.tar.gz
-  md5: 36b5edfef43846fd8956f4e1ced85b3a
+  fn: magni-1.5.0.tar.gz
+  url: https://pypi.python.org/packages/89/62/1f2132f2d215407cadc2f8ce3e000dd4c4f905ee03998b3cea87711f9530/magni-1.5.0.tar.gz
+  md5: 72bf820a7c44938a7dce815f98c68939
 
   patches:
     - setup_py_conda.patch
@@ -18,13 +18,14 @@ build:
 requirements:
   build:
     - python
-    - setuptools
+    - setuptools >=11.3
   run:
     - python
-    - numpy
-    - pytables
-    - scipy
-    - matplotlib
+    - numpy >=1.8
+    - pytables >=3.1
+    - scipy >=0.14
+    - matplotlib >=1.3
+    - setuptools >=11.3
 
 test:
   requires:
