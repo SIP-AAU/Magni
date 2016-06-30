@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility._annotation module &mdash; Magni 1.4.0 documentation</title>
+    <title>magni.reproducibility._annotation module &mdash; Magni 1.5.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.4.0',
+        VERSION:     '1.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.4.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
     <link rel="up" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="next" title="magni.reproducibility._chase module" href="magni.reproducibility._chase.html" />
     <link rel="prev" title="magni.reproducibility package" href="magni.reproducibility.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.reproducibility.html" title="magni.reproducibility package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" accesskey="U">magni.reproducibility package</a> &raquo;</li> 
       </ul>
@@ -83,8 +83,16 @@
 <dd><p>Return a dictionary contianing information from Conda.</p>
 <p><a class="reference external" href="http://conda.pydata.org/">Conda</a> is the package manager for the Anaconda
 scientific Python distribution. This function will return various
-information about the Anaconda installation on the system by quering the
+information about the Anaconda installation on the system by querying the
 Conda package database.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">THIS IS HIGHLY EXPERIMENTAL AND MAY BREAK WITHOUT FURTHER NOTICE.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only infomation about the conda root environment is captured.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -112,6 +120,7 @@ following keys:</p>
 <li>config_file</li>
 <li>is_foreign_system</li>
 <li>linked_modules</li>
+<li>env_export</li>
 </ul>
 <p>Additionally, the returned dictionary has a key named <em>status</em>, which can
 have either of the following values:</p>
@@ -119,6 +128,10 @@ have either of the following values:</p>
 <li>&#8216;Succeeded&#8217; (Everything seems to be OK)</li>
 <li>&#8216;Failed&#8217; (Import of conda failed - nothing else is returned)</li>
 </ul>
+<p>If &#8220;conda-env&#8221; is installed on the system, the <em class="xref py py-obj">env_export</em> essentially
+holds the infomation from &#8220;conda env export -n root&#8221; as a dictionary. The
+information provided by this key partially overlaps with the infomation in
+the <em class="xref py py-obj">linked_modules</em> and <em class="xref py py-obj">modules_info</em> keys.</p>
 </dd></dl>
 
 <dl class="function">
@@ -355,14 +368,14 @@ the follwing values:</p>
         <li class="right" >
           <a href="magni.reproducibility.html" title="magni.reproducibility package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" >magni.reproducibility package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jan 29, 2016.
+      Last updated on Jun 30, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.matrices module &mdash; Magni 1.4.0 documentation</title>
+    <title>magni.utils.matrices module &mdash; Magni 1.5.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.4.0',
+        VERSION:     '1.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.4.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
     <link rel="up" title="magni.utils package" href="magni.utils.html" />
     <link rel="next" title="magni.utils.plotting module" href="magni.utils.plotting.html" />
     <link rel="prev" title="magni.utils.config module" href="magni.utils.config.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.utils.config.html" title="magni.utils.config module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.utils.html" accesskey="U">magni.utils package</a> &raquo;</li> 
       </ul>
@@ -78,14 +78,15 @@ interchangably in other parts of the package.</p>
 </div>
 <dl class="class">
 <dt id="magni.utils.matrices.Matrix">
-<em class="property">class </em><code class="descclassname">magni.utils.matrices.</code><code class="descname">Matrix</code><span class="sig-paren">(</span><em>func</em>, <em>trans</em>, <em>args</em>, <em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#Matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.Matrix" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">magni.utils.matrices.</code><code class="descname">Matrix</code><span class="sig-paren">(</span><em>func</em>, <em>conj_trans</em>, <em>args</em>, <em>shape</em>, <em>is_complex=False</em>, <em>is_valid=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#Matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.Matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="magni.utils.validation.types.html#magni.utils.validation.types.MatrixBase" title="magni.utils.validation.types.MatrixBase"><code class="xref py py-class docutils literal"><span class="pre">magni.utils.validation.types.MatrixBase</span></code></a></p>
 <p>Wrap fast linear operations in a matrix emulator.</p>
 <p><a class="reference internal" href="#magni.utils.matrices.Matrix" title="magni.utils.matrices.Matrix"><code class="xref py py-obj docutils literal"><span class="pre">Matrix</span></code></a> defines a few attributes and internal methods which ensures that
-instances have the same basic interface as a numpy matrix instance without
-explicitly forming the matrix. This basic interface allows instances to be
-multiplied with vectors, to be transposed, and to assume a shape. Also,
-instances have an attribute which explicitly forms the matrix.</p>
+instances have the same basic interface as a numpy ndarray instance without
+explicitly forming the array. This basic interface allows instances to be
+multiplied with vectors, to be transposed, to be complex conjuagted, and to
+assume a shape. Also, instances have an attribute which explicitly forms
+the matrix as an ndarray.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -94,14 +95,22 @@ instances have an attribute which explicitly forms the matrix.</p>
 <li><strong>func</strong> (<em>function</em>) &#8211;
 The fast linear operation applied to the vector when multiplying the
 matrix with a vector.</li>
-<li><strong>trans</strong> (<em>function</em>) &#8211;
+<li><strong>conj_trans</strong> (<em>function</em>) &#8211;
 The fast linear operation applied to the vector when multiplying the
-transposed matrix with a vector.</li>
+complex conjuated transposed matrix with a vector.</li>
 <li><strong>args</strong> (<em>list or tuple</em>) &#8211;
-The arguments which should be passed to <em class="xref py py-obj">func</em> and <em class="xref py py-obj">trans</em> in addition
-to the vector.</li>
+The arguments which should be passed to <em class="xref py py-obj">func</em> and <em class="xref py py-obj">conj_trans</em> in
+addition to the vector.</li>
 <li><strong>shape</strong> (<em>list or tuple</em>) &#8211;
 The shape of the emulated matrix.</li>
+<li><strong>is_complex</strong> (<em>bool</em>) &#8211;
+The indicator of whether or not the emulated matrix is defined for the
+complex numbers (the default is False, which implies that the emulated
+matrix is defined for the real numbers only).</li>
+<li><strong>is_valid</strong> (<em>bool</em>) &#8211;
+The indicator of whether or not the fast linear operation corresponds
+to a valid matrix (se discussion below) (the default is True, which
+implies that the matrix is considered valid).</li>
 </ul>
 </td>
 </tr>
@@ -113,6 +122,31 @@ The shape of the emulated matrix.</li>
 <dt><a class="reference internal" href="magni.utils.validation.types.html#magni.utils.validation.types.MatrixBase" title="magni.utils.validation.types.MatrixBase"><code class="xref py py-class docutils literal"><span class="pre">magni.utils.validation.types.MatrixBase</span></code></a></dt>
 <dd>Superclass of the present class.</dd>
 </dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The <em class="xref py py-obj">is_valid</em> indicator is an implementation detail used to control
+possibly missing operations in the fast linear operation. For instance,
+consider the Discrete Fourier Transform (DFT) and its inverse transform.
+The forward DFT transform is a matrix-vector product involving the
+corresponding DFT matrix. The inverse transform is a matrix-vetor product
+involving the complex conjugate transpose DFT matrix. That is, it involves
+complex conjugation and transposition, both of which are (individually)
+valid transformations of the DFT matrix. However, when implementing the DFT
+(and its inverse) using a Fast Fourier Transform (FFT), only the combined
+(complex conjugate, transpose) operation is available. Thus, when using an
+FFT based <em class="xref py py-obj">magni.util.matrices.Matrix</em>, one can get, e.g., a <a class="reference internal" href="#magni.utils.matrices.Matrix.T" title="magni.utils.matrices.Matrix.T"><code class="xref py py-obj docutils literal"><span class="pre">Matrix.T</span></code></a>
+object corresponding to its transpose. However, the operation of computing
+a matrix-vector product involving the tranpose DFT matrix is not available
+and the <a class="reference internal" href="#magni.utils.matrices.Matrix.T" title="magni.utils.matrices.Matrix.T"><code class="xref py py-obj docutils literal"><span class="pre">Matrix.T</span></code></a> is, consequently, considered an invalid matrix. Only the
+combined <em class="xref py py-obj">Matrix.T.conj()</em> or <em class="xref py py-obj">Matrix.conj().T</em> is considered a valid
+matrix.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>The tranpose operation changed in <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-obj docutils literal"><span class="pre">magni</span></code></a> 1.5.0.</p>
+<p class="last">For complex matrices, the the <a class="reference internal" href="#magni.utils.matrices.Matrix.T" title="magni.utils.matrices.Matrix.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a> tranpose operation now yields an
+invalid matrix as described above. Prior to <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-obj docutils literal"><span class="pre">magni</span></code></a> 1.5.0, the <a class="reference internal" href="#magni.utils.matrices.Matrix.T" title="magni.utils.matrices.Matrix.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a>
+would yield the &#8220;inverse&#8221; which would usually be the complex conjugated
+transpose for complex matrices.</p>
 </div>
 <p class="rubric">Examples</p>
 <p>For example, the negative identity matrix could be emulated as</p>
@@ -151,6 +185,12 @@ this can easily be obtained:</p>
 <span class="go">       [-0., -0., -1.]])</span>
 </pre></div>
 </div>
+<dl class="method">
+<dt id="magni.utils.matrices.Matrix.__array__">
+<code class="descname">__array__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#Matrix.__array__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.Matrix.__array__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return ndarray representation of the matrix.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="magni.utils.matrices.Matrix.A">
 <code class="descname">A</code><a class="headerlink" href="#magni.utils.matrices.Matrix.A" title="Permalink to this definition">¶</a></dt>
@@ -188,13 +228,35 @@ The transpose of the matrix.</td>
 </table>
 <p class="rubric">Notes</p>
 <p>The fast linear operation and the fast linear transposed operation of
-the resulting matrix are same as those of the current matrix except
-swapped. The shape is modified accordingly.</p>
+the resulting matrix are the same as those of the current matrix except
+swapped. The shape is modified accordingly. This returns an <em class="xref py py-obj">invalid</em>
+matrix if the entries are complex numbers as only the complex conjugate
+transpose is considered valid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.utils.matrices.Matrix.conj">
+<code class="descname">conj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#Matrix.conj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.Matrix.conj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complex conjugate of the matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>matrix</strong> (<em>Matrix</em>) &#8211;
+The complex conjugate of the matrix.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The fast linear operation and the fast linear transposed operation of
+the resulting matrix are the same as those of the current matrix.
+This returns an <em class="xref py py-obj">invalid</em> matrix if the entries are complex numbers as
+only the complex conjugate transpose is considered valid.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="magni.utils.matrices.Matrix.dot">
-<code class="descname">dot</code><span class="sig-paren">(</span><em>vec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#Matrix.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.Matrix.dot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">dot</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#Matrix.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.Matrix.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multiply the matrix with a vector.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -203,11 +265,13 @@ swapped. The shape is modified accordingly.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vec</strong> (<em>numpy.ndarray</em>) &#8211;
 The vector which the matrix is multiplied with.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>vec</strong> (<em>numpy.matrix</em>) &#8211;
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>vec</strong> (<em>numpy.ndarray</em>) &#8211;
 The result of the multiplication.</td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This method honors <code class="xref py py-obj docutils literal"><span class="pre">magni.utils.validation.enable_validate_once</span></code>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -218,10 +282,11 @@ The result of the multiplication.</td>
 <dd><p>Bases: <a class="reference internal" href="magni.utils.validation.types.html#magni.utils.validation.types.MatrixBase" title="magni.utils.validation.types.MatrixBase"><code class="xref py py-class docutils literal"><span class="pre">magni.utils.validation.types.MatrixBase</span></code></a></p>
 <p>Wrap multiple matrix emulators in a single matrix emulator.</p>
 <p><a class="reference internal" href="#magni.utils.matrices.MatrixCollection" title="magni.utils.matrices.MatrixCollection"><code class="xref py py-obj docutils literal"><span class="pre">MatrixCollection</span></code></a> defines a few attributes and internal methods which
-ensures that instances have the same basic interface as a numpy matrix
-instance without explicitly forming the matrix. This basic interface allows
-instances to be multiplied with vectors, to be transposed, and to assume a
-shape. Also, instances have an attribute which explicitly forms the matrix.</p>
+ensures that instances have the same basic interface as a numpy ndarray
+instance without explicitly forming the ndarray. This basic interface
+allows instances to be multiplied with vectors, to be transposed, to be
+complex conjugated, and to assume a shape. Also, instances have an
+attribute which explicitly forms the matrix.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -295,6 +360,12 @@ this can easily be obtained:</p>
 <span class="go">       [-1., -0., -0.]])</span>
 </pre></div>
 </div>
+<dl class="method">
+<dt id="magni.utils.matrices.MatrixCollection.__array__">
+<code class="descname">__array__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#MatrixCollection.__array__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.MatrixCollection.__array__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return ndarray representation of the matrix.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="magni.utils.matrices.MatrixCollection.A">
 <code class="descname">A</code><a class="headerlink" href="#magni.utils.matrices.MatrixCollection.A" title="Permalink to this definition">¶</a></dt>
@@ -321,6 +392,8 @@ columns in a matrix.</p>
 <dt id="magni.utils.matrices.MatrixCollection.shape">
 <code class="descname">shape</code><a class="headerlink" href="#magni.utils.matrices.MatrixCollection.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the shape of the matrix.</p>
+<p>The shape of the product of a number of matrices is the number of rows
+of the first matrix times the number of columns of the last matrix.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -330,15 +403,14 @@ The shape of the matrix.</td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>The shape of the product of a number of matrices is the number of rows
-of the first matrix times the number of columns of the last matrix.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="magni.utils.matrices.MatrixCollection.T">
 <code class="descname">T</code><a class="headerlink" href="#magni.utils.matrices.MatrixCollection.T" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the transpose of the matrix.</p>
+<p>The transpose of the product of the number of matrices is the product
+of the transpose of the matrices in reverse order.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -348,27 +420,43 @@ The transpose of the matrix.</td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>The transpose of the product of the number of matrices is the product
-of the transpose of the matrices in reverse order.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="magni.utils.matrices.MatrixCollection.conj">
+<code class="descname">conj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#MatrixCollection.conj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.MatrixCollection.conj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the complex conjugate of the matrix.</p>
+<p>The complex conjugate of the product of the number of matrices is the
+product of the complex conjugates of the matrices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>matrix</strong> (<em>MatrixCollection</em>) &#8211;
+The complex conjugate of the matrix.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="magni.utils.matrices.MatrixCollection.dot">
-<code class="descname">dot</code><span class="sig-paren">(</span><em>vec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#MatrixCollection.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.MatrixCollection.dot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">dot</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#MatrixCollection.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.MatrixCollection.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multiply the matrix with a vector.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vec</strong> (<em>numpy.matrix</em>) &#8211;
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vec</strong> (<em>numpy.ndarray</em>) &#8211;
 The vector which the matrix is multiplied with.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>vec</strong> (<em>numpy.matrix</em>) &#8211;
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>vec</strong> (<em>numpy.ndarray</em>) &#8211;
 The result of the multiplication.</td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This method honors <code class="xref py py-obj docutils literal"><span class="pre">magni.utils.validation.enable_validate_once</span></code>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -425,14 +513,14 @@ The result of the multiplication.</td>
         <li class="right" >
           <a href="magni.utils.config.html" title="magni.utils.config module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jan 29, 2016.
+      Last updated on Jun 30, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

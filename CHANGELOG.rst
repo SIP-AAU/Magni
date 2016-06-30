@@ -1,4 +1,66 @@
 ==================
+1.5.0 (2016-06-30)
+==================
+
+Version 1.5.0 is primarily an addition of extensive unittests of multiple parts
+of magni and a redo of magni.utils.multiprocessing.process. Furthermore, this
+version includes minor improvements and minor bug fixes.
+
+
+Additions
+---------
+
+- Added extensive unittests of the following modules and subpackages:
+
+  * magni.reproducibility
+  * magni.utils.matrices
+  * magni.utils.multiprocessing
+  * magni.utils.validation
+
+
+Improvements
+------------
+
+- Improved magni.reproducibility with the following changes:
+
+  * Added env_export to conda_info in get_conda_info to hold information about
+	the active environment in order to include information about pip packages.
+  * Added an annotations_sub_group argument to write_custom_annotation to allow
+	grouping custom annotations in a tree structure.
+
+- Improved magni.utils.validation with the following changes:
+
+  * Added a superclass argument to validate_generic to allow validating classes
+	based on inheritance.
+  * Added the validate_once function to allow validating the arguments of a
+	function only the first time the function is called. Furthermore, added the
+	enable_validate_once function to enable validate_once which is disabled by
+	default.
+
+- Improved magni.utils.multiprocessing.process by adding the option to use
+  concurrent.futures instead of multiprocessing each having some advantages
+  over the other. See the documentation for more information.
+
+
+Bug Fixes
+---------
+
+- Fixed a bug where importing magni raised an exception even when the package
+  dependencies were met. This was done by making package version checking more
+  robust.
+- Fixed a mathematically incorrect behaviour as, previously, Matrix.T actually
+  implied Matrix.conj().T, and MatrixCollection.T actually implied
+  MatrixCollection.conj().T.
+- Fixed a few holes in the checks of the validation schemes of the validation
+  functions to catch invalid validation schemes.
+- Made all doctests pass even if the example.mi is not available - this is only
+  relevant when retrieving magni from secondary sources.
+- Fixed a number of minor bugs.
+- Various documentation clean-ups.
+
+
+
+==================
 1.4.0 (2016-01-29)
 ==================
 

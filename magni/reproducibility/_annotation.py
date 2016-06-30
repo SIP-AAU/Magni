@@ -30,6 +30,7 @@ The returned annotations are any nested level of dicts of dicts of strings.
 """
 
 from __future__ import division
+import contextlib
 import datetime
 import hashlib
 import json
@@ -39,6 +40,7 @@ import platform
 import pydoc
 import re
 import subprocess
+import sys
 
 import magni as _magni
 from magni.utils.validation import decorate_validation as _decorate_validation
@@ -56,8 +58,16 @@ def get_conda_info():
 
     `Conda <http://conda.pydata.org/>`_ is the package manager for the Anaconda
     scientific Python distribution. This function will return various
-    information about the Anaconda installation on the system by quering the
+    information about the Anaconda installation on the system by querying the
     Conda package database.
+
+    .. warning::
+
+        THIS IS HIGHLY EXPERIMENTAL AND MAY BREAK WITHOUT FURTHER NOTICE.
+
+    .. note::
+
+        Only infomation about the conda root environment is captured.
 
     Returns
     -------
@@ -84,12 +94,18 @@ def get_conda_info():
     * config_file
     * is_foreign_system
     * linked_modules
+    * env_export
 
     Additionally, the returned dictionary has a key named *status*, which can
     have either of the following values:
 
     * 'Succeeded' (Everything seems to be OK)
     * 'Failed' (Import of conda failed - nothing else is returned)
+
+    If "conda-env" is installed on the system, the `env_export` essentially
+    holds the infomation from "conda env export -n root" as a dictionary. The
+    information provided by this key partially overlaps with the infomation in
+    the `linked_modules` and `modules_info` keys.
 
     """
 
@@ -100,13 +116,26 @@ def get_conda_info():
     except ImportError:
         return {'status': 'Failed'}
 
+    try:
+        import conda_env.env
+        has_conda_env = True
+    except ImportError:
+        has_conda_env = False
+
+    # Ugly hack to silence the
+    # "Using Anaconda Cloud api site https://api.anaconda.org"
+    # message being sent to stderr by the binstar/anaconda client.
+    with open(os.devnull, 'wb') as null:
+        with _catch_stderr(null):
+            conda_channel_urls = conda.config.get_channel_urls()
+
     conda_info = {'platform': conda.config.subdir,
                   'conda_version': conda.__version__,
                   'root_prefix': conda.config.root_dir,
                   'default_prefix': conda.config.default_prefix,
                   'envs_dirs': json.dumps(conda.config.envs_dirs),
                   'package_cache': json.dumps(conda.config.pkgs_dirs),
-                  'channels': json.dumps(conda.config.get_channel_urls()),
+                  'channels': json.dumps(conda_channel_urls),
                   'config_file': json.dumps(conda.config.rc_path),
                   'is_foreign_system': json.dumps(bool(conda.config.foreign)),
                   'linked_modules': sorted(
@@ -115,8 +144,15 @@ def get_conda_info():
     modules_info = {module:
                     conda.install.is_linked(conda_info['root_prefix'], module)
                     for module in conda_info['linked_modules']}
-    conda_info['modules_info'] = modules_info
+    conda_info['modules_info'] = json.dumps(modules_info)
     conda_info['linked_modules'] = json.dumps(conda_info['linked_modules'])
+
+    if has_conda_env:
+        conda_info['env_export'] = json.dumps(
+            conda_env.env.from_environment(
+                'root', conda.config.root_dir).to_dict())
+    else:
+        conda_info['env_export'] = 'Failed: conda-env not available'
 
     conda_info['status'] = 'Succeeded'
 
@@ -437,3 +473,22 @@ def get_platform_info():
             platform_info['status'] = 'Processor query failed'
 
     return platform_info
+
+
+@contextlib.contextmanager
+def _catch_stderr(catcher):
+    """
+    A context manager for catching stderr.
+
+    Parameters
+    ----------
+    catcher : file-like
+        The file-like object which is to catch stderr.
+
+    """
+
+    _stderr = sys.stderr
+    sys.stderr = catcher
+    yield
+
+    sys.stderr = _stderr

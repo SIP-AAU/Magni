@@ -122,6 +122,9 @@ def validate_numeric(name, type_, range_='[-inf;inf]', shape=(),
     - 'complex' tests if the variable is a complex or has the data type
       `numpy.complex32`, `numpy.complex64`, or `numpy.complex128`.
 
+    Because `bool` is a subclass of `int`, a `bool` will pass validation as an
+    'integer'. This, however, is not the case for `numpy.bool8`.
+
     `range_` is either a list with two strings or a single string. In the
     latter case, the default value of the argument is used as the second
     string. The first value represents the accepted range of real values
@@ -263,7 +266,7 @@ def _check_range(name, bounds, range_):
                     _report(ValueError, '>>{}({})<<, {!r}, must be {} {!r}.',
                             (func, expr.format(name), bound, op, eval(value)),
                             prepend='The value(s) of ')
-    except (AttributeError, KeyError, SyntaxError):
+    except (AttributeError, KeyError, IndexError, SyntaxError):
         _report(ValueError, 'must be a valid range.', var_name='range_',
                 var_value=range_, prepend='Invalid validation call: ')
 

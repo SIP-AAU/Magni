@@ -198,7 +198,7 @@ def run(y, A):
 
     # IT iterations
     for it in range(param['iterations']):
-        c = A.T.dot(r)
+        c = A.conj().T.dot(r)
 
         # Step-size (relaxation parameter)
         kappa = run.calculate_step_size(locals())

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility._annotation &mdash; Magni 1.4.0 documentation</title>
+    <title>magni.reproducibility._annotation &mdash; Magni 1.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.4.0',
+        VERSION:     '1.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.4.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.5.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -78,6 +78,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -87,6 +88,7 @@
 <span class="kn">import</span> <span class="nn">pydoc</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">import</span> <span class="nn">magni</span> <span class="kn">as</span> <span class="nn">_magni</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
@@ -104,8 +106,16 @@
 
 <span class="sd">    `Conda &lt;http://conda.pydata.org/&gt;`_ is the package manager for the Anaconda</span>
 <span class="sd">    scientific Python distribution. This function will return various</span>
-<span class="sd">    information about the Anaconda installation on the system by quering the</span>
+<span class="sd">    information about the Anaconda installation on the system by querying the</span>
 <span class="sd">    Conda package database.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        THIS IS HIGHLY EXPERIMENTAL AND MAY BREAK WITHOUT FURTHER NOTICE.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        Only infomation about the conda root environment is captured.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -132,12 +142,18 @@
 <span class="sd">    * config_file</span>
 <span class="sd">    * is_foreign_system</span>
 <span class="sd">    * linked_modules</span>
+<span class="sd">    * env_export</span>
 
 <span class="sd">    Additionally, the returned dictionary has a key named *status*, which can</span>
 <span class="sd">    have either of the following values:</span>
 
 <span class="sd">    * &#39;Succeeded&#39; (Everything seems to be OK)</span>
 <span class="sd">    * &#39;Failed&#39; (Import of conda failed - nothing else is returned)</span>
+
+<span class="sd">    If &quot;conda-env&quot; is installed on the system, the `env_export` essentially</span>
+<span class="sd">    holds the infomation from &quot;conda env export -n root&quot; as a dictionary. The</span>
+<span class="sd">    information provided by this key partially overlaps with the infomation in</span>
+<span class="sd">    the `linked_modules` and `modules_info` keys.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -148,13 +164,26 @@
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Failed&#39;</span><span class="p">}</span>
 
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">conda_env.env</span>
+        <span class="n">has_conda_env</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">has_conda_env</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c"># Ugly hack to silence the</span>
+    <span class="c"># &quot;Using Anaconda Cloud api site https://api.anaconda.org&quot;</span>
+    <span class="c"># message being sent to stderr by the binstar/anaconda client.</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">null</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_catch_stderr</span><span class="p">(</span><span class="n">null</span><span class="p">):</span>
+            <span class="n">conda_channel_urls</span> <span class="o">=</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_channel_urls</span><span class="p">()</span>
+
     <span class="n">conda_info</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;platform&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">subdir</span><span class="p">,</span>
                   <span class="s">&#39;conda_version&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
                   <span class="s">&#39;root_prefix&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span>
                   <span class="s">&#39;default_prefix&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">default_prefix</span><span class="p">,</span>
                   <span class="s">&#39;envs_dirs&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">envs_dirs</span><span class="p">),</span>
                   <span class="s">&#39;package_cache&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pkgs_dirs</span><span class="p">),</span>
-                  <span class="s">&#39;channels&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_channel_urls</span><span class="p">()),</span>
+                  <span class="s">&#39;channels&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda_channel_urls</span><span class="p">),</span>
                   <span class="s">&#39;config_file&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">rc_path</span><span class="p">),</span>
                   <span class="s">&#39;is_foreign_system&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">foreign</span><span class="p">)),</span>
                   <span class="s">&#39;linked_modules&#39;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span>
@@ -163,8 +192,15 @@
     <span class="n">modules_info</span> <span class="o">=</span> <span class="p">{</span><span class="n">module</span><span class="p">:</span>
                     <span class="n">conda</span><span class="o">.</span><span class="n">install</span><span class="o">.</span><span class="n">is_linked</span><span class="p">(</span><span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;root_prefix&#39;</span><span class="p">],</span> <span class="n">module</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">]}</span>
-    <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;modules_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">modules_info</span>
+    <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;modules_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">modules_info</span><span class="p">)</span>
     <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">has_conda_env</span><span class="p">:</span>
+        <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;env_export&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="n">conda_env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">from_environment</span><span class="p">(</span>
+                <span class="s">&#39;root&#39;</span><span class="p">,</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;env_export&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Failed: conda-env not available&#39;</span>
 
     <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Succeeded&#39;</span>
 
@@ -484,7 +520,26 @@
         <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
             <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Processor query failed&#39;</span>
 
-    <span class="k">return</span> <span class="n">platform_info</span></div>
+    <span class="k">return</span> <span class="n">platform_info</span>
+
+</div>
+<span class="nd">@contextlib.contextmanager</span>
+<span class="k">def</span> <span class="nf">_catch_stderr</span><span class="p">(</span><span class="n">catcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A context manager for catching stderr.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    catcher : file-like</span>
+<span class="sd">        The file-like object which is to catch stderr.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_stderr</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">catcher</span>
+    <span class="k">yield</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">_stderr</span>
 </pre></div>
 
           </div>
@@ -515,13 +570,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jan 29, 2016.
+      Last updated on Jun 30, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

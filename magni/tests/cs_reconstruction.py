@@ -80,6 +80,7 @@ use_rademacher(n, m, k, seed)
 
 from __future__ import division
 import unittest
+import warnings
 
 import numpy as np
 
@@ -228,11 +229,13 @@ class ITTestPhaseSpaceExtremes(unittest.TestCase):
         self._ist_run(y, A, alpha, success=False)
 
     def test_m_equals_one(self):
-        m = 1
-        y, A, alpha = use_rademacher(self.n, m, self.k, seed=self.seed)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            m = 1
+            y, A, alpha = use_rademacher(self.n, m, self.k, seed=self.seed)
 
-        self._iht_run(y, A, alpha, success=False)
-        self._ist_run(y, A, alpha, success=False)
+            self._iht_run(y, A, alpha, success=False)
+            self._ist_run(y, A, alpha, success=False)
 
     def test_m_equals_n(self):
         m = self.n
@@ -251,12 +254,14 @@ class ITTestPhaseSpaceExtremes(unittest.TestCase):
         self._ist_run(y, A, alpha, success=False)
 
     def test_n_equals_one(self):
-        n = 1
-        k = 1
-        y, A, alpha = use_rademacher(n, self.m, k, seed=self.seed)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            n = 1
+            k = 1
+            y, A, alpha = use_rademacher(n, self.m, k, seed=self.seed)
 
-        self._iht_run(y, A, alpha)
-        self._ist_run(y, A, alpha, success=False)
+            self._iht_run(y, A, alpha)
+            self._ist_run(y, A, alpha, success=False)
 
     def _iht_run(self, y, A, alpha, success=True):
         self.assertEqual(

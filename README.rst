@@ -18,7 +18,7 @@ Magni
    Signal and Information Processing
 
 :Version:
-   1.4.0
+   1.5.0
 
 :Travis CI test status:
    .. image:: https://travis-ci.org/SIP-AAU/Magni.svg?branch=master

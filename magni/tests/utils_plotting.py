@@ -18,6 +18,7 @@ class TestMatplotlibConfiguration(unittest.TestCase)
 from __future__ import division
 import copy
 import unittest
+import warnings
 
 try:
     from cycler import Cycler
@@ -98,7 +99,12 @@ class TestMatplotlibConfiguration(unittest.TestCase):
         self.assertEqual(mpl.rcParams['figure.figsize'], [1, 1])
 
     def test_invalid_settings(self):
-        magni.utils.plotting.setup_matplotlib({'invalid': {'setting': 0}})
+        with warnings.catch_warnings(record=True) as ws:
+            warnings.simplefilter('always')
+            magni.utils.plotting.setup_matplotlib({'invalid': {'setting': 0}})
+        self.assertEqual(len(ws), 1)
+        self.assertIsInstance(ws[0].message, UserWarning)
+        self.assertEqual(ws[0].message.args[0], "Setting 'invalid' ignored.")
 
     def _normalise_rcParam(self, rcParam):
         if isinstance(rcParam, (list, Cycler)):

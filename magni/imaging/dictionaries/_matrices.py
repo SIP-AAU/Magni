@@ -22,8 +22,8 @@ magni.utils.matrices : Matrix emulators.
 
 
 from __future__ import division
-from distutils.version import StrictVersion as _StrictVersion
 
+from pkg_resources import parse_version as _parse_version
 from scipy import __version__ as _scipy_version
 
 from magni.imaging.dictionaries import _fastops
@@ -83,9 +83,9 @@ def get_DCT(shape, overcomplete_shape=None):
     resulting image is identical to the original. Notice how this example first
     ensures that the necessary version of SciPy is available:
 
-    >>> from distutils.version import StrictVersion
+    >>> from pkg_resources import parse_version
     >>> from scipy import __version__ as _scipy_version
-    >>> if StrictVersion(_scipy_version) >= StrictVersion('0.16.0'):
+    >>> if parse_version(_scipy_version) >= parse_version('0.16.0'):
     ...     matrix = get_DCT(img.shape, img.shape)
     ...     dct_matrix = matrix.T.dot(vec)
     ...     vec_roundtrip = matrix.dot(dct_matrix)
@@ -117,7 +117,7 @@ def get_DCT(shape, overcomplete_shape=None):
         args = (shape,)
         shape = (entries, entries)
     else:
-        if _StrictVersion(_scipy_version) < _StrictVersion('0.16.0'):
+        if _parse_version(_scipy_version) < _parse_version('0.16.0'):
             raise NotImplementedError(
                 'Over-complete DCT requires SciPy >= 0.16.0')
 
@@ -165,7 +165,7 @@ def get_DFT(shape, overcomplete_shape=None):
 
     >>> from magni.imaging.dictionaries import get_DFT
     >>> matrix = get_DFT(img.shape)
-    >>> dft_matrix = matrix.T.dot(vec)
+    >>> dft_matrix = matrix.conj().T.dot(vec)
 
     Check that the two ways produce the same result:
 
@@ -175,7 +175,7 @@ def get_DFT(shape, overcomplete_shape=None):
     Compute the overcomplete transform (and back again):
 
     >>> matrix = get_DFT(img.shape, img.shape)
-    >>> dft_matrix = matrix.T.dot(vec)
+    >>> dft_matrix = matrix.conj().T.dot(vec)
     >>> vec_roundtrip = matrix.dot(dft_matrix)
 
     Check that the twice transformed image is identical to the
@@ -210,4 +210,4 @@ def get_DFT(shape, overcomplete_shape=None):
         args = (shape, overcomplete_shape)
         shape = (entries, overcomplete_shape[0] * overcomplete_shape[1])
 
-    return _Matrix(_fastops.idft2, _fastops.dft2, args, shape)
+    return _Matrix(_fastops.idft2, _fastops.dft2, args, shape, is_complex=True)

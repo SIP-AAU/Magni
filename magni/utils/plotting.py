@@ -41,19 +41,19 @@ Get the normalised 'Blue' colour brew from the psp colour map:
 """
 
 from __future__ import division
-from distutils.version import StrictVersion as _StrictVersion
 import warnings
 
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from pkg_resources import parse_version as _parse_version
 
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_levels as _levels
 from magni.utils.validation import validate_numeric as _numeric
 
-if _StrictVersion(mpl.__version__) >= _StrictVersion('1.5.0'):
+if _parse_version(mpl.__version__) >= _parse_version('1.5.0'):
     import cycler
     _mpl_prop_era = True
 else:

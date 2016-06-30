@@ -9,7 +9,7 @@ Module providing the `validate_generic` function.
 Routine listings
 ----------------
 validate_generic(name, type, value_in=None, len_=None, keys_in=None,
-    has_keys=None, ignore_none=False, var=None)
+    has_keys=None, superclass=None, ignore_none=False, var=None)
     Validate non-numeric objects.
 
 """
@@ -40,7 +40,8 @@ _types = {'string': _string,
 
 
 def validate_generic(name, type_, value_in=None, len_=None, keys_in=None,
-                     has_keys=None, ignore_none=False, var=None):
+                     has_keys=None, superclass=None, ignore_none=False,
+                     var=None):
     """
     Validate non-numeric objects.
 
@@ -75,6 +76,9 @@ def validate_generic(name, type_, value_in=None, len_=None, keys_in=None,
     has_keys : set-like
         The list of required keys. (the default is None, which implies that no
         keys are required)
+    superclass : class
+        The required superclass. (the default is None, which implies that no
+        superclass is required)
     ignore_none : bool
         A flag indicating if the variable is allowed to be none. (the default
         is False)
@@ -127,7 +131,7 @@ def validate_generic(name, type_, value_in=None, len_=None, keys_in=None,
 
     if name is None:
         return ('generic', type_, value_in, len_, keys_in, has_keys,
-                ignore_none)
+                superclass, ignore_none)
 
     if var is None:
         var = _get_var(name)
@@ -150,6 +154,32 @@ def validate_generic(name, type_, value_in=None, len_=None, keys_in=None,
     _check_value(name, var, value_in)
     _check_len(name, var, len_)
     _check_keys(name, var, keys_in, has_keys)
+    _check_inheritance(name, var, superclass)
+
+
+def _check_inheritance(name, var, superclass):
+    """
+    Check the superclasses of a variable.
+
+    Parameters
+    ----------
+    name : None
+        The name of the variable to be validated.
+    var : None
+        The value of the variable to be validated.
+    superclass : class
+        The required superclass.
+
+    """
+
+    if superclass is not None:
+        if not isinstance(superclass, type):
+            _report(TypeError, 'must be a type.', var_name='superclass',
+                    var_value=superclass, prepend='Invalid validation call: ')
+
+        if not issubclass(var, superclass):
+            _report(TypeError, 'must be a subclass of {!r}.', superclass,
+                    var_name=name)
 
 
 def _check_keys(name, var, keys_in, has_keys):
@@ -170,9 +200,10 @@ def _check_keys(name, var, keys_in, has_keys):
     """
 
     if keys_in is not None:
-        if not hasattr(keys_in, '__iter__'):
-            _report(TypeError, 'must be iterable.', var_name='keys_in',
-                    var_value=keys_in, prepend='Invalid validation call: ')
+        if not isinstance(keys_in, (list, tuple)):
+            _report(TypeError, 'must be in {!r}.', (list, tuple),
+                    var_name='keys_in', var_value=keys_in,
+                    prepend='Invalid validation call: ')
 
         for key in var.keys():
             if key not in keys_in:
@@ -180,9 +211,10 @@ def _check_keys(name, var, keys_in, has_keys):
                         expr='{}.keys()')
 
     if has_keys is not None:
-        if not hasattr(has_keys, '__iter__'):
-            _report(TypeError, 'must be iterable.', var_name='has_keys',
-                    var_value=has_keys, prepend='Invalid validation call: ')
+        if not isinstance(has_keys, (list, tuple)):
+            _report(TypeError, 'must be in {!r}.', (list, tuple),
+                    var_name='has_keys', var_value=has_keys,
+                    prepend='Invalid validation call: ')
 
         for key in has_keys:
             if key not in var.keys():
@@ -271,9 +303,10 @@ def _check_value(name, var, value_in):
     """
 
     if value_in is not None:
-        if not hasattr(value_in, '__iter__'):
-            _report(TypeError, 'must be iterable.', var_name='value_in',
-                    var_value=value_in, prepend='Invalid validation call: ')
+        if not isinstance(value_in, (list, tuple)):
+            _report(TypeError, 'must be in {!r}.', (list, tuple),
+                    var_name='value_in', var_value=value_in,
+                    prepend='Invalid validation call: ')
 
         if var not in value_in:
             _report(ValueError, 'must be in {!r}.', value_in, var_name=name)

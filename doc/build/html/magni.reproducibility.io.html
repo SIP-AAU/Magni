@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility.io module &mdash; Magni 1.4.0 documentation</title>
+    <title>magni.reproducibility.io module &mdash; Magni 1.5.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.4.0',
+        VERSION:     '1.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.4.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
     <link rel="up" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="next" title="magni.utils package" href="magni.utils.html" />
     <link rel="prev" title="magni.reproducibility.data module" href="magni.reproducibility.data.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.reproducibility.data.html" title="magni.reproducibility.data module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" accesskey="U">magni.reproducibility package</a> &raquo;</li> 
       </ul>
@@ -75,8 +75,9 @@ reproducible research.</p>
 <dd>Function for removing annotations in an HDF5 database.</dd>
 <dt>remove_chases(h5file)</dt>
 <dd>Function for removing chases in an HDF5 database.</dd>
-<dt>write_custom_annotation(h5file, annotation_name, annotation_value)</dt>
-<dd>Write a custom annotation to an HDF5 database.</dd>
+<dt>write_custom_annotation(h5file, annotation_name, annotation_value,</dt>
+<dd>annotations_sub_group=None)
+Write a custom annotation to an HDF5 database.</dd>
 </dl>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -358,7 +359,7 @@ The handle to the HDF5 database from which the chases are removed.</td>
 
 <dl class="function">
 <dt id="magni.reproducibility.io.write_custom_annotation">
-<code class="descclassname">magni.reproducibility.io.</code><code class="descname">write_custom_annotation</code><span class="sig-paren">(</span><em>h5file</em>, <em>annotation_name</em>, <em>annotation_value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#write_custom_annotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.write_custom_annotation" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.reproducibility.io.</code><code class="descname">write_custom_annotation</code><span class="sig-paren">(</span><em>h5file</em>, <em>annotation_name</em>, <em>annotation_value</em>, <em>annotations_sub_group=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#write_custom_annotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io.write_custom_annotation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a custom annotation to an HDF5 database.</p>
 <p>The annotation is written to the <em class="xref py py-obj">h5file</em> under the <em class="xref py py-obj">annotation_name</em> such
 that it holds the <em class="xref py py-obj">annotation_value</em>.</p>
@@ -373,6 +374,10 @@ The handle to the HDF5 database to which the annotation is written.</li>
 The name of the annotation to write.</li>
 <li><strong>annotation_value</strong> (<em>a JSON serialisable object</em>) &#8211;
 The annotation value to write.</li>
+<li><strong>annotations_sub_group</strong> (<em>str</em>) &#8211;
+The group node under &#8220;/annotations&#8221; to which the custom annotation is
+written (the default is None which implies that the custom annotation
+is written directly under &#8220;/annotations&#8221;).</li>
 </ul>
 </td>
 </tr>
@@ -393,6 +398,26 @@ The annotation value to write.</li>
 <span class="go">&#39;the value&#39;</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.reproducibility.io._recursive_annotation_read">
+<code class="descclassname">magni.reproducibility.io.</code><code class="descname">_recursive_annotation_read</code><span class="sig-paren">(</span><em>h5_annotations</em>, <em>out_annotations_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/reproducibility/io.html#_recursive_annotation_read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.reproducibility.io._recursive_annotation_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively read annotations from an annotation group</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>h5_annotations</strong> (<em>tables.group.Group</em>) &#8211;
+The group to read annotations from.</li>
+<li><strong>out_annotations_dict</strong> (<em>dict</em>) &#8211;
+The dictionary to store the read annotations in.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -447,14 +472,14 @@ The annotation value to write.</li>
         <li class="right" >
           <a href="magni.reproducibility.data.html" title="magni.reproducibility.data module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" >magni.reproducibility package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jan 29, 2016.
+      Last updated on Jun 30, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

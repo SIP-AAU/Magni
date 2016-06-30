@@ -22,10 +22,10 @@ These cases are tested with 2D transforms.
 """
 
 from __future__ import division
-from distutils.version import StrictVersion as _StrictVersion
 import unittest
 
 import numpy as np
+from pkg_resources import parse_version as _parse_version
 from scipy import __version__ as _scipy_version
 
 from magni.imaging.dictionaries import get_DCT
@@ -34,7 +34,7 @@ from magni.imaging import mat2vec
 from magni.imaging import vec2mat
 
 
-_scipy_pre_016 = _StrictVersion(_scipy_version) < _StrictVersion('0.16.0')
+_scipy_pre_016 = _parse_version(_scipy_version) < _parse_version('0.16.0')
 
 
 class TransformsMixin(object):
@@ -78,7 +78,7 @@ class TransformsMixin(object):
         # Test DFT
         dft_mtx = get_DFT(self.array_shape,
                           self.array_shape_oc)
-        d2_array_dft = dft_mtx.T.dot(mat2vec(self.d2_array))
+        d2_array_dft = dft_mtx.conj().T.dot(mat2vec(self.d2_array))
         d2_array_roundtrip = vec2mat(dft_mtx.dot(d2_array_dft),
                                      self.array_shape)
 
@@ -165,7 +165,7 @@ class TransformsMixin(object):
 
         # Compute the DFT transform by the tested function
         dft_mtx = get_DFT(self.array_shape, self.array_shape_oc)
-        d2_array_dft = vec2mat(dft_mtx.T.dot(mat2vec(self.d2_array)),
+        d2_array_dft = vec2mat(dft_mtx.conj().T.dot(mat2vec(self.d2_array)),
                                self.array_shape_oc)
 
         # Is the result identical to the reference?

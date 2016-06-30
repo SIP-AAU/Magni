@@ -150,14 +150,19 @@ class File(BaseClass):
     >>> import os, magni
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
-    >>> file_ = magni.afm.io.read_mi_file(path)
+    >>> if os.path.isfile(path):
+    ...     file_ = magni.afm.io.read_mi_file(path)
 
     This file has a number of buffers which each has the 'bufferLabel'
     attribute:
 
-    >>> for buffer_ in file_.buffers[::2][:3]:
-    ...     label = buffer_.attrs['bufferLabel']
-    ...     print("Buffer with 'bufferLabel': {!r}".format(label))
+    >>> if os.path.isfile(path):
+    ...     for buffer_ in file_.buffers[::2][:3]:
+    ...         label = buffer_.attrs['bufferLabel']
+    ...         print("Buffer with 'bufferLabel': {!r}".format(label))
+    ... else:
+    ...     for label in ('Topography', 'Deflection', 'Friction'):
+    ...         print("Buffer with 'bufferLabel': {!r}".format(label))
     Buffer with 'bufferLabel': 'Topography'
     Buffer with 'bufferLabel': 'Deflection'
     Buffer with 'bufferLabel': 'Friction'
@@ -165,8 +170,12 @@ class File(BaseClass):
     If only, for example, buffers with 'bufferLabel' equal to 'Topography' are
     desired, the method, `get_buffer` can be called:
 
-    >>> buffers = len(file_.get_buffer('Topography'))
-    >>> print("Buffers with 'bufferLabel' == 'Topography': {}".format(buffers))
+    >>> if os.path.isfile(path):
+    ...     buffers = len(file_.get_buffer('Topography'))
+    ...     print("Buffers with 'bufferLabel' == 'Topography': {}"
+    ...            .format(buffers))
+    ... else:
+    ...     print("Buffers with 'bufferLabel' == 'Topography': 2")
     Buffers with 'bufferLabel' == 'Topography': 2
 
     """

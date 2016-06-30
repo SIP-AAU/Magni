@@ -203,7 +203,7 @@ def zigzag_sample_surface(l, w, speed, sample_rate, time, angle=np.pi / 20):
     height = length * np.sin(angle)
     number = speed * time / length
 
-    coords = np.zeros((np.ceil(number) + 1, 2))
+    coords = np.zeros((int(np.ceil(number)) + 1, 2))
     coords[1::2, 0] = w
     coords[:, 1] = np.arange(np.ceil(number) + 1) * height
     coords[-1] = (coords[-2] +

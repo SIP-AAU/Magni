@@ -8,13 +8,13 @@ A script that prints a dependency report for Magni
 
 More about comparing versions of Python packages:
 http://www.python.org/dev/peps/pep-0345/
-http://www.python.org/dev/peps/pep-0386
-https://wiki.python.org/moin/Distutils/VersionComparison
+http://www.python.org/dev/peps/pep-0386/
+https://www.python.org/dev/peps/pep-0440/
 
 """
 
 from __future__ import division
-from distutils.version import StrictVersion
+from pkg_resources import parse_version
 import importlib
 from itertools import chain
 import platform
@@ -37,7 +37,9 @@ pac_names = {'python': 'Python',
              'nose': 'Nose',
              'coverage': 'Coverage',
              'PIL': 'PIL',
-             'bottleneck': 'Bottleneck'}
+             'bottleneck': 'Bottleneck',
+             'conda': 'Conda',
+             'setuptools': 'Setuptools'}
 
 
 # Minimum version requirements
@@ -50,7 +52,8 @@ python3_first_break_ver = '3.5'  # First version following minimum version for
 deps = {'numpy': '1.8',
         'scipy': '0.14',
         'tables': '3.1',
-        'matplotlib': '1.3'}
+        'matplotlib': '1.3',
+        'setuptools': '11.3'}
 
 opt_deps = {'mkl': '11.1',
             'sphinx': '1.3.1',
@@ -61,7 +64,8 @@ opt_deps = {'mkl': '11.1',
             'nose': '1.3',
             'coverage': '3.7',
             'PIL': '1.1.7',
-            'bottleneck': '1.0.0'}
+            'bottleneck': '1.0.0',
+            'conda': '3.7.0'}
 
 ver_broken_opt_deps = {}
 
@@ -71,7 +75,7 @@ status = {}
 # Python requirements
 py_ver = platform.python_version()
 if py_ver[0] == '2':
-    if StrictVersion(py_ver) < StrictVersion(python2_min_ver):
+    if parse_version(py_ver) < parse_version(python2_min_ver):
         status['python'] = ('FAIL: Python 2 version nedded ' +
                             python2_min_ver + '; Installed version is ' +
                             py_ver)
@@ -79,13 +83,13 @@ if py_ver[0] == '2':
         status['python'] = 'OK: Python 2 at version ' + py_ver
 
 elif py_ver[0] == '3':
-    if StrictVersion(py_ver) < StrictVersion(python3_min_ver):
+    if parse_version(py_ver) < parse_version(python3_min_ver):
         status['python'] = ('FAIL: Python 3 version needed ' +
                             python3_min_ver + '; Installed version is ' +
                             py_ver)
     else:
         status['python'] = 'OK: Python 3 at version ' + py_ver
-        if StrictVersion(py_ver) >= StrictVersion(python3_first_break_ver):
+        if parse_version(py_ver) >= parse_version(python3_first_break_ver):
             status['python'] = (
                 'WARN: Python 3 at version ' + py_ver +
                 ' (this version may require newer versions of some of the ' +
@@ -109,7 +113,7 @@ for pac in all_deps:
             import PIL.Image
             p.__version__ = PIL.Image.VERSION
 
-        if StrictVersion(p.__version__) < StrictVersion(all_deps[pac]):
+        if parse_version(p.__version__) < parse_version(all_deps[pac]):
             status[pac] = ('WARN: Tested on version >= ' + all_deps[pac] +
                            '; Installed version is ' + p.__version__)
         else:
@@ -123,7 +127,7 @@ for pac in all_deps:
 for brok, brok_ver in ver_broken_opt_deps.items():
     try:
         b = importlib.import_module(brok)
-        if StrictVersion(b.__version__) < StrictVersion(brok_ver):
+        if parse_version(b.__version__) < parse_version(brok_ver):
             status[brok] = ('WARN: Tested on version >= ' + brok_ver +
                             '; Installed version is ' + b.__version__)
         else:
@@ -161,15 +165,15 @@ _print_dep_report('python', status)
 
 print('\nThird party dependencies:')
 
-for dep in deps:
+for dep in sorted(deps):
     _print_dep_report(dep, status)
 
 print('\nOptional third party dependencies:')
 
-for opt in opt_deps:
+for opt in sorted(opt_deps):
     _print_dep_report(opt, status)
 
-for opt in ver_broken_opt_deps:
+for opt in sorted(ver_broken_opt_deps):
     _print_dep_report(opt, status)
 
 # Exit 1 in case of failures

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.multiprocessing._processing &mdash; Magni 1.4.0 documentation</title>
+    <title>magni.utils.multiprocessing._processing &mdash; Magni 1.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.4.0',
+        VERSION:     '1.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.4.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Magni 1.5.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -71,9 +71,21 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="c"># disable mkl multiprocessing to avoid conflicts with manual multiprocessing</span>
 <span class="k">try</span><span class="p">:</span>
+    <span class="c"># The concurrent.futures was first added to Python in version 3.2</span>
+    <span class="c"># A backport for Python 2 is available at https://pythonhosted.org/futures/</span>
+    <span class="kn">import</span> <span class="nn">concurrent.futures</span>
+    <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span>
+    <span class="kn">from</span> <span class="nn">concurrent.futures.process</span> <span class="kn">import</span> <span class="n">BrokenProcessPool</span>
+    <span class="n">_futures_available</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_futures_available</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c"># disable mkl multiprocessing to avoid conflicts with manual</span>
+    <span class="c"># multiprocessing</span>
     <span class="kn">import</span> <span class="nn">mkl</span>
     <span class="n">_get_num_threads</span> <span class="o">=</span> <span class="n">mkl</span><span class="o">.</span><span class="n">get_max_threads</span>
     <span class="n">_set_num_threads</span> <span class="o">=</span> <span class="n">mkl</span><span class="o">.</span><span class="n">set_num_threads</span>
@@ -94,10 +106,11 @@
 <div class="viewcode-block" id="process"><a class="viewcode-back" href="../../../../magni.utils.multiprocessing._processing.html#magni.utils.multiprocessing._processing.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="p">{},</span> <span class="n">args_list</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
             <span class="n">maxtasks</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Map multiple function calls to multiple processors.</span>
+<span class="sd">    Map multiple function calls to multiple processes.</span>
 
 <span class="sd">    For each entry in args_list and kwargs_list, a task is formed which is used</span>
-<span class="sd">    for a function call of the type `func(*args, **kwargs)`.</span>
+<span class="sd">    for a function call of the type `func(*args, **kwargs)`. Each task is</span>
+<span class="sd">    executed in a seperate process using the concept of a processing pool.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -123,6 +136,13 @@
 <span class="sd">    results : list</span>
 <span class="sd">        A list with the results from the function calls.</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    BrokenPoolError</span>
+<span class="sd">        If using the `concurrent.futures` module and one or more workers</span>
+<span class="sd">        terminate abrubtly with the automatic broken pool restart funtionality</span>
+<span class="sd">        disabled.</span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    magni.utils.multiprocessing.config : Configuration options.</span>
@@ -130,7 +150,7 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    If the `workers` configuration option is equal to 0, map is used.</span>
-<span class="sd">    Otherwise, the map functionality of a multiprocessing worker pool is used.</span>
+<span class="sd">    Otherwise, the map functionality of a processing pool is used.</span>
 
 <span class="sd">    Reasons for using this function over map or standard multiprocessing:</span>
 
@@ -139,11 +159,63 @@
 <span class="sd">    - The use of both arguments and keyword arguments in the function calls.</span>
 <span class="sd">    - The reporting of exceptions before termination.</span>
 <span class="sd">    - The possibility of terminating multiprocessing with a single interrupt.</span>
+<span class="sd">    - The option of automatically restarting a broken process pool.</span>
+
+<span class="sd">    As of Python 3.2, two different, though quite similar, modules exist in the</span>
+<span class="sd">    standard library for managing processing pools: `multiprocessing` and</span>
+<span class="sd">    `concurrent.futures`. According to Python core contributor Jesse Noller,</span>
+<span class="sd">    the plan is to eventually make concurrent.futures the only interface to the</span>
+<span class="sd">    high level processing pools (futures), whereas multiprocessing is supposed</span>
+<span class="sd">    to serve more low level needs for individually handling processes, locks,</span>
+<span class="sd">    queues, etc. (see https://bugs.python.org/issue9205#msg132661). As of</span>
+<span class="sd">    Python 3.5, both the `multiprocessing.Pool` and</span>
+<span class="sd">    `concurrent.futures.ProcessPoolExecutor` serve almost the same purpose and</span>
+<span class="sd">    provide very similar interfaces. The main differences between the two are:</span>
+
+<span class="sd">    - The option of using a worker initialiser is only available in</span>
+<span class="sd">      `multiprocessing`.</span>
+<span class="sd">    - The option of specifing a maximum number of tasks for a worker to execute</span>
+<span class="sd">      before being replaced to free up ressources (the maxtasksperchild option)</span>
+<span class="sd">      is only available in `multiprocessing`.</span>
+<span class="sd">    - The option of specifying a context is only available in `multiprocessing`</span>
+<span class="sd">    - &quot;Reasonable&quot; handling of abrubt worker termination and exceptions is only</span>
+<span class="sd">       available in `concurrent.futures`.</span>
+
+<span class="sd">    Particularly, the &quot;reasonable&quot; handling of a broken process pool may be a</span>
+<span class="sd">    strong argument to prefer `concurrent.futures` over `multiprocessing`. The</span>
+<span class="sd">    matter of handling a broken process pool has been extensively discussed in</span>
+<span class="sd">    https://bugs.python.org/issue9205 which led to the fix for</span>
+<span class="sd">    `concurrent.futures`. A similar fix for `multiprocessing` has been proposed</span>
+<span class="sd">    in https://bugs.python.org/issue22393.</span>
+
+<span class="sd">    Both the `multiprocessing` and `concurrent.futures` interfaces are</span>
+<span class="sd">    available for use with this function. If the configuration parameter</span>
+<span class="sd">    `prefer_futures` is set to True and the `concurrent.futures` module is</span>
+<span class="sd">    available, this is used. Otherwise, the `multiprocessing` module is used. A</span>
+<span class="sd">    Python 2 backport of `concurrent.futures` is available at</span>
+<span class="sd">    https://pythonhosted.org/futures/.</span>
+
+<span class="sd">    When using `concurrent.futures`, the `maxtasks`, `namespace`, and</span>
+<span class="sd">    `init_args` are ignored since these are not supported by that module. It</span>
+<span class="sd">    seems that `concurrent.futures` works as if maxtasks==1, however this is</span>
+<span class="sd">    based purely on emprical observations. The `init_args` functionality may be</span>
+<span class="sd">    added later on if an initialiser is added to `concurrent.futures` - see</span>
+<span class="sd">    http://bugs.python.org/issue21423. If the `max_broken_pool_restarts`</span>
+<span class="sd">    configuration parameter is set to a value different from 0, the Pool is</span>
+<span class="sd">    automatically restarted and the tasks are re-run should a broken pool be</span>
+<span class="sd">    encountered. If `max_broken_pool_restarts` is set to 0, a BrokenPoolError</span>
+<span class="sd">    is raised should a broken pool be encountered.</span>
+
+<span class="sd">    When using `multiprocessing`, the `max_broken_pool_restarts` is ignored</span>
+<span class="sd">    since the BrokenPoolError handling has not yet been implemented for the</span>
+<span class="sd">    `multiprocessing.Pool` - see https://bugs.python.org/issue22393 as well as</span>
+<span class="sd">    https://bugs.python.org/issue9205.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    An example of how to use args_list, and kwargs_list:</span>
 
+<span class="sd">    &gt;&gt;&gt; import magni</span>
 <span class="sd">    &gt;&gt;&gt; from magni.utils.multiprocessing._processing import process</span>
 <span class="sd">    &gt;&gt;&gt; def calculate(a, b, op=&#39;+&#39;):</span>
 <span class="sd">    ...     if op == &#39;+&#39;:</span>
@@ -153,6 +225,12 @@
 <span class="sd">    ...</span>
 <span class="sd">    &gt;&gt;&gt; args_list = [[5, 7], [9, 3]]</span>
 <span class="sd">    &gt;&gt;&gt; kwargs_list = [{&#39;op&#39;: &#39;+&#39;}, {&#39;op&#39;: &#39;-&#39;}]</span>
+<span class="sd">    &gt;&gt;&gt; process(calculate, args_list=args_list, kwargs_list=kwargs_list)</span>
+<span class="sd">    [12, 6]</span>
+
+<span class="sd">    or the same example preferring `concurrent.futures` over `multiprocessing`:</span>
+
+<span class="sd">    &gt;&gt;&gt; magni.utils.multiprocessing.config[&#39;prefer_futures&#39;] = True</span>
 <span class="sd">    &gt;&gt;&gt; process(calculate, args_list=args_list, kwargs_list=kwargs_list)</span>
 <span class="sd">    [12, 6]</span>
 
@@ -181,14 +259,7 @@
 
     <span class="n">validate_input</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">args_list</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">args_list</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">dct</span> <span class="ow">in</span> <span class="n">kwargs_list</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">kwargs_list</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">kwargs_list</span> <span class="o">=</span> <span class="p">[{}</span> <span class="k">for</span> <span class="n">lst</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">]</span>
-
-    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span> <span class="k">for</span> <span class="n">lst</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">]</span>
-    <span class="n">tasks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">))</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="n">_get_tasks</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_config</span><span class="p">[</span><span class="s">&#39;workers&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">_process_init</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">)</span>
@@ -198,18 +269,181 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;This function is not available under &#39;</span>
                                       <span class="s">&#39;Windows.&#39;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">_futures_available</span> <span class="ow">and</span> <span class="n">_config</span><span class="p">[</span><span class="s">&#39;prefer_futures&#39;</span><span class="p">]:</span>
+            <span class="n">map_</span> <span class="o">=</span> <span class="n">_map_using_futures</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">map_</span> <span class="o">=</span> <span class="n">_map_using_mppool</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">num_threads</span> <span class="o">=</span> <span class="n">_get_num_threads</span><span class="p">()</span>
             <span class="n">_set_num_threads</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">workers</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">_config</span><span class="p">[</span><span class="s">&#39;workers&#39;</span><span class="p">],</span> <span class="n">_process_init</span><span class="p">,</span>
-                              <span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">),</span> <span class="n">maxtasks</span><span class="p">)</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="n">workers</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_process_worker</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">map_</span><span class="p">(</span><span class="n">_process_worker</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">),</span> <span class="n">maxtasks</span><span class="p">,</span>
+                           <span class="n">_config</span><span class="p">[</span><span class="s">&#39;max_broken_pool_restarts&#39;</span><span class="p">])</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="n">workers</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="n">workers</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
             <span class="n">_set_num_threads</span><span class="p">(</span><span class="n">num_threads</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">results</span>
+
+</div>
+<div class="viewcode-block" id="_get_tasks"><a class="viewcode-back" href="../../../../magni.utils.multiprocessing._processing.html#magni.utils.multiprocessing._processing._get_tasks">[docs]</a><span class="k">def</span> <span class="nf">_get_tasks</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare a list of tasks.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">        A function handle to the function which the calls should be mapped to.</span>
+<span class="sd">    args_list : list or tuple, optional</span>
+<span class="sd">        A sequence of argument lists for the function calls (the default is</span>
+<span class="sd">        None, which implies that no arguments are used in the calls).</span>
+<span class="sd">    kwargs_list : list or tuple, optional</span>
+<span class="sd">        A sequence of keyword argument dicts for the function calls (the</span>
+<span class="sd">        default is None, which implies that no keyword arguments are used in</span>
+<span class="sd">        the calls).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tasks : list</span>
+<span class="sd">        The list of tasks.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">args_list</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">args_list</span> <span class="o">=</span> <span class="p">[()</span> <span class="k">for</span> <span class="n">dct</span> <span class="ow">in</span> <span class="n">kwargs_list</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">kwargs_list</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">kwargs_list</span> <span class="o">=</span> <span class="p">[{}</span> <span class="k">for</span> <span class="n">lst</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">]</span>
+
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span> <span class="k">for</span> <span class="n">lst</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">]</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">tasks</span>
+
+</div>
+<div class="viewcode-block" id="_map_using_futures"><a class="viewcode-back" href="../../../../magni.utils.multiprocessing._processing.html#magni.utils.multiprocessing._processing._map_using_futures">[docs]</a><span class="k">def</span> <span class="nf">_map_using_futures</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">init_args</span><span class="p">,</span> <span class="n">maxtasks</span><span class="p">,</span>
+                       <span class="n">max_broken_pool_restarts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Map a set of `tasks` to `func` and run them in parallel using a futures.</span>
+
+<span class="sd">    If `max_broken_pool_restarts` is different from 0, the tasks must be an</span>
+<span class="sd">    explicit collection, e.g. a list or tuple, for the restart to work. If an</span>
+<span class="sd">    exception occurs in one of the function calls, the process pool terminates</span>
+<span class="sd">    ASAP and re-raises the first exception that occurred. All exceptions that</span>
+<span class="sd">    may have occurred in the workers are available as the last element in the</span>
+<span class="sd">    exceptions args.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">        A function handle to the function which the calls should be mapped to.</span>
+<span class="sd">    tasks : iterable</span>
+<span class="sd">        The list of tasks to use as arguments in the function calls.</span>
+<span class="sd">    maxtasks : int</span>
+<span class="sd">        The maximum number of tasks of a process before it is replaced by a new</span>
+<span class="sd">        process. If set to None, the process is never replaced.</span>
+<span class="sd">    init_args : tuple</span>
+<span class="sd">        The (func, namespace) tuple for the _process_init initialisation</span>
+<span class="sd">        function.</span>
+<span class="sd">    max_broken_pool_restarts : int or None</span>
+<span class="sd">        The maximum number of attempts at restarting the process pool upon a</span>
+<span class="sd">        BrokenPoolError. If set to None, the process pool may restart</span>
+<span class="sd">        indefinitely.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    results : list</span>
+<span class="sd">        The list of results from the map operation.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The `maxtasks`, `namespace`, and `init_args` are ignored since these are</span>
+<span class="sd">    not supported by `concurrent.futures`. It seems that `concurrent.futures`</span>
+<span class="sd">    works as if maxtasks==1, however this is unclear. The `init_args`</span>
+<span class="sd">    functionality may be added if an initialiser is added to</span>
+<span class="sd">    `concurrent.futures` - see http://bugs.python.org/issue21423.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">_config</span><span class="p">[</span><span class="s">&#39;workers&#39;</span><span class="p">])</span>
+        <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">workers</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">]</span>
+        <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span>
+            <span class="n">futures</span><span class="p">,</span> <span class="n">return_when</span><span class="o">=</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">FIRST_EXCEPTION</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">]</span>
+    <span class="k">except</span> <span class="n">BrokenProcessPool</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">workers</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+        <span class="n">base_msg</span> <span class="o">=</span> <span class="s">&#39;A BrokenProcessPool was encountered. &#39;</span>
+
+        <span class="k">if</span> <span class="n">max_broken_pool_restarts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">base_msg</span> <span class="o">+</span> <span class="s">&#39;Restarting the process pool.&#39;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_map_using_futures</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">init_args</span><span class="p">,</span> <span class="n">maxtasks</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">max_broken_pool_restarts</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">new_restart_count</span> <span class="o">=</span> <span class="n">max_broken_pool_restarts</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="n">base_msg</span> <span class="o">+</span> <span class="s">&#39;Restarting the process pool with &#39;</span> <span class="o">+</span>
+                   <span class="s">&#39;max_broken_pool_restarts={}.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_restart_count</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_map_using_futures</span><span class="p">(</span>
+                <span class="n">func</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">init_args</span><span class="p">,</span> <span class="n">maxtasks</span><span class="p">,</span> <span class="n">new_restart_count</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="n">base_msg</span> <span class="o">+</span> <span class="s">&#39;Giving up on restarting the process pool &#39;</span> <span class="o">+</span>
+                   <span class="s">&#39;and re-raising.&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">raise</span>
+    <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">worker_exceptions</span> <span class="o">=</span> <span class="p">[</span><span class="n">future</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span> <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">]</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;An exception occurred in one or more workers. &#39;</span> <span class="o">+</span>
+               <span class="s">&#39;Re-raising with all exceptions appended to the current &#39;</span> <span class="o">+</span>
+               <span class="s">&#39;exceptions arguments.&#39;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+        <span class="n">e</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">worker_exceptions</span><span class="p">)</span>
+        <span class="k">raise</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">workers</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="_map_using_mppool"><a class="viewcode-back" href="../../../../magni.utils.multiprocessing._processing.html#magni.utils.multiprocessing._processing._map_using_mppool">[docs]</a><span class="k">def</span> <span class="nf">_map_using_mppool</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">init_args</span><span class="p">,</span> <span class="n">maxtasks</span><span class="p">,</span>
+                      <span class="n">max_broken_pool_restarts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Map a set of `tasks` to `func` and run them in parallel via multiprocessing</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">        A function handle to the function which the calls should be mapped to.</span>
+<span class="sd">    tasks : iterable</span>
+<span class="sd">        The list of tasks to use as arguments in the function calls.</span>
+<span class="sd">    maxtasks : int</span>
+<span class="sd">        The maximum number of tasks of a process before it is replaced by a new</span>
+<span class="sd">        process. If set to None, the process is never replaced.</span>
+<span class="sd">    init_args : tuple</span>
+<span class="sd">        The (func, namespace) tuple for the _process_init initialisation</span>
+<span class="sd">        function.</span>
+<span class="sd">    max_broken_pool_restarts : int or None</span>
+<span class="sd">        The maximum number of attempts at restarting the process pool upon a</span>
+<span class="sd">        BrokenPoolError. If set to None, the process pool may restart</span>
+<span class="sd">        indefinitely.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    results : list</span>
+<span class="sd">        The list of results from the map operation.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The `max_broken_pool_restarts` is ignored since the BrokenPoolError</span>
+<span class="sd">    handling has not yet been implemented in the multiprocessing.Pool - see</span>
+<span class="sd">    https://bugs.python.org/issue22393 and https://bugs.python.org/issue9205.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span>
+            <span class="n">_config</span><span class="p">[</span><span class="s">&#39;workers&#39;</span><span class="p">],</span> <span class="n">_process_init</span><span class="p">,</span> <span class="n">init_args</span><span class="p">,</span> <span class="n">maxtasks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">workers</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">workers</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">workers</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
 </div>
 <div class="viewcode-block" id="_process_init"><a class="viewcode-back" href="../../../../magni.utils.multiprocessing._processing.html#magni.utils.multiprocessing._processing._process_init">[docs]</a><span class="k">def</span> <span class="nf">_process_init</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">namespace</span><span class="p">):</span>
@@ -268,6 +502,8 @@
 
             <span class="k">if</span> <span class="n">_config</span><span class="p">[</span><span class="s">&#39;silence_exceptions&#39;</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="n">e</span>
+            <span class="k">elif</span> <span class="n">_config</span><span class="p">[</span><span class="s">&#39;re_raise_exceptions&#39;</span><span class="p">]:</span>
+                <span class="k">raise</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;An exception has occured.&#39;</span><span class="p">)</span></div>
 </pre></div>
@@ -300,13 +536,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jan 29, 2016.
+      Last updated on Jun 30, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

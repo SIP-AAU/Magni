@@ -16,7 +16,6 @@ from __future__ import division, print_function
 import base64
 import contextlib
 from datetime import datetime
-from distutils.version import StrictVersion
 import os
 import shutil
 import subprocess
@@ -33,6 +32,7 @@ except ImportError:
     from io import BytesIO  # Python 3
 
 import numpy as np
+from pkg_resources import parse_version
 import scipy.misc
 
 import magni
@@ -75,10 +75,10 @@ else:
 
 # Test for freetype library version
 try:
-    if StrictVersion(
+    if parse_version(
             subprocess.check_output(
                 ['freetype-config', '--ftversion']).decode().strip()
-            ) <= StrictVersion('2.5.2'):
+            ) <= parse_version('2.5.2'):
         _skip_display_data_tests = False
     else:
         _skip_display_data_tests = True

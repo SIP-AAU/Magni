@@ -19,11 +19,11 @@ plot_phase_transition_colormap(dist, delta, rho, plot_l1=True,
 
 from __future__ import division
 from itertools import cycle
-from distutils.version import StrictVersion as _StrictVersion
 
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from pkg_resources import parse_version as _parse_version
 
 from magni.utils.plotting import linestyles as _linestyles
 from magni.utils.validation import decorate_validation as _decorate_validation
@@ -31,7 +31,7 @@ from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_levels as _levels
 from magni.utils.validation import validate_numeric as _numeric
 
-if _StrictVersion(mpl.__version__) >= _StrictVersion('1.5.0'):
+if _parse_version(mpl.__version__) >= _parse_version('1.5.0'):
     import cycler
     _mpl_prop_era = True
 else:

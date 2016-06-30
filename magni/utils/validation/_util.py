@@ -16,21 +16,27 @@ decorate_validation(func)
     Decorate a validation function to allow disabling of validation checks.
 disable_validation()
     Disable validation checks in `magni`.
+enable_validate_once()
+    Enable validating inputs only once in certain functions in `magni`.
 get_var(name)
     Retrieve the value of a variable through call stack inspection.
 report(type, description, format_args=(), var_name=None, var_value=None,
     expr='{}', prepend='')
     Raise an exception.
+validate_once(func)
+    Decorate a function to allow for a one-time input validation only.
 
 """
 
 from __future__ import division
 
+import functools
 import inspect
 import os
 
 
 _disabled = False
+_validate_once_enabled = False
 
 
 def decorate_validation(func):
@@ -64,9 +70,10 @@ def decorate_validation(func):
 
     """
 
-    def wrapper(*args, **kwargs):
+    @functools.wraps(func)
+    def wrapper():
         if not _disabled:
-            return func(*args, **kwargs)
+            func()
 
     return wrapper
 
@@ -132,6 +139,57 @@ def disable_validation():
     _disabled = True
 
 
+def enable_validate_once():
+    """
+    Enable validating inputs only once in certain functions in `magni`.
+
+    See Also
+    --------
+    validate_once : Decoration of functions.
+
+    Notes
+    -----
+    This function merely sets a global flag and relies on `validate_once`
+    to implement the actual "validate once" functionality.
+
+    Examples
+    --------
+    An example of a function which accepts only an integer as argument:
+
+    >>> import magni
+    >>> @magni.utils.validation.validate_once
+    ... def test(arg):
+    ...     @magni.utils.validation.decorate_validation
+    ...     def validate_input():
+    ...         magni.utils.validation.validate_numeric('arg', 'integer')
+    ...     validate_input()
+
+    If "validate once" is enabled, the function validation is only called on
+    its first run:
+
+    >>> magni.utils.validation.enable_validate_once()
+    >>> try:
+    ...     test('string')
+    ... except BaseException:
+    ...     print('An exception occured')
+    ... else:
+    ...     print('No exception occured')
+    An exception occured
+
+    >>> try:
+    ...     test('string')
+    ... except BaseException:
+    ...     print('An exception occured')
+    ... else:
+    ...     print('No exception occured')
+    No exception occured
+
+    """
+
+    global _validate_once_enabled
+    _validate_once_enabled = True
+
+
 def get_var(name):
     """
     Retrieve the value of a variable through call stack inspection.
@@ -173,7 +231,7 @@ def get_var(name):
     code = frame.f_code
 
     try:
-        while code.co_name != 'wrapper' or code.co_filename[:index] != path:
+        while code.co_firstlineno != 73 or code.co_filename[:index] != path:
             frame = frame.f_back
             code = frame.f_code
     except AttributeError:
@@ -196,7 +254,7 @@ def get_var(name):
     try:
         for i, lookup in enumerate(lookups):
             var = var[lookup]
-    except LookupError:
+    except Exception:
         report(LookupError, 'must have the key or index, {!r}.', lookup,
                var_name=[name] + list(lookups[:i]))
 
@@ -272,3 +330,51 @@ def report(type_, description, format_args=(), var_name=None, var_value=None,
 
     descr = prepend + descr
     raise type_(descr)
+
+
+def validate_once(func):
+    """
+    Decorate a function to allow for a one-time input validation only.
+
+    Parameters
+    ----------
+    func : function
+        The validation function to be decorated.
+
+    Returns
+    -------
+    func : function
+        The decorated validation function.
+
+    See Also
+    --------
+    enable_validate_once : Enabling allow validate once functionality.
+
+    Notes
+    -----
+    This decorater wraps any function. It checks if the "validate once" has
+    been enabled. If it has been enabled, the validation function is only
+    called on the first run. Otherwise, the validation function is always
+    called if not otherwise disabled.
+
+    """
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        global _disabled
+
+        if _disabled or not _validate_once_enabled:
+            return func(*args, **kwargs)
+        elif not wrapper.has_run:
+            wrapper.has_run = True
+            return func(*args, **kwargs)
+        else:
+            try:
+                _disabled = True
+                return func(*args, **kwargs)
+            finally:
+                _disabled = False
+
+    wrapper.has_run = False
+
+    return wrapper

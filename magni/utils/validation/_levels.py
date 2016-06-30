@@ -75,16 +75,17 @@ def validate_levels(name, levels):
 
     if isinstance(name, (list, tuple)):
         name = list(name)
-    elif isinstance(name, str):
-        name = [name]
-    elif hasattr(name, '__iter__'):
-        name = [value for value in name]
     else:
         name = [name]
 
     if not isinstance(levels, (list, tuple)):
         _report(TypeError, 'must be in {!r}.', (list, tuple),
                 var_name='levels', var_value=levels, expr='type({})',
+                prepend='Invalid validation call: ')
+
+    if len(levels) == 0:
+        _report(ValueError, 'must be > 0.', var_name='levels',
+                var_value=levels, expr='len({})',
                 prepend='Invalid validation call: ')
 
     _validate_level(name, _get_var(name), levels)
@@ -111,6 +112,11 @@ def _validate_level(name, var, levels, index=0):
         _report(TypeError, 'must be in {!r}.', (list, tuple),
                 var_name=('levels', index), var_value=levels[index],
                 expr='type({})', prepend='Invalid validation call: ')
+
+    if len(levels[index]) == 0:
+        _report(ValueError, 'must be > 0.', var_name=('levels', index),
+                var_value=levels[index], expr='len({})',
+                prepend='Invalid validation call: ')
 
     if levels[index][0] not in ('generic', 'numeric'):
         _report(ValueError, 'must be in {!r}.', ('generic', 'numeric'),

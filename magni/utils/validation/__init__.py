@@ -19,14 +19,18 @@ decorate_validation(func)
     Decorate a validation function (see Notes).
 disable_validation()
     Disable validation globally (see Notes).
+enable_validate_once()
+    Enable validating inputs only once (see Notes).
 validate_generic(name, type, value_in=None, len_=None, keys_in=None,
-    has_keys=None, ignore_none=False, var=None)
+    has_keys=None, superclass=None, ignore_none=False, var=None)
     Validate non-numeric objects.
 validate_levels(name, levels)
     Validate containers and mappings as well as contained objects.
 validate_numeric(name, type, range_='[-inf;inf]', shape=(), precision=None,
     ignore_none=False, var=None)
     Validate numeric objects.
+validate_once(func)
+    Decorate a function to allow for a one-time input validation (see Notes).
 
 Notes
 -----
@@ -35,6 +39,10 @@ function or method should define a nested validation function with the name
 'validate_input' which takes no arguments. This function should be decorated by
 `decorate_validation`, be placed in the beginning of the parent function or
 method, and be called as the first thing after its definition.
+
+Functions in magni may be decorated by `validate_once`. If the validate once
+functionality is enabled, these functions only validate their input arguments
+on the first call to the function.
 
 Examples
 --------
@@ -74,4 +82,6 @@ from magni.utils.validation._generic import validate_generic
 from magni.utils.validation._numeric import validate_numeric
 from magni.utils.validation._levels import validate_levels
 from magni.utils.validation._util import decorate_validation
+from magni.utils.validation._util import enable_validate_once
 from magni.utils.validation._util import disable_validation
+from magni.utils.validation._util import validate_once

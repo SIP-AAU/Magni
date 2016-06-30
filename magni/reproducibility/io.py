@@ -23,7 +23,8 @@ remove_annotations(h5file)
     Function for removing annotations in an HDF5 database.
 remove_chases(h5file)
     Function for removing chases in an HDF5 database.
-write_custom_annotation(h5file, annotation_name, annotation_value)
+write_custom_annotation(h5file, annotation_name, annotation_value,
+    annotations_sub_group=None)
     Write a custom annotation to an HDF5 database.
 
 See Also
@@ -226,7 +227,7 @@ def create_database(path, overwrite=True):
 
     validate_input()
 
-    if not overwrite and os.path.exist(path):
+    if not overwrite and os.path.exists(path):
         raise IOError('{!r} already exists in filesystem.'.format(path))
 
     with _File(path, mode='w') as h5file:
@@ -282,17 +283,8 @@ def read_annotations(h5file):
     except tables.NoSuchNodeError:
         raise tables.NoSuchNodeError('The database has not been annotated.')
 
-    h5_annotations_dict = h5_annotations._v_leaves
     annotations = dict()
-    try:
-        for annotation in h5_annotations_dict:
-            annotations[annotation] = json.loads(
-                h5_annotations_dict[annotation].read().decode())
-    except ValueError as e:
-        raise ValueError('Unable to read the {!r} '.format(annotation) +
-                         'annotation. It seems that the annotation ' +
-                         'does not conform to the Magni annotation ' +
-                         'standard ({!r}).'.format(e.args[0]))
+    _recursive_annotation_read(h5_annotations, annotations)
 
     return annotations
 
@@ -424,7 +416,8 @@ def remove_chases(h5file):
         pass
 
 
-def write_custom_annotation(h5file, annotation_name, annotation_value):
+def write_custom_annotation(h5file, annotation_name, annotation_value,
+                            annotations_sub_group=None):
     """
     Write a custom annotation to an HDF5 database.
 
@@ -439,6 +432,10 @@ def write_custom_annotation(h5file, annotation_name, annotation_value):
         The name of the annotation to write.
     annotation_value : a JSON serialisable object
         The annotation value to write.
+    annotations_sub_group : str
+        The group node under "/annotations" to which the custom annotation is
+        written (the default is None which implies that the custom annotation
+        is written directly under "/annotations").
 
     Notes
     -----
@@ -464,8 +461,14 @@ def write_custom_annotation(h5file, annotation_name, annotation_value):
     def validate_input():
         _generic('h5file', tables.file.File)
         _generic('annotation_name', 'string')
+        _generic('annotations_sub_group', 'string', ignore_none=True)
 
     validate_input()
+
+    if annotations_sub_group is not None:
+        annotations_group = '/'.join(['/annotations', annotations_sub_group])
+    else:
+        annotations_group = '/annotations'
 
     try:
         ann_val = json.dumps(annotation_value)
@@ -474,7 +477,7 @@ def write_custom_annotation(h5file, annotation_name, annotation_value):
                         'representation. It may not be used as an annotation.')
 
     try:
-        h5file.create_array('/annotations', annotation_name,
+        h5file.create_array(annotations_group, annotation_name,
                             obj=ann_val.encode(), createparents=True)
         h5file.flush()
     except tables.NodeError:
@@ -482,3 +485,37 @@ def write_custom_annotation(h5file, annotation_name, annotation_value):
             'The annotation "{!r}" already exists '.format(annotation_name) +
             'in the database. Remove the old annotation before placing a ' +
             'new one.')
+
+
+def _recursive_annotation_read(h5_annotations, out_annotations_dict):
+    """
+    Recursively read annotations from an annotation group
+
+    Parameters
+    ----------
+    h5_annotations : tables.group.Group
+        The group to read annotations from.
+    out_annotations_dict : dict
+        The dictionary to store the read annotations in.
+
+    """
+
+    leaves = h5_annotations._v_leaves
+    subgroups = h5_annotations._v_groups
+
+    # Read leaves
+    try:
+        for annotation_name, annotation_value in leaves.items():
+            out_annotations_dict[annotation_name] = json.loads(
+                annotation_value.read().decode())
+    except ValueError as e:
+        raise ValueError('Unable to read the {!r} '.format(annotation_name) +
+                         'annotation. It seems that the annotation ' +
+                         'does not conform to the Magni annotation ' +
+                         'standard ({!r}).'.format(e.args[0]))
+
+    # Recursively handle subgroups
+    for subgroup in subgroups:
+        out_annotations_dict[subgroup] = dict()
+        _recursive_annotation_read(
+            subgroups[subgroup], out_annotations_dict[subgroup])

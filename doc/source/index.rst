@@ -66,7 +66,7 @@ Run :code:`make clean` to remove all builds created by |sphinx|_ under '/doc/bui
 The Package
 -----------
 
-The source code of :py:mod:`magni` is released under the `BSD 2-Clause <http://opensource.org/licenses/BSD-2-Clause>`_ license, see the :ref:`sec_license` section. To install :py:mod:`magni`, follow the instructions given under :ref:`sec_installation`.
+The source code of :py:mod:`magni` is released under the `BSD 2-Clause <https://opensource.org/licenses/BSD-2-Clause>`_ license, see the :ref:`sec_license` section. To install :py:mod:`magni`, follow the instructions given under :ref:`sec_installation`.
 
 :py:mod:`magni` has been tested with `Anaconda <https://www.continuum.io/downloads/>`_ (64-bit) on Linux. It may or may not work with other Python distributions and/or operating systems. See also the list of :ref:`sec_dependencies` for :py:mod:`magni`.
 
@@ -90,7 +90,7 @@ To use Magni, extract the downloaded archive and include the extracted magni fol
 
 .. note::
 
-   The :py:mod:`magni` package (excluding examples and documentation) is also available on an "as is" basis in source form at `PyPi <https://pypi.python.org/pypi/magni>`_ and as a `conda <http://conda.pydata.org/docs/index.html>`_ package at `Anaconda.org <https://anaconda.org/Chroxvi/>`_.
+   The :py:mod:`magni` package (excluding examples and documentation) is also available on an "as is" basis in source form at `PyPi <https://pypi.python.org/pypi/magni>`_ and as a `conda`_ package at `Anaconda.org <https://anaconda.org/Chroxvi/>`_.
 
 .. _sec_dependencies:
 
@@ -110,10 +110,12 @@ Dependencies
 - |numpy|_ (Tested on version >= 1.8)
 - |pytables|_  (Tested on version >= 3.1)
 - |scipy|_ (Tested on version >= 0.14)
+- |setuptools|_ (Tested on version >= 11.3)
 
 **Optional** third party dependencies for :py:mod:`magni` are:
 
 - |bottleneck|_ (Tested on version >=1.0.0) (For speed-up of some algorithms)
+- |conda|_ (Tested on version >= 3.7.0) (For automatic metadata capture of a Conda managed Python environment)
 - |coverage|_ (Tested on version >= 3.7) (For running the test suite script)
 - |ipython|_ (Tested on version >= 2.1) or |jupyter|_ [4]_ (Tested on version >= 1.0) (For running the IPython notebook examples)
 - |mkl|_ (Tested on version >= 11.1) (For accelerated vector operations)
@@ -150,21 +152,25 @@ Dependencies
 .. |mkl| replace:: ``Math Kernel Library (MKL)``
 .. _mkl: https://software.intel.com/en-us/intel-mkl
 .. |sphinx| replace:: ``Sphinx``
-.. _sphinx: http://sphinx-doc.org/
+.. _sphinx: http://www.sphinx-doc.org/en/stable/
 .. |nose| replace:: ``Nose``
-.. _nose: https://nose.readthedocs.org/en/latest/
+.. _nose: https://nose.readthedocs.io/en/latest/
 .. |pep8| replace:: ``PEP8``
-.. _pep8: http://pep8.readthedocs.org/en/latest/
+.. _pep8: http://pep8.readthedocs.io/en/latest/
 .. |pyflakes| replace:: ``Pyflakes``
 .. _pyflakes: https://launchpad.net/pyflakes
 .. |radon| replace:: ``Radon``
-.. _radon: https://radon.readthedocs.org/en/latest/
+.. _radon: https://radon.readthedocs.io/en/latest/
 .. |coverage| replace:: ``Coverage``
-.. _coverage: http://coverage.readthedocs.org/en/latest/
+.. _coverage: http://coverage.readthedocs.io/en/latest/
 .. |pil| replace:: ``PIL (or Pillow)``
 .. _pil: http://www.pythonware.com/products/pil/
 .. |bottleneck| replace:: ``Bottleneck``
 .. _bottleneck: http://berkeleyanalytics.com/bottleneck/
+.. |conda| replace:: ``Conda``
+.. _conda: http://conda.pydata.org/
+.. |setuptools| replace:: ``Setuptools``
+.. _setuptools: http://setuptools.readthedocs.io/en/latest
 
 You may use the *dep_check.py* script found in the Magni folder under '/magni/tests/' to check for missing dependencies for Magni. Simply run the script to print a dependency report, e.g.:
 
@@ -211,7 +217,11 @@ Other Resources
 
 Papers published in relation to the `Enabling Fast Image Acquisition for Atomic Force Microscopy using Compressed Sensing <http://sip-aau.github.io/FastAFM/>`_ project:
 
+- \P. S. Pedersen, J. Østergaard and T. Larsen, "Modelling reconstruction quality of Lissajous undersampled atomic force microscopy images," *2016 IEEE 13th International Symposium on Biomedical Imaging (ISBI)*, Prague, Czech Republic, 2016, pp. 245-248, :doi:`10.1109/ISBI.2016.7493255`.
+
 - \T. Arildsen, C. S. Oxvig, P. S. Pedersen, J. Østergaard, and T. Larsen, "Reconstruction Algorithms in Undersampled AFM Imaging", *IEEE Journal of Selected Topics in Signal Processing*, vol. 10, no. 1, pp. 31-46, Feb. 2016, :doi:`10.1109/JSTSP.2015.2500363`.
+
+- \P. S. Pedersen, J. Østergaard, and T. Larsen, "Predicting reconstruction quality within compressive sensing for atomic force microscopy," *2015 IEEE Global Conference on Signal and Information Processing (GlobalSIP)*, Orlando, FL, 2015, pp. 418-422, :doi:`10.1109/GlobalSIP.2015.7418229`.
 
 - \C. S. Oxvig, P. S. Pedersen, T. Arildsen, J. Østergaard, and T. Larsen, "Magni: A Python Package for Compressive Sampling and Reconstruction of Atomic Force Microscopy Images", *Journal of Open Research Software*, vol. 2, no. 1, p. e29, Oct. 2014, :doi:`10.5334/jors.bk`.
 

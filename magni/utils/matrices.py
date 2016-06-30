@@ -34,6 +34,7 @@ from magni.utils.validation.types import MatrixBase as _MatrixBase
 from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_levels as _levels
 from magni.utils.validation import validate_numeric as _numeric
+from magni.utils.validation import validate_once as _validate_once
 
 
 class Matrix(_MatrixBase):
@@ -41,28 +42,64 @@ class Matrix(_MatrixBase):
     Wrap fast linear operations in a matrix emulator.
 
     `Matrix` defines a few attributes and internal methods which ensures that
-    instances have the same basic interface as a numpy matrix instance without
-    explicitly forming the matrix. This basic interface allows instances to be
-    multiplied with vectors, to be transposed, and to assume a shape. Also,
-    instances have an attribute which explicitly forms the matrix.
+    instances have the same basic interface as a numpy ndarray instance without
+    explicitly forming the array. This basic interface allows instances to be
+    multiplied with vectors, to be transposed, to be complex conjuagted, and to
+    assume a shape. Also, instances have an attribute which explicitly forms
+    the matrix as an ndarray.
 
     Parameters
     ----------
     func : function
         The fast linear operation applied to the vector when multiplying the
         matrix with a vector.
-    trans : function
+    conj_trans : function
         The fast linear operation applied to the vector when multiplying the
-        transposed matrix with a vector.
+        complex conjuated transposed matrix with a vector.
     args : list or tuple
-        The arguments which should be passed to `func` and `trans` in addition
-        to the vector.
+        The arguments which should be passed to `func` and `conj_trans` in
+        addition to the vector.
     shape : list or tuple
         The shape of the emulated matrix.
+    is_complex : bool
+        The indicator of whether or not the emulated matrix is defined for the
+        complex numbers (the default is False, which implies that the emulated
+        matrix is defined for the real numbers only).
+    is_valid : bool
+        The indicator of whether or not the fast linear operation corresponds
+        to a valid matrix (se discussion below) (the default is True, which
+        implies that the matrix is considered valid).
 
     See Also
     --------
     magni.utils.validation.types.MatrixBase : Superclass of the present class.
+
+    Notes
+    -----
+    The `is_valid` indicator is an implementation detail used to control
+    possibly missing operations in the fast linear operation. For instance,
+    consider the Discrete Fourier Transform (DFT) and its inverse transform.
+    The forward DFT transform is a matrix-vector product involving the
+    corresponding DFT matrix. The inverse transform is a matrix-vetor product
+    involving the complex conjugate transpose DFT matrix. That is, it involves
+    complex conjugation and transposition, both of which are (individually)
+    valid transformations of the DFT matrix. However, when implementing the DFT
+    (and its inverse) using a Fast Fourier Transform (FFT), only the combined
+    (complex conjugate, transpose) operation is available. Thus, when using an
+    FFT based `magni.util.matrices.Matrix`, one can get, e.g., a `Matrix.T`
+    object corresponding to its transpose. However, the operation of computing
+    a matrix-vector product involving the tranpose DFT matrix is not available
+    and the `Matrix.T` is, consequently, considered an invalid matrix. Only the
+    combined `Matrix.T.conj()` or `Matrix.conj().T` is considered a valid
+    matrix.
+
+    .. warning:: The tranpose operation changed in `magni` 1.5.0.
+
+        For complex matrices, the the `.T` tranpose operation now yields an
+        invalid matrix as described above. Prior to `magni` 1.5.0, the `.T`
+        would yield the "inverse" which would usually be the complex conjugated
+        transpose for complex matrices.
+
 
     Examples
     --------
@@ -104,23 +141,32 @@ class Matrix(_MatrixBase):
 
     """
 
-    def __init__(self, func, trans, args, shape):
-        _MatrixBase.__init__(self, np.complex_,
+    def __array__(self):
+        """Return ndarray representation of the matrix."""
+        return self.A
+
+    def __init__(self, func, conj_trans, args, shape, is_complex=False,
+                 is_valid=True):
+        _MatrixBase.__init__(self, np.complex_ if is_complex else np.float_,
                              ((-np.inf, np.inf), (-np.inf, np.inf)), shape)
 
         @_decorate_validation
         def validate_input():
             _generic('func', 'function')
-            _generic('trans', 'function')
+            _generic('conj_trans', 'function')
             _generic('args', 'explicit collection')
             _levels('shape', (_generic(None, 'explicit collection', len_=2),
                               _numeric(None, 'integer')))
+            _numeric('is_complex', 'boolean')
+            _numeric('is_valid', 'boolean')
 
         validate_input()
 
         self._func = func
-        self._trans = trans
+        self._conj_trans = conj_trans
         self._args = args
+        self._is_complex = is_complex
+        self._is_valid = is_valid
 
     @property
     def A(self):
@@ -144,16 +190,18 @@ class Matrix(_MatrixBase):
 
         """
 
-        output = np.zeros(self.shape, dtype=np.complex128)
+        if not self._is_valid:
+            raise ValueError('This matrix has not been implemented. Transpose '
+                             'or conjugate it for an implemented matrix.')
+
+        output = np.zeros(
+            self.shape, dtype=np.complex_ if self._is_complex else np.float_)
         vec = np.zeros((self.shape[1], 1))
 
         for i in range(self.shape[1]):
             vec[i] = 1
             output[:, i] = self.dot(vec)[:, 0]
             vec[i] = 0
-
-        if np.abs(output.imag).sum() == 0:
-            output = output.real
 
         return output
 
@@ -170,13 +218,48 @@ class Matrix(_MatrixBase):
         Notes
         -----
         The fast linear operation and the fast linear transposed operation of
-        the resulting matrix are same as those of the current matrix except
-        swapped. The shape is modified accordingly.
+        the resulting matrix are the same as those of the current matrix except
+        swapped. The shape is modified accordingly. This returns an `invalid`
+        matrix if the entries are complex numbers as only the complex conjugate
+        transpose is considered valid.
 
         """
 
-        return Matrix(self._trans, self._func, self._args, self._shape[::-1])
+        if self._is_complex:
+            is_valid = not self._is_valid
+        else:
+            is_valid = True
 
+        return Matrix(self._conj_trans, self._func, self._args,
+                      self._shape[::-1], self._is_complex, is_valid)
+
+    def conj(self):
+        """
+        Get the complex conjugate of the matrix.
+
+        Returns
+        -------
+        matrix : Matrix
+            The complex conjugate of the matrix.
+
+        Notes
+        -----
+        The fast linear operation and the fast linear transposed operation of
+        the resulting matrix are the same as those of the current matrix.
+        This returns an `invalid` matrix if the entries are complex numbers as
+        only the complex conjugate transpose is considered valid.
+
+        """
+
+        if self._is_complex:
+            is_valid = not self._is_valid
+        else:
+            is_valid = True
+
+        return Matrix(self._func, self._conj_trans, self._args, self._shape,
+                      self._is_complex, is_valid)
+
+    @_validate_once
     def dot(self, vec):
         """
         Multiply the matrix with a vector.
@@ -188,8 +271,12 @@ class Matrix(_MatrixBase):
 
         Returns
         -------
-        vec : numpy.matrix
+        vec : numpy.ndarray
             The result of the multiplication.
+
+        Notes
+        -----
+        This method honors `magni.utils.validation.enable_validate_once`.
 
         """
 
@@ -200,6 +287,10 @@ class Matrix(_MatrixBase):
 
         validate_input()
 
+        if not self._is_valid:
+            raise ValueError('This matrix has not been implemented. Transpose '
+                             'or conjugate it for an implemented matrix.')
+
         return self._func(vec, *self._args)
 
 
@@ -208,10 +299,11 @@ class MatrixCollection(_MatrixBase):
     Wrap multiple matrix emulators in a single matrix emulator.
 
     `MatrixCollection` defines a few attributes and internal methods which
-    ensures that instances have the same basic interface as a numpy matrix
-    instance without explicitly forming the matrix. This basic interface allows
-    instances to be multiplied with vectors, to be transposed, and to assume a
-    shape. Also, instances have an attribute which explicitly forms the matrix.
+    ensures that instances have the same basic interface as a numpy ndarray
+    instance without explicitly forming the ndarray. This basic interface
+    allows instances to be multiplied with vectors, to be transposed, to be
+    complex conjugated, and to assume a shape. Also, instances have an
+    attribute which explicitly forms the matrix.
 
     Parameters
     ----------
@@ -281,6 +373,10 @@ class MatrixCollection(_MatrixBase):
 
     """
 
+    def __array__(self):
+        """Return ndarray representation of the matrix."""
+        return self.A
+
     def __init__(self, matrices):
         _MatrixBase.__init__(self, np.complex_,
                              ((-np.inf, np.inf), (-np.inf, np.inf)), None)
@@ -324,16 +420,15 @@ class MatrixCollection(_MatrixBase):
 
         """
 
-        output = np.zeros(self.shape, dtype=np.complex128)
+        is_complex = any([matrix._is_complex for matrix in self._matrices])
+        output = np.zeros(
+            self.shape, dtype=np.complex_ if is_complex else np.float_)
         vec = np.zeros((self.shape[1], 1))
 
         for i in range(self.shape[1]):
             vec[i] = 1
             output[:, i] = self.dot(vec)[:, 0]
             vec[i] = 0
-
-        if np.abs(output.imag).sum() == 0:
-            output = output.real
 
         return output
 
@@ -342,15 +437,13 @@ class MatrixCollection(_MatrixBase):
         """
         Get the shape of the matrix.
 
+        The shape of the product of a number of matrices is the number of rows
+        of the first matrix times the number of columns of the last matrix.
+
         Returns
         -------
         shape : tuple
             The shape of the matrix.
-
-        Notes
-        -----
-        The shape of the product of a number of matrices is the number of rows
-        of the first matrix times the number of columns of the last matrix.
 
         """
 
@@ -361,33 +454,52 @@ class MatrixCollection(_MatrixBase):
         """
         Get the transpose of the matrix.
 
+        The transpose of the product of the number of matrices is the product
+        of the transpose of the matrices in reverse order.
+
         Returns
         -------
         matrix : MatrixCollection
             The transpose of the matrix.
 
-        Notes
-        -----
-        The transpose of the product of the number of matrices is the product
-        of the transpose of the matrices in reverse order.
-
         """
 
         return MatrixCollection([matrix.T for matrix in self._matrices[::-1]])
 
+    def conj(self):
+        """
+        Get the complex conjugate of the matrix.
+
+        The complex conjugate of the product of the number of matrices is the
+        product of the complex conjugates of the matrices.
+
+        Returns
+        -------
+        matrix : MatrixCollection
+            The complex conjugate of the matrix.
+
+        """
+
+        return MatrixCollection([matrix.conj() for matrix in self._matrices])
+
+    @_validate_once
     def dot(self, vec):
         """
         Multiply the matrix with a vector.
 
         Parameters
         ----------
-        vec : numpy.matrix
+        vec : numpy.ndarray
             The vector which the matrix is multiplied with.
 
         Returns
         -------
-        vec : numpy.matrix
+        vec : numpy.ndarray
             The result of the multiplication.
+
+        Notes
+        -----
+        This method honors `magni.utils.validation.enable_validate_once`.
 
         """
 

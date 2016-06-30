@@ -120,7 +120,7 @@ def get_reconstructions(img, transform, fractions):
 
     transform_matrix = _utils.get_function_handle(
         'matrix', transform)(img.shape)
-    all_coefficients = _vec2mat(transform_matrix.T.dot(_mat2vec(img)),
+    all_coefficients = _vec2mat(transform_matrix.conj().T.dot(_mat2vec(img)),
                                 img.shape)
     sorted_coefficients = np.sort(np.abs(all_coefficients), axis=None)[::-1]
 
@@ -232,7 +232,7 @@ def show_coefficient_histogram(img, transforms, bins=None, range=None,
     datasets = dict()
     for transform in transforms:
         matrix_handle = _utils.get_function_handle('matrix', transform)
-        coefficients = matrix_handle(img.shape).T.dot(_mat2vec(img))
+        coefficients = matrix_handle(img.shape).conj().T.dot(_mat2vec(img))
 
         if np.issubdtype(coefficients.dtype, np.complex):
             coefficients = np.abs(coefficients)
@@ -578,7 +578,7 @@ def show_sorted_coefficients(img, transforms, output_path=None, fig_ext='pdf'):
     datasets = dict()
     for transform in transforms:
         matrix_handle = _utils.get_function_handle('matrix', transform)
-        coefficients = matrix_handle(img.shape).T.dot(_mat2vec(img))
+        coefficients = matrix_handle(img.shape).conj().T.dot(_mat2vec(img))
         sorted_coefficients = np.sort(np.abs(coefficients), axis=None)[::-1]
 
         ax.loglog(sorted_coefficients,
@@ -680,7 +680,7 @@ def show_transform_coefficients(img, transforms, output_path=None,
         matrix_handle = _utils.get_function_handle('matrix', transform)
         visual_handle = _utils.get_function_handle('visualisation', transform)
 
-        coefficients = matrix_handle(img.shape).T.dot(_mat2vec(img))
+        coefficients = matrix_handle(img.shape).conj().T.dot(_mat2vec(img))
         disp, axes_extent = visual_handle(img.shape)
 
         scaled_coefficients = _visualisation.stretch_image(
@@ -799,7 +799,7 @@ def show_transform_quantiles(img, transform, fraction=1.0, area_mask=None,
     # Transform
     transform_matrix = _utils.get_function_handle(
         'matrix', transform)(img.shape)
-    all_coefficients = _vec2mat(transform_matrix.T.dot(_mat2vec(img)),
+    all_coefficients = _vec2mat(transform_matrix.conj().T.dot(_mat2vec(img)),
                                 img.shape)
     # Force very low values to zero to avoid false visualisations
     all_coefficients[all_coefficients < np.finfo(np.float).eps * 10] = 0

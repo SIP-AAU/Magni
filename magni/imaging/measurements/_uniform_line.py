@@ -200,7 +200,7 @@ def uniform_line_sample_surface(l, w, speed, sample_rate, time):
 
     validate_input()
 
-    num_lines = np.floor((speed * time - l) / w)
+    num_lines = int(np.floor((speed * time - l) / w))
 
     # We should always at least partially scan top and bottom lines.
     if num_lines < 2:

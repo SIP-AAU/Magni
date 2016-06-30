@@ -239,7 +239,7 @@ def random_line_sample_surface(l, w, speed, sample_rate, time, discrete=None,
     if seed is not None:
         np.random.seed(seed)
 
-    num_lines = np.floor((speed * time - l) / w)
+    num_lines = int(np.floor((speed * time - l) / w))
 
     if discrete is None:
         lines = np.sort(np.random.rand(num_lines - 2) * l)

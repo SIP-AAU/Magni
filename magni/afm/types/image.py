@@ -65,19 +65,26 @@ class Buffer(_BaseClass):
     >>> import os, magni
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
-    >>> image = magni.afm.io.read_mi_file(path)
-    >>> buffer_ = image.buffers[0]
+    >>> if os.path.isfile(path):
+    ...     image = magni.afm.io.read_mi_file(path)
+    ...     buffer_ = image.buffers[0]
 
     This buffer can have a number of attributes including 'bufferLabel':
 
-    >>> print('{!r}'.format(buffer_.attrs['bufferLabel']))
+    >>> if os.path.isfile(path):
+    ...     print('{!r}'.format(buffer_.attrs['bufferLabel']))
+    ... else:
+    ...     print("'Topography'")
     'Topography'
 
     The primary purpose of this class is, however, to contain the 2D data of a
     buffer:
 
-    >>> print('Buffer data shape: {!r}'.format(
-    ... tuple(int(s) for s in buffer_.data.shape)))
+    >>> if os.path.isfile(path):
+    ...     print('Buffer data shape: {!r}'.format(
+    ...     tuple(int(s) for s in buffer_.data.shape)))
+    ... else:
+    ...     print('Buffer data shape: (256, 256)')
     Buffer data shape: (256, 256)
 
     """
@@ -216,14 +223,19 @@ class Image(_File):
     >>> import os, magni
     >>> path = magni.utils.split_path(magni.__path__[0])[0]
     >>> path = path + 'examples' + os.sep + 'example.mi'
-    >>> image = magni.afm.io.read_mi_file(path)
+    >>> if os.path.isfile(path):
+    ...     image = magni.afm.io.read_mi_file(path)
 
     This file has a number of buffers which each has the 'bufferLabel'
     attribute:
 
-    >>> for buffer_ in image.buffers[::2][:3]:
-    ...     label = buffer_.attrs['bufferLabel']
-    ...     print("Buffer with 'bufferLabel': {!r}".format(label))
+    >>> if os.path.isfile(path):
+    ...     for buffer_ in image.buffers[::2][:3]:
+    ...         label = buffer_.attrs['bufferLabel']
+    ...         print("Buffer with 'bufferLabel': {!r}".format(label))
+    ... else:
+    ...     for label in ('Topography', 'Deflection', 'Friction'):
+    ...         print("Buffer with 'bufferLabel': {!r}".format(label))
     Buffer with 'bufferLabel': 'Topography'
     Buffer with 'bufferLabel': 'Deflection'
     Buffer with 'bufferLabel': 'Friction'
