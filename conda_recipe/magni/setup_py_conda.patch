@@ -1,27 +1,23 @@
-*** setup.py	2014-05-23 11:03:09.648810122 +0200
---- setup_conda_build.py	2014-05-23 11:23:05.917248341 +0200
-***************
-*** 92,107 ****
-                'Image Reconstruction; Reproducible Research'),
-  
-      # Project packages
-!     packages=find_packages(),
-! 
-!     # Required runtime dependencies
-!     install_requires=['numpy>=1.8',
-!                       'scipy>=0.13',
-!                       'tables>=3.1',
-!                       'matplotlib>=1.3'],
-! 
-!     # Data files that are part of package
-!     package_data={},
-!     data_files=[('', ['LICENSE.rst', 'CHANGELOG.rst'])]
-  
-  )
---- 92,97 ----
-                'Image Reconstruction; Reproducible Research'),
-  
-      # Project packages
-!     packages=find_packages()
-  
-  )
+--- setup.py	2016-06-30 15:50:09.274853321 +0200
++++ setup_py_conda.py	2016-06-30 15:53:50.393939374 +0200
+@@ -92,19 +92,8 @@
+     # Keywords
+     keywords=('Atomic Force Microscopy; Compressive Sensing; Python; ' +
+               'Image Reconstruction; Reproducible Research'),
+ 
+     # Project packages
+-    packages=find_packages(),
+-
+-    # Required runtime dependencies
+-    install_requires=['numpy>=1.8',
+-                      'scipy>=0.13',
+-                      'tables>=3.1',
+-                      'matplotlib>=1.3',
+-                      'setuptools>=11.3'],
+-
+-    # Data files that are part of package
+-    package_data={},
+-    data_files=[('', ['LICENSE.rst', 'CHANGELOG.rst'])]
++    packages=find_packages()
+ 
+ )

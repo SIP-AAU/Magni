@@ -15,6 +15,22 @@ calculate_mutual_coherence(Phi, Psi, norm=None)
 calculate_relative_energy(Phi, Psi, method=None)
     Calculate the relative energy of Phi Psi matrix product atoms.
 
+Notes
+-----
+For examples of uses of the performance indicators, see the related papers on
+predicting/modelling reconstruction quality [1]_, [2]_.
+
+References
+----------
+.. [1] P. S. Pedersen, J. Ostergaard, and T. Larsen, "Predicting Reconstruction
+   Quality within Compressive Sensing for Atomic Force Microscopy," *2015 IEEE
+   Global Conference on Signal and Information Processing (GlobalSIP)*,
+   Orlando, FL, 2015, pp. 418-422. doi: 10.1109/GlobalSIP.2015.7418229
+.. [2] P. S. Pedersen, J. Ostergaard, and T. Larsen, "Modelling Reconstruction
+   Quality of Lissajous Undersampled Atomic Force Microscopy Images," *2016
+   IEEE 13th International Symposium on Biomedical Imaging (ISBI)*, Prague,
+   Czech Republic, 2016, pp. 245-248. doi: 10.1109/ISBI.2016.7493255
+
 """
 
 from __future__ import division

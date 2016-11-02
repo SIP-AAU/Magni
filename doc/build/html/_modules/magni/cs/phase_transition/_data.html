@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition._data &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.cs.phase_transition._data &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,21 +46,24 @@
           <div class="body" role="main">
             
   <h1>Source code for magni.cs.phase_transition._data</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
 <span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
-<span class="sd">Module providing problem suite instance generation functionality.</span>
+<span class="sd">Module providing problem suite instance and noise generation functionality.</span>
 
 <span class="sd">The problem suite instances consist of a matrix, A, and a coefficient vector,</span>
-<span class="sd">alpha, with which the measurement vector, y, can be generated.</span>
+<span class="sd">alpha, with which the measurement vector, y, can be generated (with or without</span>
+<span class="sd">noise from the noise vector e)</span>
 
 <span class="sd">Routine listings</span>
 <span class="sd">----------------</span>
 <span class="sd">generate_matrix(m, n)</span>
 <span class="sd">    Generate a matrix belonging to a specific problem suite.</span>
+<span class="sd">generate_noise(m, n, k)</span>
+<span class="sd">    Generate a noise vector of a specific type.</span>
 <span class="sd">generate_vector(n, k)</span>
 <span class="sd">    Generate a vector belonging to a specific problem suite.</span>
 
@@ -74,16 +77,34 @@
 <span class="sd">submodule. Consequently, the calling script or function should control the seed</span>
 <span class="sd">to ensure reproducibility.</span>
 
+<span class="sd">The choice of non-zero indices in the coefficient vector is controlled by the</span>
+<span class="sd">configuration option &#39;support_structure&#39; whereas the distribution of the</span>
+<span class="sd">non-zero coefficients is controlled by the configuration option &#39;coefficient&#39;.</span>
+
 <span class="sd">Examples</span>
 <span class="sd">--------</span>
-<span class="sd">Generate a problem suite instance:</span>
+<span class="sd">For example generate a sample from the USE/Rademacher problem suite:</span>
 
-<span class="sd">&gt;&gt;&gt; import numpy as np</span>
+<span class="sd">&gt;&gt;&gt; import numpy as np, magni</span>
 <span class="sd">&gt;&gt;&gt; from magni.cs.phase_transition import _data</span>
 <span class="sd">&gt;&gt;&gt; m, n, k = 400, 800, 100</span>
 <span class="sd">&gt;&gt;&gt; A = _data.generate_matrix(m, n)</span>
 <span class="sd">&gt;&gt;&gt; alpha = _data.generate_vector(n, k)</span>
 <span class="sd">&gt;&gt;&gt; y = np.dot(A, alpha)</span>
+
+<span class="sd">Or generate a problem suite instance with &quot;linear&quot; support distribution.</span>
+
+<span class="sd">&gt;&gt;&gt; support_distrib = np.reshape(np.arange(n, dtype=np.float) + 1, (n, 1))</span>
+<span class="sd">&gt;&gt;&gt; support_distrib /= np.sum(support_distrib)</span>
+<span class="sd">&gt;&gt;&gt; magni.cs.phase_transition.config[&#39;support_distribution&#39;] = support_distrib</span>
+<span class="sd">&gt;&gt;&gt; A = _data.generate_matrix(m, n)</span>
+<span class="sd">&gt;&gt;&gt; alpha = _data.generate_vector(n, k)</span>
+<span class="sd">&gt;&gt;&gt; y = np.dot(A, alpha)</span>
+
+<span class="sd">Or generate an AWGN noise vector based on a 40 dB SNR</span>
+
+<span class="sd">&gt;&gt;&gt; magni.cs.phase_transition.config[&#39;noise&#39;] = &#39;AWGN&#39;</span>
+<span class="sd">&gt;&gt;&gt; e = _data.generate_noise(m, n, k)</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -91,15 +112,27 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
+<span class="kn">import</span> <span class="nn">magni.imaging</span> <span class="kn">as</span> <span class="nn">_imaging</span>
 <span class="kn">from</span> <span class="nn">magni.cs.phase_transition</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">_conf</span>
+<span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="kn">import</span> <span class="n">MatrixCollection</span> <span class="k">as</span> <span class="n">_MatrixCollection</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_levels</span> <span class="k">as</span> <span class="n">_levels</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="generate_matrix"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._data.html#magni.cs.phase_transition._data.generate_matrix">[docs]</a><span class="k">def</span> <span class="nf">generate_matrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a matrix belonging to a specific problem suite.</span>
 
-<span class="sd">    The available ensemble is the Uniform Spherical Ensemble. See Notes for a</span>
-<span class="sd">    description of the ensemble.</span>
+<span class="sd">    The available matrices are</span>
+
+<span class="sd">    * A random matrix drawn from the Uniform Spherical Ensemble (USE).</span>
+<span class="sd">    * A fixed uniformly row sub-sampled DCT matrix ensemble (RandomDCT2D).</span>
+<span class="sd">    * An option to use custom matrix factory (see notes below).</span>
+
+<span class="sd">    See Notes for a description of these matrices. Which of the available</span>
+<span class="sd">    matrices is used, is specified as a configuration option.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -113,30 +146,177 @@
 <span class="sd">    A : ndarray</span>
 <span class="sd">        The generated matrix.</span>
 
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.cs.phase_transition.config : Configuration options.</span>
+<span class="sd">    magni.utils.matrices.MatrixCollection : Fast transform implementation.</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The Uniform Spherical Ensemble:</span>
-<span class="sd">        The matrices of this ensemble have i.i.d. Gaussian entries and its</span>
-<span class="sd">        columns are normalised to have unit length.</span>
+<span class="sd">        The matrices of this ensemble have i.i.d. Gaussian entries of mean zero</span>
+<span class="sd">        and variance one. Its columns are then normalised to have unit length.</span>
+<span class="sd">    Fixed uniformly row sub-sampled DCT ensemble:</span>
+<span class="sd">        The matrices of this ensemble correspond to the combination of a 2D</span>
+<span class="sd">        array sub-sampled using a uniform point pattern and a 2D Discrete</span>
+<span class="sd">        Cosine Transform (DCT) matrix. The combined matrix is implemented as a</span>
+<span class="sd">        fast transform with a DCT based on an FFT routine.</span>
+<span class="sd">    Custom matrix factory:</span>
+<span class="sd">        The matrix generation is delegated to the configured</span>
+<span class="sd">        `custom_system_matrix_factory` callable which is expected to take the</span>
+<span class="sd">        arguments `m`, `n` and return `A`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;inf)&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;{}]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">A</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_output</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">A</span>
+    <span class="n">validate_input</span><span class="p">()</span>
 
-</div>
+    <span class="n">system_matrix</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;system_matrix&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">system_matrix</span> <span class="o">==</span> <span class="s1">&#39;USE&#39;</span><span class="p">:</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">A</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">system_matrix</span> <span class="o">==</span> <span class="s1">&#39;RandomDCT2D&#39;</span><span class="p">:</span>
+        <span class="n">n_sqrt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">n_sqrt</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;When using a RandomDCT2D system matrix, &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;the value of &gt;&gt;{!r}&lt;&lt;, {!r} must be a square number&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+        <span class="n">n_sqrt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_sqrt</span><span class="p">)</span>
+
+        <span class="c1"># Random pixel subsampling operator</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">points</span> <span class="o">//</span> <span class="n">n_sqrt</span><span class="p">,</span> <span class="n">points</span> <span class="o">%</span> <span class="n">n_sqrt</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">Phi</span> <span class="o">=</span> <span class="n">_imaging</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">construct_measurement_matrix</span><span class="p">(</span>
+            <span class="n">coords</span><span class="p">,</span> <span class="n">n_sqrt</span><span class="p">,</span> <span class="n">n_sqrt</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">Phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span>
+
+        <span class="c1"># DCT dictionary</span>
+        <span class="n">Psi</span> <span class="o">=</span> <span class="n">_imaging</span><span class="o">.</span><span class="n">dictionaries</span><span class="o">.</span><span class="n">get_DCT</span><span class="p">((</span><span class="n">n_sqrt</span><span class="p">,</span> <span class="n">n_sqrt</span><span class="p">))</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="n">_MatrixCollection</span><span class="p">((</span><span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="n">system_matrix</span> <span class="o">==</span> <span class="s1">&#39;custom&#39;</span><span class="p">:</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;custom_system_matrix_factory&#39;</span><span class="p">](</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="n">validate_output</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">A</span></div>
+
+
+<div class="viewcode-block" id="generate_noise"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._data.html#magni.cs.phase_transition._data.generate_noise">[docs]</a><span class="k">def</span> <span class="nf">generate_noise</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a noise vector of a specific type.</span>
+
+<span class="sd">    The available types are:</span>
+
+<span class="sd">    * AWGN : Additive White Gaussian Noise</span>
+<span class="sd">    * AWLN : Additive White Laplacian Noise</span>
+<span class="sd">    * custom : The noise generation is delegated to the configured</span>
+<span class="sd">      `custom_noise_factory` callable which is expected to take the arguments</span>
+<span class="sd">      `m`, `n`, `k`, `noise_power`.</span>
+
+<span class="sd">    Which of the available types is used, is specified as a configuration</span>
+<span class="sd">    option.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    m : int</span>
+<span class="sd">        The number of rows.</span>
+<span class="sd">    n : int</span>
+<span class="sd">        The number of columns.</span>
+<span class="sd">    k : int</span>
+<span class="sd">        The number of non-zero coefficients.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    e : ndarray</span>
+<span class="sd">        The generated noise vector.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.cs.phase_transition.config : Configuration options.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The noise power is computed from the configured `SNR` and the theoretical</span>
+<span class="sd">    ensemble variance of the coefficients generated by `generate_cofficients`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;inf)&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;{}]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;{}]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_output</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="n">coefficients</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;coefficients&#39;</span><span class="p">]</span>
+    <span class="n">noise_type</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span>
+    <span class="n">SNR</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;SNR&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">noise_type</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The noise type has not been configured.&#39;</span><span class="p">)</span>
+
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">k</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">noise_generators</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;AWGN&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">),</span>
+        <span class="s1">&#39;AWLN&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">laplace</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">),</span>
+        <span class="s1">&#39;custom&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;custom_noise_factory&#39;</span><span class="p">](</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Generally the signal power is the coefficient variance scaled by the</span>
+    <span class="c1"># signal density tau (number of non-zero coefficients).</span>
+    <span class="c1"># This dictionary must be synced with the coeffient generators dictionary</span>
+    <span class="c1"># in the generate_vector function below.</span>
+    <span class="n">signal_powers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;rademacher&#39;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">tau</span><span class="p">,</span>
+        <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">tau</span><span class="p">,</span>
+        <span class="s1">&#39;laplace&#39;</span><span class="p">:</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">tau</span><span class="p">,</span>
+        <span class="s1">&#39;bernoulli&#39;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">tau</span>
+        <span class="p">}</span>
+
+    <span class="n">noise_power</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">SNR</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">signal_powers</span><span class="p">[</span><span class="n">coefficients</span><span class="p">]</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">noise_generators</span><span class="p">[</span><span class="n">noise_type</span><span class="p">](</span><span class="n">noise_power</span><span class="p">)</span>
+
+    <span class="n">validate_output</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">e</span></div>
+
+
 <div class="viewcode-block" id="generate_vector"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._data.html#magni.cs.phase_transition._data.generate_vector">[docs]</a><span class="k">def</span> <span class="nf">generate_vector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a vector belonging to a specific problem suite.</span>
 
-<span class="sd">    The available ensembles are the Gaussian ensemble and the Rademacher</span>
-<span class="sd">    ensemble. See Notes for a description of the ensembles. Which of the</span>
-<span class="sd">    available ensembles is used, is specified as a configuration option. Note,</span>
-<span class="sd">    that the non-zero `k` non-zero coefficients are the `k` first entries.</span>
+<span class="sd">    The available ensembles are:</span>
+
+<span class="sd">    * Gaussian</span>
+<span class="sd">    * Rademacher</span>
+<span class="sd">    * Laplace</span>
+<span class="sd">    * Bernoulli</span>
+
+<span class="sd">    See Notes for a description of the ensembles. Which of the available</span>
+<span class="sd">    ensembles is used, is specified as a configuration option. Note, that the</span>
+<span class="sd">    non-zero `k` non-zero coefficients are the `k` first entries if no support</span>
+<span class="sd">    structure specified in the configuration.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -156,22 +336,52 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    The Gaussian ensemble :</span>
+<span class="sd">    The Gaussian ensemble:</span>
 <span class="sd">        The non-zero coefficients are drawn from the normal Gaussian</span>
 <span class="sd">        distribution.</span>
 <span class="sd">    The Rademacher ensemble:</span>
 <span class="sd">        The non-zero coefficients are drawn from the constant amplitude with</span>
 <span class="sd">        random signs ensemble.</span>
+<span class="sd">    The Laplace ensemble:</span>
+<span class="sd">        The non-zero coefficients are drawn from the zero-mean, unit scale</span>
+<span class="sd">        Laplace distribution (variance = 2).</span>
+<span class="sd">    The Bernoulli ensemble:</span>
+<span class="sd">        The non-zero coefficients are all equal to one.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">coefficients</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;coefficients&#39;</span><span class="p">]</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;inf)&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;{}]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="n">coefficients</span> <span class="o">==</span> <span class="s">&#39;rademacher&#39;</span><span class="p">:</span>
-        <span class="n">alpha</span><span class="p">[:</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="k">elif</span> <span class="n">coefficients</span> <span class="o">==</span> <span class="s">&#39;gaussian&#39;</span><span class="p">:</span>
-        <span class="n">alpha</span><span class="p">[:</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_output</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">coefficients</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;coefficients&#39;</span><span class="p">]</span>
+    <span class="n">support_distribution</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;support_distribution&#39;</span><span class="p">]</span>
+
+    <span class="c1"># This dictionary must be synced with the signal powers dictionary in the</span>
+    <span class="c1"># generate_noise function above.</span>
+    <span class="n">coefficient_generators</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;rademacher&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">k</span><span class="p">),</span>
+        <span class="s1">&#39;laplace&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">laplace</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">k</span><span class="p">),</span>  <span class="c1"># Variance = 2</span>
+        <span class="s1">&#39;bernoulli&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">)}</span>
+
+    <span class="k">if</span> <span class="n">support_distribution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                              <span class="n">p</span><span class="o">=</span><span class="n">support_distribution</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">alpha</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">coefficient_generators</span><span class="p">[</span><span class="n">coefficients</span><span class="p">](</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">alpha</span><span class="p">[:</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">coefficient_generators</span><span class="p">[</span><span class="n">coefficients</span><span class="p">](</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="n">validate_output</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">alpha</span></div>
 </pre></div>
@@ -189,9 +399,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -204,14 +411,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

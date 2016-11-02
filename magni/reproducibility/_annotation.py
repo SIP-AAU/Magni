@@ -42,6 +42,8 @@ import re
 import subprocess
 import sys
 
+from pkg_resources import parse_version as _parse_version
+
 import magni as _magni
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
@@ -67,7 +69,7 @@ def get_conda_info():
 
     .. note::
 
-        Only infomation about the conda root environment is captured.
+        This only works with the conda root environment.
 
     Returns
     -------
@@ -81,8 +83,8 @@ def get_conda_info():
 
     The returned dictionary contains the same infomation that is returned by
     "conda info" in addition to an overview of the linked modules in the
-    Anaconda installation. Specifically, the returned dictionary has the
-    following keys:
+    Anaconda installation as well as information about the "conda env" if it is
+    available. Specifically, the returned dictionary has the following keys:
 
     * platform
     * conda_version
@@ -92,15 +94,24 @@ def get_conda_info():
     * package_cache
     * channels
     * config_file
-    * is_foreign_system
     * linked_modules
     * env_export
+
+    For conda < 4.2.0, it also includes the key:
+
+    * is_foreign_system
+
+    For conda >= 4.2.0, it also includes the keys:
+
+    * python_version
+    * conda_is_private
+    * offline_mode
 
     Additionally, the returned dictionary has a key named *status*, which can
     have either of the following values:
 
     * 'Succeeded' (Everything seems to be OK)
-    * 'Failed' (Import of conda failed - nothing else is returned)
+    * 'Failed' (Something went wrong - a few details are incluede in the key)
 
     If "conda-env" is installed on the system, the `env_export` essentially
     holds the infomation from "conda env export -n root" as a dictionary. The
@@ -114,19 +125,23 @@ def get_conda_info():
         import conda.config
         import conda.install
     except ImportError:
-        return {'status': 'Failed'}
+        return {'status': 'Failed: Conda not importable'}
 
-    try:
-        import conda_env.env
-        has_conda_env = True
-    except ImportError:
-        has_conda_env = False
+    # Conda info + linked modules
+    if _parse_version(conda.__version__) >= _parse_version('4.2.0'):
+        try:
+            import conda.models.channel
+            import conda.base.context
+        except ImportError:
+            return {'status': 'Failed: Conda context not importable'}
+        conda_channel_urls = conda.models.channel.prioritize_channels(
+            conda.base.context.context.channels)
 
-    # Ugly hack to silence the
-    # "Using Anaconda Cloud api site https://api.anaconda.org"
-    # message being sent to stderr by the binstar/anaconda client.
-    with open(os.devnull, 'wb') as null:
-        with _catch_stderr(null):
+    else:
+        # Ugly hack to silence the
+        # "Using Anaconda Cloud api site https://api.anaconda.org"
+        # message being sent to stderr by the binstar/anaconda client.
+        with _silence_stderr():
             conda_channel_urls = conda.config.get_channel_urls()
 
     conda_info = {'platform': conda.config.subdir,
@@ -136,25 +151,39 @@ def get_conda_info():
                   'envs_dirs': json.dumps(conda.config.envs_dirs),
                   'package_cache': json.dumps(conda.config.pkgs_dirs),
                   'channels': json.dumps(conda_channel_urls),
-                  'config_file': json.dumps(conda.config.rc_path),
-                  'is_foreign_system': json.dumps(bool(conda.config.foreign)),
-                  'linked_modules': sorted(
-                      conda.install.linked(conda.config.root_dir))}
+                  'config_file': json.dumps(conda.config.rc_path)}
+
+    # Ugly hack to silence the
+    # "Using Anaconda Cloud api site https://api.anaconda.org"
+    # message being sent to stderr by the binstar/anaconda client.
+    with _silence_stderr():
+        linked_modules = sorted(conda.install.linked(conda.config.root_dir))
+
+    if _parse_version(conda.__version__) >= _parse_version('4.2.0'):
+        conda_info['python_version'] = '.'.join(map(str, sys.version_info))
+        conda_info['conda_is_private'] = json.dumps(
+            conda.base.context.context.conda_private)
+        conda_info['offline_mode'] = json.dumps(
+            conda.base.context.context.offline)
+    else:
+        conda_info['is_foreign_system'] = json.dumps(
+            bool(conda.config.foreign))
 
     modules_info = {module:
                     conda.install.is_linked(conda_info['root_prefix'], module)
-                    for module in conda_info['linked_modules']}
+                    for module in linked_modules}
     conda_info['modules_info'] = json.dumps(modules_info)
-    conda_info['linked_modules'] = json.dumps(conda_info['linked_modules'])
+    conda_info['linked_modules'] = json.dumps(linked_modules)
+    conda_info['status'] = 'Succeeded'
 
-    if has_conda_env:
+    # Conda env export
+    try:
+        import conda_env.env
         conda_info['env_export'] = json.dumps(
             conda_env.env.from_environment(
                 'root', conda.config.root_dir).to_dict())
-    else:
+    except ImportError:
         conda_info['env_export'] = 'Failed: conda-env not available'
-
-    conda_info['status'] = 'Succeeded'
 
     return conda_info
 
@@ -476,19 +505,16 @@ def get_platform_info():
 
 
 @contextlib.contextmanager
-def _catch_stderr(catcher):
+def _silence_stderr():
     """
-    A context manager for catching stderr.
-
-    Parameters
-    ----------
-    catcher : file-like
-        The file-like object which is to catch stderr.
+    A context manager for silencing stderr.
 
     """
 
     _stderr = sys.stderr
-    sys.stderr = catcher
+    with open(os.devnull, 'wb') as null:
+        sys.stderr = null
+
     yield
 
     sys.stderr = _stderr

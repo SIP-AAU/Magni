@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.matrices &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.utils.matrices &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <h1>Source code for magni.utils.matrices</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
 <span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
@@ -65,15 +65,22 @@
 <span class="sd">    Wrap fast linear operations in a matrix emulator.</span>
 <span class="sd">MatrixCollection(magni.utils.validation.types.MatrixBase)</span>
 <span class="sd">    Wrap multiple matrix emulators in a single matrix emulator.</span>
+<span class="sd">Separable2DTransform(Matrix)</span>
+<span class="sd">    Wrap a linear 2D separable transform in a matrix emulator.</span>
+<span class="sd">SumApproximationMatrix(object)</span>
+<span class="sd">    Wrap a sum approximation in a matrix emulator.</span>
+<span class="sd">norm(A, ord=None)</span>
+<span class="sd">    Compute a norm of a matrix.</span>
 
 <span class="sd">See Also</span>
 <span class="sd">--------</span>
 <span class="sd">magni.imaging._fastops : Fast linear operations.</span>
+<span class="sd">magni.imaging._mtx1D : 1D transforms matrices for use 2D separable transforms.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
@@ -191,8 +198,8 @@
 
 <div class="viewcode-block" id="Matrix.__array__"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix.__array__">[docs]</a>    <span class="k">def</span> <span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ndarray representation of the matrix.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span></div>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">conj_trans</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">is_complex</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">is_valid</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="n">_MatrixBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span> <span class="k">if</span> <span class="n">is_complex</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">,</span>
@@ -200,21 +207,49 @@
 
         <span class="nd">@_decorate_validation</span>
         <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;func&#39;</span><span class="p">,</span> <span class="s">&#39;function&#39;</span><span class="p">)</span>
-            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;conj_trans&#39;</span><span class="p">,</span> <span class="s">&#39;function&#39;</span><span class="p">)</span>
-            <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;args&#39;</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">)</span>
-            <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;shape&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-                              <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">)))</span>
-            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;is_complex&#39;</span><span class="p">,</span> <span class="s">&#39;boolean&#39;</span><span class="p">)</span>
-            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;is_valid&#39;</span><span class="p">,</span> <span class="s">&#39;boolean&#39;</span><span class="p">)</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;func&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;conj_trans&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">)</span>
+            <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                              <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">)))</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;is_complex&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span><span class="p">)</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;is_valid&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span><span class="p">)</span>
 
         <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_conj_trans</span> <span class="o">=</span> <span class="n">conj_trans</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span> <span class="o">=</span> <span class="n">is_complex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid</span> <span class="o">=</span> <span class="n">is_valid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">matrix_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a copy of the internal matrix state.</span>
+
+<span class="sd">        The internal matrix state consists of:</span>
+
+<span class="sd">        * func: The forward fast linear operator.</span>
+<span class="sd">        * conj_trans: The backward fast linear operator.</span>
+<span class="sd">        * args: The tuple of extra arguments passed to `func` and `conj_trans`.</span>
+<span class="sd">        * is_complex: The indicator of whether or not the matrix is complex.</span>
+<span class="sd">        * is_valid: The indicator of whether or not the matrix is valid.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix_state : dict</span>
+<span class="sd">            A copy of the internal matrix state</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">matrix_state</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;func&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">,</span>
+                        <span class="s1">&#39;conj_trans&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conj_trans</span><span class="p">,</span>
+                        <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">),</span>
+                        <span class="s1">&#39;is_complex&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span><span class="p">,</span>
+                        <span class="s1">&#39;is_valid&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">matrix_state</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -239,8 +274,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;This matrix has not been implemented. Transpose &#39;</span>
-                             <span class="s">&#39;or conjugate it for an implemented matrix.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This matrix has not been implemented. Transpose &#39;</span>
+                             <span class="s1">&#39;or conjugate it for an implemented matrix.&#39;</span><span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
@@ -305,8 +340,8 @@
             <span class="n">is_valid</span> <span class="o">=</span> <span class="bp">True</span>
 
         <span class="k">return</span> <span class="n">Matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conj_trans</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span><span class="p">,</span> <span class="n">is_valid</span><span class="p">)</span>
-</div>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span><span class="p">,</span> <span class="n">is_valid</span><span class="p">)</span></div>
+
     <span class="nd">@_validate_once</span>
 <div class="viewcode-block" id="Matrix.dot"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -330,18 +365,18 @@
 
         <span class="nd">@_decorate_validation</span>
         <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;vec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;vec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
                      <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
 
         <span class="n">validate_input</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;This matrix has not been implemented. Transpose &#39;</span>
-                             <span class="s">&#39;or conjugate it for an implemented matrix.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This matrix has not been implemented. Transpose &#39;</span>
+                             <span class="s1">&#39;or conjugate it for an implemented matrix.&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">)</span></div></div>
 
-</div></div>
+
 <div class="viewcode-block" id="MatrixCollection"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection">[docs]</a><span class="k">class</span> <span class="nc">MatrixCollection</span><span class="p">(</span><span class="n">_MatrixBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap multiple matrix emulators in a single matrix emulator.</span>
@@ -356,7 +391,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    matrices : list or tuple</span>
-<span class="sd">        The collection of `Matrix` instances.</span>
+<span class="sd">        The collection of matrices (e.g. ndarrays or `Matrix` instances).</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -423,28 +458,51 @@
 
 <div class="viewcode-block" id="MatrixCollection.__array__"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection.__array__">[docs]</a>    <span class="k">def</span> <span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ndarray representation of the matrix.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span></div>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrices</span><span class="p">):</span>
         <span class="n">_MatrixBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">,</span>
                              <span class="p">((</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)),</span> <span class="bp">None</span><span class="p">)</span>
 
         <span class="nd">@_decorate_validation</span>
         <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-            <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;matrices&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">),</span>
-                                 <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="n">Matrix</span><span class="p">,</span> <span class="n">MatrixCollection</span><span class="p">))))</span>
+            <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;matrices&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">),</span>
+                                 <span class="n">_numeric</span><span class="p">(</span>
+                                     <span class="bp">None</span><span class="p">,</span>
+                                     <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
+                                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))))</span>
 
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matrices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;The value of &gt;&gt;matrices[{}].shape[1]&lt;&lt;, {!r}, &#39;</span>
-                           <span class="s">&#39;must be equal to the value of &#39;</span>
-                           <span class="s">&#39;&gt;&gt;matrices[{}].shape[0]&lt;&lt;, {!r}.&#39;</span><span class="p">)</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;The value of &gt;&gt;matrices[{}].shape[1]&lt;&lt;, {!r}, &#39;</span>
+                           <span class="s1">&#39;must be equal to the value of &#39;</span>
+                           <span class="s1">&#39;&gt;&gt;matrices[{}].shape[0]&lt;&lt;, {!r}.&#39;</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                                                 <span class="n">matrices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
         <span class="n">validate_input</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span> <span class="o">=</span> <span class="n">matrices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">matrices</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">matrix_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a copy of the internal matrix state.</span>
+
+<span class="sd">        The internal matrix state consists of:</span>
+
+<span class="sd">        * matrices: The tuple of matrices in the matrix collection</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix_state : dict</span>
+<span class="sd">            A copy of the internal matrix state</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">matrix_state</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;matrices&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">)}</span>
+
+        <span class="k">return</span> <span class="n">matrix_state</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -468,7 +526,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">is_complex</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="n">matrix</span><span class="o">.</span><span class="n">_is_complex</span> <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">])</span>
+        <span class="n">is_complex</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s1">&#39;_is_complex&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>  <span class="c1"># Default to</span>
+                          <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">])</span>       <span class="c1"># complex matrix</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span> <span class="k">if</span> <span class="n">is_complex</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
         <span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
@@ -528,8 +587,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="n">MatrixCollection</span><span class="p">([</span><span class="n">matrix</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">])</span>
-</div>
+        <span class="k">return</span> <span class="n">MatrixCollection</span><span class="p">([</span><span class="n">matrix</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">])</span></div>
+
     <span class="nd">@_validate_once</span>
 <div class="viewcode-block" id="MatrixCollection.dot"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.MatrixCollection.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -553,7 +612,7 @@
 
         <span class="nd">@_decorate_validation</span>
         <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-            <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;vec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;vec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
                      <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
 
         <span class="n">validate_input</span><span class="p">()</span>
@@ -562,6 +621,388 @@
             <span class="n">vec</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">vec</span></div></div>
+
+
+<div class="viewcode-block" id="Separable2DTransform"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Separable2DTransform">[docs]</a><span class="k">class</span> <span class="nc">Separable2DTransform</span><span class="p">(</span><span class="n">Matrix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap a linear 2D separable transform in a matrix emulator.</span>
+
+<span class="sd">    A linear 2D separable transform is defined by the two matrices `mtx_l` and</span>
+<span class="sd">    `mtx_r` in the sense that the Kronecker product kron(`mtx_l`, `mtx_r`)</span>
+<span class="sd">    yields the full matrix of the linear 2D separable transform when the linear</span>
+<span class="sd">    transform is implemented as a matrix-vector product. See e.g. [1]_ for the</span>
+<span class="sd">    details.</span>
+
+<span class="sd">    `Separable2DTransform` defines a few attributes and internal methods which</span>
+<span class="sd">    ensures that instances have the same basic interface as a numpy matrix</span>
+<span class="sd">    instance without explicitly forming the matrix. This basic interface allows</span>
+<span class="sd">    instances to be multiplied with vectors, to be transposed, and to assume a</span>
+<span class="sd">    shape. Also, instances have an attribute which explicitly forms the matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mtx_l : ndarray</span>
+<span class="sd">        The &quot;left&quot; matrix in the defining Kronecker product.</span>
+<span class="sd">    mtx_r : ndarray</span>
+<span class="sd">        The &quot;right&quot; matrix in the defining Kronecker product.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.utils.matrices.Matrix : Superclass of the present class.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] A.N. Akansu, R.A. Haddad, and P.R. Haddad, *Multiresolution Signal</span>
+<span class="sd">       Decomposition: Transforms, Subbands, and Wavelets*, Academic Press,</span>
+<span class="sd">       2000.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example, the transform based on a 2-by-3 matrix and a 5-by-4 matrix</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from magni.imaging import vec2mat, mat2vec</span>
+<span class="sd">    &gt;&gt;&gt; from magni.utils.matrices import Separable2DTransform</span>
+<span class="sd">    &gt;&gt;&gt; mtx_l = np.arange(6).reshape(2, 3)</span>
+<span class="sd">    &gt;&gt;&gt; mtx_r = np.arange(40)[::2].reshape(5, 4)</span>
+<span class="sd">    &gt;&gt;&gt; sep_matrix = Separable2DTransform(mtx_l, mtx_r)</span>
+
+<span class="sd">    The full transform matrix shape is:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(tuple(int(s) for s in sep_matrix.shape))</span>
+<span class="sd">    (10, 12)</span>
+
+<span class="sd">    The matrix behaves like an explicit matrix</span>
+
+<span class="sd">    &gt;&gt;&gt; vec = np.arange(36)[::3].reshape(12, 1)</span>
+<span class="sd">    &gt;&gt;&gt; sep_matrix.dot(vec)</span>
+<span class="sd">    array([[  936],</span>
+<span class="sd">           [ 3528],</span>
+<span class="sd">           [ 2712],</span>
+<span class="sd">           [10056],</span>
+<span class="sd">           [ 4488],</span>
+<span class="sd">           [16584],</span>
+<span class="sd">           [ 6264],</span>
+<span class="sd">           [23112],</span>
+<span class="sd">           [ 8040],</span>
+<span class="sd">           [29640]])</span>
+
+<span class="sd">    which, due to the separability of the transform, may also be computed as</span>
+
+<span class="sd">    &gt;&gt;&gt; vec_as_mat = vec2mat(vec, (3, 4))</span>
+<span class="sd">    &gt;&gt;&gt; mat2vec(mtx_l.dot(vec_as_mat.dot(mtx_r.T)))</span>
+<span class="sd">    array([[  936],</span>
+<span class="sd">           [ 3528],</span>
+<span class="sd">           [ 2712],</span>
+<span class="sd">           [10056],</span>
+<span class="sd">           [ 4488],</span>
+<span class="sd">           [16584],</span>
+<span class="sd">           [ 6264],</span>
+<span class="sd">           [23112],</span>
+<span class="sd">           [ 8040],</span>
+<span class="sd">           [29640]])</span>
+
+<span class="sd">    The explicit matrix is given by the kronecker product of the two matrices</span>
+
+<span class="sd">    &gt;&gt;&gt; np.all(sep_matrix.A == np.kron(mtx_l, mtx_r))</span>
+<span class="sd">    True</span>
+
+<span class="sd">    The transpose of the matrix is also easily obtainable</span>
+
+<span class="sd">    &gt;&gt;&gt; sep_matrix_transpose = sep_matrix.T</span>
+<span class="sd">    &gt;&gt;&gt; sep_matrix_transpose.A</span>
+<span class="sd">    array([[  0,   0,   0,   0,   0,   0,  24,  48,  72,  96],</span>
+<span class="sd">           [  0,   0,   0,   0,   0,   6,  30,  54,  78, 102],</span>
+<span class="sd">           [  0,   0,   0,   0,   0,  12,  36,  60,  84, 108],</span>
+<span class="sd">           [  0,   0,   0,   0,   0,  18,  42,  66,  90, 114],</span>
+<span class="sd">           [  0,   8,  16,  24,  32,   0,  32,  64,  96, 128],</span>
+<span class="sd">           [  2,  10,  18,  26,  34,   8,  40,  72, 104, 136],</span>
+<span class="sd">           [  4,  12,  20,  28,  36,  16,  48,  80, 112, 144],</span>
+<span class="sd">           [  6,  14,  22,  30,  38,  24,  56,  88, 120, 152],</span>
+<span class="sd">           [  0,  16,  32,  48,  64,   0,  40,  80, 120, 160],</span>
+<span class="sd">           [  4,  20,  36,  52,  68,  10,  50,  90, 130, 170],</span>
+<span class="sd">           [  8,  24,  40,  56,  72,  20,  60, 100, 140, 180],</span>
+<span class="sd">           [ 12,  28,  44,  60,  76,  30,  70, 110, 150, 190]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtx_l</span><span class="p">,</span> <span class="n">mtx_r</span><span class="p">):</span>
+        <span class="n">_MatrixBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">,</span>
+                             <span class="p">((</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)),</span>
+                             <span class="p">(</span><span class="n">mtx_l</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">mtx_r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                              <span class="n">mtx_l</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">mtx_r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;mtx_l&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;mtx_r&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_l</span> <span class="o">=</span> <span class="n">mtx_l</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_r</span> <span class="o">=</span> <span class="n">mtx_r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">mtx_l</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">mtx_r</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">matrix_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a copy of the internal matrix state.</span>
+
+<span class="sd">        The internal matrix state consists of:</span>
+
+<span class="sd">        * mtx_l: The &quot;left&quot; matrix in the defining Kronecker product.</span>
+<span class="sd">        * mtx_r: The &quot;right&quot; matrix in the defining Kronecker product.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix_state : dict</span>
+<span class="sd">            A copy of the internal matrix state</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">matrix_state</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mtx_l&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_l</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                        <span class="s1">&#39;mtx_r&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_r</span><span class="o">.</span><span class="n">copy</span><span class="p">()}</span>
+
+        <span class="k">return</span> <span class="n">matrix_state</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Explicitly form the matrix.</span>
+
+<span class="sd">        For a linear separable 2D transform, the full explicit transform matrix</span>
+<span class="sd">        is given by the Kronecker product of the two matrices that define the</span>
+<span class="sd">        separable transform.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix : ndarray</span>
+<span class="sd">            The explicit matrix.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mtx_l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_r</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the transpose of the matrix.</span>
+
+<span class="sd">        The transpose of a Kronekcer product of two matrices is the Kronecker</span>
+<span class="sd">        product of the transposes of the two matrices.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix : Separable2DTransform</span>
+<span class="sd">            The transpose of the matrix.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">Separable2DTransform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mtx_l</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_r</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Separable2DTransform.conj"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Separable2DTransform.conj">[docs]</a>    <span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the complex conjugate of the matrix.</span>
+
+<span class="sd">        The complex conjugate of a Kronekcer product of two matrices is the</span>
+<span class="sd">        Kronecker product of the complex conjugates of the two matrices.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix : Separable2DTransform</span>
+<span class="sd">            The complex conjugate of the matrix.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">Separable2DTransform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mtx_l</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_r</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span></div>
+
+    <span class="nd">@_validate_once</span>
+<div class="viewcode-block" id="Separable2DTransform.dot"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Separable2DTransform.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multiply the matrix with a vector.</span>
+
+<span class="sd">        The matrix-vector product is efficiently computed by</span>
+<span class="sd">        mtx_l.dot(V.dot(mtx_r.T)) where V is the matrix from which `vec` was</span>
+<span class="sd">        created by stacking its columns.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vec : ndarray</span>
+<span class="sd">            The vector corresponding to the stacked columns of a matrix which</span>
+<span class="sd">            this matrix is multiplied with.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        vec : ndarray</span>
+<span class="sd">            The result of the matrix-vector multiplication.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method honors `magni.utils.validation.enable_allow_validate_once`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;vec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
+
+        <span class="n">vec_as_mat</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mtx_r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_l</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">mat_mult_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtx_l</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_as_mat</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mtx_r</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="n">mat_mult_result_as_vec</span> <span class="o">=</span> <span class="n">mat_mult_result</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mat_mult_result_as_vec</span></div></div>
+
+
+<div class="viewcode-block" id="SumApproximationMatrix"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.SumApproximationMatrix">[docs]</a><span class="k">class</span> <span class="nc">SumApproximationMatrix</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap a sum approximation in a matrix emulator.</span>
+
+<span class="sd">    This simply emulates computing a scaled sum of the entries of a vector as a</span>
+<span class="sd">    matrix vector product.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scaling : int or float</span>
+<span class="sd">        The scaling applied to the sum approximation.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from magni.utils.matrices import SumApproximationMatrix</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(seed=6021)</span>
+<span class="sd">    &gt;&gt;&gt; n = 10</span>
+<span class="sd">    &gt;&gt;&gt; vec = np.random.randn(n, 1)</span>
+<span class="sd">    &gt;&gt;&gt; np_printoptions = np.get_printoptions()</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(precision=5)</span>
+<span class="sd">    &gt;&gt;&gt; np.array([vec.mean()])</span>
+<span class="sd">    array([ 0.43294])</span>
+<span class="sd">    &gt;&gt;&gt; matrix = SumApproximationMatrix(1.0/n)</span>
+<span class="sd">    &gt;&gt;&gt; np.array([matrix.dot(vec)])</span>
+<span class="sd">    array([ 0.43294])</span>
+<span class="sd">    &gt;&gt;&gt; np.set_printoptions(**np_printoptions)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scaling</span><span class="p">):</span>
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;scaling&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="o">=</span> <span class="n">scaling</span>
+
+    <span class="nd">@_validate_once</span>
+<div class="viewcode-block" id="SumApproximationMatrix.dot"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.SumApproximationMatrix.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Form the matrix-vector product sum approximation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vec : ndarray</span>
+<span class="sd">            The vector in the matrix-vector product.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scaled sum : float</span>
+<span class="sd">            The scaled sum of the input vector.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method honors `magni.utils.validation.enable_allow_validate_once`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;vec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute a norm of a matrix.</span>
+
+<span class="sd">    Efficient norm computations for the `magni.utils.matrices` matrices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    A : magni.util.matrices.Matrix or magni.utils.matrices.MatrixCollection</span>
+<span class="sd">        The matrix which norm is to be computed.</span>
+<span class="sd">    ord : str</span>
+<span class="sd">        The order of the norm to compute.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    norm : float</span>
+<span class="sd">        The computed matrix norm.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    numpy.linalg.norm : Numpy&#39;s function for computing norms of ndarrays</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function is a simple wrapper around `numpy.linalg.norm`. It exploits</span>
+<span class="sd">    some properties of the matrix classes in `magni.utils.matrices` to optimize</span>
+<span class="sd">    the norm computation in terms of speed and/or memory usage.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        This function builds the ndarray corresponding to the `A` matrix and</span>
+<span class="sd">        passes that on to `numpy.linalg.norm` if no smarter way of computing</span>
+<span class="sd">        the norm has been implemented. Beware of possible &quot;out of memory&quot;</span>
+<span class="sd">        issues.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Compute the Frobenius norm of a Seperable2DTransform</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from magni.utils.matrices import Separable2DTransform, norm</span>
+<span class="sd">    &gt;&gt;&gt; mtx_l = np.arange(6).reshape(2, 3)</span>
+<span class="sd">    &gt;&gt;&gt; mtx_r = np.arange(40)[::2].reshape(5, 4)</span>
+<span class="sd">    &gt;&gt;&gt; sep_matrix = Separable2DTransform(mtx_l, mtx_r)</span>
+<span class="sd">    &gt;&gt;&gt; round(float(norm(sep_matrix, &#39;fro&#39;)), 2)</span>
+<span class="sd">    737.16</span>
+
+<span class="sd">    for comparison, the Frobenius computed using np.linalg.norm is</span>
+
+<span class="sd">    &gt;&gt;&gt; round(float(np.linalg.norm(sep_matrix.A)), 2)</span>
+<span class="sd">    737.16</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@_decorate_validation</span>
+    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;ord&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">validate_input</span><span class="p">()</span>
+
+    <span class="n">norm</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="c1"># Special computations</span>
+    <span class="k">if</span> <span class="nb">ord</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">ord</span> <span class="o">==</span> <span class="s1">&#39;fro&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">Separable2DTransform</span><span class="p">):</span>
+            <span class="n">A_s</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">matrix_state</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;mtx_l&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;mtx_r&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Fallback numpy solution</span>
+    <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">norm</span></div>
 </pre></div>
 
           </div>
@@ -577,9 +1018,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -592,14 +1030,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

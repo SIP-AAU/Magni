@@ -1,4 +1,51 @@
 ==================
+1.6.0 (2016-11-02)
+==================
+
+Version 1.6.0 most notably adds the major new features: approximate message
+passing (AMP) and generalised approximate message passing (GAMP) reconstruction
+algorithms. Several smaller additions and improvements in other parts of Magni
+are also included.
+
+
+Additions
+---------
+
+- Added approximate message passing (AMP) in magni.cs.reconstruction.amp.
+- Added generalised approximate message passing (GAMP) in
+  magni.cs.reconstruction.gamp, including possibility of two different types of
+  sum approximation in the algorithm.
+- Added support for 2D seperable transforms in magni.utils.matrices.
+
+
+Improvements
+------------
+
+- Several new problem suites have been added to magni.cs.phase_transition.
+- An option to use logistic regression solver from scikit-learn has been added
+  to magni.cs.phase_transition.
+- Improved task resource utilisation in magni.utils.multiprocessing.
+- Support in magni.utils.validation for validating inputs of functions
+  only on first call (validate once).
+- Allowed ndarrays in a MatrixCollection.
+- The stop criteria and history saving options in magni.cs.reconstruction.it
+  have been updated to reflect the options in the AMP/GAMP algorithms.
+- One dimensional DCT/DFT matrices are now also available in
+  magni.imagining.dictionaries.
+
+
+Bug Fixes
+---------
+
+- Fixed a validation bug in magni.afm.
+- Fixed ndarray float indexing problems.
+- Fixed Anaconda 4.2 compatibility issues.
+- Fixed a number of minor bugs.
+- Various documentation clean-ups.
+
+
+
+==================
 1.5.0 (2016-06-30)
 ==================
 

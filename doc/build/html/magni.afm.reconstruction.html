@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.afm.reconstruction module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.afm.reconstruction module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.afm package" href="magni.afm.html" />
     <link rel="next" title="magni.cs package" href="magni.cs.html" />
     <link rel="prev" title="magni.afm._config module" href="magni.afm._config.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.afm._config.html" title="magni.afm._config module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.afm.html" accesskey="U">magni.afm package</a> &raquo;</li> 
       </ul>
@@ -67,24 +67,20 @@
 </dl>
 <dl class="function">
 <dt id="magni.afm.reconstruction.analyse">
-<code class="descclassname">magni.afm.reconstruction.</code><code class="descname">analyse</code><span class="sig-paren">(</span><em>x</em>, <em>Phi</em>, <em>Psi</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/afm/reconstruction.html#analyse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.reconstruction.analyse" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.afm.reconstruction.</code><code class="descname">analyse</code><span class="sig-paren">(</span><em>x</em>, <em>Phi</em>, <em>Psi</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/afm/reconstruction.html#analyse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.reconstruction.analyse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sample an image, reconstruct it, and analyse the reconstructed image.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>numpy.ndarray</em>) &#8211;
-The original image vector.</li>
-<li><strong>Phi</strong> (<em>magni.utils.matrices.Matrix or numpy.matrix</em>) &#8211;
-The measurement matrix.</li>
-<li><strong>Psi</strong> (<em>magni.utils.matrices.Matrix or numpy.matrix</em>) &#8211;
-The dictionary.</li>
+<li><strong>x</strong> (<em>numpy.ndarray</em>) &#8211; The original image vector.</li>
+<li><strong>Phi</strong> (<em>magni.utils.matrices.Matrix or numpy.matrix</em>) &#8211; The measurement matrix.</li>
+<li><strong>Psi</strong> (<em>magni.utils.matrices.Matrix or numpy.matrix</em>) &#8211; The dictionary.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>x</strong> (<em>numpy.ndarray</em>) &#8211;
-The reconstructed image vector.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>x</strong> (<em>numpy.ndarray</em>) &#8211; The reconstructed image vector.</p>
 </td>
 </tr>
 </tbody>
@@ -98,17 +94,19 @@ The reconstructed image vector.</p>
 <dd>Image reconstruction quality evaluation.</dd>
 </dl>
 </div>
+<p class="rubric">Notes</p>
+<p>Additional **kwargs are passed on to the reconstruction algorithm.</p>
 <p class="rubric">Examples</p>
 <p>Prior to the actual example, data is loaded and a measurement matrix and a
 dictionary are defined. First, the example MI file provided with the
 package is loaded:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">magni</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.afm.reconstruction</span> <span class="kn">import</span> <span class="n">analyse</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.afm.reconstruction</span> <span class="k">import</span> <span class="n">analyse</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s">&#39;example.mi&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;example.mi&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">mi_file</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">afm</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_mi_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">mi_buffer</span> <span class="o">=</span> <span class="n">mi_file</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">(</span><span class="s">&#39;Topography&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">mi_buffer</span> <span class="o">=</span> <span class="n">mi_file</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">(</span><span class="s1">&#39;Topography&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="n">mi_data</span> <span class="o">=</span> <span class="n">mi_buffer</span><span class="o">.</span><span class="n">data</span>
 <span class="gp">... </span>    <span class="n">x</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">mat2vec</span><span class="p">(</span><span class="n">mi_data</span><span class="p">)</span>
 </pre></div>
@@ -116,7 +114,7 @@ package is loaded:</p>
 <p>Next, a measurement matrix is defined. This matrix is equal to the matrix
 generated by running <em class="xref py py-obj">np.eye(len(x))[::2, :]</em> but for speed, the matrix is
 instead defined with fast operations:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">Phi_A</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">Phi_A</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">y</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">Phi_T</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
@@ -130,15 +128,15 @@ instead defined with fast operations:</p>
 </div>
 <p>Next, a dictionary is defined. This dictionary is the DCT basis likewise
 defined with fast operations:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">Psi</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">dictionaries</span><span class="o">.</span><span class="n">get_DCT</span><span class="p">(</span><span class="n">mi_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Finally, the actual example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;MSE: {:.2f}, PSNR: {:.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">analyse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">)))</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MSE: </span><span class="si">{:.2f}</span><span class="s1">, PSNR: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">analyse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">)))</span>
 <span class="gp">... </span><span class="k">else</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;MSE: 0.24, PSNR: 6.22&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MSE: 0.24, PSNR: 6.22&#39;</span><span class="p">)</span>
 <span class="go">MSE: 0.24, PSNR: 6.22</span>
 </pre></div>
 </div>
@@ -146,24 +144,20 @@ defined with fast operations:</p>
 
 <dl class="function">
 <dt id="magni.afm.reconstruction.reconstruct">
-<code class="descclassname">magni.afm.reconstruction.</code><code class="descname">reconstruct</code><span class="sig-paren">(</span><em>y</em>, <em>Phi</em>, <em>Psi</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/afm/reconstruction.html#reconstruct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.reconstruction.reconstruct" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.afm.reconstruction.</code><code class="descname">reconstruct</code><span class="sig-paren">(</span><em>y</em>, <em>Phi</em>, <em>Psi</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/afm/reconstruction.html#reconstruct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.afm.reconstruction.reconstruct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reconstruct an image from compressively sensed measurements.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>y</strong> (<em>numpy.ndarray</em>) &#8211;
-The measurement vector.</li>
-<li><strong>Phi</strong> (<em>magni.utils.matrices.Matrix or numpy.matrix</em>) &#8211;
-The measurement matrix.</li>
-<li><strong>Psi</strong> (<em>magni.utils.matrices.Matrix or numpy.matrix</em>) &#8211;
-The dictionary.</li>
+<li><strong>y</strong> (<em>numpy.ndarray</em>) &#8211; The measurement vector.</li>
+<li><strong>Phi</strong> (<em>magni.utils.matrices.Matrix or numpy.matrix</em>) &#8211; The measurement matrix.</li>
+<li><strong>Psi</strong> (<em>magni.utils.matrices.Matrix or numpy.matrix</em>) &#8211; The dictionary.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>x</strong> (<em>numpy.ndarray</em>) &#8211;
-The reconstructed image vector.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>x</strong> (<em>numpy.ndarray</em>) &#8211; The reconstructed image vector.</p>
 </td>
 </tr>
 </tbody>
@@ -177,17 +171,19 @@ The reconstructed image vector.</p>
 <dd>Compressed sensing reconstruction algorithms.</dd>
 </dl>
 </div>
+<p class="rubric">Notes</p>
+<p>Additional **kwargs are passed on to the reconstruction algorithm.</p>
 <p class="rubric">Examples</p>
 <p>Prior to the actual example, data is loaded and a measurement matrix and a
 dictionary are defined. First, the example MI file provided with the
 package is loaded:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">magni</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.afm.reconstruction</span> <span class="kn">import</span> <span class="n">reconstruct</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.afm.reconstruction</span> <span class="k">import</span> <span class="n">reconstruct</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">split_path</span><span class="p">(</span><span class="n">magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s">&#39;example.mi&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;examples&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;example.mi&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">mi_file</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">afm</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_mi_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">mi_buffer</span> <span class="o">=</span> <span class="n">mi_file</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">(</span><span class="s">&#39;Topography&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">mi_buffer</span> <span class="o">=</span> <span class="n">mi_file</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">(</span><span class="s1">&#39;Topography&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="n">mi_data</span> <span class="o">=</span> <span class="n">mi_buffer</span><span class="o">.</span><span class="n">data</span>
 <span class="gp">... </span>    <span class="n">x</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">mat2vec</span><span class="p">(</span><span class="n">mi_data</span><span class="p">)</span>
 </pre></div>
@@ -195,7 +191,7 @@ package is loaded:</p>
 <p>Next, a measurement matrix is defined. This matrix is equal to the matrix
 generated by running <em class="xref py py-obj">np.eye(len(x))[::2, :]</em> but for speed, the matrix is
 instead defined with fast operations:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">Phi_A</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">Phi_A</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">y</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">Phi_T</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
@@ -209,17 +205,17 @@ instead defined with fast operations:</p>
 </div>
 <p>Next, a dictionary is defined. This dictionary is the DCT basis likewise
 defined with fast operations:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">Psi</span> <span class="o">=</span> <span class="n">magni</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">dictionaries</span><span class="o">.</span><span class="n">get_DCT</span><span class="p">(</span><span class="n">mi_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Finally, the actual example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">y</span> <span class="o">=</span> <span class="n">Phi</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Maximum absolute pixel error: {:.3f}&#39;</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Maximum absolute pixel error: </span><span class="si">{:.3f}</span><span class="s1">&#39;</span>
 <span class="gp">... </span>          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">Psi</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
 <span class="gp">... </span><span class="k">else</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Maximum absolute pixel error: 0.960&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Maximum absolute pixel error: 0.960&#39;</span><span class="p">)</span>
 <span class="go">Maximum absolute pixel error: 0.960</span>
 </pre></div>
 </div>
@@ -256,9 +252,6 @@ defined with fast operations:</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -277,15 +270,15 @@ defined with fast operations:</p>
         <li class="right" >
           <a href="magni.afm._config.html" title="magni.afm._config module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.afm.html" >magni.afm package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

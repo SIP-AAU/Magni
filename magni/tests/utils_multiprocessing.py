@@ -25,8 +25,8 @@ TestUtils(unittest.TestCase)
 from __future__ import division
 from contextlib import contextmanager
 import os
+import platform
 import signal
-import sys
 import time
 import unittest
 import warnings
@@ -385,6 +385,20 @@ class TestProcessingProcess(unittest.TestCase):
                         'Restarting the process pool.')
             except ImportError:
                 pass
+
+    def test_map_using_futures_maxtasks_emulation(self):
+        magni.utils.multiprocessing.config['workers'] = 3
+        self.assertEqual(magni.utils.multiprocessing.config['workers'], 3)
+
+        muf = magni.utils.multiprocessing._processing._map_using_futures
+        tasks_list = [list(range(t)) for t in [0, 2, 3, 6, 17, 32, 37]]
+
+        if os.name != 'nt' and int(platform.python_version_tuple()[0]) >= 3:
+            for tasks in tasks_list:
+                true_results = [((t,), {}) for t in tasks]
+                for maxtasks in [1, 2, 3, 4, 7]:
+                    r = muf(self.func, tasks, None, maxtasks, 0)
+                    self.assertEqual(r, true_results)
 
     def test_issue_25906(self):
         num_workers = 24

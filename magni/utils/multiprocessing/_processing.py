@@ -20,10 +20,10 @@ magni.utils.multiprocessing.config : Configuration options.
 from __future__ import division
 import multiprocessing as mp
 import os
-import sys
 import traceback
-import types
 import warnings
+
+import numpy as np
 
 try:
     # The concurrent.futures was first added to Python in version 3.2
@@ -147,10 +147,10 @@ def process(func, namespace={}, args_list=None, kwargs_list=None,
     Python 2 backport of `concurrent.futures` is available at
     https://pythonhosted.org/futures/.
 
-    When using `concurrent.futures`, the `maxtasks`, `namespace`, and
-    `init_args` are ignored since these are not supported by that module. It
-    seems that `concurrent.futures` works as if maxtasks==1, however this is
-    based purely on emprical observations. The `init_args` functionality may be
+    When using `concurrent.futures`, the `namespace` and `init_args` are
+    ignored since these are not supported by that module. Support for
+    `maxtasks` is emulated in a way such that each process on average does
+    `maxtasks` before it is restarted. The `init_args` functionality may be
     added later on if an initialiser is added to `concurrent.futures` - see
     http://bugs.python.org/issue21423. If the `max_broken_pool_restarts`
     configuration parameter is set to a value different from 0, the Pool is
@@ -165,7 +165,7 @@ def process(func, namespace={}, args_list=None, kwargs_list=None,
 
     Examples
     --------
-    An example of how to use args_list, and kwargs_list:
+    An example of how to use args_list and kwargs_list:
 
     >>> import magni
     >>> from magni.utils.multiprocessing._processing import process
@@ -290,12 +290,12 @@ def _map_using_futures(func, tasks, init_args, maxtasks,
         A function handle to the function which the calls should be mapped to.
     tasks : iterable
         The list of tasks to use as arguments in the function calls.
-    maxtasks : int
-        The maximum number of tasks of a process before it is replaced by a new
-        process. If set to None, the process is never replaced.
     init_args : tuple
         The (func, namespace) tuple for the _process_init initialisation
         function.
+    maxtasks : int
+        The maximum number of tasks of a process before it is replaced by a new
+        process. If set to None, the process is never replaced.
     max_broken_pool_restarts : int or None
         The maximum number of attempts at restarting the process pool upon a
         BrokenPoolError. If set to None, the process pool may restart
@@ -308,20 +308,42 @@ def _map_using_futures(func, tasks, init_args, maxtasks,
 
     Notes
     -----
-    The `maxtasks`, `namespace`, and `init_args` are ignored since these are
-    not supported by `concurrent.futures`. It seems that `concurrent.futures`
-    works as if maxtasks==1, however this is unclear. The `init_args`
-    functionality may be added if an initialiser is added to
+    The `namespace` and `init_args` are ignored since these are not supported
+    by `concurrent.futures`. Support for `maxtasks` is emulated in a way such
+    that each process on average does `maxtasks` before it is restarted. The
+    `init_args` functionality may be added if an initialiser is added to
     `concurrent.futures` - see http://bugs.python.org/issue21423.
 
     """
 
+    num_workers = _config['workers']
+
+    def _fix_none_maxtasks(maxtasks):
+        """Handle maxtasks==None correctly."""
+        if maxtasks is None:
+            return int(len(tasks) / num_workers)
+        else:
+            return maxtasks
+    maxtasks = _fix_none_maxtasks(maxtasks)
+
     try:
-        workers = ProcessPoolExecutor(max_workers=_config['workers'])
-        futures = [workers.submit(func, task) for task in tasks]
-        concurrent.futures.wait(
-            futures, return_when=concurrent.futures.FIRST_EXCEPTION)
-        return [future.result() for future in futures]
+        batch_size = num_workers * maxtasks
+        future_batches = max(int(np.ceil(len(tasks) / batch_size)), 1)
+        future_results = []
+
+        for l in range(future_batches):
+            # Restart ProcessPool when all workers have done `maxtasks` on
+            # average in order to free ressources
+            workers = ProcessPoolExecutor(max_workers=num_workers)
+            futures = [workers.submit(func, task)
+                       for task in tasks[l*batch_size:(l+1)*batch_size]]
+            concurrent.futures.wait(
+                futures, return_when=concurrent.futures.FIRST_EXCEPTION)
+            future_results.extend([future.result() for future in futures])
+            workers.shutdown()
+
+        return future_results
+
     except BrokenProcessPool as e:
         workers.shutdown()
         base_msg = 'A BrokenProcessPool was encountered. '
@@ -365,12 +387,12 @@ def _map_using_mppool(func, tasks, init_args, maxtasks,
         A function handle to the function which the calls should be mapped to.
     tasks : iterable
         The list of tasks to use as arguments in the function calls.
-    maxtasks : int
-        The maximum number of tasks of a process before it is replaced by a new
-        process. If set to None, the process is never replaced.
     init_args : tuple
         The (func, namespace) tuple for the _process_init initialisation
         function.
+    maxtasks : int
+        The maximum number of tasks of a process before it is replaced by a new
+        process. If set to None, the process is never replaced.
     max_broken_pool_restarts : int or None
         The maximum number of attempts at restarting the process pool upon a
         BrokenPoolError. If set to None, the process pool may restart

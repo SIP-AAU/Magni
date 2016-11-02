@@ -14,11 +14,12 @@ This assumes comparison of IPython Notebooks in nbformat.v3
 
 from __future__ import division, print_function
 import base64
-import contextlib
 from datetime import datetime
 import os
+import platform
 import shutil
 import subprocess
+import sys
 import unittest
 import types
 import warnings
@@ -38,6 +39,7 @@ import scipy.misc
 import magni
 
 # The great "support IPython 2, 3, 4" strat begins
+import IPython
 try:
     import jupyter
 except ImportError:
@@ -100,6 +102,14 @@ class _Meta(type):
         path = path + os.path.sep + 'examples' + os.path.sep
 
         for filename in os.listdir(path):
+            if (platform.system() == 'Darwin' and
+                    sys.version_info.major == 3 and
+                    sys.version_info.minor == 3 and
+                    filename == 'utils-multiprocessing.ipynb'):
+                # Skip the broken multiprocessing on OSX Python 3.3 since case
+                warnings.warn(
+                    'Skipping multiprocessing ipynb test.', RuntimeWarning)
+                continue
             if filename[-6:] == '.ipynb':
                 name = 'test_' + filename[:-6].replace('-', '_')
                 func = attrs['_run_example']
@@ -120,6 +130,11 @@ class _Hack(_Meta):
 _TestCase = type.__new__(_Hack, 'temp', (), {})
 
 
+@unittest.skipIf(
+    parse_version(IPython.__version__) <= parse_version('3.0') and
+    sys.version_info.major == 2 and
+    platform.system() == 'Darwin', 'Due to a problem in IPython, the Magni ' +
+    'Notebook example tests stall on Mac OSX with IPython 2 and Python 2.')
 class TestIPythonExamples(_TestCase):
     """
     Test of Ipython Notebook examples for equality of output to reference.
@@ -519,6 +534,11 @@ def _execute_cell(cell, shell, iopub, timeout=300):
             else:
                 # v3 notebook format
                 node.text = content['data']
+
+            bug_text = 'Using Anaconda Cloud api site https://api.anaconda.org'
+            if bug_text in node.text:
+                # Ignore conda (spam) messages/warnings
+                continue
         elif msg_type in ('display_data', 'pyout'):
             node['metadata'] = content['metadata']
             for mime, data in content['data'].items():

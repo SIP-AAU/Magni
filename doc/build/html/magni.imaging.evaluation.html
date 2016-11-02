@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.evaluation module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.imaging.evaluation module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.imaging.preprocessing module" href="magni.imaging.preprocessing.html" />
     <link rel="prev" title="magni.imaging.domains module" href="magni.imaging.domains.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -76,15 +76,12 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_org</strong> (<em>ndarray</em>) &#8211;
-Array of original values.</li>
-<li><strong>x_recons</strong> (<em>ndarray</em>) &#8211;
-Array of reconstruction values.</li>
+<li><strong>x_org</strong> (<em>ndarray</em>) &#8211; Array of original values.</li>
+<li><strong>x_recons</strong> (<em>ndarray</em>) &#8211; Array of reconstruction values.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>mse</strong> (<em>float</em>) &#8211;
-Mean Squared Error (MSE).</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>mse</strong> (<em>float</em>) &#8211; Mean Squared Error (MSE).</p>
 </td>
 </tr>
 </tbody>
@@ -96,11 +93,11 @@ Mean Squared Error (MSE).</p>
 <p>where <em class="xref py py-obj">N</em> is the number of entries in <em class="xref py py-obj">x_org</em>.</p>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_mse</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="k">import</span> <span class="n">calculate_mse</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_recons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calculate_mse</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calculate_mse</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">)))</span>
 <span class="go">1.50</span>
 </pre></div>
 </div>
@@ -115,17 +112,13 @@ Mean Squared Error (MSE).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_org</strong> (<em>ndarray</em>) &#8211;
-Array of original values.</li>
-<li><strong>x_recons</strong> (<em>ndarray</em>) &#8211;
-Array of reconstruction values.</li>
-<li><strong>peak</strong> (<em>int or float</em>) &#8211;
-Peak value.</li>
+<li><strong>x_org</strong> (<em>ndarray</em>) &#8211; Array of original values.</li>
+<li><strong>x_recons</strong> (<em>ndarray</em>) &#8211; Array of reconstruction values.</li>
+<li><strong>peak</strong> (<em>int or float</em>) &#8211; Peak value.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>psnr</strong> (<em>float</em>) &#8211;
-Peak Signal to Noise Ratio (PSNR) in dB.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>psnr</strong> (<em>float</em>) &#8211; Peak Signal to Noise Ratio (PSNR) in dB.</p>
 </td>
 </tr>
 </tbody>
@@ -140,12 +133,12 @@ x_{recons})^2}\right)\]</div>
 then <code class="xref py py-obj docutils literal"><span class="pre">np.inf</span></code> is returned.</p>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_psnr</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="k">import</span> <span class="n">calculate_psnr</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_recons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">peak</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calculate_psnr</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">,</span> <span class="n">peak</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calculate_psnr</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">,</span> <span class="n">peak</span><span class="p">)))</span>
 <span class="go">7.78</span>
 </pre></div>
 </div>
@@ -160,15 +153,12 @@ then <code class="xref py py-obj docutils literal"><span class="pre">np.inf</spa
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_org</strong> (<em>ndarray</em>) &#8211;
-Array of original values (must not be all zeros).</li>
-<li><strong>x_recons</strong> (<em>ndarray</em>) &#8211;
-Array of reconstruction values.</li>
+<li><strong>x_org</strong> (<em>ndarray</em>) &#8211; Array of original values (must not be all zeros).</li>
+<li><strong>x_recons</strong> (<em>ndarray</em>) &#8211; Array of reconstruction values.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>energy</strong> (<em>float</em>) &#8211;
-Percentage of retained energy in reconstruction.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>energy</strong> (<em>float</em>) &#8211; Percentage of retained energy in reconstruction.</p>
 </td>
 </tr>
 </tbody>
@@ -179,11 +169,11 @@ Percentage of retained energy in reconstruction.</p>
 \[\frac{\sum x_{recons}^2}{\sum x_{org}^2} \cdot 100\%\]</div>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="kn">import</span> <span class="n">calculate_retained_energy</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.evaluation</span> <span class="k">import</span> <span class="n">calculate_retained_energy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_recons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calculate_retained_energy</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calculate_retained_energy</span><span class="p">(</span><span class="n">x_org</span><span class="p">,</span> <span class="n">x_recons</span><span class="p">)))</span>
 <span class="go">28.57</span>
 </pre></div>
 </div>
@@ -220,9 +210,6 @@ Percentage of retained energy in reconstruction.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -241,15 +228,15 @@ Percentage of retained energy in reconstruction.</p>
         <li class="right" >
           <a href="magni.imaging.domains.html" title="magni.imaging.domains module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

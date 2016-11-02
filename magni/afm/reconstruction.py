@@ -17,21 +17,20 @@ reconstruct(y, Phi, Psi)
 
 from __future__ import division
 
-import numpy as np
-
 from magni.afm import config as _conf
+from magni.cs.reconstruction import amp as _amp
+from magni.cs.reconstruction import gamp as _gamp
 from magni.cs.reconstruction import iht as _iht
 from magni.cs.reconstruction import it as _it
 from magni.cs.reconstruction import sl0 as _sl0
 from magni.imaging import evaluation as _eval
 from magni.imaging import visualisation as _visualisation
-from magni.utils.matrices import Matrix as _Matrix
 from magni.utils.matrices import MatrixCollection as _MatrixC
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_numeric as _numeric
 
 
-def analyse(x, Phi, Psi):
+def analyse(x, Phi, Psi, **kwargs):
     """
     Sample an image, reconstruct it, and analyse the reconstructed image.
 
@@ -53,6 +52,10 @@ def analyse(x, Phi, Psi):
     --------
     magni.afm.config : Configuration options.
     magni.imaging.evaluation : Image reconstruction quality evaluation.
+
+    Notes
+    -----
+    Additional \*\*kwargs are passed on to the reconstruction algorithm.
 
     Examples
     --------
@@ -112,7 +115,7 @@ def analyse(x, Phi, Psi):
     validate_input()
 
     y = Phi.dot(x)
-    x_hat = reconstruct(y, Phi, Psi)
+    x_hat = reconstruct(y, Phi, Psi, **kwargs)
 
     x_scaled = _visualisation.stretch_image(x, 1.0)
     x_hat_scaled = _visualisation.stretch_image(x_hat, 1.0)
@@ -123,7 +126,7 @@ def analyse(x, Phi, Psi):
     return (mse, psnr)
 
 
-def reconstruct(y, Phi, Psi):
+def reconstruct(y, Phi, Psi, **kwargs):
     """
     Reconstruct an image from compressively sensed measurements.
 
@@ -145,6 +148,10 @@ def reconstruct(y, Phi, Psi):
     --------
     magni.afm.config : Configuration options.
     magni.cs.reconstruction : Compressed sensing reconstruction algorithms.
+
+    Notes
+    -----
+    Additional \*\*kwargs are passed on to the reconstruction algorithm.
 
     Examples
     --------
@@ -203,12 +210,28 @@ def reconstruct(y, Phi, Psi):
         _numeric('Psi', ('integer', 'floating', 'complex'),
                  shape=(Phi.shape[1], -1))
 
+        valid_kwargs = {'amp': [],
+                        'gamp': ['A_asq'],
+                        'iht': [],
+                        'it': [],
+                        'sl0': []}
+
+        for kwarg in kwargs:
+            if kwarg not in valid_kwargs[_conf['algorithm']]:
+                raise TypeError(
+                    'The {!r} algorithm does not '.format(_conf['algorithm']) +
+                    'support the keyword argument >>{!r}<<'.format(kwarg))
+
     validate_input()
 
     A = _MatrixC((Phi, Psi))
     algorithm = _conf['algorithm']
 
-    if algorithm == 'iht':
+    if algorithm == 'amp':
+        algorithm = _amp.run
+    elif algorithm == 'gamp':
+        algorithm = _gamp.run
+    elif algorithm == 'iht':
         algorithm = _iht.run
     elif algorithm == 'it':
         algorithm = _it.run
@@ -216,7 +239,7 @@ def reconstruct(y, Phi, Psi):
         A = A.A
         algorithm = _sl0.run
 
-    alpha = algorithm(y, A)
+    alpha = algorithm(y, A, **kwargs)
     x = Psi.dot(alpha)
 
     return x

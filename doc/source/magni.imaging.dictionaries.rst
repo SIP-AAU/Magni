@@ -15,6 +15,7 @@ Submodules
 
     magni.imaging.dictionaries._fastops
     magni.imaging.dictionaries._matrices
+    magni.imaging.dictionaries._mtx1D
     magni.imaging.dictionaries._visualisations
     magni.imaging.dictionaries.analysis
     magni.imaging.dictionaries.utils

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition._backup module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.cs.phase_transition._backup module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" />
     <link rel="next" title="magni.cs.phase_transition._config module" href="magni.cs.phase_transition._config.html" />
     <link rel="prev" title="magni.cs.phase_transition._analysis module" href="magni.cs.phase_transition._analysis.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.cs.phase_transition._analysis.html" title="magni.cs.phase_transition._analysis module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
@@ -94,8 +94,7 @@ the simulation timings, and an array for tracking the status.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) &#8211;
-The path of the HDF5 backup database.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) &#8211; The path of the HDF5 backup database.</td>
 </tr>
 </tbody>
 </table>
@@ -118,11 +117,9 @@ of the results have been stored.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) &#8211;
-The path of the HDF5 backup database.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) &#8211; The path of the HDF5 backup database.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>status</strong> (<em>ndarray</em>) &#8211;
-The boolean status array.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>status</strong> (<em>ndarray</em>) &#8211; The boolean status array.</td>
 </tr>
 </tbody>
 </table>
@@ -130,25 +127,21 @@ The boolean status array.</td>
 
 <dl class="function">
 <dt id="magni.cs.phase_transition._backup.set">
-<code class="descclassname">magni.cs.phase_transition._backup.</code><code class="descname">set</code><span class="sig-paren">(</span><em>path</em>, <em>ij_tuple</em>, <em>stat_time</em>, <em>stat_dist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_backup.html#set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._backup.set" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.cs.phase_transition._backup.</code><code class="descname">set</code><span class="sig-paren">(</span><em>path</em>, <em>ij_tuple</em>, <em>stat_time</em>, <em>stat_dist</em>, <em>stat_mse</em>, <em>stat_norm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_backup.html#set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._backup.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store the simulation data of a specified point.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>path</strong> (<em>str</em>) &#8211;
-The path of the HDF5 backup database.</li>
-<li><strong>ij_tuple</strong> (<em>tuple</em>) &#8211;
-A tuple (i, j) containing the parameters i, j as listed below.</li>
-<li><strong>i</strong> (<em>int</em>) &#8211;
-The delta-index of the point in the delta-rho grid.</li>
-<li><strong>j</strong> (<em>int</em>) &#8211;
-The rho-index of the point in the delta-rho grid.</li>
-<li><strong>stat_dist</strong> (<em>ndarray</em>) &#8211;
-The simulation results of the specified point.</li>
-<li><strong>stat_time</strong> (<em>ndarray</em>) &#8211;
-The simulation timings of the specified point.</li>
+<li><strong>path</strong> (<em>str</em>) &#8211; The path of the HDF5 backup database.</li>
+<li><strong>ij_tuple</strong> (<em>tuple</em>) &#8211; A tuple (i, j) containing the parameters i, j as listed below.</li>
+<li><strong>i</strong> (<em>int</em>) &#8211; The delta-index of the point in the delta-rho grid.</li>
+<li><strong>j</strong> (<em>int</em>) &#8211; The rho-index of the point in the delta-rho grid.</li>
+<li><strong>stat_dist</strong> (<em>ndarray</em>) &#8211; The simulation results of the specified point.</li>
+<li><strong>stat_time</strong> (<em>ndarray</em>) &#8211; The simulation timings of the specified point.</li>
+<li><strong>stat_mse</strong> (<em>ndarray</em>) &#8211; The simulation mean squared error of the specified point.</li>
+<li><strong>stat_norm</strong> (<em>ndarray</em>) &#8211; The simulation true vector 2-norm.</li>
 </ul>
 </td>
 </tr>
@@ -187,9 +180,6 @@ The simulation timings of the specified point.</li>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -208,7 +198,7 @@ The simulation timings of the specified point.</li>
         <li class="right" >
           <a href="magni.cs.phase_transition._analysis.html" title="magni.cs.phase_transition._analysis module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
@@ -216,8 +206,8 @@ The simulation timings of the specified point.</li>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

@@ -22,7 +22,8 @@ from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_numeric as _numeric
 
 
-def determine(algorithm, path, label='default', overwrite=False):
+def determine(algorithm, path, label='default', overwrite=False,
+              pre_simulation_hook=None):
     """
     Determine the phase transition of a reconstruction algorithm.
 
@@ -40,11 +41,22 @@ def determine(algorithm, path, label='default', overwrite=False):
     overwrite : bool
         A flag indicating if an existing phase transition should be overwritten
         if it has the same path and label (the default is False).
+    pre_simulation_hook : callable
+        A handle to a callable which should be run *just* before the call to
+        the reconstruction algorithm (the default is None, which implies that
+        no pre hook is run).
 
     See Also
     --------
     magni.cs.phase_transition._simulation.run : The actual simulation.
     magni.cs.phase_transition._analysis.run : The actual phase determination.
+
+    Notes
+    -----
+    The `pre_simulation_hook` may be used to setup the simulation to match the
+    specfic simulation parameters, e.g. if an oracle estimator is used in the
+    reconstruction algorithm. The `pre_simulation_hook` takes one argument
+    which is the locals() dict.
 
     Examples
     --------
@@ -74,11 +86,14 @@ def determine(algorithm, path, label='default', overwrite=False):
             raise RuntimeError(msg.format(label))
 
         _numeric('overwrite', 'boolean')
+        if (pre_simulation_hook is not None and
+                not callable(pre_simulation_hook)):
+            raise RuntimeError('The >>pre_simulation_hook<< must be callable')
 
     validate_input()
 
     if os.path.isfile(path):
-        with _File(path, 'r') as f:
+        with _File(path, 'a') as f:
             if '/' + label in f:
                 if overwrite:
                     f.remove_node('/' + label, recursive=True)
@@ -86,5 +101,6 @@ def determine(algorithm, path, label='default', overwrite=False):
                     raise IOError("{!r} already uses the label {!r}."
                                   .format(path, label))
 
-    _simulation.run(algorithm, path, label)
+    _simulation.run(algorithm, path, label,
+                    pre_simulation_hook=pre_simulation_hook)
     _analysis.run(path, label)

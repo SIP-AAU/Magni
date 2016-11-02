@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>A Note on Notation &mdash; Magni 1.5.0 documentation</title>
+    <title>A Note on Notation &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="next" title="Examples" href="examples.html" />
     <link rel="prev" title="Magni Documentation" href="index.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="index.html" title="Magni Documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,24 +53,33 @@
             
   <div class="section" id="a-note-on-notation">
 <span id="file-notation"></span><h1>A Note on Notation<a class="headerlink" href="#a-note-on-notation" title="Permalink to this headline">¶</a></h1>
-<p>A much as possible, a consistent notation is used in the <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> package. This implies that variable names are shared between functions that are related. Furthermore a consistent coordinate system is used for the description of related surfaces.</p>
+<p>As much as possible, a consistent notation is used in the <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> package. This implies that variable names are shared between functions that are related. Furthermore a consistent coordinate system is used for the description of related surfaces.</p>
 <div class="section" id="the-compressed-sensing-reconstruction-problem">
 <h2>The Compressed Sensing Reconstruction Problem<a class="headerlink" href="#the-compressed-sensing-reconstruction-problem" title="Permalink to this headline">¶</a></h2>
 <p>In the <a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><code class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></code></a> subpackage, a consistent naming scheme is used for variables, i.e., vectors and matrices. This section gives an overview of the chosen notation. For the purpose of illustration, consider the Basis Pursuit CS reconstruction problem <a class="footnote-reference" href="#id2" id="id1">[1]</a>:</p>
 <div class="math">
 \[\begin{split}&amp;\text{minimize}\qquad    ||\alpha||_1 \\
-&amp;\text{subject to}\qquad  \mathbf{y} = \mathbf{A}\mathbf{\alpha}\end{split}\]</div>
-<p>Here <span class="math">\(\mathbf{A} \in \mathbb{C}^{m \times n}\)</span> is the matrix product of a sampling matrix <span class="math">\(\mathbf{\Phi} \in \mathbb{C}^{m \times p}\)</span> and a dictionary matrix <span class="math">\(\mathbf{\Psi} \in \mathbb{C}^{p \times n}\)</span>. The dictionary coefficients are denoted <span class="math">\(\mathbf{\alpha} \in \mathbb{C}^{n}\)</span> whereas the measurements are denoted <span class="math">\(\mathbf{y} \in \mathbb{C}^{m}\)</span>.</p>
+&amp;\text{subject to}\qquad  \mathbf{z} = \mathbf{A}\mathbf{\alpha}\end{split}\]</div>
+<p>Here <span class="math">\(\mathbf{A} \in \mathbb{C}^{m \times n}\)</span> is the matrix product of a sampling matrix <span class="math">\(\mathbf{\Phi} \in \mathbb{C}^{m \times p}\)</span> and a dictionary matrix <span class="math">\(\mathbf{\Psi} \in \mathbb{C}^{p \times n}\)</span>. The dictionary coefficients are denoted <span class="math">\(\mathbf{\alpha} \in \mathbb{C}^{n \times 1}\)</span> whereas the (noiseless) measurements are denoted by <span class="math">\(\mathbf{z} \in \mathbb{C}^{m \times 1}\)</span>.</p>
 <p>Thus, the following relations are used:</p>
 <div class="math">
 \[\begin{split}\mathbf{A} &amp;= \mathbf{\Phi}\mathbf{\Psi} \\
            &amp; \\
 \mathbf{x} &amp;= \mathbf{\Psi}\mathbf{\alpha} \\
            &amp; \\
-\mathbf{y} &amp;= \mathbf{\Phi}\mathbf{x} \\
+\mathbf{z} &amp;= \mathbf{\Phi}\mathbf{x} \\
            &amp;= \mathbf{\Phi}\mathbf{\Psi}\mathbf{\alpha} \\
                        &amp;= \mathbf{A}\mathbf{\alpha} \\\end{split}\]</div>
-<p>Here the vector <span class="math">\(\mathbf{x} \in \mathbb{C}^{p}\)</span> represents the signal of interrest. That is, it is the signal that is assumed to have a sparse representation in the dictionary <span class="math">\(\mathbf{\Psi}\)</span>. The sparsity of the coefficient vector <span class="math">\(\mathbf{\alpha}\)</span>, that is the size of the support set, is denoted <span class="math">\(k=|\text{supp}(\mathbf{\alpha})|\)</span>.</p>
+<p>Here the vector <span class="math">\(\mathbf{x} \in \mathbb{C}^{p \times 1}\)</span> represents the signal of interrest. That is, it is the signal that is assumed to have a sparse representation in the dictionary <span class="math">\(\mathbf{\Psi}\)</span>. The sparsity of the coefficient vector <span class="math">\(\mathbf{\alpha}\)</span>, that is the size of the support set, is denoted <span class="math">\(k=|\text{supp}(\mathbf{\alpha})|\)</span>. Furthermore, we have the undersampling ratio <span class="math">\(\delta=m/n\)</span>, the sparsity level is <span class="math">\(\rho=k/m\)</span>, and the signal density is <span class="math">\(\tau=k/n\)</span>.</p>
+<p>Oftentimes, one considers noisy measurements, e.g. measurements corrupted by Additive White Gaussian Noise (AWGN) <span class="math">\(\mathbf{e} \in \mathbb{R}^{m \times 1}\)</span> with</p>
+<div class="math">
+\[\begin{split}\mathbf{y} &amp;= \mathbf{z} + \mathbf{e} \\
+           &amp;= \mathbf{A}\mathbf{\alpha} + \mathbf{e} \\\end{split}\]</div>
+<p>Here the (noisy) measurements are denoted <span class="math">\(\mathbf{y} \in \mathbb{C}^{m \times 1}\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All vectors in <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-mod docutils literal"><span class="pre">magni</span></code></a> are considered to be column vectors, i.e. they explicitly have a second dimension of length 1 when defined as <code class="xref py py-mod docutils literal"><span class="pre">numpy</span></code> arrays.</p>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Even though the above example involves complex vectors and matrices, the algorithms provided in <a class="reference internal" href="magni.cs.html#module-magni.cs" title="magni.cs"><code class="xref py py-mod docutils literal"><span class="pre">magni.cs</span></code></a> may be restricted to inputs and outputs that are real.</p>
@@ -141,9 +150,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -162,13 +168,13 @@
         <li class="right" >
           <a href="index.html" title="Magni Documentation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

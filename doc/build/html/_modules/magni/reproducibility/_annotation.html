@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility._annotation &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.reproducibility._annotation &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <h1>Source code for magni.reproducibility._annotation</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
 <span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
@@ -90,14 +90,16 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">_parse_version</span>
+
 <span class="kn">import</span> <span class="nn">magni</span> <span class="kn">as</span> <span class="nn">_magni</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;get_conda_info&#39;</span><span class="p">,</span> <span class="s">&#39;get_datetime&#39;</span><span class="p">,</span> <span class="s">&#39;get_git_revision&#39;</span><span class="p">,</span>
-           <span class="s">&#39;get_file_hashes&#39;</span><span class="p">,</span> <span class="s">&#39;get_magni_config&#39;</span><span class="p">,</span> <span class="s">&#39;get_magni_info&#39;</span><span class="p">,</span>
-           <span class="s">&#39;get_platform_info&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;get_conda_info&#39;</span><span class="p">,</span> <span class="s1">&#39;get_datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;get_git_revision&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_file_hashes&#39;</span><span class="p">,</span> <span class="s1">&#39;get_magni_config&#39;</span><span class="p">,</span> <span class="s1">&#39;get_magni_info&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_platform_info&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="get_conda_info"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_conda_info">[docs]</a><span class="k">def</span> <span class="nf">get_conda_info</span><span class="p">():</span>
@@ -115,7 +117,7 @@
 
 <span class="sd">    .. note::</span>
 
-<span class="sd">        Only infomation about the conda root environment is captured.</span>
+<span class="sd">        This only works with the conda root environment.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -129,8 +131,8 @@
 
 <span class="sd">    The returned dictionary contains the same infomation that is returned by</span>
 <span class="sd">    &quot;conda info&quot; in addition to an overview of the linked modules in the</span>
-<span class="sd">    Anaconda installation. Specifically, the returned dictionary has the</span>
-<span class="sd">    following keys:</span>
+<span class="sd">    Anaconda installation as well as information about the &quot;conda env&quot; if it is</span>
+<span class="sd">    available. Specifically, the returned dictionary has the following keys:</span>
 
 <span class="sd">    * platform</span>
 <span class="sd">    * conda_version</span>
@@ -140,15 +142,24 @@
 <span class="sd">    * package_cache</span>
 <span class="sd">    * channels</span>
 <span class="sd">    * config_file</span>
-<span class="sd">    * is_foreign_system</span>
 <span class="sd">    * linked_modules</span>
 <span class="sd">    * env_export</span>
+
+<span class="sd">    For conda &lt; 4.2.0, it also includes the key:</span>
+
+<span class="sd">    * is_foreign_system</span>
+
+<span class="sd">    For conda &gt;= 4.2.0, it also includes the keys:</span>
+
+<span class="sd">    * python_version</span>
+<span class="sd">    * conda_is_private</span>
+<span class="sd">    * offline_mode</span>
 
 <span class="sd">    Additionally, the returned dictionary has a key named *status*, which can</span>
 <span class="sd">    have either of the following values:</span>
 
 <span class="sd">    * &#39;Succeeded&#39; (Everything seems to be OK)</span>
-<span class="sd">    * &#39;Failed&#39; (Import of conda failed - nothing else is returned)</span>
+<span class="sd">    * &#39;Failed&#39; (Something went wrong - a few details are incluede in the key)</span>
 
 <span class="sd">    If &quot;conda-env&quot; is installed on the system, the `env_export` essentially</span>
 <span class="sd">    holds the infomation from &quot;conda env export -n root&quot; as a dictionary. The</span>
@@ -162,51 +173,69 @@
         <span class="kn">import</span> <span class="nn">conda.config</span>
         <span class="kn">import</span> <span class="nn">conda.install</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Failed&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Failed: Conda not importable&#39;</span><span class="p">}</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">conda_env.env</span>
-        <span class="n">has_conda_env</span> <span class="o">=</span> <span class="bp">True</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="n">has_conda_env</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="c1"># Conda info + linked modules</span>
+    <span class="k">if</span> <span class="n">_parse_version</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">_parse_version</span><span class="p">(</span><span class="s1">&#39;4.2.0&#39;</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">conda.models.channel</span>
+            <span class="kn">import</span> <span class="nn">conda.base.context</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Failed: Conda context not importable&#39;</span><span class="p">}</span>
+        <span class="n">conda_channel_urls</span> <span class="o">=</span> <span class="n">conda</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">prioritize_channels</span><span class="p">(</span>
+            <span class="n">conda</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span>
 
-    <span class="c"># Ugly hack to silence the</span>
-    <span class="c"># &quot;Using Anaconda Cloud api site https://api.anaconda.org&quot;</span>
-    <span class="c"># message being sent to stderr by the binstar/anaconda client.</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">null</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">_catch_stderr</span><span class="p">(</span><span class="n">null</span><span class="p">):</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Ugly hack to silence the</span>
+        <span class="c1"># &quot;Using Anaconda Cloud api site https://api.anaconda.org&quot;</span>
+        <span class="c1"># message being sent to stderr by the binstar/anaconda client.</span>
+        <span class="k">with</span> <span class="n">_silence_stderr</span><span class="p">():</span>
             <span class="n">conda_channel_urls</span> <span class="o">=</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_channel_urls</span><span class="p">()</span>
 
-    <span class="n">conda_info</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;platform&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">subdir</span><span class="p">,</span>
-                  <span class="s">&#39;conda_version&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
-                  <span class="s">&#39;root_prefix&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span>
-                  <span class="s">&#39;default_prefix&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">default_prefix</span><span class="p">,</span>
-                  <span class="s">&#39;envs_dirs&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">envs_dirs</span><span class="p">),</span>
-                  <span class="s">&#39;package_cache&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pkgs_dirs</span><span class="p">),</span>
-                  <span class="s">&#39;channels&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda_channel_urls</span><span class="p">),</span>
-                  <span class="s">&#39;config_file&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">rc_path</span><span class="p">),</span>
-                  <span class="s">&#39;is_foreign_system&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">foreign</span><span class="p">)),</span>
-                  <span class="s">&#39;linked_modules&#39;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span>
-                      <span class="n">conda</span><span class="o">.</span><span class="n">install</span><span class="o">.</span><span class="n">linked</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">))}</span>
+    <span class="n">conda_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;platform&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">subdir</span><span class="p">,</span>
+                  <span class="s1">&#39;conda_version&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
+                  <span class="s1">&#39;root_prefix&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span>
+                  <span class="s1">&#39;default_prefix&#39;</span><span class="p">:</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">default_prefix</span><span class="p">,</span>
+                  <span class="s1">&#39;envs_dirs&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">envs_dirs</span><span class="p">),</span>
+                  <span class="s1">&#39;package_cache&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pkgs_dirs</span><span class="p">),</span>
+                  <span class="s1">&#39;channels&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda_channel_urls</span><span class="p">),</span>
+                  <span class="s1">&#39;config_file&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">rc_path</span><span class="p">)}</span>
+
+    <span class="c1"># Ugly hack to silence the</span>
+    <span class="c1"># &quot;Using Anaconda Cloud api site https://api.anaconda.org&quot;</span>
+    <span class="c1"># message being sent to stderr by the binstar/anaconda client.</span>
+    <span class="k">with</span> <span class="n">_silence_stderr</span><span class="p">():</span>
+        <span class="n">linked_modules</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">install</span><span class="o">.</span><span class="n">linked</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">_parse_version</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">_parse_version</span><span class="p">(</span><span class="s1">&#39;4.2.0&#39;</span><span class="p">):</span>
+        <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;python_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">))</span>
+        <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;conda_is_private&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="n">conda</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">conda_private</span><span class="p">)</span>
+        <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;offline_mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="n">conda</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">offline</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;is_foreign_system&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="nb">bool</span><span class="p">(</span><span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">foreign</span><span class="p">))</span>
 
     <span class="n">modules_info</span> <span class="o">=</span> <span class="p">{</span><span class="n">module</span><span class="p">:</span>
-                    <span class="n">conda</span><span class="o">.</span><span class="n">install</span><span class="o">.</span><span class="n">is_linked</span><span class="p">(</span><span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;root_prefix&#39;</span><span class="p">],</span> <span class="n">module</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">]}</span>
-    <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;modules_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">modules_info</span><span class="p">)</span>
-    <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;linked_modules&#39;</span><span class="p">])</span>
+                    <span class="n">conda</span><span class="o">.</span><span class="n">install</span><span class="o">.</span><span class="n">is_linked</span><span class="p">(</span><span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;root_prefix&#39;</span><span class="p">],</span> <span class="n">module</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">linked_modules</span><span class="p">}</span>
+    <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;modules_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">modules_info</span><span class="p">)</span>
+    <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;linked_modules&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">linked_modules</span><span class="p">)</span>
+    <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Succeeded&#39;</span>
 
-    <span class="k">if</span> <span class="n">has_conda_env</span><span class="p">:</span>
-        <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;env_export&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+    <span class="c1"># Conda env export</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">conda_env.env</span>
+        <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;env_export&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
             <span class="n">conda_env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">from_environment</span><span class="p">(</span>
-                <span class="s">&#39;root&#39;</span><span class="p">,</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;env_export&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Failed: conda-env not available&#39;</span>
+                <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">conda</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">conda_info</span><span class="p">[</span><span class="s1">&#39;env_export&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Failed: conda-env not available&#39;</span>
 
-    <span class="n">conda_info</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Succeeded&#39;</span>
+    <span class="k">return</span> <span class="n">conda_info</span></div>
 
-    <span class="k">return</span> <span class="n">conda_info</span>
 
-</div>
 <div class="viewcode-block" id="get_datetime"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_datetime">[docs]</a><span class="k">def</span> <span class="nf">get_datetime</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a dictionary holding the current date and time.</span>
@@ -233,23 +262,23 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">date_time</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;today&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()),</span>
-                 <span class="s">&#39;utcnow&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span>
-                 <span class="s">&#39;pretty_utc&#39;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
-                 <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Succeeded&#39;</span><span class="p">}</span>
+    <span class="n">date_time</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;today&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()),</span>
+                 <span class="s1">&#39;utcnow&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span>
+                 <span class="s1">&#39;pretty_utc&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Succeeded&#39;</span><span class="p">}</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">date_time</span><span class="p">[</span><span class="s">&#39;pretty_utc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
-            <span class="n">date_time</span><span class="p">[</span><span class="s">&#39;utcnow&#39;</span><span class="p">],</span> <span class="s">&#39;</span><span class="si">%c</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">date_time</span><span class="p">[</span><span class="s1">&#39;pretty_utc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+            <span class="n">date_time</span><span class="p">[</span><span class="s1">&#39;utcnow&#39;</span><span class="p">],</span> <span class="s1">&#39;</span><span class="si">%c</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">date_time</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Failed&#39;</span>
+        <span class="n">date_time</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Failed&#39;</span>
 
-    <span class="n">date_time</span><span class="p">[</span><span class="s">&#39;utcnow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">date_time</span><span class="p">[</span><span class="s">&#39;utcnow&#39;</span><span class="p">])</span>
+    <span class="n">date_time</span><span class="p">[</span><span class="s1">&#39;utcnow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">date_time</span><span class="p">[</span><span class="s1">&#39;utcnow&#39;</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">date_time</span>
+    <span class="k">return</span> <span class="n">date_time</span></div>
 
-</div>
+
 <div class="viewcode-block" id="get_git_revision"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_git_revision">[docs]</a><span class="k">def</span> <span class="nf">get_git_revision</span><span class="p">(</span><span class="n">git_root_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a dictionary containing information about the current git revision.</span>
@@ -289,7 +318,7 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;git_root_dir&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;git_root_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
@@ -299,23 +328,23 @@
             <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_root_dir</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span>
-                <span class="s">&#39;The git_root_dir directory &quot;{!r}&quot;.format(git_root_dir)&#39;</span> <span class="o">+</span>
-                <span class="s">&#39;does not exist&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;The git_root_dir directory &quot;{!r}&quot;.format(git_root_dir)&#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;does not exist&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&#39;tag&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-                <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;describe&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;describe&#39;</span><span class="p">],</span>
                 <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
-            <span class="s">&#39;branch&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-                <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;describe&#39;</span><span class="p">,</span> <span class="s">&#39;--all&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;branch&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;describe&#39;</span><span class="p">,</span> <span class="s1">&#39;--all&#39;</span><span class="p">],</span>
                 <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
-            <span class="s">&#39;remote&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-                <span class="p">[</span><span class="s">&#39;git&#39;</span><span class="p">,</span> <span class="s">&#39;remote&#39;</span><span class="p">,</span> <span class="s">&#39;-v&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;remote&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;remote&#39;</span><span class="p">,</span> <span class="s1">&#39;-v&#39;</span><span class="p">],</span>
                 <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()),</span>
-            <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Succeeded&#39;</span><span class="p">}</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Succeeded&#39;</span><span class="p">}</span>
 
     <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -323,9 +352,9 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">e_output</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span>
 
-        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Failed: CallProcessError&#39;</span><span class="p">,</span>
-                        <span class="s">&#39;returncode&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span>
-                        <span class="s">&#39;output&#39;</span><span class="p">:</span> <span class="n">e_output</span><span class="p">}</span>
+        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Failed: CallProcessError&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span>
+                        <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">e_output</span><span class="p">}</span>
 
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -333,15 +362,15 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">e_strerror</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">strerror</span>
 
-        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;Failed: OSError&#39;</span><span class="p">,</span>
-                        <span class="s">&#39;errno&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span><span class="p">,</span>
-                        <span class="s">&#39;strrror&#39;</span><span class="p">:</span> <span class="n">e_strerror</span><span class="p">}</span>
+        <span class="n">git_revision</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Failed: OSError&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;errno&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span><span class="p">,</span>
+                        <span class="s1">&#39;strrror&#39;</span><span class="p">:</span> <span class="n">e_strerror</span><span class="p">}</span>
 
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">git_revision</span>
+    <span class="k">return</span> <span class="n">git_revision</span></div>
 
-</div>
+
 <div class="viewcode-block" id="get_file_hashes"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_file_hashes">[docs]</a><span class="k">def</span> <span class="nf">get_file_hashes</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a dictionary with md5 and sha256 checksums of a file.</span>
@@ -362,27 +391,27 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;path&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;blocksize&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s">&#39;[1;inf)&#39;</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;blocksize&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;inf)&#39;</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="n">md5sum</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
     <span class="n">sha256sum</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_handle</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_handle</span><span class="p">:</span>
         <span class="n">buf</span> <span class="o">=</span> <span class="n">f_handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">buf</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+        <span class="k">while</span> <span class="n">buf</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
             <span class="n">md5sum</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
             <span class="n">sha256sum</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
             <span class="n">buf</span> <span class="o">=</span> <span class="n">f_handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
 
-    <span class="n">file_hashes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;md5sum&#39;</span><span class="p">:</span> <span class="n">md5sum</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span>
-                   <span class="s">&#39;sha256sum&#39;</span><span class="p">:</span> <span class="n">sha256sum</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()}</span>
+    <span class="n">file_hashes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;md5sum&#39;</span><span class="p">:</span> <span class="n">md5sum</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span>
+                   <span class="s1">&#39;sha256sum&#39;</span><span class="p">:</span> <span class="n">sha256sum</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()}</span>
 
-    <span class="k">return</span> <span class="n">file_hashes</span>
+    <span class="k">return</span> <span class="n">file_hashes</span></div>
 
-</div>
+
 <div class="viewcode-block" id="get_magni_config"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_config">[docs]</a><span class="k">def</span> <span class="nf">get_magni_config</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a dictionary holding the current configuration of Magni.</span>
@@ -406,16 +435,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">packages</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">_magni</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>
-                                     <span class="n">prefix</span><span class="o">=</span><span class="n">_magni</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+                                     <span class="n">prefix</span><span class="o">=</span><span class="n">_magni</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
 
     <span class="n">magni_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">ispkg</span> <span class="ow">in</span> <span class="n">packages</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">modname</span><span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">:]</span> <span class="o">==</span> <span class="s">&#39;._config&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">modname</span><span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;._config&#39;</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="s">&#39;_&#39;</span> <span class="o">+</span> <span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">configger</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                    <span class="n">settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">configger</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="c"># Skip base Configgers, e.g. cs.reconcstruction.config</span>
+                    <span class="c1"># Skip base Configgers, e.g. cs.reconcstruction.config</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">setting</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
@@ -424,14 +453,14 @@
 
                     <span class="n">magni_config</span><span class="p">[</span><span class="n">modname</span><span class="p">[:</span><span class="o">-</span><span class="mi">7</span><span class="p">]</span> <span class="o">+</span> <span class="n">modname</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:]]</span> <span class="o">=</span> <span class="n">settings</span>
 
-        <span class="n">magni_config</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Succeeded&#39;</span>
+        <span class="n">magni_config</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Succeeded&#39;</span>
 
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="n">magni_config</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Failed&#39;</span>
+        <span class="n">magni_config</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Failed&#39;</span>
 
-    <span class="k">return</span> <span class="n">magni_config</span>
+    <span class="k">return</span> <span class="n">magni_config</span></div>
 
-</div>
+
 <div class="viewcode-block" id="get_magni_info"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_magni_info">[docs]</a><span class="k">def</span> <span class="nf">get_magni_info</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a string representation of the output of help(magni).</span>
@@ -450,11 +479,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">magni_info</span> <span class="o">=</span> <span class="n">pydoc</span><span class="o">.</span><span class="n">render_doc</span><span class="p">(</span><span class="n">_magni</span><span class="p">)</span>
-    <span class="n">magni_info</span><span class="p">,</span> <span class="n">subs</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">subn</span><span class="p">(</span><span class="s">r&#39;\x08([A-Z]|[a-z]|_)?&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">magni_info</span><span class="p">)</span>
+    <span class="n">magni_info</span><span class="p">,</span> <span class="n">subs</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">subn</span><span class="p">(</span><span class="s1">r&#39;\x08([A-Z]|[a-z]|_)?&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">magni_info</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s">&#39;help_magni&#39;</span><span class="p">:</span> <span class="n">magni_info</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;help_magni&#39;</span><span class="p">:</span> <span class="n">magni_info</span><span class="p">}</span></div>
 
-</div>
+
 <div class="viewcode-block" id="get_platform_info"><a class="viewcode-back" href="../../../magni.reproducibility._annotation.html#magni.reproducibility._annotation.get_platform_info">[docs]</a><span class="k">def</span> <span class="nf">get_platform_info</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a dictionary containing information about the system platform.</span>
@@ -498,45 +527,42 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">platform_info</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;system&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()),</span>
-                     <span class="s">&#39;node&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">()),</span>
-                     <span class="s">&#39;release&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">()),</span>
-                     <span class="s">&#39;version&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">version</span><span class="p">()),</span>
-                     <span class="s">&#39;machine&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()),</span>
-                     <span class="s">&#39;processor&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">()),</span>
-                     <span class="s">&#39;python&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()),</span>
-                     <span class="s">&#39;libc&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">libc_ver</span><span class="p">()),</span>
-                     <span class="s">&#39;linux&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">linux_distribution</span><span class="p">()),</span>
-                     <span class="s">&#39;mac_os&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">mac_ver</span><span class="p">()),</span>
-                     <span class="s">&#39;win32&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">win32_ver</span><span class="p">()),</span>
-                     <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;All OK&#39;</span><span class="p">}</span>
+    <span class="n">platform_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;system&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()),</span>
+                     <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">()),</span>
+                     <span class="s1">&#39;release&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">()),</span>
+                     <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">version</span><span class="p">()),</span>
+                     <span class="s1">&#39;machine&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()),</span>
+                     <span class="s1">&#39;processor&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">()),</span>
+                     <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()),</span>
+                     <span class="s1">&#39;libc&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">libc_ver</span><span class="p">()),</span>
+                     <span class="s1">&#39;linux&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">linux_distribution</span><span class="p">()),</span>
+                     <span class="s1">&#39;mac_os&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">mac_ver</span><span class="p">()),</span>
+                     <span class="s1">&#39;win32&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">win32_ver</span><span class="p">()),</span>
+                     <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;All OK&#39;</span><span class="p">}</span>
 
-    <span class="k">if</span> <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;processor&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">platform_info</span><span class="p">[</span><span class="s1">&#39;processor&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;processor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
-                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;lscpu&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
-            <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Used lscpu in processor query&#39;</span>
+            <span class="n">platform_info</span><span class="p">[</span><span class="s1">&#39;processor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;lscpu&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="n">platform_info</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Used lscpu in processor query&#39;</span>
 
         <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
-            <span class="n">platform_info</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Processor query failed&#39;</span>
+            <span class="n">platform_info</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Processor query failed&#39;</span>
 
-    <span class="k">return</span> <span class="n">platform_info</span>
+    <span class="k">return</span> <span class="n">platform_info</span></div>
 
-</div>
+
 <span class="nd">@contextlib.contextmanager</span>
-<span class="k">def</span> <span class="nf">_catch_stderr</span><span class="p">(</span><span class="n">catcher</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_silence_stderr</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A context manager for catching stderr.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    catcher : file-like</span>
-<span class="sd">        The file-like object which is to catch stderr.</span>
+<span class="sd">    A context manager for silencing stderr.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_stderr</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">catcher</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">null</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">null</span>
+
     <span class="k">yield</span>
 
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">_stderr</span>
@@ -555,9 +581,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -570,14 +593,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

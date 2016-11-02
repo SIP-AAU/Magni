@@ -12,6 +12,11 @@ interface of the given family of reconstruction algorithms.
 
 Routine listings
 ----------------
+amp
+    Subpackage providing implementations of Approximate Message Passing (AMP).
+gamp
+    Subpackage providing implementations of Generalised Approximate Message
+    Passing (GAMP).
 it
     Subpackage providing implementations of Iterative Thresholding (IT).
 iht
@@ -22,6 +27,8 @@ sl0
 
 """
 
+from magni.cs.reconstruction import amp
+from magni.cs.reconstruction import gamp
 from magni.cs.reconstruction import it
 from magni.cs.reconstruction import iht
 from magni.cs.reconstruction import sl0

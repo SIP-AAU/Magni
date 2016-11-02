@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.reconstruction.iht package &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.cs.reconstruction.iht package &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.cs.reconstruction package" href="magni.cs.reconstruction.html" />
     <link rel="next" title="magni.cs.reconstruction.iht._config module" href="magni.cs.reconstruction.iht._config.html" />
-    <link rel="prev" title="magni.cs.reconstruction package" href="magni.cs.reconstruction.html" /> 
+    <link rel="prev" title="magni.cs.reconstruction.gamp.stop_criterion module" href="magni.cs.reconstruction.gamp.stop_criterion.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -41,9 +41,9 @@
           <a href="magni.cs.reconstruction.iht._config.html" title="magni.cs.reconstruction.iht._config module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="magni.cs.reconstruction.html" title="magni.cs.reconstruction package"
+          <a href="magni.cs.reconstruction.gamp.stop_criterion.html" title="magni.cs.reconstruction.gamp.stop_criterion module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.cs.reconstruction.html" accesskey="U">magni.cs.reconstruction package</a> &raquo;</li> 
@@ -114,35 +114,32 @@ Use the more general <a class="reference internal" href="magni.cs.reconstruction
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>y</strong> (<em>ndarray</em>) &#8211;
-The m x 1 measurement vector.</li>
-<li><strong>A</strong> (<em>ndarray</em>) &#8211;
-The m x n matrix which is the product of the measurement matrix and the
+<li><strong>y</strong> (<em>ndarray</em>) &#8211; The m x 1 measurement vector.</li>
+<li><strong>A</strong> (<em>ndarray</em>) &#8211; The m x n matrix which is the product of the measurement matrix and the
 dictionary matrix.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>alpha</strong> (<em>ndarray</em>) &#8211;
-The n x 1 reconstructed coefficient vector.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>alpha</strong> (<em>ndarray</em>) &#8211; The n x 1 reconstructed coefficient vector.</p>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
 <p>For example, recovering a vector from random measurements</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.cs.reconstruction.iht</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">config</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.cs.reconstruction.iht</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">config</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">6021</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">alpha_hat</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alpha_hat</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span>
 <span class="go">array([[ 0.99836297],</span>
 <span class="go">       [ 1.00029086],</span>
@@ -156,14 +153,14 @@ The n x 1 reconstructed coefficient vector.</p>
 <span class="go">       [ 0.9983772 ],</span>
 <span class="go">       [ 0.        ],</span>
 <span class="go">       [ 0.        ]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">alpha_hat</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">alpha_hat</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="go">10</span>
 </pre></div>
 </div>
 <p>Or recovering the same only using a fixed threshold level:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;threshold&#39;</span><span class="p">:</span> <span class="s">&#39;oracle&#39;</span><span class="p">,</span> <span class="s">&#39;threshold_fixed&#39;</span><span class="p">:</span> <span class="mf">10.</span><span class="o">/</span><span class="mi">80</span><span class="p">})</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="s1">&#39;oracle&#39;</span><span class="p">,</span> <span class="s1">&#39;threshold_fixed&#39;</span><span class="p">:</span> <span class="mf">10.</span><span class="o">/</span><span class="mi">80</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">alpha_hat_2</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alpha_hat_2</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span>
@@ -181,7 +178,7 @@ The n x 1 reconstructed coefficient vector.</p>
 <span class="go">       [ 0.        ]])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">alpha_hat_2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">alpha_hat_2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="go">10</span>
 </pre></div>
 </div>
@@ -214,8 +211,8 @@ The n x 1 reconstructed coefficient vector.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="magni.cs.reconstruction.html"
-                        title="previous chapter">magni.cs.reconstruction package</a></p>
+  <p class="topless"><a href="magni.cs.reconstruction.gamp.stop_criterion.html"
+                        title="previous chapter">magni.cs.reconstruction.gamp.stop_criterion module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="magni.cs.reconstruction.iht._config.html"
                         title="next chapter">magni.cs.reconstruction.iht._config module</a></p>
@@ -227,9 +224,6 @@ The n x 1 reconstructed coefficient vector.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -246,9 +240,9 @@ The n x 1 reconstructed coefficient vector.</p>
           <a href="magni.cs.reconstruction.iht._config.html" title="magni.cs.reconstruction.iht._config module"
              >next</a> |</li>
         <li class="right" >
-          <a href="magni.cs.reconstruction.html" title="magni.cs.reconstruction package"
+          <a href="magni.cs.reconstruction.gamp.stop_criterion.html" title="magni.cs.reconstruction.gamp.stop_criterion module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.cs.reconstruction.html" >magni.cs.reconstruction package</a> &raquo;</li> 
@@ -256,8 +250,8 @@ The n x 1 reconstructed coefficient vector.</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

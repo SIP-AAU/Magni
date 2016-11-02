@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition._simulation &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.cs.phase_transition._simulation &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <h1>Source code for magni.cs.phase_transition._simulation</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
 <span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
@@ -73,6 +73,8 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -84,8 +86,13 @@
 <span class="kn">from</span> <span class="nn">magni.utils.multiprocessing</span> <span class="kn">import</span> <span class="n">process</span> <span class="k">as</span> <span class="n">_process</span>
 <span class="kn">from</span> <span class="nn">magni.utils</span> <span class="kn">import</span> <span class="n">split_path</span> <span class="k">as</span> <span class="n">_split_path</span>
 
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">iter_range</span> <span class="o">=</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">iter_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">32</span><span class="p">)</span>
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._simulation.html#magni.cs.phase_transition._simulation.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._simulation.html#magni.cs.phase_transition._simulation.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">pre_simulation_hook</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simulate a reconstruction algorithm.</span>
 
@@ -99,12 +106,16 @@
 <span class="sd">    path : str</span>
 <span class="sd">        The path of the HDF5 database where the results should be stored.</span>
 <span class="sd">    label : str</span>
-<span class="sd">        The label assigned to the simulation results.</span>
+<span class="sd">        The label assigned to the simulation results</span>
+<span class="sd">    pre_simumlation_hook : callable</span>
+<span class="sd">        A handle to a callable which should be run *just* before the call to</span>
+<span class="sd">        the reconstruction algorithm (the default is None, which implies that</span>
+<span class="sd">        no pre hook is run).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">_split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.tmp&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span>
-    <span class="n">tmp_file</span> <span class="o">=</span> <span class="n">tmp_dir</span> <span class="o">+</span> <span class="n">label</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="s">&#39;#&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.hdf5&#39;</span>
+    <span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">_split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.tmp&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span>
+    <span class="n">tmp_file</span> <span class="o">=</span> <span class="n">tmp_dir</span> <span class="o">+</span> <span class="n">label</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.hdf5&#39;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span>
@@ -113,31 +124,36 @@
         <span class="n">_backup</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">)</span>
 
     <span class="n">done</span> <span class="o">=</span> <span class="n">_backup</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">)</span>
-    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;delta&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">]),</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;monte_carlo&#39;</span><span class="p">]]</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;seed&#39;</span><span class="p">])</span>
-    <span class="n">seeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">])]</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">])</span>
+    <span class="n">seeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">iter_range</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
-    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[(</span><span class="n">algorithm</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">seeds</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">tmp_file</span><span class="p">)</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[(</span><span class="n">algorithm</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">seeds</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">tmp_file</span><span class="p">,</span> <span class="n">pre_simulation_hook</span><span class="p">)</span>
              <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
              <span class="k">if</span> <span class="ow">not</span> <span class="n">done</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]]</span>
 
-    <span class="n">_process</span><span class="p">(</span><span class="n">_simulate</span><span class="p">,</span> <span class="n">args_list</span><span class="o">=</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="n">_process</span><span class="p">(</span><span class="n">_simulate</span><span class="p">,</span> <span class="n">args_list</span><span class="o">=</span><span class="n">tasks</span><span class="p">,</span> <span class="n">maxtasks</span><span class="o">=</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;maxpoints&#39;</span><span class="p">])</span>
 
-    <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">stat_time</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">time</span><span class="p">[:]</span>
         <span class="n">stat_dist</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">dist</span><span class="p">[:]</span>
+        <span class="n">stat_mse</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">mse</span><span class="p">[:]</span>
+        <span class="n">stat_norm</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">norm</span><span class="p">[:]</span>
 
-    <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="n">stat_time</span><span class="p">,</span> <span class="n">createparents</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s">&#39;dist&#39;</span><span class="p">,</span> <span class="n">stat_dist</span><span class="p">,</span> <span class="n">createparents</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">stat_time</span><span class="p">,</span> <span class="n">createparents</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s1">&#39;dist&#39;</span><span class="p">,</span> <span class="n">stat_dist</span><span class="p">,</span> <span class="n">createparents</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s1">&#39;mse&#39;</span><span class="p">,</span> <span class="n">stat_mse</span><span class="p">,</span> <span class="n">createparents</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s1">&#39;norm&#39;</span><span class="p">,</span> <span class="n">stat_norm</span><span class="p">,</span> <span class="n">createparents</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">removedirs</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">removedirs</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span></div>
 
-</div>
-<div class="viewcode-block" id="_simulate"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._simulation.html#magni.cs.phase_transition._simulation._simulate">[docs]</a><span class="k">def</span> <span class="nf">_simulate</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">ij_tuple</span><span class="p">,</span> <span class="n">seeds</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+<div class="viewcode-block" id="_simulate"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._simulation.html#magni.cs.phase_transition._simulation._simulate">[docs]</a><span class="k">def</span> <span class="nf">_simulate</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">ij_tuple</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">pre_simulation_hook</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run a number of monte carlo simulations in a single delta-rho point.</span>
 
@@ -156,45 +172,80 @@
 <span class="sd">        The delta-index of the point in the delta-rho grid.</span>
 <span class="sd">    j : int</span>
 <span class="sd">        The rho-index of the point in the delta-rho grid.</span>
-<span class="sd">    seeds : ndarray</span>
-<span class="sd">        The seeds to pass to numpy.random when generating the problem suite</span>
-<span class="sd">        instances.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        The seed to use in the random number generator when generating the</span>
+<span class="sd">        problem suite instances.</span>
 <span class="sd">    path : str</span>
 <span class="sd">        The path of the HDF5 backup database.</span>
+<span class="sd">    pre_simulation_hook : callable</span>
+<span class="sd">        A handle to a callable which should be run *just* before the call to</span>
+<span class="sd">        the reconstruction algorithm (the default is None, which implies that</span>
+<span class="sd">        no pre hook is run).</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
+<span class="sd">    magni.cs.phase_transition._config: Configuration options.</span>
 <span class="sd">    magni.cs.phase_transition._data.generate_matrix : Matrix generation.</span>
 <span class="sd">    magni.cs.phase_transition._data.generate_vector : Coefficient vector</span>
 <span class="sd">        generation.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The `pre_simulation_hook` may be used to setup the simulation to match the</span>
+<span class="sd">    specfic simulation parameters, e.g. if an oracle estimator is used in the</span>
+<span class="sd">    reconstruction algorithm. The `pre_simulation_hook` takes one argument</span>
+<span class="sd">    which is the locals() dict.</span>
+
+<span class="sd">    The following reconstruction statistics are computed:</span>
+
+<span class="sd">    * time: Measured algorithm run time in seconds.</span>
+<span class="sd">    * dist: Normalised mean squared error (NMSE) - (</span>
+<span class="sd">      ||alpha_hat - alpha|| / ||alpha||)^2</span>
+<span class="sd">    * mse: Mean squared error (MSE) - 1/n * ||alpha_hat - alpha||^2</span>
+<span class="sd">    * norm: True vector norm - ||alpha||</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">ij_tuple</span>
 
-    <span class="n">n</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;problem_size&#39;</span><span class="p">]</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;delta&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">m</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]))</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;problem_size&#39;</span><span class="p">]</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">m</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]))</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span>
 
-    <span class="n">stat_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;monte_carlo&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">stat_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;monte_carlo&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">stat_dist</span> <span class="o">=</span> <span class="n">stat_time</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">stat_mse</span> <span class="o">=</span> <span class="n">stat_time</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">stat_norm</span> <span class="o">=</span> <span class="n">stat_time</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;monte_carlo&#39;</span><span class="p">]):</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seeds</span><span class="p">[</span><span class="n">l</span><span class="p">])</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;monte_carlo&#39;</span><span class="p">]):</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_matrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
             <span class="n">alpha</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_vector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_noise</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">+</span> <span class="n">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">pre_simulation_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">pre_simulation_hook</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
 
             <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="n">alpha_hat</span> <span class="o">=</span> <span class="n">algorithm</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+            <span class="n">alpha_hat</span> <span class="o">=</span> <span class="n">algorithm</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;algorithm_kwargs&#39;</span><span class="p">])</span>
             <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-            <span class="n">stat_time</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
-            <span class="n">stat_dist</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">alpha_hat</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">/</span>
-                            <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">error_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">alpha_hat</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span>
+            <span class="n">alpha_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
 
-    <span class="n">_backup</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">stat_time</span><span class="p">,</span> <span class="n">stat_dist</span><span class="p">)</span></div>
+            <span class="n">stat_time</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+            <span class="n">stat_dist</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">error_norm</span> <span class="o">/</span> <span class="n">alpha_norm</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">stat_mse</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">n</span> <span class="o">*</span> <span class="n">error_norm</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">stat_norm</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha_norm</span>
+
+    <span class="n">_backup</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">stat_time</span><span class="p">,</span> <span class="n">stat_dist</span><span class="p">,</span> <span class="n">stat_mse</span><span class="p">,</span> <span class="n">stat_norm</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -210,9 +261,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -225,14 +273,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

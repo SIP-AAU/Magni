@@ -82,6 +82,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Scientific/Engineering :: Image Recognition',
         'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Scientific/Engineering :: Mathematics',
@@ -99,7 +100,8 @@ setup(
     install_requires=['numpy>=1.8',
                       'scipy>=0.13',
                       'tables>=3.1',
-                      'matplotlib>=1.3'],
+                      'matplotlib>=1.3',
+                      'setuptools>=11.3'],
 
     # Data files that are part of package
     package_data={},

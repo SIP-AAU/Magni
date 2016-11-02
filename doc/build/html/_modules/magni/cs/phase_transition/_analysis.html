@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition._analysis &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.cs.phase_transition._analysis &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <h1>Source code for magni.cs.phase_transition._analysis</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
 <span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
@@ -91,8 +91,10 @@
 
 <span class="sd">    The simulation results should be present in the HDF5 database specified by</span>
 <span class="sd">    `path` in the pytables group specified by `label` in an array named &#39;dist&#39;.</span>
-<span class="sd">    The determined phase transition is stored in the same HDF5 database, in the</span>
-<span class="sd">    same pytables group in an array named &#39;phase_transition&#39;.</span>
+<span class="sd">    The determined phase transition (50% curve) is stored in the same HDF5</span>
+<span class="sd">    database, in the same HDF group in an array named &#39;phase_transition&#39;.</span>
+<span class="sd">    Additionally, the 10%, 25%, 75%, and 90% percentiles are stored in an array</span>
+<span class="sd">    named &#39;phase_transition_percentiles&#39;.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -108,41 +110,81 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    A simulation is considered successful if the simulation result is less than</span>
-<span class="sd">    10 to the power of -4.</span>
+<span class="sd">    a normalised mean squared error tolerance computed as 10^(-SNR/10) wtih SNR</span>
+<span class="sd">    configured in the configuration module.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="o">+</span> <span class="s">&#39;/phase_transition&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;monte_carlo&#39;</span><span class="p">]</span>
+    <span class="n">percentiles</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
 
-            <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;/phase_transition&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;/dist&#39;</span><span class="p">)[:]</span>
+            <span class="c1"># Set NaNs to value &gt; NMSE_tolerance, i.e. assume failure</span>
+            <span class="n">dist</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dist</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;SNR&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
 
-            <span class="n">rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;delta&#39;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;logit_solver&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;built-in&#39;</span><span class="p">:</span>
+                <span class="c1"># Use &quot;simple&quot; built-in solver</span>
+                <span class="n">rho</span> <span class="o">=</span> <span class="n">_built_in_logit_solver</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;logit_solver&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;sklearn&#39;</span><span class="p">:</span>
+                <span class="c1"># Use scikit learn solver</span>
+                <span class="n">rho</span> <span class="o">=</span> <span class="n">_sklearn_logit_solver</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">)</span>
 
-            <span class="n">dist</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="o">+</span> <span class="s">&#39;/dist&#39;</span><span class="p">)[:]</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s1">&#39;phase_transition&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s1">&#39;phase_transition_percentiles&#39;</span><span class="p">,</span>
+                           <span class="n">rho</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
 
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;delta&#39;</span><span class="p">])):</span>
-                <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;delta&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;problem_size&#39;</span><span class="p">])</span>
 
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">])):</span>
-                    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">var</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-                        <span class="n">var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">var</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">var</span> <span class="o">=</span> <span class="mf">0.</span>
+<div class="viewcode-block" id="_built_in_logit_solver"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._analysis.html#magni.cs.phase_transition._analysis._built_in_logit_solver">[docs]</a><span class="k">def</span> <span class="nf">_built_in_logit_solver</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fit a logistic regression model using the built-in solver.</span>
 
-                    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s">&#39;monte_carlo&#39;</span><span class="p">]):</span>
-                        <span class="n">z</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;monte_carlo&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
-                        <span class="n">y</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s">&#39;monte_carlo&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">1e-4</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dist : ndarray</span>
+<span class="sd">        The simulated signal &quot;distances&quot; in the phase space.</span>
+<span class="sd">    percentiles : list or tuple</span>
+<span class="sd">        The percentiles to estimate.</span>
 
-                <span class="n">rho</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_estimate_PT</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rho : ndarray</span>
+<span class="sd">        The &quot;len(percentiles)&quot;-by-&quot;len(delta)&quot; array of estimated phase</span>
+<span class="sd">        transition rho vectors. The phase transition rho vectors are</span>
+<span class="sd">        (in order): 50% (the phase transition esitmate), smaller to larger</span>
+<span class="sd">        percentiles.</span>
 
-            <span class="n">f</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="s">&#39;phase_transition&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-</div>
-<div class="viewcode-block" id="_estimate_PT"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._analysis.html#magni.cs.phase_transition._analysis._estimate_PT">[docs]</a><span class="k">def</span> <span class="nf">_estimate_PT</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">success</span><span class="p">):</span>
+    <span class="n">monte_carlo</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">monte_carlo</span>
+    <span class="n">NMSE_tolerance</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;SNR&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">percentiles</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">])))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">])):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;problem_size&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">var</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="mf">0.</span>
+
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">monte_carlo</span><span class="p">):</span>
+                <span class="n">z</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="n">monte_carlo</span> <span class="o">+</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
+                <span class="n">y</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="n">monte_carlo</span> <span class="o">+</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">NMSE_tolerance</span>
+
+        <span class="n">rho</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_estimate_PT</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rho</span></div>
+
+
+<div class="viewcode-block" id="_estimate_PT"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._analysis.html#magni.cs.phase_transition._analysis._estimate_PT">[docs]</a><span class="k">def</span> <span class="nf">_estimate_PT</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate the phase transition location for a given delta.</span>
 
@@ -155,6 +197,8 @@
 <span class="sd">        The rho values.</span>
 <span class="sd">    success : ndarray</span>
 <span class="sd">        The success indicators.</span>
+<span class="sd">    percentiles : list or tuple</span>
+<span class="sd">        The percentiles to estimate.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -172,40 +216,40 @@
     <span class="n">points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">success</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">success</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
-        <span class="c"># if none of the simulations were successful</span>
-        <span class="k">return</span> <span class="mi">0</span>
+        <span class="c1"># if none of the simulations were successful</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">percentiles</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">success</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">points</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">:</span>
-        <span class="c"># if all of the simulations were successful</span>
-        <span class="k">return</span> <span class="mi">1</span>
+        <span class="c1"># if all of the simulations were successful</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">percentiles</span><span class="p">)</span>
 
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">points</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">y</span><span class="p">[:</span><span class="n">points</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">points</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">success</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 
-    <span class="c"># note: z_i in the algorithm is z[i, :]^T in the implementation</span>
+    <span class="c1"># note: z_i in the algorithm is z[i, :]^T in the implementation</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">points</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
     <span class="n">z</span><span class="p">[:</span><span class="n">points</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">points</span><span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-        <span class="c"># p = [p_i]^T</span>
-        <span class="c"># p_i = exp(b^T z_i) / (1 + exp(b^T z_i))</span>
-        <span class="c"># p_i = 1 / (1 + exp(-z_i^T b))</span>
+        <span class="c1"># p = [p_i]^T</span>
+        <span class="c1"># p_i = exp(b^T z_i) / (1 + exp(b^T z_i))</span>
+        <span class="c1"># p_i = 1 / (1 + exp(-z_i^T b))</span>
         <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b</span><span class="p">)))</span>
 
-        <span class="c"># gradient</span>
-        <span class="c"># g = sum([(y_i - p_i) * z_i])</span>
+        <span class="c1"># gradient</span>
+        <span class="c1"># g = sum([(y_i - p_i) * z_i])</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span>
 
-        <span class="c"># Hessian</span>
-        <span class="c"># H = -sum([p_i * (1 - p_i) * z_i z_i^T])</span>
+        <span class="c1"># Hessian</span>
+        <span class="c1"># H = -sum([p_i * (1 - p_i) * z_i z_i^T])</span>
         <span class="n">H</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="c"># step</span>
+            <span class="c1"># step</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
-            <span class="c"># it results in convergence but is hardly a standard solution</span>
+            <span class="c1"># it results in convergence but is hardly a standard solution</span>
             <span class="n">det</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">det</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-100</span>
 
@@ -213,28 +257,81 @@
             <span class="n">s</span> <span class="o">=</span> <span class="n">Hinv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 
         <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">s</span>
-        <span class="c"># constrained to non-positive since the model would otherwise suggest</span>
-        <span class="c"># a better chance of reconstruction for higher rho</span>
+        <span class="c1"># constrained to non-positive since the model would otherwise suggest</span>
+        <span class="c1"># a better chance of reconstruction for higher rho</span>
         <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="n">g_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
         <span class="n">s_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="n">b_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 
-        <span class="c"># g_len &lt; 1e-12 : convergence</span>
-        <span class="c"># s_len &lt; 1e-3 : convergence</span>
-        <span class="c"># s_len / b_len &lt; 1e-12 : ... in case of large coefficients</span>
-        <span class="c"># the last two should probably be replaced by</span>
-        <span class="c">#     delta (-b[0] / b[1]) &lt; 1e-12</span>
-        <span class="c"># or something like that</span>
+        <span class="c1"># g_len &lt; 1e-12 : convergence</span>
+        <span class="c1"># s_len &lt; 1e-3 : convergence</span>
+        <span class="c1"># s_len / b_len &lt; 1e-12 : ... in case of large coefficients</span>
+        <span class="c1"># the last two should probably be replaced by</span>
+        <span class="c1">#     delta (-b[0] / b[1]) &lt; 1e-12</span>
+        <span class="c1"># or something like that</span>
         <span class="k">if</span> <span class="n">g_len</span> <span class="o">&lt;</span> <span class="mf">1e-12</span> <span class="ow">or</span> <span class="n">s_len</span> <span class="o">&lt;</span> <span class="mf">1e-3</span> <span class="ow">or</span> <span class="n">s_len</span> <span class="o">/</span> <span class="n">b_len</span> <span class="o">&lt;</span> <span class="mf">1e-12</span><span class="p">:</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">percentiles</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">percentiles</span><span class="p">):</span>
+                <span class="n">val</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">val</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">val</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">val</span>
 
-    <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span><span class="s">&#39;analysis.py: phase transition does not converge.&#39;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span><span class="s1">&#39;analysis.py: phase transition does not converge.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_sklearn_logit_solver"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._analysis.html#magni.cs.phase_transition._analysis._sklearn_logit_solver">[docs]</a><span class="k">def</span> <span class="nf">_sklearn_logit_solver</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fit a logistic regression model using the solver from scikit-learn.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dist : ndarray</span>
+<span class="sd">        The simulated signal &quot;distances&quot; in the phase space.</span>
+<span class="sd">    percentiles : list or tuple</span>
+<span class="sd">        The percentiles to estimate.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rho : ndarray</span>
+<span class="sd">        The &quot;len(percentiles)&quot;-by-&quot;len(delta)&quot; array of estimated phase</span>
+<span class="sd">        transition rho vectors. The phase transition rho vectors are</span>
+<span class="sd">        (in order): 50% (the phase transition esitmate), smaller to larger</span>
+<span class="sd">        percentiles.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+    <span class="n">NMSE_tolerance</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;SNR&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">random_state</span><span class="o">=</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">])</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">percentiles</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">])))</span>
+    <span class="n">monte_carlo</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">])):</span>
+        <span class="n">successes</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">NMSE_tolerance</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">successes</span><span class="p">):</span>
+            <span class="n">rho</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">successes</span><span class="p">):</span>
+            <span class="n">rho</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">successes</span><span class="p">),</span>
+                 <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">_conf</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">],</span> <span class="n">monte_carlo</span><span class="p">)))</span>
+            <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">successes</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="n">lr</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">lr</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+
+            <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">percentiles</span><span class="p">):</span>
+                <span class="n">rho</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">rho</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rho</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="n">k</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">rho</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">rho</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="n">k</span><span class="p">],</span> <span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rho</span></div>
 </pre></div>
 
           </div>
@@ -250,9 +347,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -265,14 +359,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

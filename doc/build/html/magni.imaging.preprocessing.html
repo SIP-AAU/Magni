@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.preprocessing module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.imaging.preprocessing module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.imaging.visualisation module" href="magni.imaging.visualisation.html" />
     <link rel="prev" title="magni.imaging.evaluation module" href="magni.imaging.evaluation.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.imaging.evaluation.html" title="magni.imaging.evaluation module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -72,28 +72,21 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> (<em>ndarray</em>) &#8211;
-The image that is to be detilted.</li>
-<li><strong>mask</strong> (<em>ndarray, optional</em>) &#8211;
-Bool array of the same size as <em class="xref py py-obj">img</em> indicating the pixels to use in
+<li><strong>img</strong> (<em>ndarray</em>) &#8211; The image that is to be detilted.</li>
+<li><strong>mask</strong> (<em>ndarray, optional</em>) &#8211; Bool array of the same size as <em class="xref py py-obj">img</em> indicating the pixels to use in
 detilt (the default is None, which implies, that the the entire image
 is used)</li>
-<li><strong>mode</strong> (<em>{&#8216;line_flatten&#8217;, &#8216;plane_flatten&#8217;}, optional</em>) &#8211;
-The type of detilting applied (the default is plane_flatten).</li>
-<li><strong>degree</strong> (<em>int, optional</em>) &#8211;
-The degree of the polynomial used in line flattening
+<li><strong>mode</strong> (<em>{&#8216;line_flatten&#8217;, &#8216;plane_flatten&#8217;}, optional</em>) &#8211; The type of detilting applied (the default is plane_flatten).</li>
+<li><strong>degree</strong> (<em>int, optional</em>) &#8211; The degree of the polynomial used in line flattening
 (the default is 1).</li>
-<li><strong>return_tilt</strong> (<em>bool, optional</em>) &#8211;
-If True, the detilted image and the estimated tilt is returned (the
+<li><strong>return_tilt</strong> (<em>bool, optional</em>) &#8211; If True, the detilted image and the estimated tilt is returned (the
 default is False).</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>img_detilt</strong> (<em>ndarray</em>) &#8211;
-Detilted image.</li>
-<li><strong>tilt</strong> (<em>ndarray, optional</em>) &#8211;
-The estimated tilt (image). Only returned if return_tilt is True.</li>
+<li><strong>img_detilt</strong> (<em>ndarray</em>) &#8211; Detilted image.</li>
+<li><strong>tilt</strong> (<em>ndarray, optional</em>) &#8211; The estimated tilt (image). Only returned if return_tilt is True.</li>
 </ul>
 </p>
 </td>
@@ -109,20 +102,20 @@ to all pixels.</p>
 the estimation of the tilt.</p>
 <p class="rubric">Examples</p>
 <p>For example, line flatten an image using a degree 1 polynomial</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.preprocessing</span> <span class="kn">import</span> <span class="n">detilt</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.preprocessing</span> <span class="k">import</span> <span class="n">detilt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">detilt</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;line_flatten&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">detilt</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;line_flatten&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">array([[-0.16666667,  0.33333333, -0.16666667],</span>
 <span class="go">       [-0.33333333,  0.66666667, -0.33333333],</span>
 <span class="go">       [-0.16666667,  0.33333333, -0.16666667]])</span>
 </pre></div>
 </div>
 <p>Or plane flatten the image based on a mask and return the tilt</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">im</span><span class="p">,</span> <span class="n">ti</span> <span class="o">=</span> <span class="n">detilt</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;plane_flatten&#39;</span><span class="p">,</span> <span class="n">return_tilt</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">im</span><span class="p">,</span> <span class="n">ti</span> <span class="o">=</span> <span class="n">detilt</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;plane_flatten&#39;</span><span class="p">,</span> <span class="n">return_tilt</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">im</span>
 <span class="go">array([[ 0.11111111, -0.66666667, -2.44444444],</span>
 <span class="go">       [-0.33333333,  0.88888889,  0.11111111],</span>
@@ -144,18 +137,14 @@ the estimation of the tilt.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> (<em>ndarray</em>) &#8211;
-The image from which the tilt is estimated.</li>
-<li><strong>mask</strong> (<em>ndarray, or None</em>) &#8211;
-If not None, a bool ndarray of the the shape as <em class="xref py py-obj">img</em> indicating which
+<li><strong>img</strong> (<em>ndarray</em>) &#8211; The image from which the tilt is estimated.</li>
+<li><strong>mask</strong> (<em>ndarray, or None</em>) &#8211; If not None, a bool ndarray of the the shape as <em class="xref py py-obj">img</em> indicating which
 pixels should be used in estimate of tilt.</li>
-<li><strong>degree</strong> (<em>int</em>) &#8211;
-The degree of the polynomial in the estimated line tilt.</li>
+<li><strong>degree</strong> (<em>int</em>) &#8211; The degree of the polynomial in the estimated line tilt.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tilt</strong> (<em>ndarray</em>) &#8211;
-The estimated tilt.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tilt</strong> (<em>ndarray</em>) &#8211; The estimated tilt.</p>
 </td>
 </tr>
 </tbody>
@@ -171,16 +160,13 @@ The estimated tilt.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> (<em>ndarray</em>) &#8211;
-The image from which the tilt is estimated.</li>
-<li><strong>mask</strong> (<em>ndarray, or None</em>) &#8211;
-If not None, a bool ndarray of the the shape as <em class="xref py py-obj">img</em> indicating which
+<li><strong>img</strong> (<em>ndarray</em>) &#8211; The image from which the tilt is estimated.</li>
+<li><strong>mask</strong> (<em>ndarray, or None</em>) &#8211; If not None, a bool ndarray of the the shape as <em class="xref py py-obj">img</em> indicating which
 pixels should be used in estimate of tilt.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tilt</strong> (<em>ndarray</em>) &#8211;
-The estimated tilt.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tilt</strong> (<em>ndarray</em>) &#8211; The estimated tilt.</p>
 </td>
 </tr>
 </tbody>
@@ -218,9 +204,6 @@ The estimated tilt.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -239,15 +222,15 @@ The estimated tilt.</p>
         <li class="right" >
           <a href="magni.imaging.evaluation.html" title="magni.imaging.evaluation module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

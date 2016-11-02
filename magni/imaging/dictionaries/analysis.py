@@ -18,7 +18,7 @@ show_psnr_energy_rolloff(img, reconstructions, fractions, return_vals=False,
     Function to show PSNR and retained energy rolloff of reconstructions.
 show_reconstructions(coefficients, reconstructions, transform, fractions,
     output_path=None, fig_ext='pdf')
-    Function to show tranforms reconstructions and coefficients.
+    Function to show transforms reconstructions and coefficients.
 show_sorted_coefficients(img, transforms, output_path=None, fig_ext='pdf')
     Function to show a plot of transform coefficients in sorted order.
 show_transform_coefficients(img, transforms, output_path=None, fig_ext='pdf')
@@ -603,7 +603,7 @@ def show_transform_coefficients(img, transforms, output_path=None,
     """
     Show the transform coefficients.
 
-    The transform coefficient of `img` are shown for the `tranforms`. If
+    The transform coefficient of `img` are shown for the `transforms`. If
     `output_path` is not None, the resulting figure and data used in the figure
     are saved.
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.multiprocessing._processing module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.utils.multiprocessing._processing module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.utils.multiprocessing package" href="magni.utils.multiprocessing.html" />
     <link rel="next" title="magni.utils.multiprocessing._util module" href="magni.utils.multiprocessing._util.html" />
     <link rel="prev" title="magni.utils.multiprocessing._config module" href="magni.utils.multiprocessing._config.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.utils.multiprocessing._config.html" title="magni.utils.multiprocessing._config module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.utils.multiprocessing.html" accesskey="U">magni.utils.multiprocessing package</a> &raquo;</li> 
@@ -83,31 +83,24 @@ executed in a seperate process using the concept of a processing pool.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<em>function</em>) &#8211;
-A function handle to the function which the calls should be mapped to.</li>
-<li><strong>namespace</strong> (<em>dict, optional</em>) &#8211;
-A dict whose keys and values should be globally available in func (the
+<li><strong>func</strong> (<em>function</em>) &#8211; A function handle to the function which the calls should be mapped to.</li>
+<li><strong>namespace</strong> (<em>dict, optional</em>) &#8211; A dict whose keys and values should be globally available in func (the
 default is an empty dict).</li>
-<li><strong>args_list</strong> (<em>list or tuple, optional</em>) &#8211;
-A sequence of argument lists for the function calls (the default is
+<li><strong>args_list</strong> (<em>list or tuple, optional</em>) &#8211; A sequence of argument lists for the function calls (the default is
 None, which implies that no arguments are used in the calls).</li>
-<li><strong>kwargs_list</strong> (<em>list or tuple, optional</em>) &#8211;
-A sequence of keyword argument dicts for the function calls (the
+<li><strong>kwargs_list</strong> (<em>list or tuple, optional</em>) &#8211; A sequence of keyword argument dicts for the function calls (the
 default is None, which implies that no keyword arguments are used in
 the calls).</li>
-<li><strong>maxtasks</strong> (<em>int, optional</em>) &#8211;
-The maximum number of tasks of a process before it is replaced by a new
+<li><strong>maxtasks</strong> (<em>int, optional</em>) &#8211; The maximum number of tasks of a process before it is replaced by a new
 process (the default is None, which implies that processes are not
 replaced).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>results</strong> (<em>list</em>) &#8211;
-A list with the results from the function calls.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>results</strong> (<em>list</em>) &#8211; A list with the results from the function calls.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">BrokenPoolError</span></code> &#8211;
-If using the <em class="xref py py-obj">concurrent.futures</em> module and one or more workers
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">BrokenPoolError</span></code> &#8211; If using the <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code> module and one or more workers
 terminate abrubtly with the automatic broken pool restart funtionality
 disabled.</p>
 </td>
@@ -135,13 +128,13 @@ Otherwise, the map functionality of a processing pool is used.</p>
 </ul>
 <p>As of Python 3.2, two different, though quite similar, modules exist in the
 standard library for managing processing pools: <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code> and
-<em class="xref py py-obj">concurrent.futures</em>. According to Python core contributor Jesse Noller,
+<code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code>. According to Python core contributor Jesse Noller,
 the plan is to eventually make concurrent.futures the only interface to the
 high level processing pools (futures), whereas multiprocessing is supposed
 to serve more low level needs for individually handling processes, locks,
 queues, etc. (see <a class="reference external" href="https://bugs.python.org/issue9205#msg132661">https://bugs.python.org/issue9205#msg132661</a>). As of
 Python 3.5, both the <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing.Pool</span></code> and
-<em class="xref py py-obj">concurrent.futures.ProcessPoolExecutor</em> serve almost the same purpose and
+<code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures.ProcessPoolExecutor</span></code> serve almost the same purpose and
 provide very similar interfaces. The main differences between the two are:</p>
 <ul>
 <li><p class="first">The option of using a worker initialiser is only available in
@@ -155,28 +148,28 @@ is only available in <code class="xref py py-obj docutils literal"><span class="
 </li>
 <li><dl class="first docutils">
 <dt>&#8220;Reasonable&#8221; handling of abrubt worker termination and exceptions is only</dt>
-<dd><p class="first last">available in <em class="xref py py-obj">concurrent.futures</em>.</p>
+<dd><p class="first last">available in <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code>.</p>
 </dd>
 </dl>
 </li>
 </ul>
 <p>Particularly, the &#8220;reasonable&#8221; handling of a broken process pool may be a
-strong argument to prefer <em class="xref py py-obj">concurrent.futures</em> over <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code>. The
+strong argument to prefer <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code> over <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code>. The
 matter of handling a broken process pool has been extensively discussed in
 <a class="reference external" href="https://bugs.python.org/issue9205">https://bugs.python.org/issue9205</a> which led to the fix for
-<em class="xref py py-obj">concurrent.futures</em>. A similar fix for <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code> has been proposed
+<code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code>. A similar fix for <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code> has been proposed
 in <a class="reference external" href="https://bugs.python.org/issue22393">https://bugs.python.org/issue22393</a>.</p>
-<p>Both the <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code> and <em class="xref py py-obj">concurrent.futures</em> interfaces are
+<p>Both the <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code> and <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code> interfaces are
 available for use with this function. If the configuration parameter
-<em class="xref py py-obj">prefer_futures</em> is set to True and the <em class="xref py py-obj">concurrent.futures</em> module is
+<em class="xref py py-obj">prefer_futures</em> is set to True and the <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code> module is
 available, this is used. Otherwise, the <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code> module is used. A
-Python 2 backport of <em class="xref py py-obj">concurrent.futures</em> is available at
+Python 2 backport of <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code> is available at
 <a class="reference external" href="https://pythonhosted.org/futures/">https://pythonhosted.org/futures/</a>.</p>
-<p>When using <em class="xref py py-obj">concurrent.futures</em>, the <em class="xref py py-obj">maxtasks</em>, <em class="xref py py-obj">namespace</em>, and
-<em class="xref py py-obj">init_args</em> are ignored since these are not supported by that module. It
-seems that <em class="xref py py-obj">concurrent.futures</em> works as if maxtasks==1, however this is
-based purely on emprical observations. The <em class="xref py py-obj">init_args</em> functionality may be
-added later on if an initialiser is added to <em class="xref py py-obj">concurrent.futures</em> - see
+<p>When using <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code>, the <em class="xref py py-obj">namespace</em> and <em class="xref py py-obj">init_args</em> are
+ignored since these are not supported by that module. Support for
+<em class="xref py py-obj">maxtasks</em> is emulated in a way such that each process on average does
+<em class="xref py py-obj">maxtasks</em> before it is restarted. The <em class="xref py py-obj">init_args</em> functionality may be
+added later on if an initialiser is added to <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code> - see
 <a class="reference external" href="http://bugs.python.org/issue21423">http://bugs.python.org/issue21423</a>. If the <em class="xref py py-obj">max_broken_pool_restarts</em>
 configuration parameter is set to a value different from 0, the Pool is
 automatically restarted and the tasks are re-run should a broken pool be
@@ -187,23 +180,23 @@ since the BrokenPoolError handling has not yet been implemented for the
 <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing.Pool</span></code> - see <a class="reference external" href="https://bugs.python.org/issue22393">https://bugs.python.org/issue22393</a> as well as
 <a class="reference external" href="https://bugs.python.org/issue9205">https://bugs.python.org/issue9205</a>.</p>
 <p class="rubric">Examples</p>
-<p>An example of how to use args_list, and kwargs_list:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">magni</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils.multiprocessing._processing</span> <span class="kn">import</span> <span class="n">process</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="s">&#39;+&#39;</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s">&#39;+&#39;</span><span class="p">:</span>
+<p>An example of how to use args_list and kwargs_list:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils.multiprocessing._processing</span> <span class="k">import</span> <span class="n">process</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-<span class="gp">... </span>    <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">args_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;op&#39;</span><span class="p">:</span> <span class="s">&#39;+&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;op&#39;</span><span class="p">:</span> <span class="s">&#39;-&#39;</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;op&#39;</span><span class="p">:</span> <span class="s1">&#39;+&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;op&#39;</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span><span class="p">}]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">process</span><span class="p">(</span><span class="n">calculate</span><span class="p">,</span> <span class="n">args_list</span><span class="o">=</span><span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="o">=</span><span class="n">kwargs_list</span><span class="p">)</span>
 <span class="go">[12, 6]</span>
 </pre></div>
 </div>
-<p>or the same example preferring <em class="xref py py-obj">concurrent.futures</em> over <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;prefer_futures&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+<p>or the same example preferring <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code> over <code class="xref py py-obj docutils literal"><span class="pre">multiprocessing</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">magni</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;prefer_futures&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">process</span><span class="p">(</span><span class="n">calculate</span><span class="p">,</span> <span class="n">args_list</span><span class="o">=</span><span class="n">args_list</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="o">=</span><span class="n">kwargs_list</span><span class="p">)</span>
 <span class="go">[12, 6]</span>
 </pre></div>
@@ -219,20 +212,16 @@ since the BrokenPoolError handling has not yet been implemented for the
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<em>function</em>) &#8211;
-A function handle to the function which the calls should be mapped to.</li>
-<li><strong>args_list</strong> (<em>list or tuple, optional</em>) &#8211;
-A sequence of argument lists for the function calls (the default is
+<li><strong>func</strong> (<em>function</em>) &#8211; A function handle to the function which the calls should be mapped to.</li>
+<li><strong>args_list</strong> (<em>list or tuple, optional</em>) &#8211; A sequence of argument lists for the function calls (the default is
 None, which implies that no arguments are used in the calls).</li>
-<li><strong>kwargs_list</strong> (<em>list or tuple, optional</em>) &#8211;
-A sequence of keyword argument dicts for the function calls (the
+<li><strong>kwargs_list</strong> (<em>list or tuple, optional</em>) &#8211; A sequence of keyword argument dicts for the function calls (the
 default is None, which implies that no keyword arguments are used in
 the calls).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tasks</strong> (<em>list</em>) &#8211;
-The list of tasks.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tasks</strong> (<em>list</em>) &#8211; The list of tasks.</p>
 </td>
 </tr>
 </tbody>
@@ -254,35 +243,29 @@ exceptions args.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<em>function</em>) &#8211;
-A function handle to the function which the calls should be mapped to.</li>
-<li><strong>tasks</strong> (<em>iterable</em>) &#8211;
-The list of tasks to use as arguments in the function calls.</li>
-<li><strong>maxtasks</strong> (<em>int</em>) &#8211;
-The maximum number of tasks of a process before it is replaced by a new
-process. If set to None, the process is never replaced.</li>
-<li><strong>init_args</strong> (<em>tuple</em>) &#8211;
-The (func, namespace) tuple for the _process_init initialisation
+<li><strong>func</strong> (<em>function</em>) &#8211; A function handle to the function which the calls should be mapped to.</li>
+<li><strong>tasks</strong> (<em>iterable</em>) &#8211; The list of tasks to use as arguments in the function calls.</li>
+<li><strong>init_args</strong> (<em>tuple</em>) &#8211; The (func, namespace) tuple for the _process_init initialisation
 function.</li>
-<li><strong>max_broken_pool_restarts</strong> (<em>int or None</em>) &#8211;
-The maximum number of attempts at restarting the process pool upon a
+<li><strong>maxtasks</strong> (<em>int</em>) &#8211; The maximum number of tasks of a process before it is replaced by a new
+process. If set to None, the process is never replaced.</li>
+<li><strong>max_broken_pool_restarts</strong> (<em>int or None</em>) &#8211; The maximum number of attempts at restarting the process pool upon a
 BrokenPoolError. If set to None, the process pool may restart
 indefinitely.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>results</strong> (<em>list</em>) &#8211;
-The list of results from the map operation.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>results</strong> (<em>list</em>) &#8211; The list of results from the map operation.</p>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>The <em class="xref py py-obj">maxtasks</em>, <em class="xref py py-obj">namespace</em>, and <em class="xref py py-obj">init_args</em> are ignored since these are
-not supported by <em class="xref py py-obj">concurrent.futures</em>. It seems that <em class="xref py py-obj">concurrent.futures</em>
-works as if maxtasks==1, however this is unclear. The <em class="xref py py-obj">init_args</em>
-functionality may be added if an initialiser is added to
-<em class="xref py py-obj">concurrent.futures</em> - see <a class="reference external" href="http://bugs.python.org/issue21423">http://bugs.python.org/issue21423</a>.</p>
+<p>The <em class="xref py py-obj">namespace</em> and <em class="xref py py-obj">init_args</em> are ignored since these are not supported
+by <code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code>. Support for <em class="xref py py-obj">maxtasks</em> is emulated in a way such
+that each process on average does <em class="xref py py-obj">maxtasks</em> before it is restarted. The
+<em class="xref py py-obj">init_args</em> functionality may be added if an initialiser is added to
+<code class="xref py py-obj docutils literal"><span class="pre">concurrent.futures</span></code> - see <a class="reference external" href="http://bugs.python.org/issue21423">http://bugs.python.org/issue21423</a>.</p>
 </dd></dl>
 
 <dl class="function">
@@ -294,25 +277,19 @@ functionality may be added if an initialiser is added to
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<em>function</em>) &#8211;
-A function handle to the function which the calls should be mapped to.</li>
-<li><strong>tasks</strong> (<em>iterable</em>) &#8211;
-The list of tasks to use as arguments in the function calls.</li>
-<li><strong>maxtasks</strong> (<em>int</em>) &#8211;
-The maximum number of tasks of a process before it is replaced by a new
-process. If set to None, the process is never replaced.</li>
-<li><strong>init_args</strong> (<em>tuple</em>) &#8211;
-The (func, namespace) tuple for the _process_init initialisation
+<li><strong>func</strong> (<em>function</em>) &#8211; A function handle to the function which the calls should be mapped to.</li>
+<li><strong>tasks</strong> (<em>iterable</em>) &#8211; The list of tasks to use as arguments in the function calls.</li>
+<li><strong>init_args</strong> (<em>tuple</em>) &#8211; The (func, namespace) tuple for the _process_init initialisation
 function.</li>
-<li><strong>max_broken_pool_restarts</strong> (<em>int or None</em>) &#8211;
-The maximum number of attempts at restarting the process pool upon a
+<li><strong>maxtasks</strong> (<em>int</em>) &#8211; The maximum number of tasks of a process before it is replaced by a new
+process. If set to None, the process is never replaced.</li>
+<li><strong>max_broken_pool_restarts</strong> (<em>int or None</em>) &#8211; The maximum number of attempts at restarting the process pool upon a
 BrokenPoolError. If set to None, the process pool may restart
 indefinitely.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>results</strong> (<em>list</em>) &#8211;
-The list of results from the map operation.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>results</strong> (<em>list</em>) &#8211; The list of results from the map operation.</p>
 </td>
 </tr>
 </tbody>
@@ -332,10 +309,8 @@ handling has not yet been implemented in the multiprocessing.Pool - see
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>func</strong> (<em>function</em>) &#8211;
-A function handle to the function which the calls should be mapped to.</li>
-<li><strong>namespace</strong> (<em>dict</em>) &#8211;
-A dict whose keys and values should be globally available in func.</li>
+<li><strong>func</strong> (<em>function</em>) &#8211; A function handle to the function which the calls should be mapped to.</li>
+<li><strong>namespace</strong> (<em>dict</em>) &#8211; A dict whose keys and values should be globally available in func.</li>
 </ul>
 </td>
 </tr>
@@ -352,14 +327,10 @@ A dict whose keys and values should be globally available in func.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fak_tuple</strong> (<em>tuple</em>) &#8211;
-A tuple (func, args, kwargs) containing the parameters listed below.</li>
-<li><strong>func</strong> (<em>function</em>) &#8211;
-A function handle to the function which the calls should be mapped to.</li>
-<li><strong>args</strong> (<em>list or tuple</em>) &#8211;
-The sequence of arguments that should be unpacked and passed.</li>
-<li><strong>kwargs</strong> (<em>list or tuple</em>) &#8211;
-The sequence of keyword arguments that should be unpacked and passed.</li>
+<li><strong>fak_tuple</strong> (<em>tuple</em>) &#8211; A tuple (func, args, kwargs) containing the parameters listed below.</li>
+<li><strong>func</strong> (<em>function</em>) &#8211; A function handle to the function which the calls should be mapped to.</li>
+<li><strong>args</strong> (<em>list or tuple</em>) &#8211; The sequence of arguments that should be unpacked and passed.</li>
+<li><strong>kwargs</strong> (<em>list or tuple</em>) &#8211; The sequence of keyword arguments that should be unpacked and passed.</li>
 </ul>
 </td>
 </tr>
@@ -406,9 +377,6 @@ checked for every call.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -427,7 +395,7 @@ checked for every call.</p>
         <li class="right" >
           <a href="magni.utils.multiprocessing._config.html" title="magni.utils.multiprocessing._config module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.utils.multiprocessing.html" >magni.utils.multiprocessing package</a> &raquo;</li> 
@@ -435,8 +403,8 @@ checked for every call.</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

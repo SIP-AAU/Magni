@@ -73,8 +73,9 @@ class TestStyleConformance(unittest.TestCase):
 
         pyflakes_ignores = ['unable to detect undefined names',
                             'imported but unused',
-                            'is assigned to but nevenr used',
-                            'redefinition of unused']
+                            'is assigned to but never used',
+                            'redefinition of unused',
+                            "undefined name 'xrange'"]
         ignore_re = re.compile('|'.join(pyflakes_ignores))
 
         with contextlib.closing(StringIO()) as out:

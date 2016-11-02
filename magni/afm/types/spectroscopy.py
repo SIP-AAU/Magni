@@ -289,7 +289,7 @@ class Point(_BaseClass):
     def __init__(self, attrs, chunks=()):
         @_decorate_validation
         def validate_input():
-            _generic('attrs', 'mapping', has_keys=Point._params.keys())
+            _generic('attrs', 'mapping', has_keys=tuple(Point._params.keys()))
             _levels('chunks', (_generic(None, 'explicit collection'),
                                _generic(None, Chunk)))
 

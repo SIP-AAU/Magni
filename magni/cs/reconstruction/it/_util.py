@@ -18,6 +18,7 @@ def _get_operators(module)
 
 from __future__ import division
 
+from magni.cs.reconstruction.it import _stop_criterion
 from magni.cs.reconstruction.it import _step_size
 from magni.cs.reconstruction.it import _threshold
 from magni.cs.reconstruction.it import _threshold_operators

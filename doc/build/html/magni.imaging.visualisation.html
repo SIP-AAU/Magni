@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.imaging.visualisation module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.imaging package" href="magni.imaging.html" />
     <link rel="next" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="prev" title="magni.imaging.preprocessing module" href="magni.imaging.preprocessing.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" accesskey="U">magni.imaging package</a> &raquo;</li> 
       </ul>
@@ -89,28 +89,22 @@ version of the image <em class="xref py py-obj">X</em>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>X</strong> (<em>ndarray</em>) &#8211;
-The image to be displayed.</li>
-<li><strong>ax</strong> (<em>matplotlib.axes.Axes, optional</em>) &#8211;
-The axes on which the image is displayed (the default is None, which
+<li><strong>X</strong> (<em>ndarray</em>) &#8211; The image to be displayed.</li>
+<li><strong>ax</strong> (<em>matplotlib.axes.Axes, optional</em>) &#8211; The axes on which the image is displayed (the default is None, which
 implies that the current axes is used).</li>
-<li><strong>intensity_func</strong> (<em>FunctionType, optional</em>) &#8211;
-The handle to the function used to manipulate the image intensity
+<li><strong>intensity_func</strong> (<em>FunctionType, optional</em>) &#8211; The handle to the function used to manipulate the image intensity
 before the image is displayed (the default is None, which implies that
 no intensity manipulation is used).</li>
-<li><strong>intensity_args</strong> (<em>list or tuple, optional</em>) &#8211;
-The arguments that are passed to the <em class="xref py py-obj">intensity_func</em> (the default is
+<li><strong>intensity_args</strong> (<em>list or tuple, optional</em>) &#8211; The arguments that are passed to the <em class="xref py py-obj">intensity_func</em> (the default is
 (), which implies that no arguments are passed).</li>
-<li><strong>show_axis</strong> (<em>{&#8216;none&#8217;, &#8216;top&#8217;, &#8216;inherit&#8217;, &#8216;frame&#8217;}</em>) &#8211;
-How the x- and y-axis are display. If &#8216;none&#8217;, no axis are displayed. If
+<li><strong>show_axis</strong> (<em>{&#8216;none&#8217;, &#8216;top&#8217;, &#8216;inherit&#8217;, &#8216;frame&#8217;}</em>) &#8211; How the x- and y-axis are display. If &#8216;none&#8217;, no axis are displayed. If
 &#8216;top&#8217;, the x-axis is displayed at the top of the image. If &#8216;inherit&#8217;,
 the axis display is inherited from <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.pyplot.imshow</span></code>. If
 &#8216;frame&#8217; only the frame is shown and not the ticks.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>im_out</strong> (<em>matplotlib.image.AxesImage</em>) &#8211;
-The AxesImage returned by matplotlibs imshow.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>im_out</strong> (<em>matplotlib.image.AxesImage</em>) &#8211; The AxesImage returned by matplotlibs imshow.</p>
 </td>
 </tr>
 </tbody>
@@ -124,8 +118,8 @@ The AxesImage returned by matplotlibs imshow.</p>
 </div>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">imshow</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="k">import</span> <span class="n">imshow</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">add_k</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">X</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">X</span> <span class="o">+</span> <span class="n">k</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">im_out</span> <span class="o">=</span> <span class="n">imshow</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">intensity_func</span><span class="o">=</span><span class="n">add_k</span><span class="p">,</span> <span class="n">intensity_args</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
@@ -147,40 +141,29 @@ particular colour will correspond to the same value across all images.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>imgs</strong> (<em>list or tuple</em>) &#8211;
-The images (as ndarrays) that is to be displayed.</li>
-<li><strong>rows</strong> (<em>int</em>) &#8211;
-The number of rows to use in the subplot layout.</li>
-<li><strong>titles</strong> (<em>list or tuple</em>) &#8211;
-The titles (as strings) to use for each of the subplots (the default is
+<li><strong>imgs</strong> (<em>list or tuple</em>) &#8211; The images (as ndarrays) that is to be displayed.</li>
+<li><strong>rows</strong> (<em>int</em>) &#8211; The number of rows to use in the subplot layout.</li>
+<li><strong>titles</strong> (<em>list or tuple</em>) &#8211; The titles (as strings) to use for each of the subplots (the default is
 None, which implies that no titles are displayed).</li>
-<li><strong>x_labels</strong> (<em>list or tuple</em>) &#8211;
-The x_labels (as strings) to use for each of the subplots (the default
+<li><strong>x_labels</strong> (<em>list or tuple</em>) &#8211; The x_labels (as strings) to use for each of the subplots (the default
 is None, which implies that no x_labels are displayed).</li>
-<li><strong>y_labels</strong> (<em>list or tuple</em>) &#8211;
-The y_labels (as strings) to use for each of the subplots (the default
+<li><strong>y_labels</strong> (<em>list or tuple</em>) &#8211; The y_labels (as strings) to use for each of the subplots (the default
 is None, which implies that no y_labels are displayed).</li>
-<li><strong>x_ticklabels</strong> (<em>list or tuple</em>) &#8211;
-The x_ticklabels (as strings or lists of strings) to use for the
+<li><strong>x_ticklabels</strong> (<em>list or tuple</em>) &#8211; The x_ticklabels (as strings or lists of strings) to use for the
 subplots (the default is None, which implies that no x_ticklabels are
 displayed).</li>
-<li><strong>y_ticklabels</strong> (<em>list or tuple</em>) &#8211;
-The y_ticklabels (as strings or lists of strings) to use for the
+<li><strong>y_ticklabels</strong> (<em>list or tuple</em>) &#8211; The y_ticklabels (as strings or lists of strings) to use for the
 subplots (the default is None, which implies that no y_ticklabels are
 displayed).</li>
-<li><strong>cbar_label</strong> (<em>str</em>) &#8211;
-The colorbar label to use with a normalised colormapping (the default
+<li><strong>cbar_label</strong> (<em>str</em>) &#8211; The colorbar label to use with a normalised colormapping (the default
 is None, which implies that no colorbar label is displayed).</li>
-<li><strong>fixed_clim</strong> (<em>list or tuple</em>) &#8211;
-The colorbar limits as a (min, max) sequence (the default is None,
+<li><strong>fixed_clim</strong> (<em>list or tuple</em>) &#8211; The colorbar limits as a (min, max) sequence (the default is None,
 which implies that the colorbar limits are inferred from the data).</li>
-<li><strong>normalise</strong> (<em>bool</em>) &#8211;
-The flag that indicates whether to use a normalised colormapping.</li>
+<li><strong>normalise</strong> (<em>bool</em>) &#8211; The flag that indicates whether to use a normalised colormapping.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) &#8211;
-The resulting figure instance.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) &#8211; The resulting figure instance.</p>
 </td>
 </tr>
 </tbody>
@@ -204,27 +187,27 @@ suplot instantiation function <code class="xref py py-obj docutils literal"><spa
 example: <a class="reference external" href="http://matplotlib.org/examples/pylab_examples/multi_image.html">http://matplotlib.org/examples/pylab_examples/multi_image.html</a>.</p>
 <p class="rubric">Examples</p>
 <p>For example, show two images next to each other with a common colormapping:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">imsubplot</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="k">import</span> <span class="n">imsubplot</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">imsubplot</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">titles</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;arange&#39;</span><span class="p">,</span> <span class="s">&#39;ones&#39;</span><span class="p">],</span>
-<span class="gp">... </span><span class="n">x_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;x1&#39;</span><span class="p">,</span> <span class="s">&#39;x2&#39;</span><span class="p">],</span> <span class="n">y_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;y1&#39;</span><span class="p">,</span> <span class="s">&#39;y2&#39;</span><span class="p">],</span> <span class="n">cbar_label</span><span class="o">=</span><span class="s">&#39;Example&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">imsubplot</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">titles</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;arange&#39;</span><span class="p">,</span> <span class="s1">&#39;ones&#39;</span><span class="p">],</span>
+<span class="gp">... </span><span class="n">x_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">],</span> <span class="n">y_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="s1">&#39;y2&#39;</span><span class="p">],</span> <span class="n">cbar_label</span><span class="o">=</span><span class="s1">&#39;Example&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">normalise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>or show the same images with shared ticklabels and fixed colorbar limits:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">common_x_ticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">common_y_ticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">common_x_ticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">common_y_ticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">imsubplot</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_ticklabels</span><span class="o">=</span><span class="n">common_x_ticklabels</span><span class="p">,</span>
-<span class="gp">... </span><span class="n">y_ticklabels</span><span class="o">=</span><span class="n">common_y_ticklabels</span><span class="p">,</span> <span class="n">fixed_clim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">... </span><span class="n">y_ticklabels</span><span class="o">=</span><span class="n">common_y_ticklabels</span><span class="p">,</span> <span class="n">fixed_clim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>or show the same images with different colormappings and ticklabels:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x_ticklabels</span> <span class="o">=</span> <span class="p">[[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;aa&#39;</span><span class="p">,</span> <span class="s">&#39;bb&#39;</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y_ticklabels</span> <span class="o">=</span> <span class="p">[[</span><span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;cc&#39;</span><span class="p">,</span> <span class="s">&#39;dd&#39;</span><span class="p">]]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x_ticklabels</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;aa&#39;</span><span class="p">,</span> <span class="s1">&#39;bb&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_ticklabels</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;cc&#39;</span><span class="p">,</span> <span class="s1">&#39;dd&#39;</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">imsubplot</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_ticklabels</span><span class="o">=</span><span class="n">x_ticklabels</span><span class="p">,</span>
-<span class="gp">... </span><span class="n">y_ticklabels</span><span class="o">=</span><span class="n">y_ticklabels</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">... </span><span class="n">y_ticklabels</span><span class="o">=</span><span class="n">y_ticklabels</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -240,16 +223,13 @@ cooordinates are shown.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> (<em>ndarray</em>) &#8211;
-The image to mask.</li>
-<li><strong>coords</strong> (<em>ndarray</em>) &#8211;
-The coordinates arranged into a 2D array, such that each row is a
+<li><strong>img</strong> (<em>ndarray</em>) &#8211; The image to mask.</li>
+<li><strong>coords</strong> (<em>ndarray</em>) &#8211; The coordinates arranged into a 2D array, such that each row is a
 coordinate pair (x, y).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>masked_img</strong> (<em>numpy.ma.MaskedArray</em>) &#8211;
-The masked image.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>masked_img</strong> (<em>numpy.ma.MaskedArray</em>) &#8211; The masked image.</p>
 </td>
 </tr>
 </tbody>
@@ -263,8 +243,8 @@ The masked image.</p>
 </div>
 <p class="rubric">Examples</p>
 <p>For example, display only center pixel in a 3-by-3 image</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">mask_img_from_coords</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="k">import</span> <span class="n">mask_img_from_coords</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mask_img_from_coords</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
@@ -290,33 +270,30 @@ The masked image.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_org</strong> (<em>ndarray</em>) &#8211;
-The array which hold the &#8220;true&#8221; mean value.</li>
-<li><strong>x_mod</strong> (<em>ndarray</em>) &#8211;
-The modified copy of <em class="xref py py-obj">x_org</em> which must have its mean value shifted.</li>
+<li><strong>x_org</strong> (<em>ndarray</em>) &#8211; The array which hold the &#8220;true&#8221; mean value.</li>
+<li><strong>x_mod</strong> (<em>ndarray</em>) &#8211; The modified copy of <em class="xref py py-obj">x_org</em> which must have its mean value shifted.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>shifted_x_mod</strong> (<em>ndarray</em>) &#8211;
-A copy of <em class="xref py py-obj">x_mod</em> with the same mean value as <em class="xref py py-obj">x_org</em>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>shifted_x_mod</strong> (<em>ndarray</em>) &#8211; A copy of <em class="xref py py-obj">x_mod</em> with the same mean value as <em class="xref py py-obj">x_org</em>.</p>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
 <p>For example,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">shift_mean</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="k">import</span> <span class="n">shift_mean</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_org</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_mod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_org</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_org</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
 <span class="go">1.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
 <span class="go">1.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">shifted_x_mod</span> <span class="o">=</span> <span class="n">shift_mean</span><span class="p">(</span><span class="n">x_mod</span><span class="p">,</span> <span class="n">x_org</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&#39;{:.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shifted_x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shifted_x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
 <span class="go">1.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">shifted_x_mod</span>
 <span class="go">array([[ 1.5,  1.5],</span>
 <span class="go">       [ 1.5,  1.5]])</span>
@@ -333,17 +310,13 @@ A copy of <em class="xref py py-obj">x_mod</em> with the same mean value as <em 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> (<em>ndarray</em>) &#8211;
-The (float) image that is to be stretched.</li>
-<li><strong>max_val</strong> (<em>int or float</em>) &#8211;
-The maximum value in the stretched image.</li>
-<li><strong>min_val</strong> (<em>int or float</em>) &#8211;
-The minimum value in the stretched image.</li>
+<li><strong>img</strong> (<em>ndarray</em>) &#8211; The (float) image that is to be stretched.</li>
+<li><strong>max_val</strong> (<em>int or float</em>) &#8211; The maximum value in the stretched image.</li>
+<li><strong>min_val</strong> (<em>int or float</em>) &#8211; The minimum value in the stretched image.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>stretched_img</strong> (<em>ndarray</em>) &#8211;
-A stretched copy of the input image.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>stretched_img</strong> (<em>ndarray</em>) &#8211; A stretched copy of the input image.</p>
 </td>
 </tr>
 </tbody>
@@ -353,32 +326,32 @@ A stretched copy of the input image.</p>
 [<em class="xref py py-obj">min_val</em>, <em class="xref py py-obj">max_val</em>] using a linear stretch.</p>
 <p class="rubric">Examples</p>
 <p>For example, stretch an image between 0 and 1</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="kn">import</span> <span class="n">stretch_image</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.imaging.visualisation</span> <span class="k">import</span> <span class="n">stretch_image</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
 <span class="go">array([[ 0.        ,  0.33333333],</span>
 <span class="go">       [ 0.66666667,  1.        ]])</span>
 </pre></div>
 </div>
 <p>or stretch the image between -1 and 1</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
 <span class="go">array([[-1.        , -0.33333333],</span>
 <span class="go">       [ 0.33333333,  1.        ]])</span>
 </pre></div>
 </div>
 <p>or re-stretch the strecthed image between -3.0 and -1.5</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">stretched_img</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">stretched_img</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
 <span class="go">array([[-3. , -2.5],</span>
 <span class="go">       [-2. , -1.5]])</span>
 </pre></div>
 </div>
 <p>or re-stretch that image between 1.25 and 8.00</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">stretched_img</span><span class="p">,</span> <span class="mf">8.00</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">1.25</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span> <span class="o">=</span> <span class="n">stretch_image</span><span class="p">(</span><span class="n">stretched_img</span><span class="p">,</span> <span class="mf">8.00</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">1.25</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stretched_img</span>
 <span class="go">array([[ 1.25,  3.5 ],</span>
 <span class="go">       [ 5.75,  8.  ]])</span>
@@ -399,17 +372,13 @@ given subplot.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ax</strong> (<em>matplotlib.axes.Axes</em>) &#8211;
-The matplotlib axes (subplot) to format ticklabels for.</li>
-<li><strong>k</strong> (<em>int</em>) &#8211;
-The axes index, i.e. the subplot number out of the total number of
+<li><strong>ax</strong> (<em>matplotlib.axes.Axes</em>) &#8211; The matplotlib axes (subplot) to format ticklabels for.</li>
+<li><strong>k</strong> (<em>int</em>) &#8211; The axes index, i.e. the subplot number out of the total number of
 subplots.</li>
-<li><strong>x_ticklabels</strong> (<em>list or tuple</em>) &#8211;
-The x_ticklabels (as strings or lists of strings) to use for the
+<li><strong>x_ticklabels</strong> (<em>list or tuple</em>) &#8211; The x_ticklabels (as strings or lists of strings) to use for the
 subplots (the default is None, which implies that no x_ticklabels are
 displayed).</li>
-<li><strong>y_ticklabels</strong> (<em>list or tuple</em>) &#8211;
-The y_ticklabels (as strings or lists of strings) to use for the
+<li><strong>y_ticklabels</strong> (<em>list or tuple</em>) &#8211; The y_ticklabels (as strings or lists of strings) to use for the
 subplots (the default is None, which implies that no y_ticklabels are
 displayed).</li>
 </ul>
@@ -422,13 +391,13 @@ displayed).</li>
 <dl class="class">
 <dt id="magni.imaging.visualisation._ImageColourTracker">
 <em class="property">class </em><code class="descclassname">magni.imaging.visualisation.</code><code class="descname">_ImageColourTracker</code><span class="sig-paren">(</span><em>tracker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/imaging/visualisation.html#_ImageColourTracker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.imaging.visualisation._ImageColourTracker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Track a common &#8216;clim&#8217; in a set of matplotlib image subplots.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Track a common &#8216;clim&#8217; in a set of matplotlib image subplots.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tracker</strong> (<em>matplotlib.image.AxesImage</em>) &#8211;
-The image instance that must track a given &#8216;clim&#8217;.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tracker</strong> (<em>matplotlib.image.AxesImage</em>) &#8211; The image instance that must track a given &#8216;clim&#8217;.</td>
 </tr>
 </tbody>
 </table>
@@ -470,9 +439,6 @@ The image instance that must track a given &#8216;clim&#8217;.</td>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -491,15 +457,15 @@ The image instance that must track a given &#8216;clim&#8217;.</td>
         <li class="right" >
           <a href="magni.imaging.preprocessing.html" title="magni.imaging.preprocessing module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.imaging.html" >magni.imaging package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

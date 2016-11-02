@@ -19,6 +19,7 @@ from __future__ import division
 import types
 
 from magni.imaging.dictionaries import _matrices
+from magni.imaging.dictionaries import _mtx1D
 from magni.imaging.dictionaries import _visualisations
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
@@ -30,7 +31,7 @@ def get_function_handle(type_, transform):
 
     Parameters
     ----------
-    type_ : {'matrix', 'visualisation'}
+    type_ : {'matrix', 'transform_matrix', 'visualisation'}
         Identifier of the type of method to return a handle to.
     transform : str
         Identifier of the transform method to return a handle to.
@@ -40,6 +41,14 @@ def get_function_handle(type_, transform):
     f_handle : function
         Handle to `transform`.
 
+    Notes
+    -----
+    The available types are:
+
+    * matrix : 2D transform matrix object.
+    * transform_matrix : 1D transform matrix.
+    * visualisation : Coefficient visualisation preparation function.
+
     Examples
     --------
     For example, return a handle to the matrix method for a DCT:
@@ -47,6 +56,11 @@ def get_function_handle(type_, transform):
     >>> from magni.imaging.dictionaries.utils import get_function_handle
     >>> get_function_handle('matrix', 'DCT').__name__
     'get_DCT'
+
+    or return a handle to the 1D DCT transform matrix method:
+
+    >>> get_function_handle('transform_matrix', 'DCT').__name__
+    'get_DCT_transform_matrix'
 
     or return a handle to the visualisation method for a DFT:
 
@@ -57,7 +71,8 @@ def get_function_handle(type_, transform):
 
     @_decorate_validation
     def validate_input():
-        _generic('type_', 'string', value_in=('matrix', 'visualisation'))
+        _generic('type_', 'string', value_in=('matrix', 'transform_matrix',
+                                              'visualisation'))
         _generic('transform', 'string')
 
     @_decorate_validation
@@ -66,10 +81,15 @@ def get_function_handle(type_, transform):
 
     validate_input()
 
-    modules = {'matrix': _matrices, 'visualisation': _visualisations}
+    modules = {'matrix': _matrices,
+               'transform_matrix': _mtx1D,
+               'visualisation': _visualisations}
 
     if type_ == 'matrix':
         f_handle = vars(modules[type_])['get_' + transform]
+    elif type_ == 'transform_matrix':
+        f_handle = vars(modules[type_])[
+            'get_' + transform + '_transform_matrix']
     elif type_ == 'visualisation':
         f_handle = vars(modules[type_])['visualise_' + transform]
 

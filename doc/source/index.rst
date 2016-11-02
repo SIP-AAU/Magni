@@ -124,6 +124,7 @@ Dependencies
 - |pil|_ (Tested on version >= 1.1.7) (For running the IPython notebook examples as tests)
 - |pyflakes|_ (Tested on version >= 0.8) (For running style check tests)
 - |radon|_ (Tested on version >= 1.2) (For running style check tests)
+- |sklearn|_ (Tested on version >=0.15.1) (For using the scikit-learn logistic regression solver in :py:mod:`magni.cs.phase_transition`)
 - |sphinx|_ (Tested on version >= 1.3.1) (For building the documentation from source)
 
 .. [4] The |ipython|_ project has evolved into |jupyter|_. When using Jupyter make sure to install the "full" Jupyter metapackage which includes all Jupyter and IPython components.
@@ -167,6 +168,8 @@ Dependencies
 .. _pil: http://www.pythonware.com/products/pil/
 .. |bottleneck| replace:: ``Bottleneck``
 .. _bottleneck: http://berkeleyanalytics.com/bottleneck/
+.. |sklearn| replace:: ``scikit-learn``
+.. _sklearn: http://scikit-learn.org/
 .. |conda| replace:: ``Conda``
 .. _conda: http://conda.pydata.org/
 .. |setuptools| replace:: ``Setuptools``
@@ -217,15 +220,21 @@ Other Resources
 
 Papers published in relation to the `Enabling Fast Image Acquisition for Atomic Force Microscopy using Compressed Sensing <http://sip-aau.github.io/FastAFM/>`_ project:
 
-- \P. S. Pedersen, J. Østergaard and T. Larsen, "Modelling reconstruction quality of Lissajous undersampled atomic force microscopy images," *2016 IEEE 13th International Symposium on Biomedical Imaging (ISBI)*, Prague, Czech Republic, 2016, pp. 245-248, :doi:`10.1109/ISBI.2016.7493255`.
+- \C. S. Oxvig, T. Arildsen, and T. Larsen, "Structure Assisted Compressed Sensing Reconstruction of Undersampled AFM Images", *Ultramicroscopy*, vol. 172, pp. 1-9, Jan. 2017, :doi:`10.1016/j.ultramic.2016.09.011`.
+
+- \C. S. Oxvig, T. Arildsen, and T. Larsen, "Storing Reproducible Results from Computational Experiments using Scientific Python Packages", in *Proceedings of the 15th Python in Science Conference*, pp. 45-50, Austin, Texas, USA, July 11 - 17, 2016, http://conference.scipy.org/proceedings/scipy2016/christian_oxvig.html
+
+- \P. S. Pedersen, C. S. Oxvig, J. Østergaard, and T. Larsen, "Validating Function Arguments in Python Signal Processing Applications", in *Proceedings of the 15th Python in Science Conference*, pp. 106-113, Austin, Texas, USA, July 11 - 17, 2016, http://conference.scipy.org/proceedings/scipy2016/patrick_pedersen.html
+
+- \P. S. Pedersen, J. Østergaard and T. Larsen, "Modelling reconstruction quality of Lissajous undersampled atomic force microscopy images," in *2016 IEEE 13th International Symposium on Biomedical Imaging (ISBI)*, pp. 245-248, Prague, Czech Republic, 2016, :doi:`10.1109/ISBI.2016.7493255`.
 
 - \T. Arildsen, C. S. Oxvig, P. S. Pedersen, J. Østergaard, and T. Larsen, "Reconstruction Algorithms in Undersampled AFM Imaging", *IEEE Journal of Selected Topics in Signal Processing*, vol. 10, no. 1, pp. 31-46, Feb. 2016, :doi:`10.1109/JSTSP.2015.2500363`.
 
-- \P. S. Pedersen, J. Østergaard, and T. Larsen, "Predicting reconstruction quality within compressive sensing for atomic force microscopy," *2015 IEEE Global Conference on Signal and Information Processing (GlobalSIP)*, Orlando, FL, 2015, pp. 418-422, :doi:`10.1109/GlobalSIP.2015.7418229`.
+- \P. S. Pedersen, J. Østergaard, and T. Larsen, "Predicting reconstruction quality within compressive sensing for atomic force microscopy," in *2015 IEEE Global Conference on Signal and Information Processing (GlobalSIP)*, pp. 418-422 Orlando, FL, 2015, :doi:`10.1109/GlobalSIP.2015.7418229`.
 
 - \C. S. Oxvig, P. S. Pedersen, T. Arildsen, J. Østergaard, and T. Larsen, "Magni: A Python Package for Compressive Sampling and Reconstruction of Atomic Force Microscopy Images", *Journal of Open Research Software*, vol. 2, no. 1, p. e29, Oct. 2014, :doi:`10.5334/jors.bk`.
 
-- \T. L. Jensen, T. Arildsen, J. Østergaard, and T. Larsen, "Reconstruction of Undersampled Atomic Force Microscopy Images : Interpolation versus Basis Pursuit", in *International Conference on Signal-Image Technology & Internet-Based Systems (SITIS)*, Kyoto, Japan, December 2 - 5, 2013, pp. 130-135, :doi:`10.1109/SITIS.2013.32`.
+- \T. L. Jensen, T. Arildsen, J. Østergaard, and T. Larsen, "Reconstruction of Undersampled Atomic Force Microscopy Images : Interpolation versus Basis Pursuit", in *International Conference on Signal-Image Technology & Internet-Based Systems (SITIS)*, pp. 130-135, Kyoto, Japan, December 2 - 5, 2013, :doi:`10.1109/SITIS.2013.32`.
 
 
 .. _sec_notation:

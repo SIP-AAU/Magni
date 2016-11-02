@@ -43,6 +43,13 @@ class TestDocBuild(unittest.TestCase):
             self.stdout += str(p_sourceclean.stdout.read())
             self.stderr += str(p_sourceclean.stderr.read())
 
+            p_htmlclean = subprocess.Popen(['make', 'htmlclean'],
+                                           stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE)
+            p_htmlclean.wait()
+            self.stdout += str(p_sourceclean.stdout.read())
+            self.stderr += str(p_sourceclean.stderr.read())
+
             p_docapi = subprocess.Popen(['make', 'docapi'],
                                         stdout=subprocess.PIPE,
                                         stderr=subprocess.PIPE)
@@ -70,6 +77,7 @@ class TestDocBuild(unittest.TestCase):
         finally:
             os.chdir(self.cwd)
 
+    @unittest.skipIf(os.name == 'nt', 'make is not available')
     def test_html_build(self):
         """
         Test the invocation of "make html" to build Sphinx html documentation.

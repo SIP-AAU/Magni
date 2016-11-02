@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition._util &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.cs.phase_transition._util &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <h1>Source code for magni.cs.phase_transition._util</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
 <span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
@@ -70,7 +70,8 @@
 <span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
-<div class="viewcode-block" id="determine"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._util.html#magni.cs.phase_transition._util.determine">[docs]</a><span class="k">def</span> <span class="nf">determine</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;default&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="determine"><a class="viewcode-back" href="../../../../magni.cs.phase_transition._util.html#magni.cs.phase_transition._util.determine">[docs]</a><span class="k">def</span> <span class="nf">determine</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="n">pre_simulation_hook</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine the phase transition of a reconstruction algorithm.</span>
 
@@ -88,11 +89,22 @@
 <span class="sd">    overwrite : bool</span>
 <span class="sd">        A flag indicating if an existing phase transition should be overwritten</span>
 <span class="sd">        if it has the same path and label (the default is False).</span>
+<span class="sd">    pre_simulation_hook : callable</span>
+<span class="sd">        A handle to a callable which should be run *just* before the call to</span>
+<span class="sd">        the reconstruction algorithm (the default is None, which implies that</span>
+<span class="sd">        no pre hook is run).</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    magni.cs.phase_transition._simulation.run : The actual simulation.</span>
 <span class="sd">    magni.cs.phase_transition._analysis.run : The actual phase determination.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The `pre_simulation_hook` may be used to setup the simulation to match the</span>
+<span class="sd">    specfic simulation parameters, e.g. if an oracle estimator is used in the</span>
+<span class="sd">    reconstruction algorithm. The `pre_simulation_hook` takes one argument</span>
+<span class="sd">    which is the locals() dict.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -103,38 +115,42 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;algorithm&#39;</span><span class="p">,</span> <span class="s">&#39;function&#39;</span><span class="p">)</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;path&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;label&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;algorithm&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span>
 
-        <span class="c"># regular expression matching invalid characters</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&#39;[^a-zA-Z0-9 ,.\-_/]&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+        <span class="c1"># regular expression matching invalid characters</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">r&#39;[^a-zA-Z0-9 ,.\-_/]&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The value of &gt;&gt;label&lt;&lt;, {!r}, may not contain {!r}.&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;The value of &gt;&gt;label&lt;&lt;, {!r}, may not contain {!r}.&#39;</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">()))</span>
 
-        <span class="c"># regular expression matching labels without empty path components</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&#39;^([^/]+/)*[^/]+$&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+        <span class="c1"># regular expression matching labels without empty path components</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">r&#39;^([^/]+/)*[^/]+$&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;The value of &gt;&gt;label&lt;&lt;, {!r}, may not contain &#39;&#39; folders.&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The value of &gt;&gt;label&lt;&lt;, {!r}, may not contain &#39;&#39; folders.&quot;</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
 
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;overwrite&#39;</span><span class="p">,</span> <span class="s">&#39;boolean&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;overwrite&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pre_simulation_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span>
+                <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">pre_simulation_hook</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The &gt;&gt;pre_simulation_hook&lt;&lt; must be callable&#39;</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;{!r} already uses the label {!r}.&quot;</span>
+                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;{!r} already uses the label {!r}.&quot;</span>
                                   <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
 
-    <span class="n">_simulation</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+    <span class="n">_simulation</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span>
+                    <span class="n">pre_simulation_hook</span><span class="o">=</span><span class="n">pre_simulation_hook</span><span class="p">)</span>
     <span class="n">_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span></div>
 </pre></div>
 
@@ -151,9 +167,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -166,14 +179,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

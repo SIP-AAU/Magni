@@ -22,6 +22,7 @@ import os
 import subprocess
 import unittest
 
+from pkg_resources import parse_version as _parse_version
 import tables as tb
 
 from magni.reproducibility import _annotation, _chase, io
@@ -29,23 +30,28 @@ from magni.reproducibility import _annotation, _chase, io
 
 class TestAnnotations(unittest.TestCase):
     """
-
     Test of annotations.
 
     """
 
     def setUp(self):
-        self.ref_conda_info_keys = ['channels', 'conda_version', 'config_file',
-                                    'default_prefix', 'env_export',
-                                    'envs_dirs', 'is_foreign_system',
-                                    'linked_modules', 'modules_info',
-                                    'package_cache', 'platform', 'root_prefix',
-                                    'status']
+        self.ref_conda_410_info_keys = [
+            'channels', 'conda_version', 'config_file', 'default_prefix',
+            'env_export', 'envs_dirs', 'is_foreign_system', 'linked_modules',
+            'modules_info', 'package_cache', 'platform', 'root_prefix',
+            'status']
+        self.ref_conda_420_info_keys = [
+            'channels', 'conda_is_private', 'conda_version', 'config_file',
+            'default_prefix', 'env_export', 'envs_dirs', 'linked_modules',
+            'modules_info', 'offline_mode', 'package_cache', 'platform',
+            'python_version', 'root_prefix', 'status']
         self.ref_datetime_keys = ['pretty_utc', 'status', 'today', 'utcnow']
         self.ref_git_revision_ok_keys = ['branch', 'remote', 'status', 'tag']
         self.ref_git_revision_nok_keys = ['output', 'returncode', 'status']
         self.ref_magni_config_keys = ['magni.afm.config',
                                       'magni.cs.phase_transition.config',
+                                      'magni.cs.reconstruction.amp.config',
+                                      'magni.cs.reconstruction.gamp.config',
                                       'magni.cs.reconstruction.iht.config',
                                       'magni.cs.reconstruction.it.config',
                                       'magni.cs.reconstruction.sl0.config',
@@ -75,8 +81,14 @@ class TestAnnotations(unittest.TestCase):
 
         self.assertTrue('status' in conda_info_keys)
 
-        if conda_info['status'] != 'Failed':
-            self.assertListEqual(self.ref_conda_info_keys, conda_info_keys)
+        if 'Failed' not in conda_info['status']:
+            import conda
+            if _parse_version(conda.__version__) >= _parse_version('4.2.0'):
+                self.assertListEqual(
+                    self.ref_conda_420_info_keys, conda_info_keys)
+            else:
+                self.assertListEqual(
+                    self.ref_conda_410_info_keys, conda_info_keys)
             self.assertTrue(conda_info['status'] == 'Succeeded')
 
     def test_datetime(self):

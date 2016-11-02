@@ -18,7 +18,7 @@ Magni
    Signal and Information Processing
 
 :Version:
-   1.5.0
+   1.6.0
 
 :Travis CI test status:
    .. image:: https://travis-ci.org/SIP-AAU/Magni.svg?branch=master
@@ -127,10 +127,26 @@ Citing Magni
 
 A Magni software metapaper has been published:
 
-Oxvig, C.S., Pedersen, P.S., Arildsen, T, Østergaard, J and Larsen, T 2014.
-Magni: A Python Package for Compressive Sampling and Reconstruction of Atomic
-Force Microscopy Images. Journal of Open Research Software 2(1):e29,
+C.S. Oxvig, P.S. Pedersen, T. Arildsen, J. Østergaard, and T. Larsen, "Magni: A
+Python Package for Compressive Sampling and Reconstruction of Atomic Force
+Microscopy Images", *Journal of Open Research Software*, 2(1):e29, 2014
 DOI: http://dx.doi.org/10.5334/jors.bk
 
-Please consider citing this paper if you publish any work in which you have
-used Magni.
+Furthermore, the `magni.utils.validation` system is detailed in:
+
+P.S. Pedersen, C.S. Oxvig, J. Østergaard, and T. Larsen, "Validating Function
+Arguments in Python Signal Processing Applications", in *Proceedings of the
+15th Python in Science Conference*, pp. 106-113, Austin, Texas, USA,
+July 11 - 17, 2016
+URL: http://conference.scipy.org/proceedings/scipy2016/patrick_pedersen.html
+
+And the `magni.reproducibility` sub-package is detailed in:
+
+C.S. Oxvig, T. Arildsen, and T. Larsen, "Storing Reproducible Results from
+Computational Experiments using Scientific Python Packages", in *Proceedings of
+the 15th Python in Science Conference*, pp. 45-50, Austin, Texas, USA,
+July 11 - 17, 2016
+URL: http://conference.scipy.org/proceedings/scipy2016/christian_oxvig.html
+
+Please consider citing one or more of these papers if you publish any work in
+which you have used Magni.

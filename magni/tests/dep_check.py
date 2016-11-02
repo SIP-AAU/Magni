@@ -39,7 +39,8 @@ pac_names = {'python': 'Python',
              'PIL': 'PIL',
              'bottleneck': 'Bottleneck',
              'conda': 'Conda',
-             'setuptools': 'Setuptools'}
+             'setuptools': 'Setuptools',
+             'sklearn': 'scikit-learn'}
 
 
 # Minimum version requirements
@@ -65,6 +66,7 @@ opt_deps = {'mkl': '11.1',
             'coverage': '3.7',
             'PIL': '1.1.7',
             'bottleneck': '1.0.0',
+            'sklearn': '0.15.1',
             'conda': '3.7.0'}
 
 ver_broken_opt_deps = {}

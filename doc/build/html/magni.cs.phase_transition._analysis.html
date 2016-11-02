@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition._analysis module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.cs.phase_transition._analysis module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" />
     <link rel="next" title="magni.cs.phase_transition._backup module" href="magni.cs.phase_transition._backup.html" />
     <link rel="prev" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.cs.phase_transition.html" title="magni.cs.phase_transition package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
@@ -89,18 +89,18 @@ pp. 6019-6023.</td></tr>
 <code class="descclassname">magni.cs.phase_transition._analysis.</code><code class="descname">run</code><span class="sig-paren">(</span><em>path</em>, <em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_analysis.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._analysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine the phase transition from the simulation results.</p>
 <p>The simulation results should be present in the HDF5 database specified by
-<em class="xref py py-obj">path</em> in the pytables group specified by <em class="xref py py-obj">label</em> in an array named &#8216;dist&#8217;.
-The determined phase transition is stored in the same HDF5 database, in the
-same pytables group in an array named &#8216;phase_transition&#8217;.</p>
+<code class="xref py py-obj docutils literal"><span class="pre">path</span></code> in the pytables group specified by <em class="xref py py-obj">label</em> in an array named &#8216;dist&#8217;.
+The determined phase transition (50% curve) is stored in the same HDF5
+database, in the same HDF group in an array named &#8216;phase_transition&#8217;.
+Additionally, the 10%, 25%, 75%, and 90% percentiles are stored in an array
+named &#8216;phase_transition_percentiles&#8217;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>path</strong> (<em>str</em>) &#8211;
-The path of the HDF5 database.</li>
-<li><strong>label</strong> (<em>str</em>) &#8211;
-The path of the pytables group in the HDF5 database.</li>
+<li><strong>path</strong> (<em>str</em>) &#8211; The path of the HDF5 database.</li>
+<li><strong>label</strong> (<em>str</em>) &#8211; The path of the pytables group in the HDF5 database.</li>
 </ul>
 </td>
 </tr>
@@ -115,12 +115,37 @@ The path of the pytables group in the HDF5 database.</li>
 </div>
 <p class="rubric">Notes</p>
 <p>A simulation is considered successful if the simulation result is less than
-10 to the power of -4.</p>
+a normalised mean squared error tolerance computed as 10^(-SNR/10) wtih SNR
+configured in the configuration module.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.cs.phase_transition._analysis._built_in_logit_solver">
+<code class="descclassname">magni.cs.phase_transition._analysis.</code><code class="descname">_built_in_logit_solver</code><span class="sig-paren">(</span><em>dist</em>, <em>percentiles</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_analysis.html#_built_in_logit_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._analysis._built_in_logit_solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a logistic regression model using the built-in solver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dist</strong> (<em>ndarray</em>) &#8211; The simulated signal &#8220;distances&#8221; in the phase space.</li>
+<li><strong>percentiles</strong> (<em>list or tuple</em>) &#8211; The percentiles to estimate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>rho</strong> (<em>ndarray</em>) &#8211; The &#8220;len(percentiles)&#8221;-by-&#8220;len(delta)&#8221; array of estimated phase
+transition rho vectors. The phase transition rho vectors are
+(in order): 50% (the phase transition esitmate), smaller to larger
+percentiles.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="magni.cs.phase_transition._analysis._estimate_PT">
-<code class="descclassname">magni.cs.phase_transition._analysis.</code><code class="descname">_estimate_PT</code><span class="sig-paren">(</span><em>rho</em>, <em>success</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_analysis.html#_estimate_PT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._analysis._estimate_PT" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magni.cs.phase_transition._analysis.</code><code class="descname">_estimate_PT</code><span class="sig-paren">(</span><em>rho</em>, <em>success</em>, <em>percentiles</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_analysis.html#_estimate_PT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._analysis._estimate_PT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the phase transition location for a given delta.</p>
 <p>The phase transition location is estimated using logistic regression. The
 algorithm used for this is Newton&#8217;s method.</p>
@@ -129,15 +154,13 @@ algorithm used for this is Newton&#8217;s method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>rho</strong> (<em>ndarray</em>) &#8211;
-The rho values.</li>
-<li><strong>success</strong> (<em>ndarray</em>) &#8211;
-The success indicators.</li>
+<li><strong>rho</strong> (<em>ndarray</em>) &#8211; The rho values.</li>
+<li><strong>success</strong> (<em>ndarray</em>) &#8211; The success indicators.</li>
+<li><strong>percentiles</strong> (<em>list or tuple</em>) &#8211; The percentiles to estimate.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>rho</strong> (<em>float</em>) &#8211;
-The estimated phase transition location.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>rho</strong> (<em>float</em>) &#8211; The estimated phase transition location.</p>
 </td>
 </tr>
 </tbody>
@@ -146,6 +169,30 @@ The estimated phase transition location.</p>
 <p>The function includes a number of non-standard ways of handling numerical
 and convergence related issues. This will be changed in a future version of
 the code.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.cs.phase_transition._analysis._sklearn_logit_solver">
+<code class="descclassname">magni.cs.phase_transition._analysis.</code><code class="descname">_sklearn_logit_solver</code><span class="sig-paren">(</span><em>dist</em>, <em>percentiles</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_analysis.html#_sklearn_logit_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._analysis._sklearn_logit_solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a logistic regression model using the solver from scikit-learn.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dist</strong> (<em>ndarray</em>) &#8211; The simulated signal &#8220;distances&#8221; in the phase space.</li>
+<li><strong>percentiles</strong> (<em>list or tuple</em>) &#8211; The percentiles to estimate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>rho</strong> (<em>ndarray</em>) &#8211; The &#8220;len(percentiles)&#8221;-by-&#8220;len(delta)&#8221; array of estimated phase
+transition rho vectors. The phase transition rho vectors are
+(in order): 50% (the phase transition esitmate), smaller to larger
+percentiles.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -179,9 +226,6 @@ the code.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -200,7 +244,7 @@ the code.</p>
         <li class="right" >
           <a href="magni.cs.phase_transition.html" title="magni.cs.phase_transition package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
@@ -208,8 +252,8 @@ the code.</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

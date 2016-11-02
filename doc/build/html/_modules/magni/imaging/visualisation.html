@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.imaging.visualisation &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.imaging.visualisation &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <h1>Source code for magni.imaging.visualisation</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
 <span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
@@ -91,7 +91,7 @@
 
 
 <div class="viewcode-block" id="imshow"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.imshow">[docs]</a><span class="k">def</span> <span class="nf">imshow</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">intensity_func</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">intensity_args</span><span class="o">=</span><span class="p">(),</span>
-           <span class="n">show_axis</span><span class="o">=</span><span class="s">&#39;frame&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+           <span class="n">show_axis</span><span class="o">=</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Display an image.</span>
 
@@ -141,49 +141,49 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;X&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;boolean&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;ax&#39;</span><span class="p">,</span> <span class="n">mpl</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;intensity_func&#39;</span><span class="p">,</span> <span class="s">&#39;function&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;intensity_args&#39;</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">)</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;show_axis&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">value_in</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">,</span> <span class="s">&#39;top&#39;</span><span class="p">,</span> <span class="s">&#39;inherit&#39;</span><span class="p">,</span>
-                                                  <span class="s">&#39;frame&#39;</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;boolean&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;ax&#39;</span><span class="p">,</span> <span class="n">mpl</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;intensity_func&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;intensity_args&#39;</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;show_axis&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">value_in</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="s1">&#39;inherit&#39;</span><span class="p">,</span>
+                                                  <span class="s1">&#39;frame&#39;</span><span class="p">))</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="n">_plotting</span><span class="o">.</span><span class="n">setup_matplotlib</span><span class="p">()</span>
 
-    <span class="c"># Handle ax keyword argument</span>
+    <span class="c1"># Handle ax keyword argument</span>
     <span class="n">ca</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
 
-    <span class="c"># Intensity manipulation</span>
+    <span class="c1"># Intensity manipulation</span>
     <span class="k">if</span> <span class="n">intensity_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">im_out</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">intensity_func</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="n">intensity_args</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">im_out</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="c"># Display of axis</span>
+    <span class="c1"># Display of axis</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s">&#39;none&#39;</span><span class="p">:</span>
-        <span class="n">axes</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s">&#39;top&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s1">&#39;top&#39;</span><span class="p">:</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
-        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s">&#39;top&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s">&#39;frame&#39;</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">show_axis</span> <span class="o">==</span> <span class="s1">&#39;frame&#39;</span><span class="p">:</span>
         <span class="n">xlabels</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()</span>
         <span class="n">ylabels</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()</span>
-        <span class="n">empty_xlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">xlabels</span><span class="p">)</span>
-        <span class="n">empty_ylabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ylabels</span><span class="p">)</span>
+        <span class="n">empty_xlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">xlabels</span><span class="p">)</span>
+        <span class="n">empty_ylabels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ylabels</span><span class="p">)</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">empty_xlabels</span><span class="p">)</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">empty_ylabels</span><span class="p">)</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">im_out</span>
+    <span class="k">return</span> <span class="n">im_out</span></div>
 
-</div>
+
 <div class="viewcode-block" id="imsubplot"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.imsubplot">[docs]</a><span class="k">def</span> <span class="nf">imsubplot</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">titles</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">x_labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y_labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
               <span class="n">x_ticklabels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y_ticklabels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
               <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">fixed_clim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -282,34 +282,34 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;imgs&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">),</span>
-                         <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;boolean&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">),</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;imgs&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">),</span>
+                         <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;boolean&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">),</span>
                                   <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))))</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;rows&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s">&#39;[1;inf)&#39;</span><span class="p">)</span>
-        <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;titles&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;rows&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[1;inf)&#39;</span><span class="p">)</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;titles&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span>
                                     <span class="n">len_</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">imgs</span><span class="p">),</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-                           <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)))</span>
-        <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;x_labels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span>
+                           <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)))</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;x_labels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span>
                                       <span class="n">len_</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">imgs</span><span class="p">),</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-                             <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)))</span>
-        <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;y_labels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span>
+                             <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)))</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;y_labels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span>
                                       <span class="n">len_</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">imgs</span><span class="p">),</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-                             <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)))</span>
-        <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;x_ticklabels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span>
+                             <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)))</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;x_ticklabels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span>
                                           <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
                                  <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span>
-                                          <span class="p">(</span><span class="s">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)),</span>
-                                 <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)))</span>
-        <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;y_ticklabels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span>
+                                          <span class="p">(</span><span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)),</span>
+                                 <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)))</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;y_ticklabels&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span>
                                           <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
                                  <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span>
-                                          <span class="p">(</span><span class="s">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)),</span>
-                                 <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">)))</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s">&#39;cbar_label&#39;</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">_levels</span><span class="p">(</span><span class="s">&#39;fixed_clim&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                          <span class="p">(</span><span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)),</span>
+                                 <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)))</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;cbar_label&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;fixed_clim&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                                         <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-                               <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">))))</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;normalise&#39;</span><span class="p">,</span> <span class="s">&#39;boolean&#39;</span><span class="p">)</span>
+                               <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">))))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;normalise&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
@@ -321,10 +321,10 @@
     <span class="n">vmax</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e40</span>
     <span class="n">ims</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">img</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">imgs</span><span class="p">):</span>
-            <span class="c"># Show image</span>
+            <span class="c1"># Show image</span>
             <span class="n">ims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
 
-            <span class="c"># Handle titles, labels, etc.</span>
+            <span class="c1"># Handle titles, labels, etc.</span>
             <span class="n">fig_strings</span> <span class="o">=</span> <span class="p">(</span><span class="n">titles</span><span class="p">,</span> <span class="n">x_labels</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">)</span>
             <span class="n">handles</span> <span class="o">=</span> <span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">,</span> <span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">,</span> <span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">fig_string</span><span class="p">,</span> <span class="n">handle</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fig_strings</span><span class="p">,</span> <span class="n">handles</span><span class="p">):</span>
@@ -333,36 +333,36 @@
 
             <span class="n">_handle_ticklabels</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">k</span><span class="p">,</span> <span class="n">x_ticklabels</span><span class="p">,</span> <span class="n">y_ticklabels</span><span class="p">)</span>
 
-            <span class="c"># Track minimum and maximum data values</span>
-            <span class="n">vmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>  <span class="c"># Find common minimum</span>
-            <span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>  <span class="c"># Find common maximum</span>
+            <span class="c1"># Track minimum and maximum data values</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>  <span class="c1"># Find common minimum</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>  <span class="c1"># Find common maximum</span>
 
     <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
-        <span class="c"># Connect a Tracker to each image in order to update colormap limits</span>
-        <span class="c"># This way all images share common colormap limits</span>
+        <span class="c1"># Connect a Tracker to each image in order to update colormap limits</span>
+        <span class="c1"># This way all images share common colormap limits</span>
         <span class="n">common_norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
         <span class="n">ims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_norm</span><span class="p">(</span><span class="n">common_norm</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ims</span><span class="p">)):</span>
             <span class="n">ims</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_norm</span><span class="p">(</span><span class="n">common_norm</span><span class="p">)</span>
-            <span class="n">ims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">callbacksSM</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#39;changed&#39;</span><span class="p">,</span> <span class="n">_ImageColourTracker</span><span class="p">(</span><span class="n">ims</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+            <span class="n">ims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">callbacksSM</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="n">_ImageColourTracker</span><span class="p">(</span><span class="n">ims</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
 
-        <span class="c"># Add common colorbar</span>
+        <span class="c1"># Add common colorbar</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
         <span class="n">c_bar_ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
-        <span class="n">c_bar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c_bar_ax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s">&#39;horizontal&#39;</span><span class="p">)</span>
-        <span class="n">c_bar</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s">&quot;face&quot;</span><span class="p">)</span>
+        <span class="n">c_bar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c_bar_ax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+        <span class="n">c_bar</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s2">&quot;face&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">fixed_clim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="c"># Force colorbar limits</span>
+            <span class="c1"># Force colorbar limits</span>
             <span class="n">c_bar</span><span class="o">.</span><span class="n">set_clim</span><span class="p">(</span><span class="n">fixed_clim</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="c"># Set colorbar label</span>
+            <span class="c1"># Set colorbar label</span>
             <span class="n">c_bar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">cbar_label</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">fig</span>
+    <span class="k">return</span> <span class="n">fig</span></div>
 
-</div>
+
 <div class="viewcode-block" id="mask_img_from_coords"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.mask_img_from_coords">[docs]</a><span class="k">def</span> <span class="nf">mask_img_from_coords</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mask coordinates in an image.</span>
@@ -411,8 +411,8 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;img&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;coords&#39;</span><span class="p">,</span> <span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">range_</span><span class="o">=</span><span class="s">&#39;[0;inf)&#39;</span><span class="p">)</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[0;inf)&#39;</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
@@ -420,9 +420,9 @@
     <span class="n">mask</span><span class="p">[</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">masked_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">masked_img</span>
+    <span class="k">return</span> <span class="n">masked_img</span></div>
 
-</div>
+
 <div class="viewcode-block" id="shift_mean"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.shift_mean">[docs]</a><span class="k">def</span> <span class="nf">shift_mean</span><span class="p">(</span><span class="n">x_mod</span><span class="p">,</span> <span class="n">x_org</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Shift the mean value of `x_mod` such that it equals the mean of `x_org`.</span>
@@ -463,15 +463,15 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_mod&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="s">&#39;complex&#39;</span><span class="p">),</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;x_mod&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;x_org&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
                  <span class="n">shape</span><span class="o">=</span><span class="n">x_mod</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">x_mod</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_org</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">x_mod</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_org</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">x_mod</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span></div>
 
-</div>
+
 <div class="viewcode-block" id="stretch_image"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation.stretch_image">[docs]</a><span class="k">def</span> <span class="nf">stretch_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stretch image such that pixels values are in [`min_val`, `max_val`].</span>
@@ -533,12 +533,12 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;img&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;max_val&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">))</span>
-        <span class="n">_numeric</span><span class="p">(</span><span class="s">&#39;min_val&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;integer&#39;</span><span class="p">,</span> <span class="s">&#39;floating&#39;</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;max_val&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">))</span>
+        <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;min_val&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="n">min_val</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;max_val ({!r}) must be larger than min_val ({!r})&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;max_val ({!r}) must be larger than min_val ({!r})&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">max_val</span><span class="p">,</span> <span class="n">min_val</span><span class="p">))</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
@@ -549,9 +549,9 @@
     <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="n">min_</span> <span class="o">+</span> <span class="n">min_val</span>
 
-    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">img</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">img</span> <span class="o">+</span> <span class="n">b</span></div>
 
-</div>
+
 <div class="viewcode-block" id="_handle_ticklabels"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation._handle_ticklabels">[docs]</a><span class="k">def</span> <span class="nf">_handle_ticklabels</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">x_ticklabels</span><span class="p">,</span> <span class="n">y_ticklabels</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handle and format ticks and ticklabels for use in imsubplot.</span>
@@ -584,12 +584,12 @@
             <span class="n">x_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_ticklabels</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
             <span class="n">x_tl</span> <span class="o">=</span> <span class="n">x_ticklabels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># Backwards compatibility</span>
-            <span class="c"># Allow for sharing a single set of x_ticklabels across all images.</span>
+            <span class="c1"># Backwards compatibility</span>
+            <span class="c1"># Allow for sharing a single set of x_ticklabels across all images.</span>
             <span class="n">x_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_ticklabels</span><span class="p">))</span>
             <span class="n">x_tl</span> <span class="o">=</span> <span class="n">x_ticklabels</span>
 
-        <span class="c"># Set xticks and xticklabels</span>
+        <span class="c1"># Set xticks and xticklabels</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x_t</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">x_tl</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 
@@ -598,16 +598,16 @@
             <span class="n">y_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_ticklabels</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
             <span class="n">y_tl</span> <span class="o">=</span> <span class="n">y_ticklabels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># Backwards compatibility</span>
-            <span class="c"># Allow for sharing a single set of y_ticklabels across all images.</span>
+            <span class="c1"># Backwards compatibility</span>
+            <span class="c1"># Allow for sharing a single set of y_ticklabels across all images.</span>
             <span class="n">y_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_ticklabels</span><span class="p">))</span>
             <span class="n">y_tl</span> <span class="o">=</span> <span class="n">y_ticklabels</span>
 
-        <span class="c"># Set yticks and yticklabels</span>
+        <span class="c1"># Set yticks and yticklabels</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">y_t</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">y_tl</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">y_tl</span><span class="p">)</span></div>
 
-</div>
+
 <div class="viewcode-block" id="_ImageColourTracker"><a class="viewcode-back" href="../../../magni.imaging.visualisation.html#magni.imaging.visualisation._ImageColourTracker">[docs]</a><span class="k">class</span> <span class="nc">_ImageColourTracker</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Track a common &#39;clim&#39; in a set of matplotlib image subplots.</span>
@@ -639,9 +639,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -654,14 +651,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

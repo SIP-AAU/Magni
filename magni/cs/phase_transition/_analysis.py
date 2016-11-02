@@ -43,8 +43,10 @@ def run(path, label):
 
     The simulation results should be present in the HDF5 database specified by
     `path` in the pytables group specified by `label` in an array named 'dist'.
-    The determined phase transition is stored in the same HDF5 database, in the
-    same pytables group in an array named 'phase_transition'.
+    The determined phase transition (50% curve) is stored in the same HDF5
+    database, in the same HDF group in an array named 'phase_transition'.
+    Additionally, the 10%, 25%, 75%, and 90% percentiles are stored in an array
+    named 'phase_transition_percentiles'.
 
     Parameters
     ----------
@@ -60,41 +62,81 @@ def run(path, label):
     Notes
     -----
     A simulation is considered successful if the simulation result is less than
-    10 to the power of -4.
+    a normalised mean squared error tolerance computed as 10^(-SNR/10) wtih SNR
+    configured in the configuration module.
 
     """
 
+    percentiles = [0.5, 0.1, 0.25, 0.75, 0.9]
+
     with _File(path, 'a') as f:
         if not '/' + label + '/phase_transition' in f:
-            points = len(_conf['rho']) * _conf['monte_carlo']
-
-            z = np.zeros(points)
-            y = np.zeros(points)
-
-            rho = np.zeros(len(_conf['delta']))
-
             dist = f.get_node('/' + label + '/dist')[:]
+            # Set NaNs to value > NMSE_tolerance, i.e. assume failure
+            dist[np.isnan(dist)] = 10**(-_conf['SNR'] / 10) * 2
 
-            for i in range(len(_conf['delta'])):
-                n = np.round(_conf['delta'][i] * _conf['problem_size'])
+            if _conf['logit_solver'] == 'built-in':
+                # Use "simple" built-in solver
+                rho = _built_in_logit_solver(dist, percentiles)
+            elif _conf['logit_solver'] == 'sklearn':
+                # Use scikit learn solver
+                rho = _sklearn_logit_solver(dist, percentiles)
 
-                for j in range(len(_conf['rho'])):
-                    if n > 0:
-                        var = _conf['rho'][j]
-                        var = np.round(var * n) / n
-                    else:
-                        var = 0.
-
-                    for m in range(_conf['monte_carlo']):
-                        z[j * _conf['monte_carlo'] + m] = var
-                        y[j * _conf['monte_carlo'] + m] = dist[i, j, m] < 1e-4
-
-                rho[i] = _estimate_PT(z, y)
-
-            f.create_array('/' + label, 'phase_transition', rho)
+            f.create_array('/' + label, 'phase_transition', rho[0])
+            f.create_array('/' + label, 'phase_transition_percentiles',
+                           rho[1:])
 
 
-def _estimate_PT(rho, success):
+def _built_in_logit_solver(dist, percentiles):
+    """
+    Fit a logistic regression model using the built-in solver.
+
+    Parameters
+    ----------
+    dist : ndarray
+        The simulated signal "distances" in the phase space.
+    percentiles : list or tuple
+        The percentiles to estimate.
+
+    Returns
+    -------
+    rho : ndarray
+        The "len(percentiles)"-by-"len(delta)" array of estimated phase
+        transition rho vectors. The phase transition rho vectors are
+        (in order): 50% (the phase transition esitmate), smaller to larger
+        percentiles.
+
+    """
+
+    monte_carlo = dist.shape[2]
+    points = len(_conf['rho']) * monte_carlo
+    NMSE_tolerance = 10**(-_conf['SNR'] / 10)
+
+    z = np.zeros(points)
+    y = np.zeros(points)
+
+    rho = np.zeros((len(percentiles), len(_conf['delta'])))
+
+    for i in range(len(_conf['delta'])):
+        n = np.round(_conf['delta'][i] * _conf['problem_size'])
+
+        for j in range(len(_conf['rho'])):
+            if n > 0:
+                var = _conf['rho'][j]
+                var = np.round(var * n) / n
+            else:
+                var = 0.
+
+            for m in range(monte_carlo):
+                z[j * monte_carlo + m] = var
+                y[j * monte_carlo + m] = dist[i, j, m] < NMSE_tolerance
+
+        rho[:, i] = _estimate_PT(z, y, percentiles)
+
+    return rho
+
+
+def _estimate_PT(rho, success, percentiles):
     """
     Estimate the phase transition location for a given delta.
 
@@ -107,6 +149,8 @@ def _estimate_PT(rho, success):
         The rho values.
     success : ndarray
         The success indicators.
+    percentiles : list or tuple
+        The percentiles to estimate.
 
     Returns
     -------
@@ -125,10 +169,10 @@ def _estimate_PT(rho, success):
 
     if success.sum() < 0.5:
         # if none of the simulations were successful
-        return 0
+        return [0] * len(percentiles)
     elif success.sum() > points - 0.5:
         # if all of the simulations were successful
-        return 1
+        return [1] * len(percentiles)
 
     y = np.zeros((points + 2, 1))
     y[:points, 0], y[points:, 0] = success, [1, 0]
@@ -180,10 +224,63 @@ def _estimate_PT(rho, success):
         #     delta (-b[0] / b[1]) < 1e-12
         # or something like that
         if g_len < 1e-12 or s_len < 1e-3 or s_len / b_len < 1e-12:
-            val = -b[0] / b[1]
-            val = max(val, 0)
-            val = min(val, 1)
+            val = np.zeros(len(percentiles))
+            for l, p in enumerate(percentiles):
+                val[l] = (np.log(p / (1 - p)) - b[0]) / b[1]
+                val[l] = max(val[l], 0)
+                val[l] = min(val[l], 1)
 
             return val
 
     raise RuntimeWarning('analysis.py: phase transition does not converge.')
+
+
+def _sklearn_logit_solver(dist, percentiles):
+    """
+    Fit a logistic regression model using the solver from scikit-learn.
+
+    Parameters
+    ----------
+    dist : ndarray
+        The simulated signal "distances" in the phase space.
+    percentiles : list or tuple
+        The percentiles to estimate.
+
+    Returns
+    -------
+    rho : ndarray
+        The "len(percentiles)"-by-"len(delta)" array of estimated phase
+        transition rho vectors. The phase transition rho vectors are
+        (in order): 50% (the phase transition esitmate), smaller to larger
+        percentiles.
+
+    """
+
+    from sklearn.linear_model import LogisticRegression
+    NMSE_tolerance = 10**(-_conf['SNR'] / 10)
+
+    lr = LogisticRegression(C=1e3, fit_intercept=False,
+                            random_state=_conf['seed'])
+    rho = np.zeros((len(percentiles), len(_conf['delta'])))
+    monte_carlo = dist.shape[2]
+
+    for k in range(len(_conf['delta'])):
+        successes = (dist[k, :, :] < NMSE_tolerance).reshape(-1)
+
+        if not np.any(successes):
+            rho[:, k] = 0.0
+        elif np.all(successes):
+            rho[:, k] = 1.0
+        else:
+            X = np.column_stack(
+                (np.ones_like(successes),
+                 np.repeat(_conf['rho'], monte_carlo)))
+            lr.fit(X, successes)
+            b = [lr.coef_[0, 0], lr.coef_[0, 1]]
+
+            for l, p in enumerate(percentiles):
+                rho[l, k] = (np.log(p / (1 - p)) - b[0]) / b[1]
+                rho[l, k] = max(rho[l, k], 0.0)
+                rho[l, k] = min(rho[l, k], 1.0)
+
+    return rho

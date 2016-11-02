@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.cs.phase_transition._data module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.cs.phase_transition._data module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.cs.phase_transition package" href="magni.cs.phase_transition.html" />
     <link rel="next" title="magni.cs.phase_transition._simulation module" href="magni.cs.phase_transition._simulation.html" />
     <link rel="prev" title="magni.cs.phase_transition._config module" href="magni.cs.phase_transition._config.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.cs.phase_transition._config.html" title="magni.cs.phase_transition._config module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" accesskey="U">magni.cs.phase_transition package</a> &raquo;</li> 
@@ -57,14 +57,17 @@
             
   <div class="section" id="module-magni.cs.phase_transition._data">
 <span id="magni-cs-phase-transition-data-module"></span><h1>magni.cs.phase_transition._data module<a class="headerlink" href="#module-magni.cs.phase_transition._data" title="Permalink to this headline">¶</a></h1>
-<p>Module providing problem suite instance generation functionality.</p>
+<p>Module providing problem suite instance and noise generation functionality.</p>
 <p>The problem suite instances consist of a matrix, A, and a coefficient vector,
-alpha, with which the measurement vector, y, can be generated.</p>
+alpha, with which the measurement vector, y, can be generated (with or without
+noise from the noise vector e)</p>
 <div class="section" id="routine-listings">
 <h2>Routine listings<a class="headerlink" href="#routine-listings" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
 <dt>generate_matrix(m, n)</dt>
 <dd>Generate a matrix belonging to a specific problem suite.</dd>
+<dt>generate_noise(m, n, k)</dt>
+<dd>Generate a noise vector of a specific type.</dd>
 <dt>generate_vector(n, k)</dt>
 <dd>Generate a vector belonging to a specific problem suite.</dd>
 </dl>
@@ -79,70 +82,154 @@ alpha, with which the measurement vector, y, can be generated.</p>
 <p>The matrices and vectors generated in this module use the numpy.random
 submodule. Consequently, the calling script or function should control the seed
 to ensure reproducibility.</p>
+<p>The choice of non-zero indices in the coefficient vector is controlled by the
+configuration option &#8216;support_structure&#8217; whereas the distribution of the
+non-zero coefficients is controlled by the configuration option &#8216;coefficient&#8217;.</p>
 <p class="rubric">Examples</p>
-<p>Generate a problem suite instance:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.cs.phase_transition</span> <span class="kn">import</span> <span class="n">_data</span>
+<p>For example generate a sample from the USE/Rademacher problem suite:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">magni</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.cs.phase_transition</span> <span class="k">import</span> <span class="n">_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">100</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_matrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_vector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Or generate a problem suite instance with &#8220;linear&#8221; support distribution.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">support_distrib</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">support_distrib</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">support_distrib</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">magni</span><span class="o">.</span><span class="n">cs</span><span class="o">.</span><span class="n">phase_transition</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;support_distribution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">support_distrib</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_matrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_vector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or generate an AWGN noise vector based on a 40 dB SNR</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">magni</span><span class="o">.</span><span class="n">cs</span><span class="o">.</span><span class="n">phase_transition</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;AWGN&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">_data</span><span class="o">.</span><span class="n">generate_noise</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="function">
 <dt id="magni.cs.phase_transition._data.generate_matrix">
 <code class="descclassname">magni.cs.phase_transition._data.</code><code class="descname">generate_matrix</code><span class="sig-paren">(</span><em>m</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_data.html#generate_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._data.generate_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a matrix belonging to a specific problem suite.</p>
-<p>The available ensemble is the Uniform Spherical Ensemble. See Notes for a
-description of the ensemble.</p>
+<p>The available matrices are</p>
+<ul class="simple">
+<li>A random matrix drawn from the Uniform Spherical Ensemble (USE).</li>
+<li>A fixed uniformly row sub-sampled DCT matrix ensemble (RandomDCT2D).</li>
+<li>An option to use custom matrix factory (see notes below).</li>
+</ul>
+<p>See Notes for a description of these matrices. Which of the available
+matrices is used, is specified as a configuration option.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>m</strong> (<em>int</em>) &#8211;
-The number of rows.</li>
-<li><strong>n</strong> (<em>int</em>) &#8211;
-The number of columns.</li>
+<li><strong>m</strong> (<em>int</em>) &#8211; The number of rows.</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; The number of columns.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>A</strong> (<em>ndarray</em>) &#8211;
-The generated matrix.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>A</strong> (<em>ndarray</em>) &#8211; The generated matrix.</p>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-func docutils literal"><span class="pre">magni.cs.phase_transition.config()</span></code></dt>
+<dd>Configuration options.</dd>
+<dt><a class="reference internal" href="magni.utils.matrices.html#magni.utils.matrices.MatrixCollection" title="magni.utils.matrices.MatrixCollection"><code class="xref py py-func docutils literal"><span class="pre">magni.utils.matrices.MatrixCollection()</span></code></a></dt>
+<dd>Fast transform implementation.</dd>
+</dl>
+</div>
 <p class="rubric">Notes</p>
 <dl class="docutils">
 <dt>The Uniform Spherical Ensemble:</dt>
-<dd>The matrices of this ensemble have i.i.d. Gaussian entries and its
-columns are normalised to have unit length.</dd>
+<dd>The matrices of this ensemble have i.i.d. Gaussian entries of mean zero
+and variance one. Its columns are then normalised to have unit length.</dd>
+<dt>Fixed uniformly row sub-sampled DCT ensemble:</dt>
+<dd>The matrices of this ensemble correspond to the combination of a 2D
+array sub-sampled using a uniform point pattern and a 2D Discrete
+Cosine Transform (DCT) matrix. The combined matrix is implemented as a
+fast transform with a DCT based on an FFT routine.</dd>
+<dt>Custom matrix factory:</dt>
+<dd>The matrix generation is delegated to the configured
+<em class="xref py py-obj">custom_system_matrix_factory</em> callable which is expected to take the
+arguments <em class="xref py py-obj">m</em>, <em class="xref py py-obj">n</em> and return <em class="xref py py-obj">A</em>.</dd>
 </dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="magni.cs.phase_transition._data.generate_noise">
+<code class="descclassname">magni.cs.phase_transition._data.</code><code class="descname">generate_noise</code><span class="sig-paren">(</span><em>m</em>, <em>n</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_data.html#generate_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._data.generate_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a noise vector of a specific type.</p>
+<p>The available types are:</p>
+<ul class="simple">
+<li>AWGN : Additive White Gaussian Noise</li>
+<li>AWLN : Additive White Laplacian Noise</li>
+<li>custom : The noise generation is delegated to the configured
+<em class="xref py py-obj">custom_noise_factory</em> callable which is expected to take the arguments
+<em class="xref py py-obj">m</em>, <em class="xref py py-obj">n</em>, <em class="xref py py-obj">k</em>, <em class="xref py py-obj">noise_power</em>.</li>
+</ul>
+<p>Which of the available types is used, is specified as a configuration
+option.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>m</strong> (<em>int</em>) &#8211; The number of rows.</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; The number of columns.</li>
+<li><strong>k</strong> (<em>int</em>) &#8211; The number of non-zero coefficients.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>e</strong> (<em>ndarray</em>) &#8211; The generated noise vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-func docutils literal"><span class="pre">magni.cs.phase_transition.config()</span></code></dt>
+<dd>Configuration options.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The noise power is computed from the configured <em class="xref py py-obj">SNR</em> and the theoretical
+ensemble variance of the coefficients generated by <em class="xref py py-obj">generate_cofficients</em>.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="magni.cs.phase_transition._data.generate_vector">
 <code class="descclassname">magni.cs.phase_transition._data.</code><code class="descname">generate_vector</code><span class="sig-paren">(</span><em>n</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/cs/phase_transition/_data.html#generate_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.cs.phase_transition._data.generate_vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a vector belonging to a specific problem suite.</p>
-<p>The available ensembles are the Gaussian ensemble and the Rademacher
-ensemble. See Notes for a description of the ensembles. Which of the
-available ensembles is used, is specified as a configuration option. Note,
-that the non-zero <em class="xref py py-obj">k</em> non-zero coefficients are the <em class="xref py py-obj">k</em> first entries.</p>
+<p>The available ensembles are:</p>
+<ul class="simple">
+<li>Gaussian</li>
+<li>Rademacher</li>
+<li>Laplace</li>
+<li>Bernoulli</li>
+</ul>
+<p>See Notes for a description of the ensembles. Which of the available
+ensembles is used, is specified as a configuration option. Note, that the
+non-zero <em class="xref py py-obj">k</em> non-zero coefficients are the <em class="xref py py-obj">k</em> first entries if no support
+structure specified in the configuration.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n</strong> (<em>int</em>) &#8211;
-The length of the vector.</li>
-<li><strong>k</strong> (<em>int</em>) &#8211;
-The number of non-zero coefficients.</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; The length of the vector.</li>
+<li><strong>k</strong> (<em>int</em>) &#8211; The number of non-zero coefficients.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>alpha</strong> (<em>ndarray</em>) &#8211;
-The generated vector.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>alpha</strong> (<em>ndarray</em>) &#8211; The generated vector.</p>
 </td>
 </tr>
 </tbody>
@@ -156,12 +243,17 @@ The generated vector.</p>
 </div>
 <p class="rubric">Notes</p>
 <dl class="docutils">
-<dt>The Gaussian ensemble :</dt>
+<dt>The Gaussian ensemble:</dt>
 <dd>The non-zero coefficients are drawn from the normal Gaussian
 distribution.</dd>
 <dt>The Rademacher ensemble:</dt>
 <dd>The non-zero coefficients are drawn from the constant amplitude with
 random signs ensemble.</dd>
+<dt>The Laplace ensemble:</dt>
+<dd>The non-zero coefficients are drawn from the zero-mean, unit scale
+Laplace distribution (variance = 2).</dd>
+<dt>The Bernoulli ensemble:</dt>
+<dd>The non-zero coefficients are all equal to one.</dd>
 </dl>
 </dd></dl>
 
@@ -196,9 +288,6 @@ random signs ensemble.</dd>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -217,7 +306,7 @@ random signs ensemble.</dd>
         <li class="right" >
           <a href="magni.cs.phase_transition._config.html" title="magni.cs.phase_transition._config module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.cs.html" >magni.cs package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.cs.phase_transition.html" >magni.cs.phase_transition package</a> &raquo;</li> 
@@ -225,8 +314,8 @@ random signs ensemble.</dd>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

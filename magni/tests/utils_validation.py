@@ -529,6 +529,50 @@ class TestNumeric(unittest.TestCase, AbstractTest):
         self._test_invalid_value(args, kwarg, values, TypeError)
 
 
+class TestTypes(unittest.TestCase):
+    """
+    Test of custom validation types.
+
+    Implemented tests:
+
+    * testMMSEInputChannel : ensure that methods raise NotImplementedError
+    * testMMSEOutputChannel : ensure that methods raise NotImplementedError
+    * testStopCriterion : ensure that methods raise NotImplementedError
+    * testTresholdOperator : ensure that methods raise NotImplementedError
+
+    """
+
+    def testMMSEInputChannel(self):
+        channel = magni.utils.validation.types.MMSEInputChannel(dict())
+
+        with self.assertRaises(NotImplementedError):
+            channel.compute(dict())
+
+    def testMMSEOutputChannel(self):
+        channel = magni.utils.validation.types.MMSEOutputChannel(dict())
+
+        with self.assertRaises(NotImplementedError):
+            channel.compute(dict())
+
+    def testStopCriterion(self):
+        stop_criterion = magni.utils.validation.types.StopCriterion(dict())
+
+        with self.assertRaises(NotImplementedError):
+            stop_criterion.compute(dict())
+
+    def testThresholdOperator(self):
+        operator = magni.utils.validation.types.ThresholdOperator(dict())
+
+        with self.assertRaises(NotImplementedError):
+            operator.compute_deriv_threshold(dict())
+
+        with self.assertRaises(NotImplementedError):
+            operator.compute_threshold(dict())
+
+        with self.assertRaises(NotImplementedError):
+            operator.update_threshold_level(dict())
+
+
 class TestUtils(unittest.TestCase):
     """
     Test of validation utility functions.

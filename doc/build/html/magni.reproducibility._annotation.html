@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility._annotation module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.reproducibility._annotation module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.reproducibility package" href="magni.reproducibility.html" />
     <link rel="next" title="magni.reproducibility._chase module" href="magni.reproducibility._chase.html" />
     <link rel="prev" title="magni.reproducibility package" href="magni.reproducibility.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.reproducibility.html" title="magni.reproducibility package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" accesskey="U">magni.reproducibility package</a> &raquo;</li> 
       </ul>
@@ -91,14 +91,13 @@ Conda package database.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Only infomation about the conda root environment is captured.</p>
+<p class="last">This only works with the conda root environment.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>conda_info</strong> (<em>dict</em>) &#8211;
-Various information from conda (see notes below for further details).</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>conda_info</strong> (<em>dict</em>) &#8211; Various information from conda (see notes below for further details).</td>
 </tr>
 </tbody>
 </table>
@@ -107,8 +106,8 @@ Various information from conda (see notes below for further details).</td>
 an empty dicionary is returned.</p>
 <p>The returned dictionary contains the same infomation that is returned by
 &#8220;conda info&#8221; in addition to an overview of the linked modules in the
-Anaconda installation. Specifically, the returned dictionary has the
-following keys:</p>
+Anaconda installation as well as information about the &#8220;conda env&#8221; if it is
+available. Specifically, the returned dictionary has the following keys:</p>
 <ul class="simple">
 <li>platform</li>
 <li>conda_version</li>
@@ -118,15 +117,24 @@ following keys:</p>
 <li>package_cache</li>
 <li>channels</li>
 <li>config_file</li>
-<li>is_foreign_system</li>
 <li>linked_modules</li>
 <li>env_export</li>
+</ul>
+<p>For conda &lt; 4.2.0, it also includes the key:</p>
+<ul class="simple">
+<li>is_foreign_system</li>
+</ul>
+<p>For conda &gt;= 4.2.0, it also includes the keys:</p>
+<ul class="simple">
+<li>python_version</li>
+<li>conda_is_private</li>
+<li>offline_mode</li>
 </ul>
 <p>Additionally, the returned dictionary has a key named <em>status</em>, which can
 have either of the following values:</p>
 <ul class="simple">
 <li>&#8216;Succeeded&#8217; (Everything seems to be OK)</li>
-<li>&#8216;Failed&#8217; (Import of conda failed - nothing else is returned)</li>
+<li>&#8216;Failed&#8217; (Something went wrong - a few details are incluede in the key)</li>
 </ul>
 <p>If &#8220;conda-env&#8221; is installed on the system, the <em class="xref py py-obj">env_export</em> essentially
 holds the infomation from &#8220;conda env export -n root&#8221; as a dictionary. The
@@ -142,8 +150,7 @@ the <em class="xref py py-obj">linked_modules</em> and <em class="xref py py-obj
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>date_time</strong> (<em>dict</em>) &#8211;
-The dictionary holding the current date and time.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>date_time</strong> (<em>dict</em>) &#8211; The dictionary holding the current date and time.</td>
 </tr>
 </tbody>
 </table>
@@ -171,13 +178,11 @@ It has one of the follwing values:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>git_root_dir</strong> (<em>str</em>) &#8211;
-The path to the git root directory to get git revision for (the default
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>git_root_dir</strong> (<em>str</em>) &#8211; The path to the git root directory to get git revision for (the default
 is None, which implies that the git revision of the <a class="reference internal" href="magni.html#module-magni" title="magni"><code class="xref py py-obj docutils literal"><span class="pre">magni</span></code></a> directory
 is returned).</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>git_revision</strong> (<em>dict</em>) &#8211;
-Information about the current git revision.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>git_revision</strong> (<em>dict</em>) &#8211; Information about the current git revision.</td>
 </tr>
 </tbody>
 </table>
@@ -209,15 +214,12 @@ following keys:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>path</strong> (<em>str</em>) &#8211;
-The path to the file to checksum.</li>
-<li><strong>blocksize</strong> (<em>int</em>) &#8211;
-The chunksize (in bytes) to read from the file one at a time.</li>
+<li><strong>path</strong> (<em>str</em>) &#8211; The path to the file to checksum.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; The chunksize (in bytes) to read from the file one at a time.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>file_hashes</strong> (<em>dict</em>) &#8211;
-The dictionary holding the md5 and sha256 hexdigests of the file.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>file_hashes</strong> (<em>dict</em>) &#8211; The dictionary holding the md5 and sha256 hexdigests of the file.</p>
 </td>
 </tr>
 </tbody>
@@ -232,8 +234,7 @@ The dictionary holding the md5 and sha256 hexdigests of the file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>magni_config</strong> (<em>dict</em>) &#8211;
-The dictionary holding the current configuration of Magni.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>magni_config</strong> (<em>dict</em>) &#8211; The dictionary holding the current configuration of Magni.</td>
 </tr>
 </tbody>
 </table>
@@ -257,8 +258,7 @@ following values:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>magni_info</strong> (<em>dict</em>) &#8211;
-Information about magni.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>magni_info</strong> (<em>dict</em>) &#8211; Information about magni.</td>
 </tr>
 </tbody>
 </table>
@@ -277,8 +277,7 @@ Information about magni.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>platform_info</strong> (<em>dict</em>) &#8211;
-Various information about the system platform.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>platform_info</strong> (<em>dict</em>) &#8211; Various information about the system platform.</td>
 </tr>
 </tbody>
 </table>
@@ -347,9 +346,6 @@ the follwing values:</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -368,15 +364,15 @@ the follwing values:</p>
         <li class="right" >
           <a href="magni.reproducibility.html" title="magni.reproducibility package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.reproducibility.html" >magni.reproducibility package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

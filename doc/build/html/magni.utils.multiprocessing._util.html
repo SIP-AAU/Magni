@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.multiprocessing._util module &mdash; Magni 1.5.0 documentation</title>
+    <title>magni.utils.multiprocessing._util module &mdash; Magni 1.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.0',
+        VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.5.0 documentation" href="index.html" />
+    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
     <link rel="up" title="magni.utils.multiprocessing package" href="magni.utils.multiprocessing.html" />
     <link rel="next" title="magni.utils.validation package" href="magni.utils.validation.html" />
     <link rel="prev" title="magni.utils.multiprocessing._processing module" href="magni.utils.multiprocessing._processing.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="magni.utils.multiprocessing._processing.html" title="magni.utils.multiprocessing._processing module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.utils.multiprocessing.html" accesskey="U">magni.utils.multiprocessing package</a> &raquo;</li> 
@@ -62,7 +62,8 @@ subpackage.</p>
 <dl class="class">
 <dt id="magni.utils.multiprocessing._util.File">
 <em class="property">class </em><code class="descclassname">magni.utils.multiprocessing._util.</code><code class="descname">File</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/multiprocessing/_util.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.multiprocessing._util.File" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control pytables access to hdf5 files when using multiprocessing.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Control pytables access to hdf5 files when using multiprocessing.</p>
 <p><a class="reference internal" href="#magni.utils.multiprocessing._util.File" title="magni.utils.multiprocessing._util.File"><code class="xref py py-obj docutils literal"><span class="pre">File</span></code></a> retains the interface of <code class="xref py py-obj docutils literal"><span class="pre">tables.open_file</span></code> and should only be used
 in &#8216;with&#8217; statements (see Examples).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -70,10 +71,8 @@ in &#8216;with&#8217; statements (see Examples).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>tuple</em>) &#8211;
-The arguments that are passed to &#8216;tables.open_file&#8217;.</li>
-<li><strong>kwargs</strong> (<em>dict</em>) &#8211;
-The keyword arguments that are passed to &#8216;tables.open_file&#8217;.</li>
+<li><strong>args</strong> (<em>tuple</em>) &#8211; The arguments that are passed to &#8216;tables.open_file&#8217;.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) &#8211; The keyword arguments that are passed to &#8216;tables.open_file&#8217;.</li>
 </ul>
 </td>
 </tr>
@@ -93,9 +92,9 @@ the wait time introduced when using multiple files at the same time can be
 significant.</p>
 <p class="rubric">Examples</p>
 <p>The class is used in the following way:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils.multiprocessing._util</span> <span class="kn">import</span> <span class="n">File</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">File</span><span class="p">(</span><span class="s">&#39;database.hdf5&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">pass</span> <span class="c"># execute something involving the opened file</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils.multiprocessing._util</span> <span class="k">import</span> <span class="n">File</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">File</span><span class="p">(</span><span class="s1">&#39;database.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">pass</span> <span class="c1"># execute something involving the opened file</span>
 </pre></div>
 </div>
 <dl class="method">
@@ -106,8 +105,7 @@ significant.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>file</strong> (<em>tables.File</em>) &#8211;
-The file specified in the call to <code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code>.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>file</strong> (<em>tables.File</em>) &#8211; The file specified in the call to <code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -122,12 +120,9 @@ The file specified in the call to <code class="xref py py-obj docutils literal">
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>type</strong> (<em>type</em>) &#8211;
-The type of the exception raised, if any.</li>
-<li><strong>value</strong> (<em>Exception</em>) &#8211;
-The exception rasied, if any.</li>
-<li><strong>traceback</strong> (<em>traceback</em>) &#8211;
-The traceback of the exception raised, if any.</li>
+<li><strong>type</strong> (<em>type</em>) &#8211; The type of the exception raised, if any.</li>
+<li><strong>value</strong> (<em>Exception</em>) &#8211; The exception rasied, if any.</li>
+<li><strong>traceback</strong> (<em>traceback</em>) &#8211; The traceback of the exception raised, if any.</li>
 </ul>
 </td>
 </tr>
@@ -159,9 +154,6 @@ The traceback of the exception raised, if any.</li>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -180,7 +172,7 @@ The traceback of the exception raised, if any.</li>
         <li class="right" >
           <a href="magni.utils.multiprocessing._processing.html" title="magni.utils.multiprocessing._processing module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.5.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="magni.utils.multiprocessing.html" >magni.utils.multiprocessing package</a> &raquo;</li> 
@@ -188,8 +180,8 @@ The traceback of the exception raised, if any.</li>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Jun 30, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Nov 02, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

@@ -52,7 +52,7 @@ def convert_stream(stream):
 
     """
 
-    index = stream.find(b'data')
+    index = stream.find(b'data          ')
     index = stream.find(b'\n', index)
     stream_params = stream[:index]
     stream_data = stream[index + 1:]

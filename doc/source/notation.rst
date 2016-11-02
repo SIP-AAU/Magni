@@ -4,7 +4,7 @@
 A Note on Notation
 ==================
 
-A much as possible, a consistent notation is used in the :py:mod:`magni` package. This implies that variable names are shared between functions that are related. Furthermore a consistent coordinate system is used for the description of related surfaces.
+As much as possible, a consistent notation is used in the :py:mod:`magni` package. This implies that variable names are shared between functions that are related. Furthermore a consistent coordinate system is used for the description of related surfaces.
 
 
 The Compressed Sensing Reconstruction Problem
@@ -15,9 +15,9 @@ In the :py:mod:`magni.cs` subpackage, a consistent naming scheme is used for var
 .. math::
 
    &\text{minimize}\qquad    ||\alpha||_1 \\
-   &\text{subject to}\qquad  \mathbf{y} = \mathbf{A}\mathbf{\alpha}
+   &\text{subject to}\qquad  \mathbf{z} = \mathbf{A}\mathbf{\alpha}
 
-Here :math:`\mathbf{A} \in \mathbb{C}^{m \times n}` is the matrix product of a sampling matrix :math:`\mathbf{\Phi} \in \mathbb{C}^{m \times p}` and a dictionary matrix :math:`\mathbf{\Psi} \in \mathbb{C}^{p \times n}`. The dictionary coefficients are denoted :math:`\mathbf{\alpha} \in \mathbb{C}^{n}` whereas the measurements are denoted :math:`\mathbf{y} \in \mathbb{C}^{m}`. 
+Here :math:`\mathbf{A} \in \mathbb{C}^{m \times n}` is the matrix product of a sampling matrix :math:`\mathbf{\Phi} \in \mathbb{C}^{m \times p}` and a dictionary matrix :math:`\mathbf{\Psi} \in \mathbb{C}^{p \times n}`. The dictionary coefficients are denoted :math:`\mathbf{\alpha} \in \mathbb{C}^{n \times 1}` whereas the (noiseless) measurements are denoted by :math:`\mathbf{z} \in \mathbb{C}^{m \times 1}`.
 
 Thus, the following relations are used:
 
@@ -27,11 +27,24 @@ Thus, the following relations are used:
               & \\
    \mathbf{x} &= \mathbf{\Psi}\mathbf{\alpha} \\
               & \\
-   \mathbf{y} &= \mathbf{\Phi}\mathbf{x} \\
+   \mathbf{z} &= \mathbf{\Phi}\mathbf{x} \\
               &= \mathbf{\Phi}\mathbf{\Psi}\mathbf{\alpha} \\
 			  &= \mathbf{A}\mathbf{\alpha} \\
 
-Here the vector :math:`\mathbf{x} \in \mathbb{C}^{p}` represents the signal of interrest. That is, it is the signal that is assumed to have a sparse representation in the dictionary :math:`\mathbf{\Psi}`. The sparsity of the coefficient vector :math:`\mathbf{\alpha}`, that is the size of the support set, is denoted :math:`k=|\text{supp}(\mathbf{\alpha})|`.
+Here the vector :math:`\mathbf{x} \in \mathbb{C}^{p \times 1}` represents the signal of interrest. That is, it is the signal that is assumed to have a sparse representation in the dictionary :math:`\mathbf{\Psi}`. The sparsity of the coefficient vector :math:`\mathbf{\alpha}`, that is the size of the support set, is denoted :math:`k=|\text{supp}(\mathbf{\alpha})|`. Furthermore, we have the undersampling ratio :math:`\delta=m/n`, the sparsity level is :math:`\rho=k/m`, and the signal density is :math:`\tau=k/n`.
+
+Oftentimes, one considers noisy measurements, e.g. measurements corrupted by Additive White Gaussian Noise (AWGN) :math:`\mathbf{e} \in \mathbb{R}^{m \times 1}` with
+
+.. math::
+
+   \mathbf{y} &= \mathbf{z} + \mathbf{e} \\
+              &= \mathbf{A}\mathbf{\alpha} + \mathbf{e} \\
+
+Here the (noisy) measurements are denoted :math:`\mathbf{y} \in \mathbb{C}^{m \times 1}`.
+
+.. note::
+
+   All vectors in :py:mod:`magni` are considered to be column vectors, i.e. they explicitly have a second dimension of length 1 when defined as :py:mod:`numpy` arrays.
 
 .. note::
 

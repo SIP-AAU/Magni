@@ -180,10 +180,10 @@ def _handle_format_inconsistency(obj, data):
         size = shape[0] * shape[1]
 
         if obj['attrs']['data'].lower() == 'binary':
-            data, thumbnail = data[:-3 * size / 2], data[-3 * size / 2:]
+            data, thumbnail = data[:-3 * size // 2], data[-3 * size // 2:]
             thumbnail = np.int16(thumbnail * 2**15).view(np.uint8)
         elif obj['attrs']['data'].lower() == 'binary_32':
-            data, thumbnail = data[:-3 * size / 4], data[-3 * size / 4:]
+            data, thumbnail = data[:-3 * size // 4], data[-3 * size // 4:]
             thumbnail = np.int32(thumbnail * 2**31).view(np.uint8)
         else:
             msg = ("The 'thumbnail' file header causes unknown behavior for "

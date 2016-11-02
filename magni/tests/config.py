@@ -33,6 +33,14 @@ class UpdateTest(unittest.TestCase):
         config = magni.cs.phase_transition.config
         config.update(dict(config.items()))
 
+    def test_cs_reconstruction_amp_config(self):
+        config = magni.cs.reconstruction.amp.config
+        config.update(dict(config.items()))
+
+    def test_cs_reconstruction_gamp_config(self):
+        config = magni.cs.reconstruction.gamp.config
+        config.update(dict(config.items()))
+
     def test_cs_reconstruction_iht_config(self):
         config = magni.cs.reconstruction.iht.config
         config.update(dict(config.items()))

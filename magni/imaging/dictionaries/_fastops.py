@@ -11,7 +11,7 @@ Routine listings
 dct2(x, mn_tuple, overcomplete_mn_tuple=None)
     2D discrete cosine transform.
 idct2(x, mn_tuple, overcomplete_mn_tuple=None)
-    2D inverse discrete cosine tranform.
+    2D inverse discrete cosine transform.
 dft2(x, mn_tuple, overcomplete_mn_tuple=None)
     2D discrete Fourier transform.
 idft2(x, mn_tuple, overcomplete_mn_tuple=None)

@@ -26,6 +26,12 @@ kappa_fixed : float
 precision_float : {np.float, np.float16, np.float32, np.float64, np.float128}
     The floating point precision used for the computations (the default is
     np.float64).
+report_history : bool
+    The indicator of whether or not to return the progress history along with
+    the result (the default is False).
+stop_criterion : str
+    The stop criterion to use in the iterations (the default is
+    residual_measurements_ratio).
 threshold : {'far', 'fixed'}
     The method used for calculating the threshold value.
 threshold_fixed : int
@@ -40,6 +46,10 @@ threshold_weights : ndarray
 tolerance : float
     The least acceptable ratio of residual to measurements (in 2-norm) to break
     the interations (the default is 0.001).
+true_solution : ndarray or None
+    The true solution to allow for tracking the convergence of the algorithm in
+    the artificial setup where the true solution is known a-priori (the default
+    is None, which implies that no true solution tracking is used).
 warm_start : ndarray
     The initial guess of the solution vector (the default is None, which
     implies that a vector of zeros is used).
@@ -60,11 +70,14 @@ configger = _Configger(
      'kappa': 'fixed',
      'kappa_fixed': 0.65,
      'precision_float': np.float64,
+     'report_history': False,
+     'stop_criterion': 'residual_measurements_ratio',
      'threshold': 'far',
      'threshold_fixed': 1,
      'threshold_operator': 'hard',
      'threshold_weights': np.array([[1]]),
      'tolerance': 1e-3,
+     'true_solution': None,
      'warm_start': None},
     {'iterations': _numeric(None, 'integer', range_='[1;inf)'),
      'kappa': _generic(
@@ -76,6 +89,9 @@ configger = _Configger(
          getattr(np, 'float32', np.float_),
          getattr(np, 'float64', np.float_),
          getattr(np, 'float128', np.float_))),
+     'report_history': _numeric(None, 'boolean'),
+     'stop_criterion': _generic(
+         None, 'string', value_in=_util._get_methods('stop_criterion')),
      'threshold': _generic(
          None, 'string', value_in=_util._get_methods('threshold')),
      'threshold_fixed': _numeric(None, 'integer', range_='(0;inf)'),
@@ -84,6 +100,9 @@ configger = _Configger(
      'threshold_weights': _numeric(
          None, ('integer', 'floating'), shape=(-1, 1)),
      'tolerance': _numeric(None, 'floating', range_='[0;inf]'),
+     'true_solution': _numeric(
+         None, ('integer', 'floating', 'complex'), shape=(-1, 1),
+         ignore_none=True),
      'warm_start': _numeric(
          None, ('integer', 'floating', 'complex'), shape=(-1, 1),
          ignore_none=True)})

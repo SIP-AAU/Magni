@@ -62,13 +62,15 @@ def create(path):
 
     shape = [_conf[key] for key in ['delta', 'rho', 'monte_carlo']]
     shape = [len(shape[0]), len(shape[1]), shape[2]]
-    time = dist = np.zeros(shape)
+    time = dist = mse = norm = np.zeros(shape)
     status = np.zeros(shape[:2], np.bool8)
 
     try:
         with _File(path, 'w') as f:
             f.create_array('/', 'time', time)
             f.create_array('/', 'dist', dist)
+            f.create_array('/', 'mse', mse)
+            f.create_array('/', 'norm', norm)
             f.create_array('/', 'status', status)
     except BaseException as e:
         if os.path.exists(path):
@@ -102,7 +104,7 @@ def get(path):
     return done
 
 
-def set(path, ij_tuple, stat_time, stat_dist):
+def set(path, ij_tuple, stat_time, stat_dist, stat_mse, stat_norm):
     """
     Store the simulation data of a specified point.
 
@@ -120,6 +122,10 @@ def set(path, ij_tuple, stat_time, stat_dist):
         The simulation results of the specified point.
     stat_time : ndarray
         The simulation timings of the specified point.
+    stat_mse : ndarray
+        The simulation mean squared error of the specified point.
+    stat_norm : ndarray
+        The simulation true vector 2-norm.
 
     """
 
@@ -128,4 +134,6 @@ def set(path, ij_tuple, stat_time, stat_dist):
     with _File(path, 'a') as f:
         f.root.time[i, j] = stat_time
         f.root.dist[i, j] = stat_dist
+        f.root.mse[i, j] = stat_mse
+        f.root.norm[i, j] = stat_norm
         f.root.status[i, j] = True
