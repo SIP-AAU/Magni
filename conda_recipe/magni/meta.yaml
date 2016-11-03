@@ -2,12 +2,12 @@
 
 package:
   name: magni
-  version: '1.5.0'
+  version: '1.6.0'
 
 source:
-  fn: magni-1.5.0.tar.gz
-  url: https://pypi.python.org/packages/89/62/1f2132f2d215407cadc2f8ce3e000dd4c4f905ee03998b3cea87711f9530/magni-1.5.0.tar.gz
-  md5: 72bf820a7c44938a7dce815f98c68939
+  fn: magni-1.6.0.tar.gz
+  url: https://pypi.python.org/packages/31/2f/d2acf9751010d30cf545418db7ade6c58568bc40269620401bccf8ab720e/magni-1.6.0.tar.gz#md5=d1521fb4e0d0cdd4ee62c898178be1db
+  md5: d1521fb4e0d0cdd4ee62c898178be1db
 
   patches:
     - setup_py_conda.patch
