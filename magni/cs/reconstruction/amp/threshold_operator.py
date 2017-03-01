@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2016, Magni developers.
+    Copyright (c) 2016-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -20,11 +20,6 @@ from __future__ import division
 
 import numpy as np
 import scipy.stats
-try:
-    import bottleneck as bn
-    calculate_median = bn.median
-except ImportError:
-    calculate_median = np.median
 
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
@@ -259,4 +254,4 @@ class SoftThreshold(ValidatedThresholdOperator):
         elif self.update_method == 'median':
             # Eq. (9.45) in [1] corrected according to [2]
             self.tau_hat_sq = (
-                1.0 / self.stdQ1 * calculate_median(np.abs(chi)))**2
+                1.0 / self.stdQ1 * np.median(np.abs(chi)))**2

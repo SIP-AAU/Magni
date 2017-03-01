@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2016, Magni developers.
+    Copyright (c) 2014-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -19,6 +19,8 @@ MatrixCollection(magni.utils.validation.types.MatrixBase)
     Wrap multiple matrix emulators in a single matrix emulator.
 Separable2DTransform(Matrix)
     Wrap a linear 2D separable transform in a matrix emulator.
+SRM(MatrixCollection)
+    Wrap a Structurally Random Matrix (SRM) in a matrix emulator.
 SumApproximationMatrix(object)
     Wrap a sum approximation in a matrix emulator.
 norm(A, ord=None)
@@ -810,6 +812,224 @@ class Separable2DTransform(Matrix):
         return mat_mult_result_as_vec
 
 
+class SRM(MatrixCollection):
+    """
+    Wrap a Structurally Random Matrix (SRM) in a matrix emulator.
+
+    Structurally Random Matrices are detailed in [2]. They are composed of a
+    (row) sub-sampling matrix `D`, an orthogonal matrix `F`, and a
+    pre-randomization matrix `R` such that the SRM (an m-by-n matrix) is given
+    by sqrt(n/m)*DFR with DFR being the matrix product of D, F, and R.
+
+    This class implements are sligthly more general SRM than the one just
+    described. Specifically, the scaling is absorbed into `D` and may be
+    arbitrary, i.e. potentially different for each row. Furthermore, the `F`
+    matrix is allowed to be an abitrary p-by-n matrix for `D` an m-by-p matrix.
+    Finally, this class allows for either or both of local pre-randomization
+    (sign changes on columns) or global pre-randomization (permutation of
+    columns). If both local and global pre-randomization is used, the `R`
+    matrix is composed as the matrix product `R_gR_l` with `R_g` the global
+    pre-randomization and `R_l` the local.
+
+    Parameters
+    ----------
+    F : ndarray or magni.utils.validation.types.MatrixBase
+        The p-by-n "base" matrix used in the SRM.
+    D : ndarray or magni.utils.validation.types.MatrixBase
+        The m-by-p sub-sampling matrix used in the SRM (the default is None,
+        which implies that no sub-sampling matrix is used in the SRM).
+    l_ran_arr : ndarray
+        The length n, ordered 1D array of signs to apply to the n columns (the
+        default is None, which implies that no signs are applied to the
+        columns).
+    g_ran_arr : ndarray
+        The length n, ordered 1D array of indices (zero-indexed) defining the
+        permutation of the n columns (the default is None, which implies that
+        the columns are not permuted) - see example below.
+
+    See Also
+    --------
+    magni.utils.matrices.MatrixCollection : Superclass of the present class.
+
+    References
+    ----------
+    .. [2]  T.T. Do, L.. Gan, N.H. Nguyen, and T.D. Tran, "Fast and Efficient
+       Compressive Sensing Using Structurally Random Matrices", *IEEE
+       Transactions on Signal Processing*, vol. 60, no. 1, pp. 139-154, 2012
+
+    Examples
+    --------
+    For example, a sub-sampling of a 3-by-3 matrix
+
+    >>> import numpy as np
+    >>> from magni.utils.matrices import SRM
+    >>> D = np.array([[0, 1, 0], [0, 0, 1]])
+    >>> F = np.arange(9).reshape(3, 3)
+    >>> A_1 = SRM(F, D=D)
+    >>> A_1.A.real
+    array([[ 3.,  4.,  5.],
+           [ 6.,  7.,  8.]])
+
+    or a local pre-randomization (sign change)
+
+    >>> signs = np.array([1, -1, 1])
+    >>> A_2 = SRM(F, l_ran_arr=signs)
+    >>> A_2.A.real
+    array([[ 0., -1.,  2.],
+           [ 3., -4.,  5.],
+           [ 6., -7.,  8.]])
+
+    or a global pre-randomization (permutation)
+
+    >>> permutation = np.array([2, 0, 1])
+    >>> A_3 = SRM(F, g_ran_arr=permutation)
+    >>> A_3.A.real
+    array([[ 2.,  0.,  1.],
+           [ 5.,  3.,  4.],
+           [ 8.,  6.,  7.]])
+
+    or everything together
+
+    >>> A_4 = SRM(F, D=D, l_ran_arr=signs, g_ran_arr=permutation)
+    >>> A_4.A.real
+    array([[ 5., -3.,  4.],
+           [ 8., -6.,  7.]])
+
+    """
+
+    def __init__(self, F, D=None, l_ran_arr=None, g_ran_arr=None):
+        _MatrixBase.__init__(
+            self, np.complex_, ((-np.inf, np.inf), (-np.inf, np.inf)),
+            (D.shape[0] if D is not None else F.shape[0], F.shape[1]))
+
+        @_decorate_validation
+        def validate_input():
+            _numeric('F', ('integer', 'floating', 'complex'), shape=(-1, -1))
+            _numeric('D', ('integer', 'floating', 'complex'),
+                     shape=(-1, F.shape[0]), ignore_none=True)
+            _numeric('l_ran_arr', 'integer', shape=(F.shape[1], ),
+                     range_='[-1;1]', ignore_none=True)
+            _numeric('g_ran_arr', 'integer', shape=(F.shape[1], ),
+                     range_='[0;{})'.format(F.shape[1]), ignore_none=True)
+
+            if (l_ran_arr is not None and
+                    np.count_nonzero(l_ran_arr) != F.shape[1]):
+                    raise ValueError(
+                        'The "l_ran_arr" array must only contain values ' +
+                        'in {{-1, 1}}')
+
+            if (g_ran_arr is not None and
+                    len(np.unique(g_ran_arr)) != F.shape[1]):
+                raise ValueError(
+                    'The "r_ran_arr" array must contain exactly one copy ' +
+                    'of each of the values in range({})'.format(F.shape[1]))
+
+        validate_input()
+
+        self._l_ran_arr = l_ran_arr
+        self._g_ran_arr = g_ran_arr
+        self._F_norm = None
+        self._includes = {'sub_sampling': False,
+                          'local_pre_randomization': False,
+                          'global_pre_randomization': False}
+        SRM_matrices = []
+
+        # D matrix
+        if D is not None:
+            self._includes['sub_sampling'] = True
+            SRM_matrices.append(D)
+
+        # F matrix
+        SRM_matrices.append(F)
+
+        # R matrix
+        R_matrices = []
+        if g_ran_arr is not None:
+            self._includes['global_pre_randomization'] = True
+
+            g_ran_arr_C = np.empty_like(g_ran_arr)
+            g_ran_arr_C[g_ran_arr] = np.arange(F.shape[1])
+
+            def R_g(vec):
+                return vec[g_ran_arr_C]
+
+            def R_g_T(vec):
+                return vec[g_ran_arr]
+
+            R_matrices.append(Matrix(R_g, R_g_T, [], (F.shape[1], F.shape[1])))
+
+        if l_ran_arr is not None:
+            self._includes['local_pre_randomization'] = True
+            l_ran_vec = l_ran_arr.reshape(-1, 1)
+
+            def R_l(vec):
+                return l_ran_vec * vec
+            R_matrices.append(Matrix(R_l, R_l, [], (F.shape[1], F.shape[1])))
+
+        SRM_matrices.extend(R_matrices)
+
+        # Full SRM
+        self._matrices = tuple(SRM_matrices)
+
+    @property
+    def matrix_state(self):
+        """
+        Return a copy of the internal matrix state.
+
+        The internal matrix state consists of:
+
+        * matrices: The tuple of matrices in the SRM.
+        * l_ran_arr: The local pre-randomization array.
+        * g_ran_arr: The global pre-randomization array.
+        * F_norm: The special F matrix used in norm computations.
+        * includes: The dictionary detailing the SRM structure.
+
+        Returns
+        -------
+        matrix_state : dict
+            A copy of the internal matrix state
+
+        """
+
+        matrix_state = {'matrices': copy.deepcopy(self._matrices),
+                        'l_ran_arr': copy.deepcopy(self._l_ran_arr),
+                        'g_ran_arr': copy.deepcopy(self._g_ran_arr),
+                        'F_norm': copy.deepcopy(self._F_norm),
+                        'includes': copy.deepcopy(self._includes)}
+
+        return matrix_state
+
+    @matrix_state.setter
+    def matrix_state(self, update_dict):
+        """
+        Update the state of the SRM.
+
+        Note that the only states that may be updated are:
+
+        * F_norm
+
+        Parameters
+        ----------
+        update_dict : dict
+            The dictionary of states (as keys) to update (with values).
+
+        """
+
+        @_decorate_validation
+        def validate_input():
+            _generic('update_dict', 'mapping', keys_in=('F_norm',))
+
+            if 'F_norm' in update_dict:
+                _numeric(('update_dict', 'F_norm'),
+                         ('integer', 'floating', 'complex'),
+                         shape=(-1, -1), ignore_none=True)
+
+        validate_input()
+
+        if 'F_norm' in update_dict:
+            self._F_norm = update_dict['F_norm']
+
+
 class SumApproximationMatrix(object):
     """
     Wrap a sum approximation in a matrix emulator.
@@ -916,9 +1136,23 @@ def norm(A, ord=None):
         the norm has been implemented. Beware of possible "out of memory"
         issues.
 
+    Currently optimized norm computations are:
+
+    * `magni.utils.matrices.Separable2DTransform`
+    * `magni.utils.matrices.SRM` (particularly for `F` a Separable2DTransform)
+
+    If the `A` matrix is a `magni.util.matrices.SRM` and `A.F_norm` is not
+    `None`, the norm computation is accelerated using `A.F_norm`. If the SRM
+    also includes sub-sampling, it is assumed that the `F` matrix has entries
+    (or row norms) of the same size as is the case for an orthogonal matrix.
+    Furthermore, it is assumed that any sub-sampling does not include a
+    scaling, i.e. any scaling is not taken into account in computing the norm.
+    If these assumptions about the SRM are not fulfilled, the computed
+    Frobenius norm will only be an approximation to the true Frobernius norm.
+
     Examples
     --------
-    Compute the Frobenius norm of a Seperable2DTransform
+    Compute the Frobenius norm of a Separable2DTransform
 
     >>> import numpy as np
     >>> from magni.utils.matrices import Separable2DTransform, norm
@@ -942,16 +1176,25 @@ def norm(A, ord=None):
 
     validate_input()
 
-    norm = None
+    norm_ = None
 
-    # Special computations
+    # Optimised computations
     if ord is None or ord == 'fro':
         if isinstance(A, Separable2DTransform):
             A_s = A.matrix_state
-            norm = np.linalg.norm(A_s['mtx_l']) * np.linalg.norm(A_s['mtx_r'])
+            norm_ = np.linalg.norm(A_s['mtx_l']) * np.linalg.norm(A_s['mtx_r'])
+
+        elif isinstance(A, SRM):
+            A_s = A.matrix_state
+            if A_s['F_norm'] is not None:
+                norm_ = norm(A_s['F_norm'])
+                if A_s['includes']['sub_sampling']:
+                    # Assume entries (or column norms) of ~same size in F
+                    # and no scaling.
+                    norm_ *= np.sqrt(A.shape[0] / A.shape[1])
 
     # Fallback numpy solution
-    if norm is None:
-        norm = np.linalg.norm(A)
+    if norm_ is None:
+        norm_ = np.linalg.norm(A)
 
-    return norm
+    return norm_

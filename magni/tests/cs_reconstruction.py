@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2015-2016, Magni developers.
+    Copyright (c) 2015-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -534,7 +534,7 @@ class FeatureTest(object):
     def setUp(self):
         seed = 6021
         n = 500
-        delta = 0.68
+        delta = 0.78
         rho = 0.17
         m = int(delta * n)
 
@@ -661,10 +661,16 @@ class FeaturePrecisionFloatTest(FeatureTest, unittest.TestCase):
 
     - *test_float32_AMP*
     - *test_float32_GAMP*
+    - *test_float32_GAMP_EM*
+    - *test_float32_GAMP_EM_BL*
     - *test_float64_AMP*
     - *test_float64_GAMP*
+    - *test_float64_GAMP_EM*
+    - *test_float64_GAMP_EM_BL*
     - *test_float128_AMP*
     - *test_float128_GAMP*
+    - *test_float128_GAMP_EM*
+    - *test_float128_GAMP_EM_BL*
     - *test_float32_IST*
     - *test_float64_IST*
     - *test_float128_IST*
@@ -710,6 +716,31 @@ class FeaturePrecisionFloatTest(FeatureTest, unittest.TestCase):
         sc = magni.cs.reconstruction.gamp.stop_criterion
         magni.cs.reconstruction.gamp.config.update(
             {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'stop_criterion': sc.Residual,
+             'precision_float': np.float32})
+        self.z = np.float32(self.z)
+        self.F = np.float32(self.F)
+        self.F_sq = np.float32(self.F_sq)
+        self.assertEqual(
+            magni.cs.reconstruction.gamp.config['precision_float'], np.float32)
+
+        a_hat = self._gamp_run(
+            self.z, self.F, self.F_sq, self.a, success=success)
+        self.assertEqual(a_hat.dtype, np.float32)
+
+    def test_float32_GAMP_EM_BL(self, success=True):
+        input_channel_params = {
+            'tau': self.tau, 'weights': np.ones_like(self.alpha),
+            'phi_channel': magni.cs.reconstruction.gamp.input_channel.IIDL,
+            'phi_channel_parameters': {'mu': 0, 'b': 1, 'use_em': True},
+            'use_em': True}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        sc = magni.cs.reconstruction.gamp.stop_criterion
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel': magni.cs.reconstruction.gamp.input_channel.GWS,
+             'input_channel_parameters': input_channel_params,
              'output_channel_parameters': output_channel_params,
              'stop_criterion': sc.Residual,
              'precision_float': np.float32})
@@ -775,6 +806,31 @@ class FeaturePrecisionFloatTest(FeatureTest, unittest.TestCase):
             self.z, self.F, self.F_sq, self.a, success=success)
         self.assertEqual(a_hat.dtype, np.float64)
 
+    def test_float64_GAMP_EM_BL(self, success=True):
+        input_channel_params = {
+            'tau': self.tau, 'weights': np.ones_like(self.alpha),
+            'phi_channel': magni.cs.reconstruction.gamp.input_channel.IIDL,
+            'phi_channel_parameters': {'mu': 0, 'b': 1, 'use_em': True},
+            'use_em': True}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        sc = magni.cs.reconstruction.gamp.stop_criterion
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel': magni.cs.reconstruction.gamp.input_channel.GWS,
+             'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'stop_criterion': sc.Residual,
+             'precision_float': np.float64})
+        self.z = np.float64(self.z)
+        self.F = np.float64(self.F)
+        self.F_sq = np.float64(self.F_sq)
+        self.assertEqual(
+            magni.cs.reconstruction.gamp.config['precision_float'], np.float64)
+
+        a_hat = self._gamp_run(
+            self.z, self.F, self.F_sq, self.a, success=success)
+        self.assertEqual(a_hat.dtype, np.float64)
+
     @unittest.skipIf(not hasattr(np, 'float128'), 'precision is not available')
     def test_float128_AMP(self, success=True):
         magni.cs.reconstruction.amp.config['precision_float'] = np.float128
@@ -818,6 +874,33 @@ class FeaturePrecisionFloatTest(FeatureTest, unittest.TestCase):
         sc = magni.cs.reconstruction.gamp.stop_criterion
         magni.cs.reconstruction.gamp.config.update(
             {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'stop_criterion': sc.Residual,
+             'precision_float': np.float128})
+        self.z = np.float128(self.z)
+        self.F = np.float128(self.F)
+        self.F_sq = np.float128(self.F_sq)
+        self.assertEqual(
+            magni.cs.reconstruction.gamp.config['precision_float'],
+            np.float128)
+
+        a_hat = self._gamp_run(
+            self.z, self.F, self.F_sq, self.a, success=success)
+        self.assertEqual(a_hat.dtype, np.float128)
+
+    @unittest.skipIf(not hasattr(np, 'float128'), 'precision is not available')
+    def test_float128_GAMP_EM_BL(self, success=True):
+        input_channel_params = {
+            'tau': self.tau, 'weights': np.ones_like(self.alpha),
+            'phi_channel': magni.cs.reconstruction.gamp.input_channel.IIDL,
+            'phi_channel_parameters': {'mu': 0, 'b': 1, 'use_em': True},
+            'use_em': True}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        sc = magni.cs.reconstruction.gamp.stop_criterion
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel': magni.cs.reconstruction.gamp.input_channel.GWS,
+             'input_channel_parameters': input_channel_params,
              'output_channel_parameters': output_channel_params,
              'stop_criterion': sc.Residual,
              'precision_float': np.float128})
@@ -891,11 +974,11 @@ class FeatureReportHistoryTest(FeatureTest, unittest.TestCase):
 
         self.assertEqual(history['stop_criterion'], 'MSECONVERGENCE')
         self.assertEqual(history['stop_reason'], 'MSECONVERGENCE')
-        self.assertEqual(history['stop_iteration'], 30)
-        self.assertEqual(len(history['MSE']), 32)
-        self.assertEqual(len(history['threshold_parameters']), 32)
-        self.assertEqual(len(history['alpha_bar']), 32)
-        self.assertEqual(len(history['stop_criterion_value']), 32)
+        self.assertEqual(history['stop_iteration'], 31)
+        self.assertEqual(len(history['MSE']), 33)
+        self.assertEqual(len(history['threshold_parameters']), 33)
+        self.assertEqual(len(history['alpha_bar']), 33)
+        self.assertEqual(len(history['stop_criterion_value']), 33)
 
     def test_MAX_ITERATION_AMP(self, success=False):
         magni.cs.reconstruction.amp.config.update(
@@ -971,10 +1054,10 @@ class FeatureReportHistoryTest(FeatureTest, unittest.TestCase):
 
         self.assertEqual(history['stop_criterion'], 'MSE_CONVERGENCE')
         self.assertEqual(history['stop_reason'], 'MSE_CONVERGENCE')
-        self.assertEqual(history['stop_iteration'], 3)
-        self.assertEqual(len(history['MSE']), 5)
-        self.assertEqual(len(history['alpha']), 5)
-        self.assertEqual(len(history['stop_criterion_value']), 5)
+        self.assertEqual(history['stop_iteration'], 5)
+        self.assertEqual(len(history['MSE']), 7)
+        self.assertEqual(len(history['alpha']), 7)
+        self.assertEqual(len(history['stop_criterion_value']), 7)
 
     def test_MAX_ITERATIONS_IST(self, success=False):
         magni.cs.reconstruction.it.config.update(
@@ -1012,6 +1095,7 @@ class FeatureStopCriterionTest(FeatureTest, unittest.TestCase):
     - *test_residual_IST* (stop based on residual)
     - *test_residual_measurements_ratio_IST* (stop based on ratio of
        measurements to residual)
+    - *test_normalised_mse_IST* stop based on NMSE)
 
     """
 
@@ -1099,15 +1183,25 @@ class FeatureStopCriterionTest(FeatureTest, unittest.TestCase):
 
     def test_residual_IST(self, success=True):
         magni.cs.reconstruction.it.config.update(
-            {'stop_criterion': 'residual'})
+            {'stop_criterion': 'residual',
+             'tolerance': 1e-6})
 
-        self._ist_run(self.y, self.A, self.alpha, success=False)
+        self._ist_run(self.y, self.A, self.alpha, success=success)
 
     def test_residual_measurements_ratio_IST(self, success=True):
         magni.cs.reconstruction.it.config.update(
-            {'stop_criterion': 'residual'})
+            {'stop_criterion': 'residual_measurements_ratio',
+             'tolerance': 1e-6})
 
-        self._ist_run(self.y, self.A, self.alpha, success=False)
+        self._ist_run(self.y, self.A, self.alpha, success=success)
+
+    def test_normalised_mse_IST(self, success=True):
+        magni.cs.reconstruction.it.config.update(
+            {'stop_criterion': 'normalised_mse_convergence',
+             'tolerance': 1e-6,
+             'iterations': 500})
+
+        self._ist_run(self.y, self.A, self.alpha, success=success)
 
 
 class FeatureWarmStartTest(FeatureTest, unittest.TestCase):
@@ -1148,6 +1242,83 @@ class FeatureWarmStartTest(FeatureTest, unittest.TestCase):
                             2 * np.ones(self.a.shape))})
 
         self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
+
+
+class FeatureGAMPChannelEMTest(FeatureTest, unittest.TestCase):
+    """
+    Test of GAMP Channel EM updates
+
+    The following tests are implemented:
+
+    - *test_IIDG_channel_EM* (EM update of pure Gauss channel)
+    - *test_IIDL_channel_EM* (EM update of pure Laplace channel)
+
+    """
+
+    def test_IIDG_channel_EM(self, success=False):
+        IIDG = magni.cs.reconstruction.gamp.input_channel.IIDG
+        input_channel_params = {
+            'theta_bar': 0, 'theta_tilde': 1, 'use_em': True}
+        output_channel_params = {
+            'sigma_sq': 1, 'noise_level_estimation': 'sample_variance'}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': IIDG})
+
+        alpha_hat_pure_G = self._gamp_run(
+            self.z, self.F, self.F_sq, self.a, success=success)
+
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        input_channel_params = {
+            'tau': 1, 'weights': None, 'phi_channel': IIDG,
+            'phi_channel_parameters': {
+                'theta_bar': 0, 'theta_tilde': 1, 'use_em': True},
+            'use_em': True}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        alpha_hat_GWS_G = self._gamp_run(
+            self.z, self.F, self.F_sq, self.a, success=success)
+
+        self.assertTrue(np.allclose(alpha_hat_pure_G, alpha_hat_GWS_G))
+
+    def test_IIDL_channel_EM(self, success=False):
+        IIDL = magni.cs.reconstruction.gamp.input_channel.IIDL
+        input_channel_params = {
+            'mu': 0, 'b': 1 / np.sqrt(2), 'use_em': True}
+        output_channel_params = {
+            'sigma_sq': 1, 'noise_level_estimation': 'sample_variance'}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': IIDL})
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            alpha_hat_pure_L = self._gamp_run(
+                self.z, self.F, self.F_sq, self.a, success=success)
+
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        input_channel_params = {
+            'tau': 1, 'weights': None, 'phi_channel': IIDL,
+            'phi_channel_parameters': {
+                'mu': 0, 'b': 1 / np.sqrt(2), 'use_em': True},
+            'use_em': True}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            alpha_hat_GWS_L = self._gamp_run(
+                self.z, self.F, self.F_sq, self.a, success=success)
+
+        self.assertTrue(
+            np.allclose(alpha_hat_pure_L, alpha_hat_GWS_L, atol=1e-4))
 
 
 class PhaseSpaceExtremesTest(unittest.TestCase):
@@ -1319,6 +1490,8 @@ class PhaseSpaceTest(object):
     - *test_median_soft_threshold_AMP* (soft threshold, median level)
     - *test_iidsGB_AWGN_GAMP* (s-GB)
     - *test_iidsGB_AWGN_EM_GAMP* (s-GB with EM learning)
+    - *test_iidBL_AWGN_GAMP* (BL)
+    - *test_iidBL_AWGN_EM_GAMP* (BL with EM learning)
     - *test_iidBG_AWGN_GAMP* (MMSE GAMP)
     - *test_iidBG_AWGN_EM_GAMP* (MMSE GAMP with EM learning)
     - *test_iidBG_AWGN_GAMP_rangan_sum_approx* (rangan sum approx GAMP)
@@ -1387,6 +1560,45 @@ class PhaseSpaceTest(object):
             warnings.simplefilter('ignore')
             self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
 
+    def test_iidBL_AWGN_GAMP(self, success=True):
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        IIDL = magni.cs.reconstruction.gamp.input_channel.IIDL
+        input_channel_params = {
+            'tau': self.tau, 'weights': None, 'phi_channel': IIDL,
+            'phi_channel_parameters': {
+                'mu': 0, 'b': 1 / np.sqrt(2), 'use_em': False},
+            'use_em': False}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'sample_variance'}
+
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
+
+    def test_iidBL_AWGN_EM_GAMP(self, success=True):
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        IIDL = magni.cs.reconstruction.gamp.input_channel.IIDL
+        input_channel_params = {
+            'tau': self.tau, 'weights': None, 'phi_channel': IIDL,
+            'phi_channel_parameters': {
+                'mu': 0, 'b': 1 / np.sqrt(2), 'use_em': True},
+            'use_em': True}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
+
     def test_iidBG_AWGN_GAMP(self, success=True):
         input_channel_params = {'tau': self.tau, 'theta_bar': 0,
                                 'theta_tilde': 1, 'use_em': False}
@@ -1438,6 +1650,101 @@ class PhaseSpaceTest(object):
             magni.cs.reconstruction.gamp.config['sum_approximation_constant'],
             {'krzakala': 1.0 / self.F.shape[0]})
         self._gamp_run(self.z, self.F, None, self.a, success=success)
+
+    def test_iidwBG_ones_AWGN_GAMP(self, success=True):
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        IIDG = magni.cs.reconstruction.gamp.input_channel.IIDG
+        input_channel_params = {
+            'tau': self.tau, 'weights': np.ones_like(self.a),
+            'phi_channel': IIDG,
+            'phi_channel_parameters': {
+                'theta_bar': 0, 'theta_tilde': 1, 'use_em': False},
+            'use_em': False}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
+
+    def test_iidwBG_ones_AWGN_EM_GAMP(self, success=True):
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        IIDG = magni.cs.reconstruction.gamp.input_channel.IIDG
+        input_channel_params = {
+            'tau': self.tau, 'weights': np.ones_like(self.a),
+            'phi_channel': IIDG,
+            'phi_channel_parameters': {
+                'theta_bar': 0, 'theta_tilde': 1, 'use_em': False},
+            'use_em': True}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
+
+    def test_iidwBG_linspace_AWGN_GAMP(self, success=True):
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        IIDG = magni.cs.reconstruction.gamp.input_channel.IIDG
+        input_channel_params = {
+            'tau': self.tau,
+            'weights': np.linspace(0.1, 0.9, len(self.a)).reshape(-1, 1),
+            'phi_channel': IIDG,
+            'phi_channel_parameters': {
+                'theta_bar': 0, 'theta_tilde': 1, 'use_em': False},
+            'use_em': False}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
+
+    def test_iidwBG_linspace_AWGN_EM_truncate_GAMP(self, success=True):
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        IIDG = magni.cs.reconstruction.gamp.input_channel.IIDG
+        input_channel_params = {
+            'tau': self.tau,
+            'weights': np.linspace(0.1, 0.9, len(self.a)).reshape(-1, 1),
+            'phi_channel': IIDG,
+            'phi_channel_parameters': {
+                'theta_bar': 0, 'theta_tilde': 1, 'use_em': False},
+            'use_em': True,
+            'adjust_tau_method': 'truncate'}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
+
+    def test_iidwBG_linspace_AWGN_EM_reweight_GAMP(self, success=True):
+        GWS = magni.cs.reconstruction.gamp.input_channel.GWS
+        IIDG = magni.cs.reconstruction.gamp.input_channel.IIDG
+        input_channel_params = {
+            'tau': self.tau,
+            'weights': np.linspace(0.1, 0.9, len(self.a)).reshape(-1, 1),
+            'phi_channel': IIDG,
+            'phi_channel_parameters': {
+                'theta_bar': 0, 'theta_tilde': 1, 'use_em': False},
+            'use_em': True,
+            'adjust_tau_method': 'reweight'}
+        output_channel_params = {'sigma_sq': 1,
+                                 'noise_level_estimation': 'em'}
+        magni.cs.reconstruction.gamp.config.update(
+            {'input_channel_parameters': input_channel_params,
+             'output_channel_parameters': output_channel_params,
+             'input_channel': GWS})
+
+        self._gamp_run(self.z, self.F, self.F_sq, self.a, success=success)
 
     def test_default_IT(self, success_iht=True, success_ist=True):
         self._iht_run(self.y, self.A, self.alpha, success=success_iht)
@@ -1583,6 +1890,12 @@ class PhaseSpaceTest1(PhaseSpaceTest, unittest.TestCase):
     def test_iidsGB_AWGN_EM_GAMP(self):
         PhaseSpaceTest.test_iidsGB_AWGN_EM_GAMP(self, success=False)
 
+    def test_iidBL_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_GAMP(self, success=False)
+
+    def test_iidBL_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_EM_GAMP(self, success=False)
+
     def test_iidBG_AWGN_GAMP(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP(self, success=False)
 
@@ -1595,6 +1908,23 @@ class PhaseSpaceTest1(PhaseSpaceTest, unittest.TestCase):
 
     def test_iidBG_AWGN_GAMP_krzakala_sum_approx(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP_krzakala_sum_approx(
+            self, success=False)
+
+    def test_iidwBG_ones_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_ones_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_EM_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_truncate_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_truncate_GAMP(
+            self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_reweight_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_reweight_GAMP(
             self, success=False)
 
 
@@ -1623,6 +1953,12 @@ class PhaseSpaceTest2(PhaseSpaceTest, unittest.TestCase):
     def test_iidsGB_AWGN_EM_GAMP(self):
         PhaseSpaceTest.test_iidsGB_AWGN_EM_GAMP(self, success=False)
 
+    def test_iidBL_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_GAMP(self, success=False)
+
+    def test_iidBL_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_EM_GAMP(self, success=False)
+
     def test_iidBG_AWGN_GAMP(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP(self, success=False)
 
@@ -1635,6 +1971,23 @@ class PhaseSpaceTest2(PhaseSpaceTest, unittest.TestCase):
 
     def test_iidBG_AWGN_GAMP_krzakala_sum_approx(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP_krzakala_sum_approx(
+            self, success=False)
+
+    def test_iidwBG_ones_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_ones_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_EM_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_truncate_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_truncate_GAMP(
+            self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_reweight_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_reweight_GAMP(
             self, success=False)
 
 
@@ -1765,6 +2118,12 @@ class PhaseSpaceTest7(PhaseSpaceTest, unittest.TestCase):
     def test_iidsGB_AWGN_EM_GAMP(self):
         PhaseSpaceTest.test_iidsGB_AWGN_EM_GAMP(self, success=False)
 
+    def test_iidBL_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_GAMP(self, success=False)
+
+    def test_iidBL_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_EM_GAMP(self, success=False)
+
     def test_iidBG_AWGN_GAMP(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP(self, success=False)
 
@@ -1777,6 +2136,23 @@ class PhaseSpaceTest7(PhaseSpaceTest, unittest.TestCase):
 
     def test_iidBG_AWGN_GAMP_krzakala_sum_approx(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP_krzakala_sum_approx(
+            self, success=False)
+
+    def test_iidwBG_ones_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_ones_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_EM_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_truncate_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_truncate_GAMP(
+            self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_reweight_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_reweight_GAMP(
             self, success=False)
 
     def test_default_IT(self):
@@ -1821,6 +2197,12 @@ class PhaseSpaceTestA(PhaseSpaceTest, unittest.TestCase):
     def test_iidsGB_AWGN_EM_GAMP(self):
         PhaseSpaceTest.test_iidsGB_AWGN_EM_GAMP(self, success=False)
 
+    def test_iidBL_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_GAMP(self, success=False)
+
+    def test_iidBL_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_EM_GAMP(self, success=False)
+
     def test_iidBG_AWGN_GAMP(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP(self, success=False)
 
@@ -1833,6 +2215,23 @@ class PhaseSpaceTestA(PhaseSpaceTest, unittest.TestCase):
 
     def test_iidBG_AWGN_GAMP_krzakala_sum_approx(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP_krzakala_sum_approx(
+            self, success=False)
+
+    def test_iidwBG_ones_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_ones_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_EM_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_truncate_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_truncate_GAMP(
+            self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_reweight_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_reweight_GAMP(
             self, success=False)
 
     def test_default_IT(self):
@@ -1877,6 +2276,12 @@ class PhaseSpaceTestB(PhaseSpaceTest, unittest.TestCase):
     def test_iidsGB_AWGN_EM_GAMP(self):
         PhaseSpaceTest.test_iidsGB_AWGN_EM_GAMP(self, success=False)
 
+    def test_iidBL_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_GAMP(self, success=False)
+
+    def test_iidBL_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_EM_GAMP(self, success=False)
+
     def test_iidBG_AWGN_GAMP(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP(self, success=False)
 
@@ -1889,6 +2294,23 @@ class PhaseSpaceTestB(PhaseSpaceTest, unittest.TestCase):
 
     def test_iidBG_AWGN_GAMP_krzakala_sum_approx(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP_krzakala_sum_approx(
+            self, success=False)
+
+    def test_iidwBG_ones_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_ones_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_EM_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_truncate_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_truncate_GAMP(
+            self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_reweight_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_reweight_GAMP(
             self, success=False)
 
     def test_default_IT(self):
@@ -1933,6 +2355,12 @@ class PhaseSpaceTestC(PhaseSpaceTest, unittest.TestCase):
     def test_iidsGB_AWGN_EM_GAMP(self):
         PhaseSpaceTest.test_iidsGB_AWGN_EM_GAMP(self, success=False)
 
+    def test_iidBL_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_GAMP(self, success=False)
+
+    def test_iidBL_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidBL_AWGN_EM_GAMP(self, success=False)
+
     def test_iidBG_AWGN_GAMP(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP(self, success=False)
 
@@ -1945,6 +2373,23 @@ class PhaseSpaceTestC(PhaseSpaceTest, unittest.TestCase):
 
     def test_iidBG_AWGN_GAMP_krzakala_sum_approx(self):
         PhaseSpaceTest.test_iidBG_AWGN_GAMP_krzakala_sum_approx(
+            self, success=False)
+
+    def test_iidwBG_ones_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_ones_AWGN_EM_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_ones_AWGN_EM_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_GAMP(self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_truncate_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_truncate_GAMP(
+            self, success=False)
+
+    def test_iidwBG_linspace_AWGN_EM_reweight_GAMP(self):
+        PhaseSpaceTest.test_iidwBG_linspace_AWGN_EM_reweight_GAMP(
             self, success=False)
 
     def test_default_IT(self):

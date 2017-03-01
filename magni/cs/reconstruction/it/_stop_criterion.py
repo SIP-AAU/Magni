@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2015-2016, Magni developers.
+    Copyright (c) 2015-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -11,6 +11,8 @@ Routine listings
 ----------------
 calculate_using_mse_convergence(var)
     Calculate stop criterion based on mse convergence.
+calculate_using_normalised_mse_convergence(var)
+    Calculate stop criterion based on normalised mse convergence.
 calculate_using_residual(var)
     Calculate stop criterion based on residual.
 calculate_using_residual_measurments_ratio(var)
@@ -43,7 +45,7 @@ def wrap_calculate_using_mse_convergence(var):
         Parameters
         ----------
         var : dict
-            Dictionary of variables used in calculating of the stop criterion.
+            Dictionary of variables used in calculating the stop criterion.
 
         Returns
         -------
@@ -69,6 +71,57 @@ def wrap_calculate_using_mse_convergence(var):
     return calculate_using_mse_convergence
 
 
+def wrap_calculate_using_normalised_mse_convergence(var):
+    """
+    Arguments wrapper for `calculate_using_normalised_mse_convergence`.
+
+    Calculate stop criterion based on normalised mse convergence.
+
+    """
+
+    tolerance = var['tolerance']
+
+    def calculate_using_normalised_mse_convergence(var):
+        """
+        Calculate stop criterion based on normalised mse convergence.
+
+        Parameters
+        ----------
+        var : dict
+            Dictionary of variables used in calculating the stop criterion.
+
+        Returns
+        -------
+        stop : bool
+            The indicator of whether or not the stop criterion is satisfied.
+        mse : float
+            The current convergence normalised mean squared error.
+
+        Notes
+        -----
+        The IT algorithm should converge to a fixed point. This criterion
+        is based on the normalised mean squared error of the difference
+        between the proposed solution in this iteration and the proposed
+        solution in the previous solution normalised by the mean squared error
+        of the proposed solution in the previous iteration
+
+        """
+
+        se = np.linalg.norm(var['alpha_prev'] - var['alpha'])**2
+        norm = np.linalg.norm(var['alpha_prev'])**2
+        if norm > 0:
+            nmse = se / norm
+            stop = se < tolerance * norm
+        else:
+            # Previous solution was zero-vector (most likely first iteration)
+            nmse = se
+            stop = False
+
+        return stop, nmse
+
+    return calculate_using_normalised_mse_convergence
+
+
 def wrap_calculate_using_residual(var):
     """
     Arguments wrapper for `calculate_using_residual`.
@@ -87,7 +140,7 @@ def wrap_calculate_using_residual(var):
         Parameters
         ----------
         var : dict
-            Dictionary of variables used in calculating of the stop criterion.
+            Dictionary of variables used in calculating the stop criterion.
 
         Returns
         -------

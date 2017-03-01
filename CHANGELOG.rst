@@ -1,4 +1,43 @@
 ==================
+1.7.0 (2017-03-01)
+==================
+
+Version 1.7.0 introduces support for Python 3.6. Major new features are included for the generalised approximate message passing (GAMP) reconstruction algorims and the fast implementations of matrices. Finally, a few improvements and minor bug fixes are part of this release.
+
+
+Additions
+---------
+
+- Added the Generalised Weighted Sparse input channel framework with basic
+  Gaussian and Laplace channels to magni.cs.reconstruction.gamp.
+- Added a fast implementation of Structurally Random Matrices (SRMs) to
+  magni.utils.matrices.
+
+
+Improvements
+------------
+
+- Magni now supports Python 3.6.
+- A normalised mean squared error stop criterion is now also available for the
+  iterative thresholding algorithms in magni.cs.reconstruction.it.
+
+
+Bug Fixes
+---------
+
+- Fixed a compatibility issue between Magni and Conda >= 4.3.
+- Fixed a number of minor bugs.
+- Various documentation clean-ups.
+
+
+Other Changes
+-------------
+
+- Support for the optional usage of Bottleneck in Magni has been removed.
+
+
+
+==================
 1.6.0 (2016-11-02)
 ==================
 

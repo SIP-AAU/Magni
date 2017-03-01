@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2016, Magni developers.
+    Copyright (c) 2014-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -37,7 +37,6 @@ pac_names = {'python': 'Python',
              'nose': 'Nose',
              'coverage': 'Coverage',
              'PIL': 'PIL',
-             'bottleneck': 'Bottleneck',
              'conda': 'Conda',
              'setuptools': 'Setuptools',
              'sklearn': 'scikit-learn'}
@@ -65,7 +64,6 @@ opt_deps = {'mkl': '11.1',
             'nose': '1.3',
             'coverage': '3.7',
             'PIL': '1.1.7',
-            'bottleneck': '1.0.0',
             'sklearn': '0.15.1',
             'conda': '3.7.0'}
 

@@ -1,12 +1,12 @@
 """
 This is a monkey patched version of the sphinx.apidoc utility. It provides a
 modified version of the create_package_file function from apidoc.py available
-at https://bitbucket.org/birkenfeld/sphinx/
+at https://github.com/sphinx-doc/sphinx
 
 It is subject to the following LICENSE:
 
-Copyright (c) 2014-1016, Christian Schou Oxvig & Patrick Steffen Pedersen
-Copyright (c) 2007-2013 by the Sphinx team (see AUTHORS file).
+Copyright (c) 2014-1017, Christian Schou Oxvig & Patrick Steffen Pedersen
+Copyright (c) 2007-2016 by the Sphinx team (see AUTHORS file).
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --- END OF LICENSE --
 
 The 'AUTHORS file' is the one provided by the Sphinx project - it is available
-at https://bitbucket.org/birkenfeld/sphinx/
+at https://github.com/sphinx-doc/sphinx
 
 """
 
@@ -43,10 +43,12 @@ import sys
 from os import path
 
 
-def create_package_file(root, master_package, subroot, py_files, opts, subs):
+def create_package_file(root, master_package, subroot, py_files, opts, subs,
+                        is_namespace=False):
     """Build a custom text to package files."""
-    text = format_heading(1, '{0} package'.format(makename(master_package,
-                                                           subroot)))
+    text = format_heading(
+        1, ('{0} package' if not is_namespace else '{0} namespace').format(
+            makename(master_package, subroot)))
 
     # CHANGE: Place package description below the package headline
     text += format_directive(subroot, master_package)
@@ -103,6 +105,7 @@ def create_package_file(root, master_package, subroot, py_files, opts, subs):
 
     write_file(makename(master_package, subroot), text, opts)
     return
+
 
 if __name__ == '__main__':
     """Monkey patch the sphinx.apidoc module."""

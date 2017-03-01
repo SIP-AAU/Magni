@@ -1,3 +1,13 @@
+"""
+..
+    Copyright (c) 2014-2017, Magni developers.
+    All rights reserved.
+    See LICENSE.rst for further information.
+
+Utilities for pretty printing tables.
+
+"""
+
 import numpy as np
 
 from magni.utils.validation import decorate_validation as _decorate_validation

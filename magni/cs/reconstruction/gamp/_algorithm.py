@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2015-2016, Magni developers.
+    Copyright (c) 2015-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -56,6 +56,7 @@ import copy
 import numpy as np
 
 from magni.cs.reconstruction.gamp import config as _conf
+from magni.utils.config import Configger as _Configger
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
 from magni.utils.validation import validate_numeric as _numeric
@@ -390,9 +391,9 @@ def run(y, A, A_asq=None):
             history['alpha_bar'].append(alpha_bar)
             history['alpha_tilde'].append(alpha_tilde)
             history['input_channel_parameters'].append(
-                copy.deepcopy(input_channel.__dict__))
+                _clean_vars(copy.deepcopy(vars(input_channel))))
             history['output_channel_parameters'].append(
-                copy.deepcopy(output_channel.__dict__))
+                _clean_vars(copy.deepcopy(vars(output_channel))))
             history['stop_criterion_value'].append(stop_criterion_value)
             history['stop_iteration'] = it
             if true_solution is not None:
@@ -411,6 +412,36 @@ def run(y, A, A_asq=None):
         return alpha, history
     else:
         return alpha
+
+
+def _clean_vars(vars_dict):
+    """
+    Return a clean-up vars dict.
+
+    All private variables are removed and magni configgers are converted to
+    dictionaries.
+
+    Parameters
+    ----------
+    vars_dict : dict
+        The dictionary of variables to clean.
+
+    Returns
+    -------
+    cleaned_vars : dict
+        The cleaned dictionary of variables.
+
+    """
+
+    cleaned_vars = dict()
+    for key, val in vars_dict.items():
+        if not key.startswith('_'):
+            if isinstance(val, _Configger):
+                cleaned_vars[key] = dict(val)
+            else:
+                cleaned_vars[key] = val
+
+    return cleaned_vars
 
 
 def _get_gamp_initialisation(y, A, A_asq):

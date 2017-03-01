@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2015-2016, Magni developers.
+    Copyright (c) 2015-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -20,11 +20,6 @@ from __future__ import division
 
 import numpy as np
 import scipy.stats
-try:
-    import bottleneck as bn
-    calculate_median = bn.median
-except ImportError:
-    calculate_median = np.median
 
 from magni.utils.validation import decorate_validation as _decorate_validation
 from magni.utils.validation import validate_generic as _generic
@@ -181,7 +176,7 @@ class AWGN(ValidatedMMSEOutputChannel):
                 # Estimate variance based on median
                 # std(x) ~= median(|x|) / stdQ1 for x~N(0, std**2)
                 self.sigma_sq = (
-                    calculate_median(np.abs(y - var['A_dot_alpha_bar'])) /
+                    np.median(np.abs(y - var['A_dot_alpha_bar'])) /
                     self.stdQ1) ** 2
 
         sigma_sq_plus_v = self.sigma_sq + var['v']

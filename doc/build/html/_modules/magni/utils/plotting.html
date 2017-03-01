@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.plotting &mdash; Magni 1.6.0 documentation</title>
+    <title>magni.utils.plotting &#8212; Magni 1.7.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,10 +14,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.6.0',
+        VERSION:     '1.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -25,8 +26,8 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.6.0 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,8 +36,8 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -48,7 +49,7 @@
   <h1>Source code for magni.utils.plotting</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2017, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -88,24 +89,24 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">_parse_version</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">_parse_version</span>
 
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_levels</span> <span class="k">as</span> <span class="n">_levels</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_levels</span> <span class="k">as</span> <span class="n">_levels</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 <span class="k">if</span> <span class="n">_parse_version</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">_parse_version</span><span class="p">(</span><span class="s1">&#39;1.5.0&#39;</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">cycler</span>
-    <span class="n">_mpl_prop_era</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">_mpl_prop_era</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">_mpl_prop_era</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">_mpl_prop_era</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <div class="viewcode-block" id="_ColourCollection"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting._ColourCollection">[docs]</a><span class="k">class</span> <span class="nc">_ColourCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -145,10 +146,10 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">brews</span><span class="p">):</span>
         <span class="nd">@_decorate_validation</span>
         <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-            <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;brews&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;mapping&#39;</span><span class="p">),</span>
-                              <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">),</span>
-                              <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
-                              <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[0;255]&#39;</span><span class="p">)))</span>
+            <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;brews&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;mapping&#39;</span><span class="p">),</span>
+                              <span class="n">_generic</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">),</span>
+                              <span class="n">_generic</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+                              <span class="n">_numeric</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[0;255]&#39;</span><span class="p">)))</span>
 
         <span class="n">validate_input</span><span class="p">()</span>
 
@@ -231,7 +232,7 @@
 <span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="setup_matplotlib"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting.setup_matplotlib">[docs]</a><span class="k">def</span> <span class="nf">setup_matplotlib</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="p">{},</span> <span class="n">cmap</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="setup_matplotlib"><a class="viewcode-back" href="../../../magni.utils.plotting.html#magni.utils.plotting.setup_matplotlib">[docs]</a><span class="k">def</span> <span class="nf">setup_matplotlib</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="p">{},</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adjust the configuration of `matplotlib`.</span>
 
@@ -266,9 +267,9 @@
 
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;mapping&#39;</span><span class="p">),</span>
-                             <span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;mapping&#39;</span><span class="p">)))</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">),</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;mapping&#39;</span><span class="p">),</span>
+                             <span class="n">_generic</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;mapping&#39;</span><span class="p">)))</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">),</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">_generic</span><span class="p">((</span><span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span>
             <span class="n">_generic</span><span class="p">((</span><span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Colormap</span><span class="p">)</span>
@@ -287,18 +288,18 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">setting</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Setting {!r} ignored.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Setting </span><span class="si">{!r}</span><span class="s1"> ignored.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">mpl</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">register_cmap</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cmap</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">cmap</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">_cmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">_cmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">_cmap</span><span class="p">)</span>
 
     <span class="n">_settings</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">_cmap</span> <span class="o">=</span> <span class="bp">None</span></div>
+    <span class="n">_cmap</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <span class="k">if</span> <span class="n">_mpl_prop_era</span><span class="p">:</span>
     <span class="c1"># Matplotlib &gt;= 1.5.0</span>
@@ -310,7 +311,7 @@
     <span class="n">_prop_settings</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;axes&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;color_cycle&#39;</span><span class="p">:</span> <span class="n">colour_collections</span><span class="p">[</span><span class="s1">&#39;cb4&#39;</span><span class="p">][</span><span class="s1">&#39;PuOr&#39;</span><span class="p">]}}</span>
 
-<span class="n">_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;usetex&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">},</span>
+<span class="n">_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;usetex&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
                   <span class="s1">&#39;font&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">},</span>
                   <span class="s1">&#39;mathtext&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;fontset&#39;</span><span class="p">:</span> <span class="s1">&#39;cm&#39;</span><span class="p">},</span>
                   <span class="s1">&#39;pdf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;fonttype&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">},</span>
@@ -332,8 +333,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -349,14 +350,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Nov 02, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+        &#169; Copyright 2014-2017, Magni developers.
+      Last updated on Mar 01, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
 </html>

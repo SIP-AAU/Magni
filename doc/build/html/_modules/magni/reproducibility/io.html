@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.reproducibility.io &mdash; Magni 1.6.0 documentation</title>
+    <title>magni.reproducibility.io &#8212; Magni 1.7.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,10 +14,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.6.0',
+        VERSION:     '1.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -25,8 +26,8 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.6.0 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,8 +36,8 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -48,7 +49,7 @@
   <h1>Source code for magni.reproducibility.io</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2017, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -90,18 +91,18 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">tables</span>
 
-<span class="kn">from</span> <span class="nn">magni.reproducibility</span> <span class="kn">import</span> <span class="n">_annotation</span>
-<span class="kn">from</span> <span class="nn">magni.reproducibility</span> <span class="kn">import</span> <span class="n">_chase</span>
-<span class="kn">from</span> <span class="nn">magni.utils.multiprocessing</span> <span class="kn">import</span> <span class="n">File</span> <span class="k">as</span> <span class="n">_File</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
+<span class="kn">from</span> <span class="nn">magni.reproducibility</span> <span class="k">import</span> <span class="n">_annotation</span>
+<span class="kn">from</span> <span class="nn">magni.reproducibility</span> <span class="k">import</span> <span class="n">_chase</span>
+<span class="kn">from</span> <span class="nn">magni.utils.multiprocessing</span> <span class="k">import</span> <span class="n">File</span> <span class="k">as</span> <span class="n">_File</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
 
 
 <div class="viewcode-block" id="annotate_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.annotate_database">[docs]</a><span class="k">def</span> <span class="nf">annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">):</span>
@@ -238,7 +239,7 @@
                                <span class="s1">&#39;(re)chasing the database.&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.create_database">[docs]</a><span class="k">def</span> <span class="nf">create_database</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="create_database"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.create_database">[docs]</a><span class="k">def</span> <span class="nf">create_database</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a new HDF database that is annotated and chased.</span>
 
@@ -276,7 +277,7 @@
     <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;{!r} already exists in filesystem.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{!r}</span><span class="s1"> already exists in filesystem.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
     <span class="k">with</span> <span class="n">_File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
         <span class="n">annotate_database</span><span class="p">(</span><span class="n">h5file</span><span class="p">)</span>
@@ -391,9 +392,9 @@
         <span class="k">for</span> <span class="n">chase</span> <span class="ow">in</span> <span class="n">h5_chase_dict</span><span class="p">:</span>
             <span class="n">chases</span><span class="p">[</span><span class="n">chase</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">h5_chase_dict</span><span class="p">[</span><span class="n">chase</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to read the {!r} chase &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chase</span><span class="p">)</span> <span class="o">+</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to read the </span><span class="si">{!r}</span><span class="s1"> chase &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chase</span><span class="p">)</span> <span class="o">+</span>
                          <span class="s1">&#39;It seems that the chase does not conform to the &#39;</span> <span class="o">+</span>
-                         <span class="s1">&#39;Magni chase standard ({!r}).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                         <span class="s1">&#39;Magni chase standard (</span><span class="si">{!r}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
     <span class="k">return</span> <span class="n">chases</span></div>
 
@@ -425,7 +426,7 @@
     <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">h5file</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;annotations&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">h5file</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;annotations&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NoSuchNodeError</span><span class="p">:</span>
         <span class="k">pass</span></div>
@@ -458,14 +459,14 @@
     <span class="n">validate_input</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">h5file</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;chases&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">h5file</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;chases&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NoSuchNodeError</span><span class="p">:</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="write_custom_annotation"><a class="viewcode-back" href="../../../magni.reproducibility.io.html#magni.reproducibility.io.write_custom_annotation">[docs]</a><span class="k">def</span> <span class="nf">write_custom_annotation</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="n">annotation_name</span><span class="p">,</span> <span class="n">annotation_value</span><span class="p">,</span>
-                            <span class="n">annotations_sub_group</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                            <span class="n">annotations_sub_group</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write a custom annotation to an HDF5 database.</span>
 
@@ -509,11 +510,11 @@
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
         <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;h5file&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
         <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;annotation_name&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;annotations_sub_group&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;annotations_sub_group&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">annotations_sub_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">annotations_sub_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">annotations_group</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;/annotations&#39;</span><span class="p">,</span> <span class="n">annotations_sub_group</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">annotations_group</span> <span class="o">=</span> <span class="s1">&#39;/annotations&#39;</span>
@@ -526,11 +527,11 @@
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">h5file</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">annotations_group</span><span class="p">,</span> <span class="n">annotation_name</span><span class="p">,</span>
-                            <span class="n">obj</span><span class="o">=</span><span class="n">ann_val</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">createparents</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                            <span class="n">obj</span><span class="o">=</span><span class="n">ann_val</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">createparents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NodeError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">tables</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span>
-            <span class="s1">&#39;The annotation &quot;{!r}&quot; already exists &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotation_name</span><span class="p">)</span> <span class="o">+</span>
+            <span class="s1">&#39;The annotation &quot;</span><span class="si">{!r}</span><span class="s1">&quot; already exists &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotation_name</span><span class="p">)</span> <span class="o">+</span>
             <span class="s1">&#39;in the database. Remove the old annotation before placing a &#39;</span> <span class="o">+</span>
             <span class="s1">&#39;new one.&#39;</span><span class="p">)</span></div>
 
@@ -557,10 +558,10 @@
             <span class="n">out_annotations_dict</span><span class="p">[</span><span class="n">annotation_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
                 <span class="n">annotation_value</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to read the {!r} &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotation_name</span><span class="p">)</span> <span class="o">+</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to read the </span><span class="si">{!r}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotation_name</span><span class="p">)</span> <span class="o">+</span>
                          <span class="s1">&#39;annotation. It seems that the annotation &#39;</span> <span class="o">+</span>
                          <span class="s1">&#39;does not conform to the Magni annotation &#39;</span> <span class="o">+</span>
-                         <span class="s1">&#39;standard ({!r}).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                         <span class="s1">&#39;standard (</span><span class="si">{!r}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
     <span class="c1"># Recursively handle subgroups</span>
     <span class="k">for</span> <span class="n">subgroup</span> <span class="ow">in</span> <span class="n">subgroups</span><span class="p">:</span>
@@ -577,8 +578,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -594,14 +595,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Nov 02, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+        &#169; Copyright 2014-2017, Magni developers.
+      Last updated on Mar 01, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
 </html>

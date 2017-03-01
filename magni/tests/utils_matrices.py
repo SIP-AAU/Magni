@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2016, Magni developers.
+    Copyright (c) 2016-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -188,6 +188,156 @@ class TestSeparable2DTransform(unittest.TestCase):
         self.assertTrue(state['mtx_r'] is not self.mtx)
 
 
+class TestSRM(unittest.TestCase):
+    """
+    Test of Structurally Random Matrix (SRM)
+
+    Implemented tests:
+
+    * test_only_F : no sub-sampling and pre-randomization
+    * test_DF : sub-sampling
+    * test_DFR_l : sub-sampling and local pre-randomization
+    * test_DFR_g : sub-sampling and global pre-randomizaton
+    * test_full_SRM : sub-sampling and local and global pre-randomizaton
+    * test_custom_validation : custom input validation
+    * test_F_norm_property : the special property for norm computations
+    * test_matrix_state : return internal matrix state
+
+    """
+
+    def setUp(self):
+        np.random.seed(6021)
+
+        n_sqrt = 3
+        n = n_sqrt**2
+        m = n_sqrt
+
+        points = np.random.choice(n, size=m, replace=False)
+        points.sort()
+        coords = np.vstack([points // n_sqrt, points % n_sqrt]).T
+
+        self.D = magni.imaging.measurements.construct_measurement_matrix(
+            coords, n_sqrt, n_sqrt)
+        self.F = magni.imaging.dictionaries.get_DCT((n_sqrt, n_sqrt))
+        self.signs = np.random.choice([-1, 1], size=n)
+        self.permutation = np.random.permutation(n)
+
+        self.vec = np.random.randn(9, 1)
+
+    def test_only_F(self):
+        A = magni.utils.matrices.SRM(self.F)
+        self.assertTrue(np.allclose(A.dot(self.vec), self.F.dot(self.vec)))
+        self.assertDictEqual(
+            A._includes, {'sub_sampling': False,
+                          'local_pre_randomization': False,
+                          'global_pre_randomization': False})
+
+    def test_DF(self):
+        A = magni.utils.matrices.SRM(self.F, D=self.D)
+        self.assertTrue(
+            np.allclose(A.dot(self.vec), self.D.dot(self.F.dot(self.vec))))
+        self.assertDictEqual(
+            A._includes, {'sub_sampling': True,
+                          'local_pre_randomization': False,
+                          'global_pre_randomization': False})
+
+    def test_DFR_l(self):
+        A = magni.utils.matrices.SRM(self.F, D=self.D, l_ran_arr=self.signs)
+        F_sign = self.F.A.dot(np.diag(self.signs))
+
+        self.assertTrue(
+            np.allclose(A.dot(self.vec), self.D.dot(F_sign.dot(self.vec))))
+        self.assertDictEqual(
+            A._includes, {'sub_sampling': True,
+                          'local_pre_randomization': True,
+                          'global_pre_randomization': False})
+
+    def test_DFR_g(self):
+        A = magni.utils.matrices.SRM(
+            self.F, D=self.D, g_ran_arr=self.permutation)
+        F_permutation = np.zeros(self.F.shape)
+        for k, permut in enumerate(self.permutation):
+            F_permutation[:, k] = self.F.A[:, permut]
+
+        self.assertTrue(
+            np.allclose(A.dot(self.vec),
+                        self.D.dot(F_permutation.dot(self.vec))))
+        self.assertDictEqual(
+            A._includes, {'sub_sampling': True,
+                          'local_pre_randomization': False,
+                          'global_pre_randomization': True})
+
+    def test_full_SRM(self):
+        A = magni.utils.matrices.SRM(
+            self.F, D=self.D, l_ran_arr=self.signs, g_ran_arr=self.permutation)
+        F_permutation = np.zeros(self.F.shape)
+        for k, permut in enumerate(self.permutation):
+            F_permutation[:, k] = self.F.A[:, permut]
+        FR = F_permutation.dot(np.diag(self.signs))
+
+        self.assertTrue(
+            np.allclose(A.dot(self.vec),
+                        self.D.dot(FR.dot(self.vec))))
+        self.assertDictEqual(
+            A._includes, {'sub_sampling': True,
+                          'local_pre_randomization': True,
+                          'global_pre_randomization': True})
+
+        T_vec = np.arange(self.D.shape[0]).reshape(-1, 1).astype(float)
+        self.assertTrue(
+            np.allclose(A.T.dot(T_vec),
+                        FR.T.dot(self.D.T.dot(T_vec))))
+
+    def test_custom_validation(self):
+        with self.assertRaises(ValueError):
+            magni.utils.matrices.SRM(
+                self.F, D=self.D,
+                l_ran_arr=np.zeros(self.F.shape[0]).astype(int))
+
+        with self.assertRaises(ValueError):
+            magni.utils.matrices.SRM(
+                self.F, D=self.D,
+                g_ran_arr=np.ones(self.F.shape[0]).astype(int))
+
+    def test_F_norm_property(self):
+        A = magni.utils.matrices.SRM(self.F)
+        self.assertTrue(A.matrix_state['F_norm'] is None)
+
+        A.matrix_state = {'F_norm': self.F.A}
+        self.assertTrue(np.allclose(
+            A.matrix_state['F_norm'].dot(self.vec), A.dot(self.vec)))
+
+        A.matrix_state = {'F_norm': None}
+        self.assertTrue(A.matrix_state['F_norm'] is None)
+
+        with self.assertRaises(KeyError):
+            A.matrix_state = {'fail': 'fail'}
+
+        with self.assertRaises(TypeError):
+            A.matrix_state = {'F_norm': 'fail'}
+
+    def test_matrix_state(self):
+        A = magni.utils.matrices.SRM(
+            self.F, D=self.D, l_ran_arr=self.signs, g_ran_arr=self.permutation)
+        state = A.matrix_state
+
+        self.assertTrue(np.allclose(
+            magni.utils.matrices.MatrixCollection(
+                state['matrices']).dot(self.vec),
+            A.dot(self.vec)))
+        self.assertTrue(np.allclose(state['l_ran_arr'], self.signs))
+        self.assertTrue(np.allclose(state['g_ran_arr'], self.permutation))
+        self.assertTrue(state['F_norm'] is None)
+        self.assertEqual(state['includes'], {'sub_sampling': True,
+                                             'local_pre_randomization': True,
+                                             'global_pre_randomization': True})
+
+        self.assertTrue(state['matrices'] is not A._matrices)
+        self.assertTrue(state['l_ran_arr'] is not self.signs)
+        self.assertTrue(state['g_ran_arr'] is not self.permutation)
+        self.assertTrue(state['includes'] is not A._includes)
+
+
 class TestNorm(unittest.TestCase):
     """
     Test of norm computation.
@@ -197,6 +347,7 @@ class TestNorm(unittest.TestCase):
     * test_Matrix : norm of Matrix
     * test_MatrixCollection : norm of MatrixCollection
     * test_Separable2DTransform_frobenius : Frobenius norm of 2D sep transform
+    * test_SRM_frobenius : Frobenius norm of SRM
 
     """
 
@@ -236,3 +387,58 @@ class TestNorm(unittest.TestCase):
         # Direct fro norm
         fro_norm = magni.utils.matrices.norm(sep_matrix, ord='fro')
         self.assertAlmostEqual(fro_norm, ref_norm)
+
+    def test_SRM_frobenius(self):
+        mtx = np.random.randn(self.N, self.N)
+        F = magni.utils.matrices.Separable2DTransform(mtx, mtx)
+        dct_mtx = magni.imaging.dictionaries.get_DCT_transform_matrix(self.N)
+        F_dct = magni.utils.matrices.Separable2DTransform(
+            dct_mtx.T, dct_mtx.T)
+        signs = np.random.choice([-1, 1], size=F.shape[1])
+        permutation = np.random.permutation(F.shape[1])
+        D = np.eye(F.shape[0])[self.N*3:]
+        SRM_1 = magni.utils.matrices.SRM(F, D=D, l_ran_arr=signs)
+        SRM_1.matrix_state = {'F_norm': F}
+        SRM_2 = magni.utils.matrices.SRM(F, g_ran_arr=permutation)
+        SRM_3 = magni.utils.matrices.SRM(F_dct, D=D, g_ran_arr=permutation)
+        SRM_3.matrix_state = {'F_norm': F_dct}
+        SRM_4 = magni.utils.matrices.SRM(F_dct, l_ran_arr=signs)
+        SRM_4.matrix_state = {'F_norm': F_dct}
+        ref_norm_SRM_1 = np.linalg.norm(SRM_1.A)
+        ref_norm_SRM_2 = np.linalg.norm(SRM_2.A)
+        ref_norm_SRM_3 = np.linalg.norm(SRM_3.A)
+        ref_norm_SRM_4 = np.linalg.norm(SRM_4.A)
+        self.assertAlmostEqual(ref_norm_SRM_3, np.sqrt(D.shape[0]))
+        self.assertAlmostEqual(ref_norm_SRM_4, np.sqrt(F_dct.shape[1]))
+
+        # Offload to numpy
+        np_norm_SRM_1 = np.linalg.norm(SRM_1)
+        self.assertEqual(np_norm_SRM_1, ref_norm_SRM_1)
+        np_norm_SRM_2 = np.linalg.norm(SRM_2)
+        self.assertEqual(np_norm_SRM_2, ref_norm_SRM_2)
+        np_norm_SRM_3 = np.linalg.norm(SRM_3)
+        self.assertEqual(np_norm_SRM_3, ref_norm_SRM_3)
+        np_norm_SRM_4 = np.linalg.norm(SRM_4)
+        self.assertEqual(np_norm_SRM_4, ref_norm_SRM_4)
+
+        # Default none == fro norm
+        none_norm_SRM_1 = magni.utils.matrices.norm(SRM_1)
+        self.assertNotAlmostEqual(none_norm_SRM_1, ref_norm_SRM_1)
+        self.assertTrue(
+            ref_norm_SRM_1 * 0.95 <= none_norm_SRM_1 <= ref_norm_SRM_1 * 1.05)
+        none_norm_SRM_2 = magni.utils.matrices.norm(SRM_2)
+        self.assertAlmostEqual(none_norm_SRM_2, ref_norm_SRM_2)
+        none_norm_SRM_3 = magni.utils.matrices.norm(SRM_3)
+        self.assertAlmostEqual(none_norm_SRM_3, ref_norm_SRM_3)
+        none_norm_SRM_4 = magni.utils.matrices.norm(SRM_4)
+        self.assertAlmostEqual(none_norm_SRM_4, ref_norm_SRM_4)
+
+        # Direct fro norm
+        fro_norm_SRM_1 = magni.utils.matrices.norm(SRM_1, ord='fro')
+        self.assertEqual(fro_norm_SRM_1, none_norm_SRM_1)
+        fro_norm_SRM_2 = magni.utils.matrices.norm(SRM_2, ord='fro')
+        self.assertEqual(fro_norm_SRM_2, none_norm_SRM_2)
+        fro_norm_SRM_3 = magni.utils.matrices.norm(SRM_3, ord='fro')
+        self.assertEqual(fro_norm_SRM_3, none_norm_SRM_3)
+        fro_norm_SRM_4 = magni.utils.matrices.norm(SRM_4, ord='fro')
+        self.assertEqual(fro_norm_SRM_4, none_norm_SRM_4)

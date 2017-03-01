@@ -114,7 +114,6 @@ Dependencies
 
 **Optional** third party dependencies for :py:mod:`magni` are:
 
-- |bottleneck|_ (Tested on version >=1.0.0) (For speed-up of some algorithms)
 - |conda|_ (Tested on version >= 3.7.0) (For automatic metadata capture of a Conda managed Python environment)
 - |coverage|_ (Tested on version >= 3.7) (For running the test suite script)
 - |ipython|_ (Tested on version >= 2.1) or |jupyter|_ [4]_ (Tested on version >= 1.0) (For running the IPython notebook examples)
@@ -166,8 +165,6 @@ Dependencies
 .. _coverage: http://coverage.readthedocs.io/en/latest/
 .. |pil| replace:: ``PIL (or Pillow)``
 .. _pil: http://www.pythonware.com/products/pil/
-.. |bottleneck| replace:: ``Bottleneck``
-.. _bottleneck: http://berkeleyanalytics.com/bottleneck/
 .. |sklearn| replace:: ``scikit-learn``
 .. _sklearn: http://scikit-learn.org/
 .. |conda| replace:: ``Conda``

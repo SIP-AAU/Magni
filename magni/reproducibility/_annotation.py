@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2014-2016, Magni developers.
+    Copyright (c) 2014-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -169,11 +169,12 @@ def get_conda_info():
         conda_info['is_foreign_system'] = json.dumps(
             bool(conda.config.foreign))
 
-    modules_info = {module:
-                    conda.install.is_linked(conda_info['root_prefix'], module)
+    modules_info = {str(module):
+                    repr(conda.install.is_linked(
+                        conda_info['root_prefix'], module))
                     for module in linked_modules}
     conda_info['modules_info'] = json.dumps(modules_info)
-    conda_info['linked_modules'] = json.dumps(linked_modules)
+    conda_info['linked_modules'] = json.dumps(repr(linked_modules))
     conda_info['status'] = 'Succeeded'
 
     # Conda env export

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.matrices &mdash; Magni 1.6.0 documentation</title>
+    <title>magni.utils.matrices &#8212; Magni 1.7.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,10 +14,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.6.0',
+        VERSION:     '1.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -25,8 +26,8 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.6.0 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,8 +36,8 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -48,7 +49,7 @@
   <h1>Source code for magni.utils.matrices</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">..</span>
-<span class="sd">    Copyright (c) 2014-2016, Magni developers.</span>
+<span class="sd">    Copyright (c) 2014-2017, Magni developers.</span>
 <span class="sd">    All rights reserved.</span>
 <span class="sd">    See LICENSE.rst for further information.</span>
 
@@ -67,6 +68,8 @@
 <span class="sd">    Wrap multiple matrix emulators in a single matrix emulator.</span>
 <span class="sd">Separable2DTransform(Matrix)</span>
 <span class="sd">    Wrap a linear 2D separable transform in a matrix emulator.</span>
+<span class="sd">SRM(MatrixCollection)</span>
+<span class="sd">    Wrap a Structurally Random Matrix (SRM) in a matrix emulator.</span>
 <span class="sd">SumApproximationMatrix(object)</span>
 <span class="sd">    Wrap a sum approximation in a matrix emulator.</span>
 <span class="sd">norm(A, ord=None)</span>
@@ -79,17 +82,17 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation.types</span> <span class="kn">import</span> <span class="n">MatrixBase</span> <span class="k">as</span> <span class="n">_MatrixBase</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_levels</span> <span class="k">as</span> <span class="n">_levels</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
-<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="kn">import</span> <span class="n">validate_once</span> <span class="k">as</span> <span class="n">_validate_once</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">decorate_validation</span> <span class="k">as</span> <span class="n">_decorate_validation</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation.types</span> <span class="k">import</span> <span class="n">MatrixBase</span> <span class="k">as</span> <span class="n">_MatrixBase</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_generic</span> <span class="k">as</span> <span class="n">_generic</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_levels</span> <span class="k">as</span> <span class="n">_levels</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_numeric</span> <span class="k">as</span> <span class="n">_numeric</span>
+<span class="kn">from</span> <span class="nn">magni.utils.validation</span> <span class="k">import</span> <span class="n">validate_once</span> <span class="k">as</span> <span class="n">_validate_once</span>
 
 
 <div class="viewcode-block" id="Matrix"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.Matrix">[docs]</a><span class="k">class</span> <span class="nc">Matrix</span><span class="p">(</span><span class="n">_MatrixBase</span><span class="p">):</span>
@@ -200,8 +203,8 @@
         <span class="sd">&quot;&quot;&quot;Return ndarray representation of the matrix.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span></div>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">conj_trans</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">is_complex</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                 <span class="n">is_valid</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">conj_trans</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">is_complex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">is_valid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">_MatrixBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span> <span class="k">if</span> <span class="n">is_complex</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">,</span>
                              <span class="p">((</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)),</span> <span class="n">shape</span><span class="p">)</span>
 
@@ -210,8 +213,8 @@
             <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;func&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span>
             <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;conj_trans&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span>
             <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">)</span>
-            <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-                              <span class="n">_numeric</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">)))</span>
+            <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">,</span> <span class="n">len_</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                              <span class="n">_numeric</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">)))</span>
             <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;is_complex&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span><span class="p">)</span>
             <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;is_valid&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span><span class="p">)</span>
 
@@ -311,7 +314,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span><span class="p">:</span>
             <span class="n">is_valid</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">is_valid</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">is_valid</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">return</span> <span class="n">Matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_conj_trans</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span>
                       <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span><span class="p">,</span> <span class="n">is_valid</span><span class="p">)</span>
@@ -337,7 +340,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span><span class="p">:</span>
             <span class="n">is_valid</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">is_valid</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">is_valid</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">return</span> <span class="n">Matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conj_trans</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span>
                       <span class="bp">self</span><span class="o">.</span><span class="n">_is_complex</span><span class="p">,</span> <span class="n">is_valid</span><span class="p">)</span></div>
@@ -462,21 +465,21 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrices</span><span class="p">):</span>
         <span class="n">_MatrixBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">,</span>
-                             <span class="p">((</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)),</span> <span class="bp">None</span><span class="p">)</span>
+                             <span class="p">((</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="nd">@_decorate_validation</span>
         <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
-            <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;matrices&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">),</span>
+            <span class="n">_levels</span><span class="p">(</span><span class="s1">&#39;matrices&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_generic</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;explicit collection&#39;</span><span class="p">),</span>
                                  <span class="n">_numeric</span><span class="p">(</span>
-                                     <span class="bp">None</span><span class="p">,</span>
+                                     <span class="kc">None</span><span class="p">,</span>
                                      <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
                                      <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))))</span>
 
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matrices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;The value of &gt;&gt;matrices[{}].shape[1]&lt;&lt;, {!r}, &#39;</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;The value of &gt;&gt;matrices[</span><span class="si">{}</span><span class="s1">].shape[1]&lt;&lt;, </span><span class="si">{!r}</span><span class="s1">, &#39;</span>
                            <span class="s1">&#39;must be equal to the value of &#39;</span>
-                           <span class="s1">&#39;&gt;&gt;matrices[{}].shape[0]&lt;&lt;, {!r}.&#39;</span><span class="p">)</span>
+                           <span class="s1">&#39;&gt;&gt;matrices[</span><span class="si">{}</span><span class="s1">].shape[0]&lt;&lt;, </span><span class="si">{!r}</span><span class="s1">.&#39;</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">matrices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                                                 <span class="n">matrices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
@@ -526,7 +529,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">is_complex</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s1">&#39;_is_complex&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>  <span class="c1"># Default to</span>
+        <span class="n">is_complex</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s1">&#39;_is_complex&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># Default to</span>
                           <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">])</span>       <span class="c1"># complex matrix</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span> <span class="k">if</span> <span class="n">is_complex</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
@@ -858,6 +861,224 @@
         <span class="k">return</span> <span class="n">mat_mult_result_as_vec</span></div></div>
 
 
+<div class="viewcode-block" id="SRM"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.SRM">[docs]</a><span class="k">class</span> <span class="nc">SRM</span><span class="p">(</span><span class="n">MatrixCollection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap a Structurally Random Matrix (SRM) in a matrix emulator.</span>
+
+<span class="sd">    Structurally Random Matrices are detailed in [2]. They are composed of a</span>
+<span class="sd">    (row) sub-sampling matrix `D`, an orthogonal matrix `F`, and a</span>
+<span class="sd">    pre-randomization matrix `R` such that the SRM (an m-by-n matrix) is given</span>
+<span class="sd">    by sqrt(n/m)*DFR with DFR being the matrix product of D, F, and R.</span>
+
+<span class="sd">    This class implements are sligthly more general SRM than the one just</span>
+<span class="sd">    described. Specifically, the scaling is absorbed into `D` and may be</span>
+<span class="sd">    arbitrary, i.e. potentially different for each row. Furthermore, the `F`</span>
+<span class="sd">    matrix is allowed to be an abitrary p-by-n matrix for `D` an m-by-p matrix.</span>
+<span class="sd">    Finally, this class allows for either or both of local pre-randomization</span>
+<span class="sd">    (sign changes on columns) or global pre-randomization (permutation of</span>
+<span class="sd">    columns). If both local and global pre-randomization is used, the `R`</span>
+<span class="sd">    matrix is composed as the matrix product `R_gR_l` with `R_g` the global</span>
+<span class="sd">    pre-randomization and `R_l` the local.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    F : ndarray or magni.utils.validation.types.MatrixBase</span>
+<span class="sd">        The p-by-n &quot;base&quot; matrix used in the SRM.</span>
+<span class="sd">    D : ndarray or magni.utils.validation.types.MatrixBase</span>
+<span class="sd">        The m-by-p sub-sampling matrix used in the SRM (the default is None,</span>
+<span class="sd">        which implies that no sub-sampling matrix is used in the SRM).</span>
+<span class="sd">    l_ran_arr : ndarray</span>
+<span class="sd">        The length n, ordered 1D array of signs to apply to the n columns (the</span>
+<span class="sd">        default is None, which implies that no signs are applied to the</span>
+<span class="sd">        columns).</span>
+<span class="sd">    g_ran_arr : ndarray</span>
+<span class="sd">        The length n, ordered 1D array of indices (zero-indexed) defining the</span>
+<span class="sd">        permutation of the n columns (the default is None, which implies that</span>
+<span class="sd">        the columns are not permuted) - see example below.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    magni.utils.matrices.MatrixCollection : Superclass of the present class.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [2]  T.T. Do, L.. Gan, N.H. Nguyen, and T.D. Tran, &quot;Fast and Efficient</span>
+<span class="sd">       Compressive Sensing Using Structurally Random Matrices&quot;, *IEEE</span>
+<span class="sd">       Transactions on Signal Processing*, vol. 60, no. 1, pp. 139-154, 2012</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For example, a sub-sampling of a 3-by-3 matrix</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from magni.utils.matrices import SRM</span>
+<span class="sd">    &gt;&gt;&gt; D = np.array([[0, 1, 0], [0, 0, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; F = np.arange(9).reshape(3, 3)</span>
+<span class="sd">    &gt;&gt;&gt; A_1 = SRM(F, D=D)</span>
+<span class="sd">    &gt;&gt;&gt; A_1.A.real</span>
+<span class="sd">    array([[ 3.,  4.,  5.],</span>
+<span class="sd">           [ 6.,  7.,  8.]])</span>
+
+<span class="sd">    or a local pre-randomization (sign change)</span>
+
+<span class="sd">    &gt;&gt;&gt; signs = np.array([1, -1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; A_2 = SRM(F, l_ran_arr=signs)</span>
+<span class="sd">    &gt;&gt;&gt; A_2.A.real</span>
+<span class="sd">    array([[ 0., -1.,  2.],</span>
+<span class="sd">           [ 3., -4.,  5.],</span>
+<span class="sd">           [ 6., -7.,  8.]])</span>
+
+<span class="sd">    or a global pre-randomization (permutation)</span>
+
+<span class="sd">    &gt;&gt;&gt; permutation = np.array([2, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; A_3 = SRM(F, g_ran_arr=permutation)</span>
+<span class="sd">    &gt;&gt;&gt; A_3.A.real</span>
+<span class="sd">    array([[ 2.,  0.,  1.],</span>
+<span class="sd">           [ 5.,  3.,  4.],</span>
+<span class="sd">           [ 8.,  6.,  7.]])</span>
+
+<span class="sd">    or everything together</span>
+
+<span class="sd">    &gt;&gt;&gt; A_4 = SRM(F, D=D, l_ran_arr=signs, g_ran_arr=permutation)</span>
+<span class="sd">    &gt;&gt;&gt; A_4.A.real</span>
+<span class="sd">    array([[ 5., -3.,  4.],</span>
+<span class="sd">           [ 8., -6.,  7.]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">l_ran_arr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">g_ran_arr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">_MatrixBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">,</span> <span class="p">((</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)),</span>
+            <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">D</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
+                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;l_ran_arr&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">),</span>
+                     <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[-1;1]&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;g_ran_arr&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">),</span>
+                     <span class="n">range_</span><span class="o">=</span><span class="s1">&#39;[0;</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">l_ran_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">l_ran_arr</span><span class="p">)</span> <span class="o">!=</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s1">&#39;The &quot;l_ran_arr&quot; array must only contain values &#39;</span> <span class="o">+</span>
+                        <span class="s1">&#39;in {{-1, 1}}&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">g_ran_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">g_ran_arr</span><span class="p">))</span> <span class="o">!=</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;The &quot;r_ran_arr&quot; array must contain exactly one copy &#39;</span> <span class="o">+</span>
+                    <span class="s1">&#39;of each of the values in range(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_l_ran_arr</span> <span class="o">=</span> <span class="n">l_ran_arr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_g_ran_arr</span> <span class="o">=</span> <span class="n">g_ran_arr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_F_norm</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_includes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sub_sampling&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                          <span class="s1">&#39;local_pre_randomization&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                          <span class="s1">&#39;global_pre_randomization&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="n">SRM_matrices</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># D matrix</span>
+        <span class="k">if</span> <span class="n">D</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_includes</span><span class="p">[</span><span class="s1">&#39;sub_sampling&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">SRM_matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+        <span class="c1"># F matrix</span>
+        <span class="n">SRM_matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+
+        <span class="c1"># R matrix</span>
+        <span class="n">R_matrices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">g_ran_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_includes</span><span class="p">[</span><span class="s1">&#39;global_pre_randomization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">g_ran_arr_C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">g_ran_arr</span><span class="p">)</span>
+            <span class="n">g_ran_arr_C</span><span class="p">[</span><span class="n">g_ran_arr</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">def</span> <span class="nf">R_g</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">vec</span><span class="p">[</span><span class="n">g_ran_arr_C</span><span class="p">]</span>
+
+            <span class="k">def</span> <span class="nf">R_g_T</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">vec</span><span class="p">[</span><span class="n">g_ran_arr</span><span class="p">]</span>
+
+            <span class="n">R_matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Matrix</span><span class="p">(</span><span class="n">R_g</span><span class="p">,</span> <span class="n">R_g_T</span><span class="p">,</span> <span class="p">[],</span> <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+
+        <span class="k">if</span> <span class="n">l_ran_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_includes</span><span class="p">[</span><span class="s1">&#39;local_pre_randomization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">l_ran_vec</span> <span class="o">=</span> <span class="n">l_ran_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">R_l</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">l_ran_vec</span> <span class="o">*</span> <span class="n">vec</span>
+            <span class="n">R_matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Matrix</span><span class="p">(</span><span class="n">R_l</span><span class="p">,</span> <span class="n">R_l</span><span class="p">,</span> <span class="p">[],</span> <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+
+        <span class="n">SRM_matrices</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">R_matrices</span><span class="p">)</span>
+
+        <span class="c1"># Full SRM</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">SRM_matrices</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">matrix_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a copy of the internal matrix state.</span>
+
+<span class="sd">        The internal matrix state consists of:</span>
+
+<span class="sd">        * matrices: The tuple of matrices in the SRM.</span>
+<span class="sd">        * l_ran_arr: The local pre-randomization array.</span>
+<span class="sd">        * g_ran_arr: The global pre-randomization array.</span>
+<span class="sd">        * F_norm: The special F matrix used in norm computations.</span>
+<span class="sd">        * includes: The dictionary detailing the SRM structure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix_state : dict</span>
+<span class="sd">            A copy of the internal matrix state</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">matrix_state</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;matrices&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_matrices</span><span class="p">),</span>
+                        <span class="s1">&#39;l_ran_arr&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l_ran_arr</span><span class="p">),</span>
+                        <span class="s1">&#39;g_ran_arr&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_g_ran_arr</span><span class="p">),</span>
+                        <span class="s1">&#39;F_norm&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_F_norm</span><span class="p">),</span>
+                        <span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_includes</span><span class="p">)}</span>
+
+        <span class="k">return</span> <span class="n">matrix_state</span>
+
+    <span class="nd">@matrix_state</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">matrix_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the state of the SRM.</span>
+
+<span class="sd">        Note that the only states that may be updated are:</span>
+
+<span class="sd">        * F_norm</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        update_dict : dict</span>
+<span class="sd">            The dictionary of states (as keys) to update (with values).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nd">@_decorate_validation</span>
+        <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
+            <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;update_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;mapping&#39;</span><span class="p">,</span> <span class="n">keys_in</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;F_norm&#39;</span><span class="p">,))</span>
+
+            <span class="k">if</span> <span class="s1">&#39;F_norm&#39;</span> <span class="ow">in</span> <span class="n">update_dict</span><span class="p">:</span>
+                <span class="n">_numeric</span><span class="p">((</span><span class="s1">&#39;update_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;F_norm&#39;</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span>
+                         <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">validate_input</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s1">&#39;F_norm&#39;</span> <span class="ow">in</span> <span class="n">update_dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_F_norm</span> <span class="o">=</span> <span class="n">update_dict</span><span class="p">[</span><span class="s1">&#39;F_norm&#39;</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="SumApproximationMatrix"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.SumApproximationMatrix">[docs]</a><span class="k">class</span> <span class="nc">SumApproximationMatrix</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap a sum approximation in a matrix emulator.</span>
@@ -929,7 +1150,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../magni.utils.matrices.html#magni.utils.matrices.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute a norm of a matrix.</span>
 
@@ -964,9 +1185,23 @@
 <span class="sd">        the norm has been implemented. Beware of possible &quot;out of memory&quot;</span>
 <span class="sd">        issues.</span>
 
+<span class="sd">    Currently optimized norm computations are:</span>
+
+<span class="sd">    * `magni.utils.matrices.Separable2DTransform`</span>
+<span class="sd">    * `magni.utils.matrices.SRM` (particularly for `F` a Separable2DTransform)</span>
+
+<span class="sd">    If the `A` matrix is a `magni.util.matrices.SRM` and `A.F_norm` is not</span>
+<span class="sd">    `None`, the norm computation is accelerated using `A.F_norm`. If the SRM</span>
+<span class="sd">    also includes sub-sampling, it is assumed that the `F` matrix has entries</span>
+<span class="sd">    (or row norms) of the same size as is the case for an orthogonal matrix.</span>
+<span class="sd">    Furthermore, it is assumed that any sub-sampling does not include a</span>
+<span class="sd">    scaling, i.e. any scaling is not taken into account in computing the norm.</span>
+<span class="sd">    If these assumptions about the SRM are not fulfilled, the computed</span>
+<span class="sd">    Frobenius norm will only be an approximation to the true Frobernius norm.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Compute the Frobenius norm of a Seperable2DTransform</span>
+<span class="sd">    Compute the Frobenius norm of a Separable2DTransform</span>
 
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from magni.utils.matrices import Separable2DTransform, norm</span>
@@ -986,23 +1221,32 @@
     <span class="nd">@_decorate_validation</span>
     <span class="k">def</span> <span class="nf">validate_input</span><span class="p">():</span>
         <span class="n">_numeric</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;complex&#39;</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;ord&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">_generic</span><span class="p">(</span><span class="s1">&#39;ord&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">validate_input</span><span class="p">()</span>
 
-    <span class="n">norm</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">norm_</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="c1"># Special computations</span>
-    <span class="k">if</span> <span class="nb">ord</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">ord</span> <span class="o">==</span> <span class="s1">&#39;fro&#39;</span><span class="p">:</span>
+    <span class="c1"># Optimised computations</span>
+    <span class="k">if</span> <span class="nb">ord</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">ord</span> <span class="o">==</span> <span class="s1">&#39;fro&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">Separable2DTransform</span><span class="p">):</span>
             <span class="n">A_s</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">matrix_state</span>
-            <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;mtx_l&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;mtx_r&#39;</span><span class="p">])</span>
+            <span class="n">norm_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;mtx_l&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;mtx_r&#39;</span><span class="p">])</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">SRM</span><span class="p">):</span>
+            <span class="n">A_s</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">matrix_state</span>
+            <span class="k">if</span> <span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;F_norm&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">norm_</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;F_norm&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">A_s</span><span class="p">[</span><span class="s1">&#39;includes&#39;</span><span class="p">][</span><span class="s1">&#39;sub_sampling&#39;</span><span class="p">]:</span>
+                    <span class="c1"># Assume entries (or column norms) of ~same size in F</span>
+                    <span class="c1"># and no scaling.</span>
+                    <span class="n">norm_</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="c1"># Fallback numpy solution</span>
-    <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">norm_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">norm_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">norm</span></div>
+    <span class="k">return</span> <span class="n">norm_</span></div>
 </pre></div>
 
           </div>
@@ -1013,8 +1257,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -1030,14 +1274,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.6.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Magni 1.7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Nov 02, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+        &#169; Copyright 2014-2017, Magni developers.
+      Last updated on Mar 01, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
 </html>

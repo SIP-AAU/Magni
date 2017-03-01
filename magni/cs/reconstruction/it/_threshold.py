@@ -1,6 +1,6 @@
 """
 ..
-    Copyright (c) 2015-2016, Magni developers.
+    Copyright (c) 2015-2017, Magni developers.
     All rights reserved.
     See LICENSE.rst for further information.
 
@@ -24,13 +24,6 @@ from __future__ import division
 
 import numpy as np
 import scipy.stats
-try:
-    import bottleneck as bn
-    calculate_median = bn.median
-    partsort = bn.partsort
-except ImportError:
-    calculate_median = np.median
-    partsort = np.sort
 
 
 def calculate_far(delta, it_algorithm):
@@ -128,7 +121,7 @@ def wrap_calculate_using_far(var):
 
         """
 
-        c_median = calculate_median(np.abs(var['c'].ravel()))
+        c_median = np.median(np.abs(var['c'].ravel()))
         thres = var['kappa'] * Lambda * convert(c_median) / stdQ1
 
         return thres
@@ -146,15 +139,6 @@ def wrap_calculate_using_fixed(var):
 
     k = var['param']['threshold_fixed']
     threshold_weights = var['threshold_weights']
-
-    if partsort.__name__ == 'sort':
-        # Fallback numpy sort
-        def find_k_largest(coefs, k):
-            return np.sort(coefs)[::-1][k]
-    else:
-        # Bottleneck partsort
-        def find_k_largest(coefs, k):
-            return partsort(coefs, len(coefs) - k)[len(coefs) - k - 1]
 
     def calculate_using_fixed(var):
         """
@@ -178,7 +162,7 @@ def wrap_calculate_using_fixed(var):
         """
 
         abs_coefficients = np.abs((var['alpha'] * threshold_weights).ravel())
-        thres = find_k_largest(abs_coefficients, k)
+        thres = np.sort(abs_coefficients)[::-1][k]
 
         return thres
 

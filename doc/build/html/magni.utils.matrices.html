@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>magni.utils.matrices module &mdash; Magni 1.6.0 documentation</title>
+    <title>magni.utils.matrices module &#8212; Magni 1.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,10 +14,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.6.0',
+        VERSION:     '1.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -25,8 +26,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="Magni 1.6.0 documentation" href="index.html" />
-    <link rel="up" title="magni.utils package" href="magni.utils.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="magni.utils.plotting module" href="magni.utils.plotting.html" />
     <link rel="prev" title="magni.utils.config module" href="magni.utils.config.html" /> 
   </head>
@@ -43,9 +44,9 @@
         <li class="right" >
           <a href="magni.utils.config.html" title="magni.utils.config module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="magni.utils.html" accesskey="U">magni.utils package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="magni.utils.html" accesskey="U">magni.utils package</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -70,6 +71,8 @@ interchangably in other parts of the package.</p>
 <dd>Wrap multiple matrix emulators in a single matrix emulator.</dd>
 <dt>Separable2DTransform(Matrix)</dt>
 <dd>Wrap a linear 2D separable transform in a matrix emulator.</dd>
+<dt>SRM(MatrixCollection)</dt>
+<dd>Wrap a Structurally Random Matrix (SRM) in a matrix emulator.</dd>
 <dt>SumApproximationMatrix(object)</dt>
 <dd>Wrap a sum approximation in a matrix emulator.</dd>
 <dt>norm(A, ord=None)</dt>
@@ -694,6 +697,120 @@ this matrix is multiplied with.</td>
 </dd></dl>
 
 <dl class="class">
+<dt id="magni.utils.matrices.SRM">
+<em class="property">class </em><code class="descclassname">magni.utils.matrices.</code><code class="descname">SRM</code><span class="sig-paren">(</span><em>F</em>, <em>D=None</em>, <em>l_ran_arr=None</em>, <em>g_ran_arr=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#SRM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.SRM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#magni.utils.matrices.MatrixCollection" title="magni.utils.matrices.MatrixCollection"><code class="xref py py-class docutils literal"><span class="pre">magni.utils.matrices.MatrixCollection</span></code></a></p>
+<p>Wrap a Structurally Random Matrix (SRM) in a matrix emulator.</p>
+<p>Structurally Random Matrices are detailed in [2]. They are composed of a
+(row) sub-sampling matrix <em class="xref py py-obj">D</em>, an orthogonal matrix <em class="xref py py-obj">F</em>, and a
+pre-randomization matrix <em class="xref py py-obj">R</em> such that the SRM (an m-by-n matrix) is given
+by sqrt(n/m)*DFR with DFR being the matrix product of D, F, and R.</p>
+<p>This class implements are sligthly more general SRM than the one just
+described. Specifically, the scaling is absorbed into <em class="xref py py-obj">D</em> and may be
+arbitrary, i.e. potentially different for each row. Furthermore, the <em class="xref py py-obj">F</em>
+matrix is allowed to be an abitrary p-by-n matrix for <em class="xref py py-obj">D</em> an m-by-p matrix.
+Finally, this class allows for either or both of local pre-randomization
+(sign changes on columns) or global pre-randomization (permutation of
+columns). If both local and global pre-randomization is used, the <em class="xref py py-obj">R</em>
+matrix is composed as the matrix product <em class="xref py py-obj">R_gR_l</em> with <em class="xref py py-obj">R_g</em> the global
+pre-randomization and <em class="xref py py-obj">R_l</em> the local.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>F</strong> (<em>ndarray or magni.utils.validation.types.MatrixBase</em>) &#8211; The p-by-n &#8220;base&#8221; matrix used in the SRM.</li>
+<li><strong>D</strong> (<em>ndarray or magni.utils.validation.types.MatrixBase</em>) &#8211; The m-by-p sub-sampling matrix used in the SRM (the default is None,
+which implies that no sub-sampling matrix is used in the SRM).</li>
+<li><strong>l_ran_arr</strong> (<em>ndarray</em>) &#8211; The length n, ordered 1D array of signs to apply to the n columns (the
+default is None, which implies that no signs are applied to the
+columns).</li>
+<li><strong>g_ran_arr</strong> (<em>ndarray</em>) &#8211; The length n, ordered 1D array of indices (zero-indexed) defining the
+permutation of the n columns (the default is None, which implies that
+the columns are not permuted) - see example below.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#magni.utils.matrices.MatrixCollection" title="magni.utils.matrices.MatrixCollection"><code class="xref py py-class docutils literal"><span class="pre">magni.utils.matrices.MatrixCollection</span></code></a></dt>
+<dd>Superclass of the present class.</dd>
+</dl>
+</div>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td>T.T. Do, L.. Gan, N.H. Nguyen, and T.D. Tran, &#8220;Fast and Efficient
+Compressive Sensing Using Structurally Random Matrices&#8221;, <em>IEEE
+Transactions on Signal Processing</em>, vol. 60, no. 1, pp. 139-154, 2012</td></tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>For example, a sub-sampling of a 3-by-3 matrix</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="k">import</span> <span class="n">SRM</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_1</span> <span class="o">=</span> <span class="n">SRM</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="n">D</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_1</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">real</span>
+<span class="go">array([[ 3.,  4.,  5.],</span>
+<span class="go">       [ 6.,  7.,  8.]])</span>
+</pre></div>
+</div>
+<p>or a local pre-randomization (sign change)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_2</span> <span class="o">=</span> <span class="n">SRM</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">l_ran_arr</span><span class="o">=</span><span class="n">signs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_2</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">real</span>
+<span class="go">array([[ 0., -1.,  2.],</span>
+<span class="go">       [ 3., -4.,  5.],</span>
+<span class="go">       [ 6., -7.,  8.]])</span>
+</pre></div>
+</div>
+<p>or a global pre-randomization (permutation)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">permutation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_3</span> <span class="o">=</span> <span class="n">SRM</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">g_ran_arr</span><span class="o">=</span><span class="n">permutation</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_3</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">real</span>
+<span class="go">array([[ 2.,  0.,  1.],</span>
+<span class="go">       [ 5.,  3.,  4.],</span>
+<span class="go">       [ 8.,  6.,  7.]])</span>
+</pre></div>
+</div>
+<p>or everything together</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A_4</span> <span class="o">=</span> <span class="n">SRM</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">l_ran_arr</span><span class="o">=</span><span class="n">signs</span><span class="p">,</span> <span class="n">g_ran_arr</span><span class="o">=</span><span class="n">permutation</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_4</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">real</span>
+<span class="go">array([[ 5., -3.,  4.],</span>
+<span class="go">       [ 8., -6.,  7.]])</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="magni.utils.matrices.SRM.matrix_state">
+<code class="descname">matrix_state</code><a class="headerlink" href="#magni.utils.matrices.SRM.matrix_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the internal matrix state.</p>
+<p>The internal matrix state consists of:</p>
+<ul class="simple">
+<li>matrices: The tuple of matrices in the SRM.</li>
+<li>l_ran_arr: The local pre-randomization array.</li>
+<li>g_ran_arr: The global pre-randomization array.</li>
+<li>F_norm: The special F matrix used in norm computations.</li>
+<li>includes: The dictionary detailing the SRM structure.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>matrix_state</strong> (<em>dict</em>) &#8211; A copy of the internal matrix state</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="magni.utils.matrices.SumApproximationMatrix">
 <em class="property">class </em><code class="descclassname">magni.utils.matrices.</code><code class="descname">SumApproximationMatrix</code><span class="sig-paren">(</span><em>scaling</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magni/utils/matrices.html#SumApproximationMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magni.utils.matrices.SumApproximationMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
@@ -783,8 +900,21 @@ passes that on to <code class="xref py py-obj docutils literal"><span class="pre
 the norm has been implemented. Beware of possible &#8220;out of memory&#8221;
 issues.</p>
 </div>
+<p>Currently optimized norm computations are:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#magni.utils.matrices.Separable2DTransform" title="magni.utils.matrices.Separable2DTransform"><code class="xref py py-obj docutils literal"><span class="pre">magni.utils.matrices.Separable2DTransform</span></code></a></li>
+<li><a class="reference internal" href="#magni.utils.matrices.SRM" title="magni.utils.matrices.SRM"><code class="xref py py-obj docutils literal"><span class="pre">magni.utils.matrices.SRM</span></code></a> (particularly for <em class="xref py py-obj">F</em> a Separable2DTransform)</li>
+</ul>
+<p>If the <em class="xref py py-obj">A</em> matrix is a <em class="xref py py-obj">magni.util.matrices.SRM</em> and <em class="xref py py-obj">A.F_norm</em> is not
+<em class="xref py py-obj">None</em>, the norm computation is accelerated using <em class="xref py py-obj">A.F_norm</em>. If the SRM
+also includes sub-sampling, it is assumed that the <em class="xref py py-obj">F</em> matrix has entries
+(or row norms) of the same size as is the case for an orthogonal matrix.
+Furthermore, it is assumed that any sub-sampling does not include a
+scaling, i.e. any scaling is not taken into account in computing the norm.
+If these assumptions about the SRM are not fulfilled, the computed
+Frobenius norm will only be an approximation to the true Frobernius norm.</p>
 <p class="rubric">Examples</p>
-<p>Compute the Frobenius norm of a Seperable2DTransform</p>
+<p>Compute the Frobenius norm of a Separable2DTransform</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">magni.utils.matrices</span> <span class="k">import</span> <span class="n">Separable2DTransform</span><span class="p">,</span> <span class="n">norm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mtx_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -827,8 +957,8 @@ issues.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -850,15 +980,15 @@ issues.</p>
         <li class="right" >
           <a href="magni.utils.config.html" title="magni.utils.config module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.6.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Magni 1.7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="magni.html" >magni package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="magni.utils.html" >magni.utils package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2014-2016, Magni developers.
-      Last updated on Nov 02, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+        &#169; Copyright 2014-2017, Magni developers.
+      Last updated on Mar 01, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
 </html>
