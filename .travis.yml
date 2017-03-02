@@ -22,7 +22,7 @@ env:
     - MAGNI_CONDA=newest CONDA_PYTHON_VERSION=3.3
     - MAGNI_CONDA=newest CONDA_PYTHON_VERSION=3.4
     - MAGNI_CONDA=newest CONDA_PYTHON_VERSION=3.5
-    - MAGNI_CONDA=newest CONDA_PYTHON_VERSION=3.
+    - MAGNI_CONDA=newest CONDA_PYTHON_VERSION=3.6
 
 # Exclude broken Anaconda OSX Python 3.4 minimum build
 matrix:
